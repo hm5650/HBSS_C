@@ -28,7 +28,7 @@ local plr = plrs.LocalPlayer
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/HBSS_Loader.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua"))()
 local Alurt = loadstring(game:HttpGet("https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua"))()
 
 local function n(opts)
@@ -2364,8 +2364,8 @@ function respawn(plr)
     end)
 end
 
-local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/SA2_Function.lua"))()
-local FindTool = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/SA2_FindTool.lua"))()
+local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua"))()
+local FindTool = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua"))()
 local function hasForcefield(character)
     if not character then return false end
     
