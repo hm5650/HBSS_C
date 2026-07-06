@@ -199,7 +199,7 @@ YesBtn.MouseButton1Click:Connect(function()
 end)
 
 NoBtn.MouseButton1Click:Connect(function()
-    get("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/HBSS_New.lua")
+    get("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_C.lua")
 end)
 
 tw()
