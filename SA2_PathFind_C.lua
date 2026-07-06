@@ -1,5 +1,26 @@
 local PathfindingService = game:GetService("PathfindingService")
 local lplr = game:GetService("Players").LocalPlayer
+local pathCache = {}
+local ClearCache = function()
+    pathCache = {}
+end
+
+lplr.CharacterAdded:Connect(function(character)
+    ClearCache()
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.Died:Connect(function()
+        ClearCache()
+    end)
+end)
+
+if lplr.Character then
+    local humanoid = lplr.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.Died:Connect(function()
+            ClearCache()
+        end)
+    end
+end
 
 local FindPath = function(endPosition)
     if not endPosition or not typeof(endPosition) == "CFrame" then
@@ -10,6 +31,11 @@ local FindPath = function(endPosition)
     if not lplr.Character or not lplr.Character.HumanoidRootPart then
         error("LocalPlayer character or HumanoidRootPart not found")
         return false, {}, nil
+    end
+    local cacheKey = tostring(lplr.Character.HumanoidRootPart.Position) .. tostring(endPosition.Position)
+    if pathCache[cacheKey] then
+        print("Using cached path")
+        return pathCache[cacheKey].success, pathCache[cacheKey].waypoints, pathCache[cacheKey].path
     end
     
     local path = PathfindingService:CreatePath()
@@ -30,7 +56,14 @@ local FindPath = function(endPosition)
         waypoints = path:GetWaypoints()
     end
     
-    return pathStatus == Enum.PathStatus.Success, waypoints, path
+    local result = {
+        success = pathStatus == Enum.PathStatus.Success,
+        waypoints = waypoints,
+        path = path
+    }
+    pathCache[cacheKey] = result
+    
+    return result.success, result.waypoints, result.path
 end
 
 local ShowPath = function(endPosition)
@@ -102,5 +135,6 @@ return {
     FindPath = FindPath,
     ShowPath = ShowPath,
     RemovePath = RemovePath,
-    MoveCharacter = MoveCharacter
+    MoveCharacter = MoveCharacter,
+    ClearCache = ClearCache
 }
