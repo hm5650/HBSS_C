@@ -1,3 +1,18 @@
+--[[
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⡿⣷⣄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣧⣈⣻⣷
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠟⠉⠙⠛⠁
+⠀⠀⢀⣴⣿⣦⡀⢀⣴⠿⠁⠀⠀⠀⠀⠀
+⠀⣴⡿⠋⠀⢹⣿⣿⡁⠀⠀⠀⠀⠀⠀⠀
+⢰⣿⠀⠀    ⠉⠙⣿⣦⠀⠀⠀⠀⠀⠀
+⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
+⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+           
+           “I like meme RNGs” 
+                                           
+                               - Gpssickle
+]]
+
 -- Gravel.cc
 repeat wait() until game:IsLoaded()
 
@@ -764,11 +779,11 @@ local function givename()
         "Gravel-er",
         "Graaaavel",
         "Shovel.cc",
+        "HBSS.lua",
         "Gravel.com",
         "Hi! I'm Gravel!",
         "Gravel enjoyer",
         "GRAVEL",
-        "HBSS.lua",
         "g r a v e l",
         "GravelGravelGravel",
         "G.cc",
@@ -1126,22 +1141,72 @@ local function deleteAllSaves()
     
     local confirmCount = 0
     local maxConfirmations = 3
+    local memeTitles = {
+        "u sure bout dat??",
+        "fr fr?",
+        "ARE U RLY SUPER DUPER SURE???",
+        "YOU ON GOD WHILE ON GOD???",
+        "THINK ABOUT THE SAVES FAMILY",
+        "SURE SURELY SUREY??",
+        "YOU 1E60 SURE???",
+    }
+    
+    local yesVariants = {
+        "Yes",
+        "Yeah",
+        "Yessir",
+        "YESSIRSKI!",
+        "YAA",
+        "HELL YA",
+        "KILL ALL THE SAVES!!",
+        "IM FR",
+        "IM SUPER SURE",
+        "IM SO SURE THAT IM SURE!!",
+        "SAVES GO TO HELL!!",
+    }
+    
+    local noVariants = {
+        "Nah",
+        "Pass",
+        "HECK NAH",
+        "WHAT RUE DOING USER???",
+        "NOOO",
+        "OH NOES",
+        "DENIAL",
+        "NO I LIKE MAH SAVES",
+    }
+    
+    local function getRandomMemeTitle()
+        return memeTitles[math.random(1, #memeTitles)]
+    end
+    
+    local function getRandomYes()
+        return yesVariants[math.random(1, #yesVariants)]
+    end
+    
+    local function getRandomNo()
+        return noVariants[math.random(1, #noVariants)]
+    end
     
     local function showConfirmation()
+        local currentTitle = getRandomMemeTitle()
+        local currentYes = getRandomYes()
+        local currentNo = getRandomNo()
+        
         WindUI:Popup({
-            Title = "Delete All Saves",
+            Title = currentTitle,
             Icon = "trash",
             Content = string.format(
                 "This will permanently delete ALL %d save files!\n\n" ..
                 "This action cannot be undone.\n\n" ..
-                "Confirmation %d/%d - Click 'Yes' to proceed",
+                "Confirmation %d/%d - Click '" .. currentYes .. "' to proceed",
                 #saves,
                 confirmCount + 1,
                 maxConfirmations
             ),
             Buttons = {
                 {
-                    Title = "Yes",
+                    Title = currentYes,
                     Icon = "check",
                     Variant = "Danger",
                     Callback = function()
@@ -1162,7 +1227,7 @@ local function deleteAllSaves()
                             
                             if deletedCount > 0 then
                                 WindUI:Notify({
-                                    Title = "Save System",
+                                    Title = "Save System :c",
                                     Content = string.format(
                                         "Deleted %d/%d saves successfully!",
                                         deletedCount,
@@ -1190,14 +1255,14 @@ local function deleteAllSaves()
                     end
                 },
                 {
-                    Title = "No",
+                    Title = currentNo,
                     Icon = "x",
                     Variant = "Secondary",
                     Callback = function()
                         confirmCount = 0
                         WindUI:Notify({
                             Title = "Save System",
-                            Content = "Delete all saves cancelled",
+                            Content = "ofc u picked no XD",
                             Icon = "info",
                             Duration = 2
                         })
