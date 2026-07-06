@@ -6,13 +6,11 @@ local ClearCache = function()
     pathCache = {}
 end
 
--- Clear cache every frame
 local connection
 connection = RunService.Heartbeat:Connect(function()
     ClearCache()
 end)
 
--- Clean up the connection when the script stops
 lplr.CharacterAdded:Connect(function(character)
     ClearCache()
     local humanoid = character:WaitForChild("Humanoid")
@@ -42,7 +40,6 @@ local FindPath = function(endPosition)
     end
     local cacheKey = tostring(lplr.Character.HumanoidRootPart.Position) .. tostring(endPosition.Position)
     if pathCache[cacheKey] then
-        print("Using cached path")
         return pathCache[cacheKey].success, pathCache[cacheKey].waypoints, pathCache[cacheKey].path
     end
     
@@ -139,7 +136,6 @@ local MoveCharacter = function(endPosition)
     end
 end
 
--- Optional: Function to stop clearing cache
 local StopClearingCache = function()
     if connection then
         connection:Disconnect()
