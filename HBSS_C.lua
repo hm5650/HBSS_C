@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “I like meme RNGs” 
+           “Im da meme -RNG-est” 
                                            
                                - Gpssickle
 ]]
@@ -6382,7 +6382,6 @@ RunService.RenderStepped:Connect(function()
     aimbotUpdate()
     updateLineESP()
     hb()
-    UpdateQT()
 end)
 
 local function isMobileDevice()
@@ -7442,7 +7441,7 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
-
+task.wait(0.5)
 local rng = function()
     local m = {
         ":0",
@@ -7604,8 +7603,11 @@ local rng2 = function()
         "life never made lemons...",
         "01001000 01101001",
         "whoz dat",
+        "roblox is no longer robloz",
         "user :3",
         "water",
+        "GRAVEL-MAN",
+        "IM SKYLER WHITE, YO",
         "my diet is gravel",
         "6761694203602048",
         "ur definitely using delta cuz idk",
@@ -7633,6 +7635,7 @@ local rng2 = function()
        "rbxassetid://101513669346450",
        "rbxassetid://17748195478",
        "rbxassetid://17517499979",
+       "rbxassetid://119888856502065",
     }
     local bju3 = tinf3[math.random(1, #tinf3)]
     n({
