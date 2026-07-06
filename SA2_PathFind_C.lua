@@ -1,10 +1,18 @@
 local PathfindingService = game:GetService("PathfindingService")
 local lplr = game:GetService("Players").LocalPlayer
+local RunService = game:GetService("RunService")
 local pathCache = {}
 local ClearCache = function()
     pathCache = {}
 end
 
+-- Clear cache every frame
+local connection
+connection = RunService.Heartbeat:Connect(function()
+    ClearCache()
+end)
+
+-- Clean up the connection when the script stops
 lplr.CharacterAdded:Connect(function(character)
     ClearCache()
     local humanoid = character:WaitForChild("Humanoid")
@@ -131,10 +139,19 @@ local MoveCharacter = function(endPosition)
     end
 end
 
+-- Optional: Function to stop clearing cache
+local StopClearingCache = function()
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+end
+
 return {
     FindPath = FindPath,
     ShowPath = ShowPath,
     RemovePath = RemovePath,
     MoveCharacter = MoveCharacter,
-    ClearCache = ClearCache
+    ClearCache = ClearCache,
+    StopClearingCache = StopClearingCache
 }
