@@ -10,7 +10,7 @@ local GetMouseLocation = UserInputService.GetMouseLocation
 local RandomNew = Random.new()
 local cachedGun = nil
 local cachedGunCheck = 0
-local gobin = 0.5 -- s
+local gobin = 0 -- s
 local functions = {}
 
 functions.GetScreenPosition = function(Vector)
