@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “Im da meme -RNG-est” 
+           “shovel, shovel-est” 
                                            
                                - Gpssickle
 ]]
@@ -40,7 +40,6 @@ local PlayerGui = player:WaitForChild("PlayerGui")
 local localPlayer = Players.LocalPlayer
 local plrs = game:GetService("Players")
 local plr = plrs.LocalPlayer
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua"))()
@@ -181,6 +180,9 @@ n({
     BarColor = Color3.fromRGB(0, 170, 255)
 })
 end)
+local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua"))()
+local FindTool = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua"))()
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -435,8 +437,8 @@ local config = {
         aimbot360LoopTask = nil,
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
-        sa2thing = 0,
-        sa2stuff = 0.03,
+        sa2thing = 0.5,
+        sa2stuff = 0.05,
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -461,13 +463,14 @@ local btntitle = {
     "Gui size decreases",
     "dude",
     "yh",
+    "how graveling of u",
     "rock solid ui",
     "what",
     "version: idk",
     "D:",
     "unclose me NOW!!! D:",
     "just simply cheat through it",
-    "sand.cc",
+    "bowl",
     "gta 6 when?",
     "holy cow",
     "open4robuc",
@@ -777,15 +780,15 @@ local function givename()
         "Gravel.cc",
         "Gravel-est",
         "Gravel-er",
-        "Graaaavel",
-        "Shovel.cc",
+        "Graaaavel.cc",
+        "Gravelly.cc",
         "HBSS.lua",
         "Gravel.com",
-        "Hi! I'm Gravel!",
+        "Hi! I'm Gravel.cc",
         "Gravel enjoyer",
-        "GRAVEL",
-        "g r a v e l",
-        "GravelGravelGravel",
+        "GRAVEL.CC >:D",
+        "holy gravel.cc",
+        "GravelGravelGravel.cc",
         "G.cc",
         "I like gravel",
         "Gravel.cheatcheat",
@@ -2430,8 +2433,6 @@ function respawn(plr)
     end)
 end
 
-local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua"))()
-local FindTool = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua"))()
 local function hasForcefield(character)
     if not character then return false end
     
@@ -7421,7 +7422,6 @@ local function applyClientMaster(state)
 end
 
 -- ui neuron activation starter
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 math.randomseed(os.time())
 
 local Window = WindUI:CreateWindow({
@@ -7441,7 +7441,7 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
-task.wait(0.5)
+task.wait(0.2)
 local rng = function()
     local m = {
         ":0",
@@ -7649,7 +7649,7 @@ local rng2 = function()
 end
 rng2()
 Window:Tag({
-    Title = "YT: @gpssickle\n;3",
+    Title = "wowzerz it's a universal script :o",
     Icon = "github",
     Color = Color3.fromHex("#1c1c1c"),
     Border = true
