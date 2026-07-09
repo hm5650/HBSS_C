@@ -1,3 +1,4 @@
+repeat wait() until game:IsLoaded()
 local TweenService = game:GetService("TweenService")
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
