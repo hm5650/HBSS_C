@@ -10609,7 +10609,7 @@ MiscTab:Input({
         Title = "pop-up (pls ignore)",
         Desc = "it's the same pop-up that appears when da script loads",
         Callback = function()
-              nd()
+           rng()
             WindUI:Notify({
                 Title = "wat",
                 Content = "pop-up thingamasilly",
@@ -10618,7 +10618,32 @@ MiscTab:Input({
             })
         end
     })
-
+    MiscTab:Button({
+        Title = "notif (pls ignore)",
+        Desc = "it's the same annoying notif that appears when da script loads",
+        Callback = function()
+            rng2()
+            WindUI:Notify({
+                Title = "*notifys cutely*",
+                Content = "lolz",
+                Icon = "shovel",
+                Duration = 1
+            })
+        end
+    })
+    MiscTab:Button({
+        Title = "iwanttobanishthisspecificplayer (pls ignore)",
+        Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
+        Callback = function()
+           loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua"))()
+            WindUI:Notify({
+                Title = "insane gui name",
+                Content = "right???",
+                Icon = "shovel",
+                Duration = 1
+            })
+        end
+    })
 MiscTab:Toggle({
     Title = "Enable BHop",
     Desc = "Toggle bunny hop on/off",
