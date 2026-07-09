@@ -1,32 +1,5 @@
 local PathfindingService = game:GetService("PathfindingService")
 local lplr = game:GetService("Players").LocalPlayer
-local RunService = game:GetService("RunService")
-local pathCache = {}
-local ClearCache = function()
-    pathCache = {}
-end
-
-local connection
-connection = RunService.Heartbeat:Connect(function()
-    ClearCache()
-end)
-
-lplr.CharacterAdded:Connect(function(character)
-    ClearCache()
-    local humanoid = character:WaitForChild("Humanoid")
-    humanoid.Died:Connect(function()
-        ClearCache()
-    end)
-end)
-
-if lplr.Character then
-    local humanoid = lplr.Character:FindFirstChild("Humanoid")
-    if humanoid then
-        humanoid.Died:Connect(function()
-            ClearCache()
-        end)
-    end
-end
 
 local FindPath = function(endPosition)
     if not endPosition or not typeof(endPosition) == "CFrame" then
@@ -37,10 +10,6 @@ local FindPath = function(endPosition)
     if not lplr.Character or not lplr.Character.HumanoidRootPart then
         error("LocalPlayer character or HumanoidRootPart not found")
         return false, {}, nil
-    end
-    local cacheKey = tostring(lplr.Character.HumanoidRootPart.Position) .. tostring(endPosition.Position)
-    if pathCache[cacheKey] then
-        return pathCache[cacheKey].success, pathCache[cacheKey].waypoints, pathCache[cacheKey].path
     end
     
     local path = PathfindingService:CreatePath()
@@ -61,14 +30,7 @@ local FindPath = function(endPosition)
         waypoints = path:GetWaypoints()
     end
     
-    local result = {
-        success = pathStatus == Enum.PathStatus.Success,
-        waypoints = waypoints,
-        path = path
-    }
-    pathCache[cacheKey] = result
-    
-    return result.success, result.waypoints, result.path
+    return pathStatus == Enum.PathStatus.Success, waypoints, path
 end
 
 local ShowPath = function(endPosition)
@@ -136,18 +98,9 @@ local MoveCharacter = function(endPosition)
     end
 end
 
-local StopClearingCache = function()
-    if connection then
-        connection:Disconnect()
-        connection = nil
-    end
-end
-
 return {
     FindPath = FindPath,
     ShowPath = ShowPath,
     RemovePath = RemovePath,
-    MoveCharacter = MoveCharacter,
-    ClearCache = ClearCache,
-    StopClearingCache = StopClearingCache
+    MoveCharacter = MoveCharacter
 }
