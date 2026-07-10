@@ -42,8 +42,22 @@ local plrs = game:GetService("Players")
 local plr = plrs.LocalPlayer
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua"))()
-local Alurt = loadstring(game:HttpGet("https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua"))()
+local urls = {
+    --hbss
+    url1 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua",
+    url2 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua",
+    url3 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua",
+    --others
+    url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
+    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
+    url6 = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
+    url7 = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
+    url8 = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
+    url9 = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
+    url10 = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
+}
+loadstring(game:HttpGet(urls.url1))()
+local Alurt = loadstring(game:HttpGet(urls.url4))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
@@ -77,7 +91,7 @@ n({
 
 task.wait(2.30)
 pcall(function()
-loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
+loadstring(game:HttpGet(urls.url5))()
 local getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, lower, gsub, match = getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, string.lower, string.gsub, string.match
 if getgenv().ED_AntiKick then
     return
@@ -180,9 +194,9 @@ n({
     BarColor = Color3.fromRGB(0, 170, 255)
 })
 end)
-local func = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua"))()
-local FindTool = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua"))()
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local func = loadstring(game:HttpGet(urls.url2))()
+local FindTool = loadstring(game:HttpGet(urls.url3))()
+local WindUI = loadstring(game:HttpGet(urls.url6))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -2531,7 +2545,7 @@ local function ShouldTargetPlayer(targetPlayer)
     return false
 end
 
-local IsPlayerVisible = function(Player)
+local function IsPlayerVisible(Player)
     if not Player or not Player.Character then return false end
     local PlayerCharacter = Player.Character
     if not PlayerCharacter then return false end
@@ -2541,6 +2555,11 @@ local IsPlayerVisible = function(Player)
         or PlayerCharacter:FindFirstChild("Head")
     
     if not PlayerRoot then return false end
+    local cacheKey = tostring(Player) .. "_" .. tostring(PlayerRoot.Position)
+    local currentTime = tick()
+    if sa2this[cacheKey] ~= nil and (currentTime - config.SA2_isitthattime) < config.SA2_Wallcheck_dur then
+        return sa2this[cacheKey]
+    end
     local LocalPlayerCharacter = plr.Character
     if not LocalPlayerCharacter then return false end
     local localRoot = LocalPlayerCharacter:FindFirstChild("HumanoidRootPart") 
@@ -2549,15 +2568,6 @@ local IsPlayerVisible = function(Player)
     local origin = localRoot.Position
     local targetPos = PlayerRoot.Position
     local distance = (targetPos - origin).Magnitude
-    local maxRange = config.SA2_TargetRange or 1000
-    if distance > maxRange then
-        return false
-    end
-    local cacheKey = tostring(Player) .. "_" .. tostring(PlayerRoot.Position)
-    local currentTime = tick()
-    if sa2this[cacheKey] ~= nil and (currentTime - config.SA2_isitthattime) < config.SA2_Wallcheck_dur then
-        return sa2this[cacheKey]
-    end
     if distance < 0.01 then 
         sa2this[cacheKey] = true
         config.SA2_isitthattime = currentTime
@@ -2580,6 +2590,7 @@ local IsPlayerVisible = function(Player)
     
     return isVisible
 end
+
 local function ihatecache()
     sa2this = {}
     config.SA2_isitthattime = 0
@@ -7525,11 +7536,9 @@ local rng = function()
         "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
         "Did you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nDid you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nWhen I get home it better be clean!\nDid you do your chores?\nyessirski!\nOH! BOI WHY DID U LIE TO ME!!!\nAHHHHH",
         "Homework?\nNah!\nHomework?\nNah!\nHomework?\nNah!\nHomework?\ni did it at school\nNah!\nHomework?\nNah!\nHomework?\nNah!\nWHY ARE YOU CLASSES PHAILING\n AHHH D:",
-        "Turkey in the Straw!\nyummy IceCream",
-        "hhbsbbbbsnkej",
-        "🪏",
+        "Turkey in the Straw!",
         "du bist gut genug...\ndu bist gut genug...\ndu bist gut genug\ndu bist gut genug\n*fire music*",
-        "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat\n(yes it's looping the rooms)",
+        "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat",
         "*Stranger Things Intro*\ndustin lucas will mike...\nBURP",
         "robloz where classic faces :‹",
         "I'm not taking my sneakers off, I'm sneakers O'Toole",
@@ -10621,7 +10630,7 @@ MiscTab:Input({
         Title = "badapple (pls ignore)",
         Desc = "alt+f4",
         Callback = function()
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad"))()
+              loadstring(game:HttpGet(urls.url7))()
         end
     })
 
@@ -10629,7 +10638,7 @@ MiscTab:Input({
         Title = "bringparts (pls ignore)",
         Desc = "WHO FLUNGED ME1!!11!1 D:",
         Callback = function()
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua"))()
+              loadstring(game:HttpGet(urls.url8))()
         end
     })
 
@@ -10637,7 +10646,7 @@ MiscTab:Input({
         Title = "Brick.cc (pls ignore)",
         Desc = "I has da powa of unanchored (yes brick is back again :D!!1!1)",
         Callback = function()
-              loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua"))()
+              loadstring(game:HttpGet(urls.url9))()
         end
     })
 
@@ -10683,7 +10692,7 @@ MiscTab:Input({
         Title = "iwanttobanishthisspecificplayer (pls ignore)",
         Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
         Callback = function()
-           loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua"))()
+           loadstring(game:HttpGet(urls.url10))()
             WindUI:Notify({
                 Title = "insane gui name",
                 Content = "right???",
@@ -11254,11 +11263,6 @@ Note: sum features might not get saved properly D:
     InfoTab:Paragraph({
         Title = "Gravel (07/07/2026)",
         Desc = "Ignore forcefield now supports SilentAim (HK)",
-        Color = config.uicolor.darkGray
-    })
-    InfoTab:Paragraph({
-        Title = "Gravel (10/07/2026)",
-        Desc = "Fixed: Fixed sum lags (again)",
         Color = config.uicolor.darkGray
     })
 end
