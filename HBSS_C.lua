@@ -10979,7 +10979,7 @@ local InfoTab = Window:Tab({
     })
     InfoTab:Paragraph({
         Title = "Gravel; SRC",
-        Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source",
+        Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source... if ur using a snippet that came from gravel.... credit me or I cry :(",
         Color = config.uicolor.Black
     })
     InfoTab:Paragraph({
