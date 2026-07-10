@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “shovel, shovel-est” 
+           “gravel is da shovel, shovel-est” 
                                            
                                - Gpssickle
 ]]
@@ -198,6 +198,8 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local bhopConnection = nil
+local sa2this = {}
+local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
 local config = {
@@ -211,6 +213,8 @@ local config = {
     SA2_Method = "Raycast",
     SA2_TeamTarget = "Enemies",
     SA2_Wallcheck = false,
+    SA2_isitthattime = 0,
+    SA2_Wallcheck_dur = 0.15,
     SA2_TargetPart = "Head",
     SA2_HitChance = 100,
     SA2_FovRadius = 100,
@@ -224,7 +228,7 @@ local config = {
     SA2_currentTarget = nil,
     SA2_TArea = 35,
     SA2_TargetRange = 1000,
-    SA2_WallbangEnabled = false,
+    SA2_Wallbang = false,
     currentTarget = nil,
     espc = Color3.fromRGB(255, 182, 193),
     esptargetc = Color3.fromRGB(255, 255, 0),
@@ -430,6 +434,35 @@ local config = {
         tbotwallcheck = "Y",
     },
     varibz = {
+        btntitle = {
+            "hey y close me",
+            "Gui size decreases",
+            "dude",
+            "yh",
+            "how graveling of u",
+            "rock solid ui",
+            "what",
+            "version: idk",
+            "D:",
+            "unclose me NOW!!! D:",
+            "just simply cheat through it",
+            "bowl",
+            "gta 6 when?",
+            "holy cow",
+            "open4robuc",
+            "me want to be open",
+            "gravel is not sand",
+            "is gravel just sand",
+            "gl",
+            "not full ban-proof",
+            "bleh :p",
+            ":3",
+            ":o",
+            ";]",
+            "error code: 6967420",
+            "🥀💔✌️🫩",
+            "brochacho",
+        },
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -458,36 +491,7 @@ local config = {
         Black = Color3.fromRGB(0, 0, 0)
     }
 }
-local btntitle = {
-    "hey y close me",
-    "Gui size decreases",
-    "dude",
-    "yh",
-    "how graveling of u",
-    "rock solid ui",
-    "what",
-    "version: idk",
-    "D:",
-    "unclose me NOW!!! D:",
-    "just simply cheat through it",
-    "bowl",
-    "gta 6 when?",
-    "holy cow",
-    "open4robuc",
-    "me want to be open",
-    "gravel is not sand",
-    "is gravel just sand",
-    "gl",
-    "not full ban-proof",
-    "bleh :p",
-    ":3",
-    ":o",
-    ";]",
-    "error code: 6967420",
-    "🥀💔✌️🫩",
-    "brochacho",
-}
-local rng = btntitle[math.random(1, #btntitle)]
+local rng = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
 
 local function rng3(tabName)
     local descs = {
@@ -578,7 +582,7 @@ local function rng3(tabName)
         },
         ["SilentAim (HB)"] = {
             "hitbox x aimbot x silentaim x bullet tracker",
-            "randomnesss",
+            "Hitbox cousin",
             "SilentAim & Hitbox made a baby",
             "ssshhh its a secret",
             "unaim-ful",
@@ -691,7 +695,7 @@ local function givename()
         ["01 01"] = {
             "New Gravel.cc :>",
             "Happy new year!1!1!11",
-            "A new year, a same Gravel",
+            "A new year, a same Gravel.cc",
             "welcome 2 a new year buddy",
             "I haven't showered since last year- ok this one is overrated",
             "year of da shovel",
@@ -709,7 +713,8 @@ local function givename()
             "lucky shovel",
         },
         ["10 31"] = {
-            "spooky gravel",
+            "Gravel.cc :Q",
+            "Gravel.cc :F",
             "gravel go boo",
             "BOO (I definitely scared u)",
             "trick or gravel",
@@ -777,12 +782,12 @@ local function givename()
         return aprilFools[math.random(1, #aprilFools)]
     end
     local defaultTitles = {
-        "Gravel.cc",
+        "Gravel.cc", -- ts is da actual default 1 btw
         "Gravel-est",
         "Gravel-er",
         "Graaaavel.cc",
         "Gravelly.cc",
-        "HBSS.lua",
+        "HBSS.cc (real)",
         "Gravel.com",
         "Hi! I'm Gravel.cc",
         "Gravel enjoyer",
@@ -794,8 +799,8 @@ local function givename()
         "Gravel.cheatcheat",
         "Gravel.yes",
         "Gravel.no",
-        "Gravel",
-        "GRAVEL GRAVEL",
+        "Gravel.lua",
+        "GRAVEL GRAVEL.CC",
     }
     return defaultTitles[math.random(1, #defaultTitles)]
 end
@@ -981,7 +986,7 @@ function saveConfig(saveName)
             silentGetTarget = config.silentGetTarget,
             SA2_Enabled = config.SA2_Enabled,
             SA2_Wallcheck = config.SA2_Wallcheck,
-            SA2_WallbangEnabled = config.SA2_WallbangEnabled,
+            SA2_Wallbang = config.SA2_Wallbang,
             SA2_ThreeSixtyMode = config.SA2_ThreeSixtyMode,
             SA2_Method = config.SA2_Method,
             SA2_TargetPart = config.SA2_TargetPart,
@@ -1826,7 +1831,7 @@ function loadSave(saveName)
     if cfg.silentGetTarget then config.silentGetTarget = cfg.silentGetTarget end
     if cfg.SA2_Enabled ~= nil then config.SA2_Enabled = cfg.SA2_Enabled end
     if cfg.SA2_Wallcheck ~= nil then config.SA2_Wallcheck = cfg.SA2_Wallcheck end
-    if cfg.SA2_WallbangEnabled ~= nil then config.SA2_WallbangEnabled = cfg.SA2_WallbangEnabled end
+    if cfg.SA2_Wallbang ~= nil then config.SA2_Wallbang = cfg.SA2_Wallbang end
     if cfg.SA2_ThreeSixtyMode ~= nil then config.SA2_ThreeSixtyMode = cfg.SA2_ThreeSixtyMode end
     if cfg.SA2_Method then config.SA2_Method = cfg.SA2_Method end
     if cfg.SA2_TargetPart then config.SA2_TargetPart = cfg.SA2_TargetPart end
@@ -2527,16 +2532,57 @@ local function ShouldTargetPlayer(targetPlayer)
 end
 
 local IsPlayerVisible = function(Player)
+    if not Player or not Player.Character then return false end
     local PlayerCharacter = Player.Character
-    local LocalPlayerCharacter = plr.Character
-    if not (PlayerCharacter or LocalPlayerCharacter) then return end
-    local actualTargetPart = GetActualTargetPart()
-    local PlayerRoot = FindFirstChild(PlayerCharacter, actualTargetPart) or FindFirstChild(PlayerCharacter, "HumanoidRootPart")
-    if not PlayerRoot then return end
-    local CastPoints, IgnoreList = {PlayerRoot.Position, LocalPlayerCharacter, PlayerCharacter}, {LocalPlayerCharacter, PlayerCharacter}
-    local ObscuringObjects = #GetPartsObscuringTarget(Camera, CastPoints, IgnoreList)
+    if not PlayerCharacter then return false end
+    local actualTargetPart = config.SA2_TargetPart or "Head"
+    local PlayerRoot = PlayerCharacter:FindFirstChild(actualTargetPart) 
+        or PlayerCharacter:FindFirstChild("HumanoidRootPart") 
+        or PlayerCharacter:FindFirstChild("Head")
     
-    return ((ObscuringObjects == 0 and true) or (ObscuringObjects > 0 and false))
+    if not PlayerRoot then return false end
+    local LocalPlayerCharacter = plr.Character
+    if not LocalPlayerCharacter then return false end
+    local localRoot = LocalPlayerCharacter:FindFirstChild("HumanoidRootPart") 
+        or LocalPlayerCharacter:FindFirstChild("Head")
+    if not localRoot then return false end
+    local origin = localRoot.Position
+    local targetPos = PlayerRoot.Position
+    local distance = (targetPos - origin).Magnitude
+    local maxRange = config.SA2_TargetRange or 1000
+    if distance > maxRange then
+        return false
+    end
+    local cacheKey = tostring(Player) .. "_" .. tostring(PlayerRoot.Position)
+    local currentTime = tick()
+    if sa2this[cacheKey] ~= nil and (currentTime - config.SA2_isitthattime) < config.SA2_Wallcheck_dur then
+        return sa2this[cacheKey]
+    end
+    if distance < 0.01 then 
+        sa2this[cacheKey] = true
+        config.SA2_isitthattime = currentTime
+        return true 
+    end
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+    local ignoreList = {LocalPlayerCharacter}
+    for _, otherPlayer in ipairs(Players:GetPlayers()) do
+        if otherPlayer ~= Player and otherPlayer ~= plr and otherPlayer.Character then
+            table.insert(ignoreList, otherPlayer.Character)
+        end
+    end
+    table.insert(ignoreList, PlayerCharacter)
+    rayParams.FilterDescendantsInstances = ignoreList
+    local result = workspace:Raycast(origin, (targetPos - origin), rayParams)
+    local isVisible = result == nil
+    sa2this[cacheKey] = isVisible
+    config.SA2_isitthattime = currentTime
+    
+    return isVisible
+end
+local function ihatecache()
+    sa2this = {}
+    config.SA2_isitthattime = 0
 end
 
 local function syncSilentAimWithMaster()
@@ -3050,7 +3096,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         
         config.SA2_FovIsTargeted = true
         
-        if config.SA2_WallbangEnabled then
+        if config.SA2_Wallbang then
             if Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRayWithWhitelist" then
                 local A_Ray = Arguments[2]
                 local Origin = A_Ray.Origin
@@ -7479,9 +7525,11 @@ local rng = function()
         "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
         "Did you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nDid you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nWhen I get home it better be clean!\nDid you do your chores?\nyessirski!\nOH! BOI WHY DID U LIE TO ME!!!\nAHHHHH",
         "Homework?\nNah!\nHomework?\nNah!\nHomework?\nNah!\nHomework?\ni did it at school\nNah!\nHomework?\nNah!\nHomework?\nNah!\nWHY ARE YOU CLASSES PHAILING\n AHHH D:",
-        "Turkey in the Straw!",
+        "Turkey in the Straw!\nyummy IceCream",
+        "hhbsbbbbsnkej",
+        "🪏",
         "du bist gut genug...\ndu bist gut genug...\ndu bist gut genug\ndu bist gut genug\n*fire music*",
-        "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat",
+        "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat\n(yes it's looping the rooms)",
         "*Stranger Things Intro*\ndustin lucas will mike...\nBURP",
         "robloz where classic faces :‹",
         "I'm not taking my sneakers off, I'm sneakers O'Toole",
@@ -7525,7 +7573,7 @@ local rng = function()
         "tbh bro I'd go; [insert metalpipefalling.gif]",
         "gravel vs sand vs rock vs thingamajang",
         "GTA 6 when?",
-        "w wedgey 🥺",
+        "w wedgeey 🥺\nw junglescripts 🥺",
         "sand.cc when?",
         "what version is this? well I don't fking know lol",
         "scirpotjg iz hard :(",
@@ -9441,14 +9489,14 @@ local SilentAimTab2 = Window:Tab({
     })
     
     SilentAimTab2:Toggle({
-        Title = "Wallbang",
+        Title = "WallBang",
         Desc = "Shoot through walls",
-        Value = config.SA2_WallbangEnabled or false,
+        Value = config.SA2_Wallbang or false,
         Callback = function(v)
-            config.SA2_WallbangEnabled = v
+            config.SA2_Wallbang = v
             if v then
                 n({
-                    Title = "Wallbang",
+                    Title = "WallBang",
                     Content = "Enabled - Will shoot through walls",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -9457,7 +9505,7 @@ local SilentAimTab2 = Window:Tab({
                 })
             else
                 n({
-                    Title = "Wallbang",
+                    Title = "WallBang",
                     Content = "Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -11090,8 +11138,18 @@ Note: sum features might not get saved properly D:
     })
     
     InfoTab:Paragraph({
-        Title = "Gravel",
-        Desc = "UI: WindUI\nNotification: Alurt",
+        Title = "Gravel: UI",
+        Desc = "UI: WindUI (Footagesus)\nNotification: Alurt (Zwolf)\nand the other guy",
+        Color = config.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel: AntiKick",
+        Desc = "AntiKick: Pixeluted (I think...)",
+        Color = config.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel: Math",
+        Desc = "Mathematicalmatics: my teacher & the other other guy",
         Color = config.uicolor.darkGray
     })
     InfoTab:Space()
@@ -11196,6 +11254,11 @@ Note: sum features might not get saved properly D:
     InfoTab:Paragraph({
         Title = "Gravel (07/07/2026)",
         Desc = "Ignore forcefield now supports SilentAim (HK)",
+        Color = config.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (10/07/2026)",
+        Desc = "Fixed: Fixed sum lags (again)",
         Color = config.uicolor.darkGray
     })
 end
@@ -11632,10 +11695,12 @@ local function init()
     config.varibz.lowpatcher = false
     getgenv().ED_AntiKickEnabled = false
     getgenv().ED_AntiKickCheckCaller = false
-    task.wait(0.5)
+    task.wait(0.40)
     config.varibz.lowpatcher = true
     getgenv().ED_AntiKickEnabled = true
     getgenv().ED_AntiKickCheckCaller = true
+    print("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33")
+    print("01000111 01110000 01110011 73 69 63 6B 6C 65")
 end
 function cleanup()
     pcall(function()
@@ -11758,6 +11823,13 @@ local LowRender = function()
 end
 
 task.spawn(function()
+    while true do
+        task.wait(1)
+        ihatecache()
+    end
+end)
+
+task.spawn(function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
         local localPlayer = game.Players.LocalPlayer
@@ -11817,7 +11889,6 @@ task.spawn(function()
         task.wait(config.varibz.patcherwait)
     end
 end)
-
 init()
 return config
 -- fin
