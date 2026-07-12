@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “gravel is da shovel, shovel-est” 
+           “gravel annoys raycats” 
                                            
                                - Gpssickle
 ]]
@@ -227,8 +227,6 @@ local config = {
     SA2_Method = "Raycast",
     SA2_TeamTarget = "Enemies",
     SA2_Wallcheck = false,
-    SA2_isitthattime = 0,
-    SA2_Wallcheck_dur = 0.15,
     SA2_TargetPart = "Head",
     SA2_HitChance = 100,
     SA2_FovRadius = 100,
@@ -2544,56 +2542,33 @@ local function ShouldTargetPlayer(targetPlayer)
     
     return false
 end
-
-local function IsPlayerVisible(Player)
-    if not Player or not Player.Character then return false end
+local IsPlayerVisible = function(Player)
     local PlayerCharacter = Player.Character
-    if not PlayerCharacter then return false end
-    local actualTargetPart = config.SA2_TargetPart or "Head"
-    local PlayerRoot = PlayerCharacter:FindFirstChild(actualTargetPart) 
-        or PlayerCharacter:FindFirstChild("HumanoidRootPart") 
-        or PlayerCharacter:FindFirstChild("Head")
-    
-    if not PlayerRoot then return false end
-    local cacheKey = tostring(Player) .. "_" .. tostring(PlayerRoot.Position)
-    local currentTime = tick()
-    if sa2this[cacheKey] ~= nil and (currentTime - config.SA2_isitthattime) < config.SA2_Wallcheck_dur then
-        return sa2this[cacheKey]
-    end
     local LocalPlayerCharacter = plr.Character
-    if not LocalPlayerCharacter then return false end
-    local localRoot = LocalPlayerCharacter:FindFirstChild("HumanoidRootPart") 
-        or LocalPlayerCharacter:FindFirstChild("Head")
-    if not localRoot then return false end
-    local origin = localRoot.Position
-    local targetPos = PlayerRoot.Position
-    local distance = (targetPos - origin).Magnitude
-    if distance < 0.01 then 
-        sa2this[cacheKey] = true
-        config.SA2_isitthattime = currentTime
-        return true 
-    end
-    local rayParams = RaycastParams.new()
-    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
-    local ignoreList = {LocalPlayerCharacter}
-    for _, otherPlayer in ipairs(Players:GetPlayers()) do
-        if otherPlayer ~= Player and otherPlayer ~= plr and otherPlayer.Character then
-            table.insert(ignoreList, otherPlayer.Character)
-        end
-    end
-    table.insert(ignoreList, PlayerCharacter)
-    rayParams.FilterDescendantsInstances = ignoreList
-    local result = workspace:Raycast(origin, (targetPos - origin), rayParams)
-    local isVisible = result == nil
-    sa2this[cacheKey] = isVisible
-    config.SA2_isitthattime = currentTime
+    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
     
-    return isVisible
-end
-
-local function ihatecache()
-    sa2this = {}
-    config.SA2_isitthattime = 0
+    local actualTargetPart = GetActualTargetPart()
+    local PlayerRoot = FindFirstChild(PlayerCharacter, actualTargetPart) or FindFirstChild(PlayerCharacter, "HumanoidRootPart")
+    if not PlayerRoot then return false end
+    local LocalRoot = FindFirstChild(LocalPlayerCharacter, "Head") or FindFirstChild(LocalPlayerCharacter, "HumanoidRootPart")
+    if not LocalRoot then return false end
+    local origin = LocalRoot.Position
+    local targetPos = PlayerRoot.Position
+    local direction = (targetPos - origin).Unit
+    local distance = (targetPos - origin).Magnitude
+    local params = RaycastParams.new()
+    params.FilterType = Enum.RaycastFilterType.Blacklist
+    params.FilterDescendantsInstances = {LocalPlayerCharacter, PlayerCharacter}
+    local result = workspace:Raycast(origin, direction * distance, params)
+    if not result then
+        return true
+    end
+    local hitParent = result.Instance.Parent
+    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
+        return true
+    end
+    
+    return false
 end
 
 local function syncSilentAimWithMaster()
@@ -2961,31 +2936,7 @@ local function GetClosestPlayer()
 end
 
 local ExpectedArguments = {
-    FindPartOnRayWithIgnoreList = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean", "boolean"
-        }
-    },
-    FindPartOnRayWithWhitelist = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean"
-        }
-    },
-    FindPartOnRay = {
-        ArgCountRequired = 2,
-        Args = {
-            "Instance", "Ray", "Instance", "boolean", "boolean"
-        }
-    },
     Raycast = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Vector3", "Vector3", "RaycastParams"
-        }
-    },
-    Cast = {
         ArgCountRequired = 3,
         Args = {
             "Instance", "Vector3", "Vector3", "RaycastParams"
@@ -3018,46 +2969,6 @@ if OldIndex then
     hookmetamethod(game, "__index", OldIndex)
     OldIndex = nil
 end
-
-local function validate_args(Args, RayMethod)
-    local Matches = 0
-    if #Args < RayMethod.ArgCountRequired then
-        return false
-    end
-    for Pos, Argument in next, Args do
-        if typeof(Argument) == RayMethod.Args[Pos] then
-            Matches = Matches + 1
-        end
-    end
-    return Matches >= RayMethod.ArgCountRequired
-end
-
-local ExpectedArguments = {
-    FindPartOnRayWithIgnoreList = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean", "boolean"
-        }
-    },
-    FindPartOnRayWithWhitelist = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean"
-        }
-    },
-    FindPartOnRay = {
-        ArgCountRequired = 2,
-        Args = {
-            "Instance", "Ray", "Instance", "boolean", "boolean"
-        }
-    },
-    Raycast = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Vector3", "Vector3", "RaycastParams"
-        }
-    }
-}
 
 RunService.RenderStepped:Connect(function()
     local now = tick()
@@ -3108,14 +3019,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         config.SA2_FovIsTargeted = true
         
         if config.SA2_Wallbang then
-            if Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRayWithWhitelist" then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Distance = A_Ray.Direction.Magnitude
-                local hitPosition = HitPart.Position
-                local normal = (hitPosition - Origin).Unit
-                local material = HitPart.Material
-            elseif Method == "Raycast" then
+            if Method == "Raycast" then
                 local hitPosition = HitPart.Position
                 local normal = (hitPosition - Arguments[2]).Unit
                 
@@ -3131,8 +3035,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         end
         
         if config.SA2_Method == "All" then
-            if Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRayWithWhitelist" or 
-               Method == "FindPartOnRay" or Method == "findPartOnRay" or Method == "Raycast" then
+            if Method == "Raycast" then
                 local A_Origin = Arguments[2].Origin or Arguments[2]
                 local Direction = func.Direction(A_Origin, HitPart.Position)
                 if Method == "Raycast" then
@@ -3143,32 +3046,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
                 return OldNamecall(unpack(Arguments))
             end
         end
-        
-        if Method == "FindPartOnRayWithIgnoreList" and config.SA2_Method == "FindPartOnRayWithIgnoreList" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithIgnoreList) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif Method == "FindPartOnRayWithWhitelist" and config.SA2_Method == "FindPartOnRayWithWhitelist" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithWhitelist) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRay) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif Method == "Raycast" and config.SA2_Method == "Raycast" then
+        if Method == "Raycast" and config.SA2_Method == "Raycast" then
             if validate_args(Arguments, ExpectedArguments.Raycast) then
                 local A_Origin = Arguments[2]
                 Arguments[3] = func.Direction(A_Origin, HitPart.Position)
@@ -9506,7 +9384,7 @@ local SilentAimTab2 = Window:Tab({
             if v then
                 n({
                     Title = "WallBang",
-                    Content = "Enabled - Will shoot through walls",
+                    Content = "Enabled Will shoot through walls",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -9537,7 +9415,7 @@ local SilentAimTab2 = Window:Tab({
     SilentAimTab2:Dropdown({
         Title = "Aim Method",
         Desc = "Raycast method to hook",
-        Values = {"Raycast", "Cast", "FindPartOnRay", "FindPartOnRayWithWhitelist", "FindPartOnRayWithIgnoreList", "Mouse.Hit", "All"},
+        Values = {"Raycast", "Mouse.Hit", "All"},
         Value = config.SA2_Method or "Raycast",
         Multi = false,
         Callback = function(choice)
@@ -11696,10 +11574,12 @@ local function init()
     end)
     RunService:BindToRenderStep("FOVhbUpdater_Modern", Enum.RenderPriority.First.Value, onRenderStep)
     task.wait(1)
+    config.SA2_Wallbang = true
     config.varibz.lowpatcher = false
     getgenv().ED_AntiKickEnabled = false
     getgenv().ED_AntiKickCheckCaller = false
     task.wait(0.40)
+    config.SA2_Wallbang = false
     config.varibz.lowpatcher = true
     getgenv().ED_AntiKickEnabled = true
     getgenv().ED_AntiKickCheckCaller = true
@@ -11825,13 +11705,6 @@ local LowRender = function()
         end)
     end
 end
-
-task.spawn(function()
-    while true do
-        task.wait(1)
-        ihatecache()
-    end
-end)
 
 task.spawn(function()
     local lastRespawnTime = os.clock()
