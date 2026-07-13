@@ -483,8 +483,8 @@ local config = {
         aimbot360LoopTask = nil,
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
-        sa2thing = 0.5,
-        sa2stuff = 0.05,
+        sa2thing = 0,
+        sa2stuff = 0.50,
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -2135,7 +2135,7 @@ function loadSave(saveName)
                 
                 Camera.CameraType = Enum.CameraType.Scriptable
                 
-                config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
+                config.varibz.ViewConnection = RunService.Renderstepped:Connect(function()
                     if not config.Viewing then
                         return
                     end
@@ -2937,6 +2937,24 @@ local function GetClosestPlayer()
 end
 
 local ExpectedArguments = {
+    FindPartOnRayWithIgnoreList = {
+        ArgCountRequired = 3,
+        Args = {
+            "Instance", "Ray", "table", "boolean", "boolean"
+        }
+    },
+    FindPartOnRayWithWhitelist = {
+        ArgCountRequired = 3,
+        Args = {
+            "Instance", "Ray", "table", "boolean"
+        }
+    },
+    FindPartOnRay = {
+        ArgCountRequired = 2,
+        Args = {
+            "Instance", "Ray", "Instance", "boolean", "boolean"
+        }
+    },
     Raycast = {
         ArgCountRequired = 3,
         Args = {
@@ -2971,10 +2989,11 @@ if OldIndex then
     OldIndex = nil
 end
 
-RunService.RenderStepped:Connect(function()
-    local now = tick()
-    if now - config.varibz.sa2thing >= config.varibz.sa2stuff then
-        config.varibz.sa2thing = now
+RunService.Heartbeat:Connect(function(deltaTime)
+    config.varibz.sa2thing += deltaTime
+    
+    if config.varibz.sa2thing >= config.varibz.sa2stuff then
+        config.varibz.sa2thing = 0
         if config.SA2_Enabled then
             cachedTarget = GetClosestPlayer()
         end
@@ -3019,8 +3038,15 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         
         config.SA2_FovIsTargeted = true
         
-        if config.SA2_Wallbang then
-            if Method == "Raycast" then
+        if config.SA2_WallbangEnabled then
+            if Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRayWithWhitelist" then
+                local A_Ray = Arguments[2]
+                local Origin = A_Ray.Origin
+                local Distance = A_Ray.Direction.Magnitude
+                local hitPosition = HitPart.Position
+                local normal = (hitPosition - Origin).Unit
+                local material = HitPart.Material
+            elseif Method == "Raycast" then
                 local hitPosition = HitPart.Position
                 local normal = (hitPosition - Arguments[2]).Unit
                 
@@ -3035,19 +3061,31 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             end
         end
         
-        if config.SA2_Method == "All" then
-            if Method == "Raycast" then
-                local A_Origin = Arguments[2].Origin or Arguments[2]
-                local Direction = func.Direction(A_Origin, HitPart.Position)
-                if Method == "Raycast" then
-                    Arguments[3] = Direction
-                else
-                    Arguments[2] = Ray.new(A_Origin, Direction)
-                end
+        if Method == "FindPartOnRayWithIgnoreList" and config.SA2_Method == "FindPartOnRayWithIgnoreList" then
+            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithIgnoreList) then
+                local A_Ray = Arguments[2]
+                local Origin = A_Ray.Origin
+                local Direction = func.Direction(Origin, HitPart.Position)
+                Arguments[2] = Ray.new(Origin, Direction)
                 return OldNamecall(unpack(Arguments))
             end
-        end
-        if Method == "Raycast" and config.SA2_Method == "Raycast" then
+        elseif Method == "FindPartOnRayWithWhitelist" and config.SA2_Method == "FindPartOnRayWithWhitelist" then
+            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithWhitelist) then
+                local A_Ray = Arguments[2]
+                local Origin = A_Ray.Origin
+                local Direction = func.Direction(Origin, HitPart.Position)
+                Arguments[2] = Ray.new(Origin, Direction)
+                return OldNamecall(unpack(Arguments))
+            end
+        elseif (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
+            if validate_args(Arguments, ExpectedArguments.FindPartOnRay) then
+                local A_Ray = Arguments[2]
+                local Origin = A_Ray.Origin
+                local Direction = func.Direction(Origin, HitPart.Position)
+                Arguments[2] = Ray.new(Origin, Direction)
+                return OldNamecall(unpack(Arguments))
+            end
+        elseif Method == "Raycast" and config.SA2_Method == "Raycast" then
             if validate_args(Arguments, ExpectedArguments.Raycast) then
                 local A_Origin = Arguments[2]
                 Arguments[3] = func.Direction(A_Origin, HitPart.Position)
@@ -3059,6 +3097,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     return OldNamecall(...)
 end))
 end)
+
 
 pcall(function()
 local OldIndex
@@ -3128,7 +3167,7 @@ UIStroke.Thickness = 1
 UIStroke.Transparency = 1 - config.SA2_FovTransparency
 UIStroke.Parent = CircleFrame
 
-RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function()
     local viewportSize = Camera.ViewportSize
     if viewportSize.X == 0 then return end
     
@@ -3506,7 +3545,7 @@ local function applyESPMaster(state)
     updateESPColors()
 end
 
-RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function()
     local currentTime = tick()
     if currentTime - config.varibz.lastTargetUpdate > 0.6 then
         config.varibz.lastTargetUpdate = currentTime
@@ -4819,7 +4858,7 @@ local function makeesp(targetPlayer)
             pcall(function() config.espData[targetPlayer].connection:Disconnect() end)
         end
         
-        local conn = RunService.RenderStepped:Connect(function()
+        local conn = RunService.Heartbeat:Connect(function()
             local tchar = getTargetCharacter(targetPlayer)
             local charExists = tchar and tchar.Parent
             
@@ -6223,7 +6262,7 @@ local function toggleTriggerBot(state)
     if state then
         createTriggerBotFOV()
         if not config.varibz.triggerBotConnection then
-            config.varibz.triggerBotConnection = RunService.RenderStepped:Connect(triggerBotUpdate)
+            config.varibz.triggerBotConnection = RunService.Heartbeat:Connect(triggerBotUpdate)
         end
     else
         if config.tbot.fovCircle and config.tbot.fovCircle.ScreenGui then
@@ -6481,13 +6520,11 @@ local function updateBHopQuickToggle()
 end
 
 -- bk
-RunService.Heartbeat:Connect(hb)
-RunService.RenderStepped:Connect(aimbotUpdate)
-RunService.Heartbeat:Connect(antiAimUpdate)
-RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function(deltaTime)
     aimbotUpdate()
     updateLineESP()
     hb()
+    antiAimUpdate()
 end)
 
 local function isMobileDevice()
@@ -7578,6 +7615,7 @@ local rng = function()
         "flatgrass",
         "search free robux to get free robux",
         "alt-f4 = free rboux",
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.\n>\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
         "^_^",
         "half life 3 when?",
         "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
@@ -9606,7 +9644,7 @@ local SilentAimTab2 = Window:Tab({
     SilentAimTab2:Dropdown({
         Title = "Aim Method",
         Desc = "Raycast method to hook",
-        Values = {"Raycast", "Mouse.Hit", "All"},
+        Values = {"Raycast", "FindPartOnRay", "FindPartOnRayWithIgnoreList", "FindPartOnRayWithWhitelist", "Mouse.Hit"},
         Value = config.SA2_Method or "Raycast",
         Multi = false,
         Callback = function(choice)
@@ -10831,7 +10869,7 @@ MiscTab:Toggle({
     })
 MiscTab:Toggle({
     Title = "Cframe View",
-    Desc = "view randos with cframe camera & kill em >:]",
+    Desc = "view randos with cframe view & kill em >:]",
     Value = config.wallc or false,
     Callback = function(v)
         local Players = game:GetService("Players")
@@ -10850,6 +10888,7 @@ MiscTab:Toggle({
             Camera.CameraType = Enum.CameraType.Custom
             return
         end
+
         local function isEnemy(player)
             if not player or player == Players.LocalPlayer then return false end
             local localTeam = Players.LocalPlayer.Team
@@ -10870,6 +10909,7 @@ MiscTab:Toggle({
             end
             return true
         end
+
         local function isNPCEnemy(model)
             if not model or not model:IsA("Model") then return false end
             if Players:GetPlayerFromCharacter(model) then return false end
@@ -10900,12 +10940,20 @@ MiscTab:Toggle({
             return true
         end
 
-        local function GetRandomTarget()
-            local Valid = {}
+        local function GetNearestTarget()
+            local localPlayer = Players.LocalPlayer
+            local localChar = localPlayer.Character
+            if not localChar then return nil end
+            
+            local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
+            if not localRoot then return nil end
+            
+            local nearestTarget = nil
+            local nearestDistance = math.huge
             local masterTarget = config.masterTarget or "Players"
             if masterTarget == "Players" or masterTarget == "Both" then
                 for _, plr in ipairs(Players:GetPlayers()) do
-                    if plr ~= Players.LocalPlayer
+                    if plr ~= localPlayer
                         and plr.Character
                         and plr.Character:FindFirstChild("HumanoidRootPart")
                         and isEnemy(plr)
@@ -10913,11 +10961,18 @@ MiscTab:Toggle({
                         local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
                         if humanoid and humanoid.Health > 0 then
                             if not config.ignoreForcefield or not hasForcefield(plr.Character) then
-                                table.insert(Valid, {
-                                    type = "player",
-                                    instance = plr,
-                                    character = plr.Character
-                                })
+                                local targetRoot = plr.Character:FindFirstChild("HumanoidRootPart")
+                                if targetRoot then
+                                    local distance = (localRoot.Position - targetRoot.Position).Magnitude
+                                    if distance < nearestDistance then
+                                        nearestDistance = distance
+                                        nearestTarget = {
+                                            type = "player",
+                                            instance = plr,
+                                            character = plr.Character
+                                        }
+                                    end
+                                end
                             end
                         end
                     end
@@ -10931,12 +10986,16 @@ MiscTab:Toggle({
                             local humanoid = obj:FindFirstChildOfClass("Humanoid")
                             if humanoid and humanoid.Health > 0 then
                                 if not config.ignoreForcefield or not hasForcefield(obj) then
-                                    table.insert(Valid, {
-                                        type = "npc",
-                                        instance = obj,
-                                        character = obj,
-                                        rootPart = rootPart
-                                    })
+                                    local distance = (localRoot.Position - rootPart.Position).Magnitude
+                                    if distance < nearestDistance then
+                                        nearestDistance = distance
+                                        nearestTarget = {
+                                            type = "npc",
+                                            instance = obj,
+                                            character = obj,
+                                            rootPart = rootPart
+                                        }
+                                    end
                                 end
                             end
                         end
@@ -10944,14 +11003,30 @@ MiscTab:Toggle({
                 end
             end
 
-            return #Valid > 0 and Valid[math.random(1, #Valid)] or nil
+            return nearestTarget
+        end
+        
+        local function FindTargetWithLoop(maxAttempts)
+            local attempts = 0
+            local target = nil
+            
+            while attempts < (maxAttempts or 50) do
+                target = GetNearestTarget()
+                if target then
+                    return target
+                end
+                attempts = attempts + 1
+                task.wait(0.1)
+            end
+            
+            return nil
         end
 
-        local Target = GetRandomTarget()
+        local Target = FindTargetWithLoop(30)
         if not Target then
             WindUI:Notify({
                 Title = "Cframe View",
-                Content = "No valid targets found!",
+                Content = "where da people",
                 Icon = "x",
                 Duration = 2
             })
@@ -10959,11 +11034,13 @@ MiscTab:Toggle({
         end
 
         Camera.CameraType = Enum.CameraType.Scriptable
+        local retryCounter = 0
 
         config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
             if not config.Viewing then
                 return
             end
+            
             local isValid = false
             if Target.type == "player" then
                 isValid = Target.instance 
@@ -10980,21 +11057,24 @@ MiscTab:Toggle({
                     and Target.instance:FindFirstChildOfClass("Humanoid") 
                     and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
             end
-
             if not isValid then
-                Target = GetRandomTarget()
-                if not Target then
-                    config.Viewing = false
-                    Camera.CameraType = Enum.CameraType.Custom
-                    WindUI:Notify({
-                        Title = "Cframe View",
-                        Content = "No more targets available",
-                        Icon = "x",
-                        Duration = 2
-                    })
+                retryCounter = retryCounter + 1
+                local newTarget = FindTargetWithLoop(20)
+                
+                if newTarget then
+                    Target = newTarget
+                    retryCounter = 0
                     return
                 end
+                if retryCounter > 100000 then
+                    config.Viewing = false
+                    Camera.CameraType = Enum.CameraType.Custom
+                    return
+                end
+                task.wait(0.1)
                 return
+            else
+                retryCounter = 0
             end
 
             local HRP = nil
@@ -11005,12 +11085,6 @@ MiscTab:Toggle({
             end
             
             if not HRP then
-                Target = GetRandomTarget()
-                if not Target then
-                    config.Viewing = false
-                    Camera.CameraType = Enum.CameraType.Custom
-                    return
-                end
                 return
             end
 
@@ -11337,6 +11411,11 @@ Note: sum features might not get saved properly D:
     InfoTab:Paragraph({
         Title = "Gravel (13/07/2026)",
         Desc = "Desync is back :>\nits in the AntiAim Tab!",
+        Color = config.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (14/07/2026)",
+        Desc = "Other bug fixes that I didn't count",
         Color = config.uicolor.darkGray
     })
 end
