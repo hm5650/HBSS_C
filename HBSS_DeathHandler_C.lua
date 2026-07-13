@@ -1,7 +1,11 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local lol = true
+
 local function handle(player)
+    if player == LocalPlayer then
+        return
+    end
     local function onCharacterAdded(character)
         local humanoid = character:WaitForChild("Humanoid")
         humanoid.Died:Connect(function()
@@ -19,6 +23,7 @@ local function handle(player)
             end
         end)
     end
+    
     if player.Character then
         onCharacterAdded(player.Character)
     end
