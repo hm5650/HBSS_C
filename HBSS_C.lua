@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “gravel annoys raycats” 
+           “shoev” 
                                            
                                - Gpssickle
 ]]
@@ -216,6 +216,7 @@ local sa2this = {}
 local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
+-- I'm not gonna explain each variable U have to know allat
 local config = {
     startsa = false,
     fovsize = 120,
@@ -3185,38 +3186,207 @@ game:GetService('Players').LocalPlayer.Idled:Connect(function()
     end
 end)
 
-local function nextgenrep(state)
-    config.nextGenRepDesiredState = state
+local function ineednextgenrep(state)
     if state then
-        if config.antiAimEnabled then return end
-        if config.nextGenRepEnabled then return end
+        local char = LocalPlayer.Character
+        if not char then 
+            WindUI:Notify({
+                Title = "Desync",
+                Content = "folk where r u",
+                Icon = "x",
+                Duration = 2
+            })
+            return false
+        end
         
-        config.nextGenRepEnabled = true
+        local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+        local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
         
-        task.spawn(function()
-            while config.nextGenRepDesiredState do
-                setfflag("NextGenReplicatorEnabledWrite4", "false")
-                task.wait(0.1)
-                setfflag("NextGenReplicatorEnabledWrite4", "true")
-                task.wait(0.5) 
+        if not root or not torso then
+            WindUI:Notify({
+                Title = "Desync",
+                Content = "Missing body parts :/",
+                Icon = "x",
+                Duration = 2
+            })
+            return false
+        end
+        config.desyncSavedCFrame = root.CFrame
+        local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 50000, root.Position.Z)
+        config.desyncHiddenPos = hiddenPos
+        char:MoveTo(hiddenPos)
+        task.wait()
+        config.desyncSeat = Instance.new("Seat")
+        config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+        config.desyncSeat.Anchored = false
+        config.desyncSeat.CanCollide = false
+        config.desyncSeat.Transparency = 1
+        config.desyncSeat.Size = Vector3.new(2, 1, 1)
+        config.desyncSeat.Position = hiddenPos
+        config.desyncSeat.Parent = workspace
+        config.desyncWeld = Instance.new("Weld")
+        config.desyncWeld.Name = "DesyncWeld"
+        config.desyncWeld.Part0 = config.desyncSeat
+        config.desyncWeld.Part1 = torso
+        config.desyncWeld.Parent = config.desyncSeat
+        task.wait()
+        config.desyncSeat.CFrame = config.desyncSavedCFrame
+        local trans = config.desyncTransparency or 0.5
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") or part:IsA("Decal") then
+                pcall(function() part.Transparency = trans end)
             end
-            setfflag("NextGenReplicatorEnabledWrite4", "false")
-            config.nextGenRepEnabled = false
+        end
+        if config.desyncLoop then
+            config.desyncLoop:Disconnect()
+        end
+        config.desyncLoop = RunService.Heartbeat:Connect(function()
+            if not config.desyncActive then return end
+            if config.desyncSeat and config.desyncSeat.Parent then
+                local c = LocalPlayer.Character
+                if c then
+                    for _, part in pairs(c:GetDescendants()) do
+                        if part:IsA("BasePart") or part:IsA("Decal") then
+                            if part.Transparency < (config.desyncTransparency or 0.5) - 0.05 then
+                                pcall(function() part.Transparency = config.desyncTransparency or 0.5 end)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+        if config.desyncCleanupLoop then
+            config.desyncCleanupLoop:Disconnect()
+        end
+        config.desyncCleanupLoop = task.spawn(function()
+            while config.desyncActive do
+                task.wait(0.5)
+                if config.desyncActive and (not config.desyncSeat or not config.desyncSeat.Parent) then
+                    local char = LocalPlayer.Character
+                    if not char then continue end
+                    local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+                    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+                    if not root or not torso then continue end
+                    
+                    config.desyncSeat = Instance.new("Seat")
+                    config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+                    config.desyncSeat.Anchored = false
+                    config.desyncSeat.CanCollide = false
+                    config.desyncSeat.Transparency = 1
+                    config.desyncSeat.Size = Vector3.new(2, 1, 1)
+                    config.desyncSeat.Position = config.desyncHiddenPos or Vector3.new(0, 100000, 0)
+                    config.desyncSeat.Parent = workspace
+                    
+                    config.desyncWeld = Instance.new("Weld")
+                    config.desyncWeld.Name = "DesyncWeld"
+                    config.desyncWeld.Part0 = config.desyncSeat
+                    config.desyncWeld.Part1 = torso
+                    config.desyncWeld.Parent = config.desyncSeat
+                    
+                    task.wait()
+                    config.desyncSeat.CFrame = root.CFrame
+                end
+            end
         end)
         
+        config.desyncActive = true
+        return true
+        
     else
-        config.nextGenRepDesiredState = false
+        local char = LocalPlayer.Character
+        local currentVisualPos = nil
+        if char then
+            local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+            if root then
+                currentVisualPos = root.CFrame
+            end
+        end
+        if config.desyncLoop then
+            config.desyncLoop:Disconnect()
+            config.desyncLoop = nil
+        end
+        
+        if config.desyncCleanupLoop then
+            config.desyncCleanupLoop = nil
+        end
+        if config.desyncSeat and config.desyncSeat.Parent then
+            config.desyncSeat:Destroy()
+        end
+        config.desyncSeat = nil
+        config.desyncWeld = nil
+        if char then
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") or part:IsA("Decal") then
+                    pcall(function() part.Transparency = 0 end)
+                end
+            end
+        end
+        if currentVisualPos and char then
+            task.wait(0.1)
+            pcall(function()
+                char:PivotTo(currentVisualPos)
+            end)
+            pcall(function()
+                char:MoveTo(currentVisualPos.Position)
+            end)
+        end
+        
+        config.desyncActive = false
+        config.desyncSavedCFrame = nil
+        WindUI:Notify({
+            Title = "Gravel.cc",
+            Content = "TP'd to visual pos :v",
+            Icon = "info",
+            Duration = 2
+        })
+        return true
     end
 end
-
-local function nextgenrep2(state)
-    if state then
-        setfflag("NextGenReplicatorEnabledWrite4", "false")
-        task.wait(0.1)
-        setfflag("NextGenReplicatorEnabledWrite4", "true")
-    else
-        setfflag("NextGenReplicatorEnabledWrite4", "false")
+local function gonextgenrep()
+    if not config.desyncActive then return end
+    task.wait(1.5)
+    local char = LocalPlayer.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+    if not root or not torso then return end
+    config.desyncSavedCFrame = root.CFrame
+    local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 50000, root.Position.Z)
+    config.desyncHiddenPos = hiddenPos
+    char:MoveTo(hiddenPos)
+    task.wait()
+    config.desyncSeat = Instance.new("Seat")
+    config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+    config.desyncSeat.Anchored = false
+    config.desyncSeat.CanCollide = false
+    config.desyncSeat.Transparency = 1
+    config.desyncSeat.Size = Vector3.new(2, 1, 1)
+    config.desyncSeat.Position = hiddenPos
+    config.desyncSeat.Parent = workspace
+    config.desyncWeld = Instance.new("Weld")
+    config.desyncWeld.Name = "DesyncWeld"
+    config.desyncWeld.Part0 = config.desyncSeat
+    config.desyncWeld.Part1 = torso
+    config.desyncWeld.Parent = config.desyncSeat
+    task.wait()
+    config.desyncSeat.CFrame = config.desyncSavedCFrame
+    local trans = config.desyncTransparency or 0.5
+    for _, part in pairs(char:GetDescendants()) do
+        if part:IsA("BasePart") or part:IsA("Decal") then
+            pcall(function() part.Transparency = trans end)
+        end
     end
+end
+local function nextgenrepre()
+    if config.desyncRespawnConnection then
+        config.desyncRespawnConnection:Disconnect()
+    end
+    
+    config.desyncRespawnConnection = LocalPlayer.CharacterAdded:Connect(function(char)
+        if config.desyncActive then
+            task.spawn(gonextgenrep)
+        end
+    end)
 end
 
 if not math.clamp then
@@ -7452,6 +7622,7 @@ local rng = function()
         "/kill @p",
         "HBSS doesn't mean anything lolz\ni typed it randomly...",
         "rbxm",
+        "is it Roblox or roadblocks or robloz who knows",
         "''Does this work in Minecraft''l",
         "dere is no Terraria final update D:",
         "da cake isnt a lie... trust",
@@ -8772,15 +8943,6 @@ local AntiAimTab = Window:Tab({
                     BarColor = Color3.fromRGB(255, 0, 0)
                 })
             else
-                if config.nextGenRepDesiredState then
-                    task.spawn(function()
-                        task.wait(0.5)
-                        if config.antiAimEnabled and config.nextGenRepDesiredState and not config.nextGenRepEnabled then
-                            nextgenrep(true)
-                        end
-                    end)
-                end
-                
                 n({
                     Title = "AntiAim",
                     Content = "Enabled",
@@ -9038,6 +9200,35 @@ AntiAimTab:Button({
                     Image = "rbxassetid://4483362458",
                     BarColor = Color3.fromRGB(0, 170, 255)
                 })
+            end
+        end
+    end
+})
+AntiAimTab:Toggle({
+    Title = "Toggle Desync",
+    Desc = "(not compatible with save/load)",
+    Value = false,
+    Callback = function(v)
+        ineednextgenrep(v)
+    end
+})
+
+AntiAimTab:Slider({
+    Title = "Desync Transparency",
+    Desc = "Transparency level when desynced",
+    Step = 0.05,
+    Value = {
+        Min = 0,
+        Max = 1,
+        Default = 0.5
+    },
+    Callback = function(value)
+        config.desyncTransparency = value
+        if config.desyncActive and LocalPlayer.Character then
+            for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") or part:IsA("Decal") then
+                    pcall(function() part.Transparency = value end)
+                end
             end
         end
     end
@@ -11143,6 +11334,11 @@ Note: sum features might not get saved properly D:
         Desc = "Ignore forcefield now supports SilentAim (HK)",
         Color = config.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (13/07/2026)",
+        Desc = "Desync is back :>\nits in the AntiAim Tab!",
+        Color = config.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -11488,6 +11684,7 @@ end
 local function init()
     SetupRespawnHandler()
     syncSilentAimWithMaster()
+    nextgenrepre()
     initKeybinds()
     for _, pl in ipairs(Players:GetPlayers()) do
         if pl ~= localPlayer then
@@ -11590,13 +11787,6 @@ function cleanup()
     pcall(function()
         RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
     end)
-    
-    if config.nextGenRepEnabled then
-        setfflag("NextGenReplicatorEnabledWrite4", "false")
-        config.nextGenRepEnabled = false
-        config.nextGenRepDesiredState = false
-    end
-    
     stopAutoFarm()
     KillQT()
     config.varibz.aimbot360LoopRunning = false
