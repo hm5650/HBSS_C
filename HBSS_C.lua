@@ -3027,7 +3027,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         
         config.SA2_FovIsTargeted = true
         
-        if config.SA2_WallbangEnabled then
+        if config.SA2_Wallbang then
             if Method == "FindPartOnRay" then
                 local A_Ray = Arguments[2]
                 local Origin = A_Ray.Origin
