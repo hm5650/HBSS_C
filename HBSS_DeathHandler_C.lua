@@ -18,7 +18,7 @@ local function handle(player)
                         part:Destroy()
                     end
                 end
-                task.wait(0.1)
+                task.wait()
                 character:Destroy()
             end
         end)
