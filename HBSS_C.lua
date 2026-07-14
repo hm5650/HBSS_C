@@ -1009,6 +1009,7 @@ function saveConfig(saveName)
             SA2_TargetRange = config.SA2_TargetRange,
             SA2_TeamTarget = config.SA2_TeamTarget,
             SA2_GetTarget = config.SA2_GetTarget,
+            sa2stuff = config.varibz.sa2stuff,
             hitboxEnabled = config.hitboxEnabled,
             hitboxTeamTarget = config.hitboxTeamTarget,
             hitboxSize = config.hitboxSize,
@@ -1775,7 +1776,7 @@ function loadSave(saveName)
     if cfg.lineESPOnlyTarget ~= nil then config.lineESPOnlyTarget = cfg.lineESPOnlyTarget end
     if cfg.lineStartPosition then config.lineStartPosition = cfg.lineStartPosition end
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
-    
+    if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
     if cfg.espc then
         config.espc = Color3.new(cfg.espc.R or 1, cfg.espc.G or 0.71, cfg.espc.B or 0.76)
     end
@@ -9657,6 +9658,21 @@ local SilentAimTab2 = Window:Tab({
             config.SA2_HitChance = value
         end
     })
+
+SilentAimTab2:Slider({
+    Title = "Target Processing Delay",
+    Desc = "Higher = More Performance  Lower = More Responsiveness",
+    Step = 0.01,
+    Suffix = "s",
+    Value = {
+        Min = 0.01,
+        Max = 2,
+        Default = config.varibz.sa2stuff or 0.50
+    },
+    Callback = function(value)
+        config.varibz.sa2stuff = value
+    end
+})
     
     SilentAimTab2:Slider({
         Title = "FOV Radius",
