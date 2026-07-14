@@ -198,7 +198,6 @@ end)
 local func = loadstring(game:HttpGet(urls.url2))()
 local FindTool = loadstring(game:HttpGet(urls.url3))()
 local WindUI = loadstring(game:HttpGet(urls.url6))()
-loadstring(game:HttpGet(urls.url11))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -12038,5 +12037,7 @@ task.spawn(function()
     end
 end)
 init()
+task.wait(3)
+loadstring(game:HttpGet(urls.url11))()
 return config
 -- fin
