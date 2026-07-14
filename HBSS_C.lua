@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “shoev” 
+           “gravelism” 
                                            
                                - Gpssickle
 ]]
@@ -50,7 +50,7 @@ local urls = {
     url11 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_DeathHandler_C.lua",
     --others
     url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
-    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
+    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", -- ts guy made the antikick... if it breaks blame them
     url6 = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
     url7 = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
     url8 = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
@@ -241,7 +241,7 @@ local config = {
     SA2_GetTarget = "Closest",
     SA2_currentTarget = nil,
     SA2_TArea = 35,
-    SA2_TargetRange = 1000,
+    SA2_TargetRange = 500,
     SA2_Wallbang = false,
     currentTarget = nil,
     espc = Color3.fromRGB(255, 182, 193),
@@ -503,10 +503,14 @@ local config = {
         Red = Color3.fromRGB(255, 0, 0),
         Blue = Color3.fromRGB(175, 221, 255),
         Black = Color3.fromRGB(0, 0, 0)
+    },
+    windowSize = {
+        mobile = UDim2.fromOffset(320, 70),
+        tablet = UDim2.fromOffset(450, 70),
+        pc = UDim2.fromOffset(600, 70)
     }
 }
 local rng = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
-
 local function rng3(tabName)
     local descs = {
         Main = {
@@ -2979,14 +2983,14 @@ if OldIndex then
     OldIndex = nil
 end
 
-RunService.Heartbeat:Connect(function(deltaTime)
-    config.varibz.sa2thing += deltaTime
-    
+RunService.Heartbeat:Connect(function(dt)
+    if not config.SA2_Enabled then
+        return
+    end
+    config.varibz.sa2thing += dt
     if config.varibz.sa2thing >= config.varibz.sa2stuff then
         config.varibz.sa2thing = 0
-        if config.SA2_Enabled then
-            cachedTarget = GetClosestPlayer()
-        end
+        cachedTarget = GetClosestPlayer()
     end
 end)
 
@@ -7536,20 +7540,34 @@ local function applyClientMaster(state)
     end
 end
 
--- ui neuron activation starter
 math.randomseed(os.time())
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+local isTablet = UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
+
+local size = config.windowSize.pc
+if isMobile then
+    size = config.windowSize.mobile
+elseif isTablet then
+    size = config.windowSize.tablet
+end
 
 local Window = WindUI:CreateWindow({
     Title = givename(),
     Folder = "Gravel_Saves",
     Theme = "Dark",
     Icon = "shovel",
-    Size = UDim2.fromOffset(600, 70),
+    Size = size,
     HideSearchBar = false,
     OpenButton = {
         Title = rng,
         Enabled = true,
         Draggable = true,
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 200)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(144, 238, 144)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
+        }),
+        StrokeThickness = 2,
     },
     Topbar = {
         Height = 44,
@@ -7578,9 +7596,18 @@ local rng = function()
         "Error ur roblxo isn't support",
         "ooh, nice computer you got their, Can I have it\n\n- Mario virus",
         "something is coming in 3 days\n\n- verity",
-        "real",
-        "tuff",
+        "gravel doesn't do what normal gravel does",
+        "gravel might/not kill ur worst enemy..\nif u have skill.",
+        "I hate runservice.renderstepped cuz it lags\n(cuz I keep misusing it)",
+        "did you know: gravel isn't like water\nso if you try to swim in it you'll get pain",
         "guhby this guhby that",
+        "Girl Did What?",
+        "did you know gravel likes lava & water but absolutely hates wind and moss",
+        "this script is a virus ur ratted..\njk",
+        "Get absolutely gravel'd on",
+        "gravel: I don't hold the '1337'\nwahtever da hell that is",
+        "gravel is not granite or quartz or concrete or 1 billion rocks in 1 or asphalt",
+        "'😭' means: cry, sad, shocked, laugh, sarcasm, envy, anger..\nye this is universal",
         "2 atoms touch = big explosion",
         "you can noclip when your atoms aligned\ntrust",
         "I don't have DC btw",
@@ -7590,6 +7617,11 @@ local rng = function()
         "alt-f4 = free rboux",
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.\n>\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
         "^_^",
+        "^u^",
+        "^v^",
+        "wouldnt hbss mean Hemoglobin SS...\ntbh i didnt even know :/",
+        "hbss means hey buddy stop stealing",
+        "is it HBSS or Gravel.cc????????",
         "half life 3 when?",
         "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
         "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
@@ -7618,12 +7650,12 @@ local rng = function()
         "Yeah, come gets some you freakin' wuss\n\n- Scout (not Taunt form dod)",
         "sybau 🥀💔",
         "these are meme reference ok",
-        "water + ice + melt = water",
+        "vapor + condensation = water + low temp = ice + heat = water + heat = gas\nwhy are you reading this useless info?",
         "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
         "1.61803398874989484820458683436563811772030917980576",
         "print(''*prints cutely*'')\nerror(''*errors cutely*'')\nwarn(''*warns cutely*'')",
         "Gravel.cc 🥀",
-        "my imagination has been powered",
+        "my imagination has been powered\nno it's not",
         "YOU NEVER SEE IT COMIIIIIIINNNG,\nyou'll see that my mind\nis to fast for eyes\nYOUR DONE INNNNNN\nBY THE\ntime is hit you, YOUR LAST SURPRISE",
         "Gpssssssssssssssssssssssssssssssssssssssssickle",
         "global positioning system with a sickle",
@@ -7640,11 +7672,12 @@ local rng = function()
         "iS ThAt ga hÆcker?????!?!?!!!?!???!?!",
         "y is this drooling cat meme all over my fyp D:",
         "tbh bro I'd go; [insert metalpipefalling.gif]",
+        "[insert funny word here]",
         "gravel vs sand vs rock vs thingamajang",
         "GTA 6 when?",
         "w wedgeey 🥺\nw junglescripts 🥺",
         "sand.cc when?",
-        "what version is this? well I don't fking know lol",
+        "what version is this? well I don't phuqing know lol",
         "scirpotjg iz hard :(",
         "Roblox plz collabl",
         "helloworld(''print'')",
@@ -7686,6 +7719,7 @@ local rng = function()
         "your bluetooth device is ready to pair",
         "why is there ai slop on my TikTok fyp....",
         ":3 >:3 ›:3 :3",
+        "Enter Text...",
     }
     local Spotify = ml[math.random(1, #ml)]
     local YouTube = m[math.random(1, #m)]
@@ -9695,8 +9729,8 @@ SilentAimTab2:Slider({
         Step = 10,
         Value = {
             Min = 5,
-            Max = 999999,
-            Default = config.SA2_FovRadius or 1000
+            Max = 10000,
+            Default = config.SA2_TargetRange or 500
         },
         Callback = function(value)
             config.SA2_TargetRange = value
