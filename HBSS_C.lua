@@ -47,6 +47,7 @@ local urls = {
     url1 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua",
     url2 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua",
     url3 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua",
+    url11 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_DeathHandler_C.lua",
     --others
     url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -197,6 +198,7 @@ end)
 local func = loadstring(game:HttpGet(urls.url2))()
 local FindTool = loadstring(game:HttpGet(urls.url3))()
 local WindUI = loadstring(game:HttpGet(urls.url6))()
+loadstring(game:HttpGet(urls.url11))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
