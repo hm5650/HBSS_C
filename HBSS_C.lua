@@ -2938,18 +2938,6 @@ local function GetClosestPlayer()
 end
 
 local ExpectedArguments = {
-    FindPartOnRayWithIgnoreList = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean", "boolean"
-        }
-    },
-    FindPartOnRayWithWhitelist = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Ray", "table", "boolean"
-        }
-    },
     FindPartOnRay = {
         ArgCountRequired = 2,
         Args = {
@@ -3040,7 +3028,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         config.SA2_FovIsTargeted = true
         
         if config.SA2_WallbangEnabled then
-            if Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRayWithWhitelist" then
+            if Method == "FindPartOnRay" then
                 local A_Ray = Arguments[2]
                 local Origin = A_Ray.Origin
                 local Distance = A_Ray.Direction.Magnitude
@@ -3061,24 +3049,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
                 return fakeResult
             end
         end
-        
-        if Method == "FindPartOnRayWithIgnoreList" and config.SA2_Method == "FindPartOnRayWithIgnoreList" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithIgnoreList) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif Method == "FindPartOnRayWithWhitelist" and config.SA2_Method == "FindPartOnRayWithWhitelist" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRayWithWhitelist) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
+        if (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
             if validate_args(Arguments, ExpectedArguments.FindPartOnRay) then
                 local A_Ray = Arguments[2]
                 local Origin = A_Ray.Origin
@@ -9645,7 +9616,7 @@ local SilentAimTab2 = Window:Tab({
     SilentAimTab2:Dropdown({
         Title = "Aim Method",
         Desc = "Raycast method to hook",
-        Values = {"Raycast", "FindPartOnRay", "FindPartOnRayWithIgnoreList", "FindPartOnRayWithWhitelist", "Mouse.Hit"},
+        Values = {"Raycast", "FindPartOnRay", "Mouse.Hit"},
         Value = config.SA2_Method or "Raycast",
         Multi = false,
         Callback = function(choice)
