@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “gravelism” 
+           “shoev” 
                                            
                                - Gpssickle
 ]]
@@ -50,7 +50,7 @@ local urls = {
     url11 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_DeathHandler_C.lua",
     --others
     url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
-    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", -- ts guy made the antikick... if it breaks blame them
+    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
     url6 = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
     url7 = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
     url8 = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
@@ -241,7 +241,7 @@ local config = {
     SA2_GetTarget = "Closest",
     SA2_currentTarget = nil,
     SA2_TArea = 35,
-    SA2_TargetRange = 500,
+    SA2_TargetRange = 1000,
     SA2_Wallbang = false,
     currentTarget = nil,
     espc = Color3.fromRGB(255, 182, 193),
@@ -485,7 +485,7 @@ local config = {
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
         sa2thing = 0,
-        sa2stuff = 0.50,
+        sa2stuff = 0.5,
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -511,6 +511,7 @@ local config = {
     }
 }
 local rng = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
+
 local function rng3(tabName)
     local descs = {
         Main = {
@@ -587,6 +588,7 @@ local function rng3(tabName)
             "i legit never miss",
             "accuracy 1+",
             "headshot da kidz",
+            "gaming chair mode",
             "crosshair magnet",
             "technically aim assist",
             "aimlabs? never heard of her",
@@ -801,18 +803,18 @@ local function givename()
     end
     local defaultTitles = {
         "Gravel.cc", -- ts is da actual default 1 btw
+        "G.cc", -- ts is also how u say gravel
+        "HBSS.cc", -- again also gravel
         "Gravel-est",
         "Gravel-er",
         "Graaaavel.cc",
         "Gravelly.cc",
-        "HBSS.cc (real)",
         "Gravel.com",
         "Hi! I'm Gravel.cc",
         "Gravel enjoyer",
         "GRAVEL.CC >:D",
         "holy gravel.cc",
         "GravelGravelGravel.cc",
-        "G.cc",
         "I like gravel",
         "Gravel.cheatcheat",
         "Gravel.yes",
@@ -822,8 +824,131 @@ local function givename()
     }
     return defaultTitles[math.random(1, #defaultTitles)]
 end
+local function uianimate()
+    task.wait(0.1)
+    
+    local openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
+    if not openButton then return end
+    
+    local stroke = nil
+    local gradient = nil
+    
+    for _, descendant in ipairs(openButton:GetDescendants()) do
+        if descendant:IsA("UIStroke") then
+            stroke = descendant
+        elseif descendant:IsA("UIGradient") then
+            gradient = descendant
+        end
+    end
+    
+    if not stroke then return end
+    
+    local TweenService = game:GetService("TweenService")
+    local RunService = game:GetService("RunService")
+    local Players = game:GetService("Players")
+    local lp = Players.LocalPlayer
+    local character = lp.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    local buttonFrame = openButton
+    local basePosition = buttonFrame.Position
+    local lastPosition = Vector3.new(0, 0, 0)
+    local movementOffset = 0
+    local smoothOffset = 0
+    local pulseSpeed = 0.02
+    local pulseThickness = 2
+    local minThickness = 0.80
+    local maxThickness = 2
+    local targetRotation = 0
+    local currentRotation = 0
+    local function getNearestEnemy()
+        local nearest = nil
+        local nearestDist = math.huge
+        local lpos = character and character:FindFirstChild("HumanoidRootPart")
+        if not lpos then return nil end
+        
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= lp and player.Character then
+                local root = player.Character:FindFirstChild("HumanoidRootPart")
+                if root then
+                    local dist = (root.Position - lpos.Position).Magnitude
+                    if dist < nearestDist then
+                        nearestDist = dist
+                        nearest = root
+                    end
+                end
+            end
+        end
+        return nearest
+    end
 
-
+    local connection
+    connection = RunService.Heartbeat:Connect(function(deltaTime)
+        if not stroke or not stroke.Parent then
+            if connection then connection:Disconnect() end
+            return
+        end
+        character = lp.Character
+        humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if character and humanoid then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                local currentPos = rootPart.Position
+                local velocity = rootPart.Velocity
+                local moveSpeed = velocity.Magnitude
+                local targetOffset = math.min(moveSpeed / 50, 8)
+                smoothOffset = smoothOffset + (targetOffset - smoothOffset) * 0.1
+                local moveX = -velocity.X * 0.02
+                local moveY = -velocity.Y * 0.02
+                local moveZ = -velocity.Z * 0.02
+                local maxOffset = 6
+                moveX = math.clamp(moveX, -maxOffset, maxOffset)
+                moveY = math.clamp(moveY, -maxOffset, maxOffset)
+                moveZ = math.clamp(moveZ, -maxOffset, maxOffset)
+                local newPos = UDim2.new(
+                    basePosition.X.Scale,
+                    basePosition.X.Offset + moveX,
+                    basePosition.Y.Scale,
+                    basePosition.Y.Offset + moveY + smoothOffset * 0.3
+                )
+                buttonFrame.Position = newPos
+                local healthPercent = humanoid.Health / humanoid.MaxHealth
+                local healthFactor = 1 - healthPercent
+                local baseSpeed = 0.5
+                local minSpeed = 0.15
+                local maxSpeed = 0.8
+                pulseSpeed = maxSpeed - (healthFactor * (maxSpeed - minSpeed))
+                local thicknessRange = maxThickness - minThickness
+                local targetThickness = minThickness + (healthFactor * thicknessRange)
+                local enemy = getNearestEnemy()
+                if enemy and gradient then
+                    local enemyPos = enemy.Position
+                    local rootPos = rootPart.Position
+                    local direction = (enemyPos - rootPos).Unit
+                    local angle = math.deg(math.atan2(direction.Z, direction.X))
+                    targetRotation = angle
+                end
+                local rotDiff = (targetRotation - currentRotation) % 360
+                if rotDiff > 180 then rotDiff = rotDiff - 360 end
+                currentRotation = currentRotation + rotDiff * 0.05
+                
+                if gradient then
+                    gradient.Rotation = currentRotation
+                end
+            end
+        end
+        local currentTime = tick()
+        local pulseValue = (math.sin(currentTime * (1 / pulseSpeed) * math.pi * 2) + 1) / 2 -- ITS 0 TO 1 ME
+        local thicknessRange = maxThickness - minThickness
+        local currentThickness = minThickness + (pulseValue * thicknessRange)
+        stroke.Thickness = currentThickness
+        local pulseTransparency = 0.1 + (pulseValue * 0.3)
+        stroke.Transparency = pulseTransparency
+    end)
+    task.wait(0.1)
+    if not connection or not connection.Connected then
+        lo2l()
+    end
+end
 
 local SaveSystem = {
     Folder = "Gravel_Saves",
@@ -2983,14 +3108,14 @@ if OldIndex then
     OldIndex = nil
 end
 
-RunService.Heartbeat:Connect(function(dt)
-    if not config.SA2_Enabled then
-        return
-    end
-    config.varibz.sa2thing += dt
+RunService.Heartbeat:Connect(function(deltaTime)
+    config.varibz.sa2thing += deltaTime
+    
     if config.varibz.sa2thing >= config.varibz.sa2stuff then
         config.varibz.sa2thing = 0
-        cachedTarget = GetClosestPlayer()
+        if config.SA2_Enabled then
+            cachedTarget = GetClosestPlayer()
+        end
     end
 end)
 
@@ -7540,6 +7665,7 @@ local function applyClientMaster(state)
     end
 end
 
+-- ui neuron activation starter
 math.randomseed(os.time())
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local isTablet = UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
@@ -7567,13 +7693,14 @@ local Window = WindUI:CreateWindow({
             ColorSequenceKeypoint.new(0.5, Color3.fromRGB(144, 238, 144)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
         }),
-        StrokeThickness = 2,
+        StrokeThickness = 0.1,
     },
     Topbar = {
         Height = 44,
         ButtonsType = "Default"
     }
 })
+uianimate()
 task.wait(0.2)
 local rng = function()
     local m = {
@@ -7581,8 +7708,11 @@ local rng = function()
         ":7",
         "my name is gravel what's yours?????",
         "my zodiac sign is a shovel :p",
+        "gravel is rocky :o",
+        "graveeeeeeeelll",
         ":p",
         ">:3",
+        "Gravel is not Sentient idk wat ur talking about",
         "sigmasigmaboug",
         "I'm a rng pop-up that picks random messages 24/7",
         "would dis script work on every gaem\nyh & noe",
@@ -7596,22 +7726,13 @@ local rng = function()
         "Error ur roblxo isn't support",
         "ooh, nice computer you got their, Can I have it\n\n- Mario virus",
         "something is coming in 3 days\n\n- verity",
-        "gravel doesn't do what normal gravel does",
-        "gravel might/not kill ur worst enemy..\nif u have skill.",
-        "I hate runservice.renderstepped cuz it lags\n(cuz I keep misusing it)",
-        "did you know: gravel isn't like water\nso if you try to swim in it you'll get pain",
+        "real",
+        "tuff",
         "guhby this guhby that",
-        "Girl Did What?",
-        "did you know gravel likes lava & water but absolutely hates wind and moss",
-        "this script is a virus ur ratted..\njk",
-        "Get absolutely gravel'd on",
-        "gravel: I don't hold the '1337'\nwahtever da hell that is",
-        "gravel is not granite or quartz or concrete or 1 billion rocks in 1 or asphalt",
-        "'😭' means: cry, sad, shocked, laugh, sarcasm, envy, anger..\nye this is universal",
         "2 atoms touch = big explosion",
         "you can noclip when your atoms aligned\ntrust",
         "I don't have DC btw",
-        "my code is used to be 8000+ now 9000+ and then 10000+ lines long, I canf do dis sh on mobile D:",
+        "my code is used to be 8000+ now 9000+ and then 12000+ lines long, I canf do dis sh on mobile D:",
         "flatgrass",
         "search free robux to get free robux",
         "alt-f4 = free rboux",
@@ -7619,9 +7740,6 @@ local rng = function()
         "^_^",
         "^u^",
         "^v^",
-        "wouldnt hbss mean Hemoglobin SS...\ntbh i didnt even know :/",
-        "hbss means hey buddy stop stealing",
-        "is it HBSS or Gravel.cc????????",
         "half life 3 when?",
         "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
         "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
@@ -7634,14 +7752,14 @@ local rng = function()
         "robloz where classic faces :‹",
         "I'm not taking my sneakers off, I'm sneakers O'Toole",
         "Gpssickle is a gps with a sickle",
-        "da script reached 8000 lines to 9000 o_o",
+        "da script reached 8000 lines to 12000 o_o",
         "just simply cheat through it\n\n quite literally",
         "just simply go under it",
         "just simply go over it",
         "just simply script to it",
         "just simply walk around it\n\n- Electracy",
         "You die\n\n- StromBrew",
-        "sonion",
+        "sonion\ni learned this from meme culture don't ask me",
         "I like trains",
         "welcome to McDonald's.",
         "you are my sunshine, my only sunshine",
@@ -7650,12 +7768,12 @@ local rng = function()
         "Yeah, come gets some you freakin' wuss\n\n- Scout (not Taunt form dod)",
         "sybau 🥀💔",
         "these are meme reference ok",
-        "vapor + condensation = water + low temp = ice + heat = water + heat = gas\nwhy are you reading this useless info?",
+        "water + ice + melt = water",
         "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
         "1.61803398874989484820458683436563811772030917980576",
         "print(''*prints cutely*'')\nerror(''*errors cutely*'')\nwarn(''*warns cutely*'')",
         "Gravel.cc 🥀",
-        "my imagination has been powered\nno it's not",
+        "my imagination has been powered",
         "YOU NEVER SEE IT COMIIIIIIINNNG,\nyou'll see that my mind\nis to fast for eyes\nYOUR DONE INNNNNN\nBY THE\ntime is hit you, YOUR LAST SURPRISE",
         "Gpssssssssssssssssssssssssssssssssssssssssickle",
         "global positioning system with a sickle",
@@ -7665,19 +7783,24 @@ local rng = function()
         "/kill @p",
         "HBSS doesn't mean anything lolz\ni typed it randomly...",
         "rbxm",
+        "why 'Gravel' ya know how sand gets in ur shoes..\ngravel does the same but it's for games",
+        "people barely use the bottab",
+        "I hate renderstepped...\n(probably because I keep misusing it)",
         "is it Roblox or roadblocks or robloz who knows",
-        "''Does this work in Minecraft''l",
+        "''Does this work in Minecraft''",
+        "www.gravel.com ... why does this website exists?",
+        "imagine ur script getting mogged by a script made fully on a phone",
         "dere is no Terraria final update D:",
         "da cake isnt a lie... trust",
         "iS ThAt ga hÆcker?????!?!?!!!?!???!?!",
         "y is this drooling cat meme all over my fyp D:",
         "tbh bro I'd go; [insert metalpipefalling.gif]",
-        "[insert funny word here]",
         "gravel vs sand vs rock vs thingamajang",
         "GTA 6 when?",
+        "if they said ur a hacker say 'Ping Diff' and they'll believe u",
         "w wedgeey 🥺\nw junglescripts 🥺",
         "sand.cc when?",
-        "what version is this? well I don't phuqing know lol",
+        "what version is this? well I don't fking know lol",
         "scirpotjg iz hard :(",
         "Roblox plz collabl",
         "helloworld(''print'')",
@@ -7715,11 +7838,10 @@ local rng = function()
         "ipad kid vs ipad, who would win?",
         "ifone 90 proe max",
         "image me missing one ',' on a large table..",
-        "Gravel supports Android 5+",
+        "Gravel supports Android 5-",
         "your bluetooth device is ready to pair",
         "why is there ai slop on my TikTok fyp....",
         ":3 >:3 ›:3 :3",
-        "Enter Text...",
     }
     local Spotify = ml[math.random(1, #ml)]
     local YouTube = m[math.random(1, #m)]
@@ -9729,8 +9851,8 @@ SilentAimTab2:Slider({
         Step = 10,
         Value = {
             Min = 5,
-            Max = 10000,
-            Default = config.SA2_TargetRange or 500
+            Max = 999999,
+            Default = config.SA2_FovRadius or 1000
         },
         Callback = function(value)
             config.SA2_TargetRange = value
@@ -11876,7 +11998,9 @@ local function init()
     config.varibz.lowpatcher = false
     getgenv().ED_AntiKickEnabled = false
     getgenv().ED_AntiKickCheckCaller = false
+    config.varibz.sa2stuff = 0.5
     task.wait(0.40)
+    config.varibz.sa2stuff = 0.5
     config.SA2_Wallbang = false
     config.varibz.lowpatcher = true
     getgenv().ED_AntiKickEnabled = true
