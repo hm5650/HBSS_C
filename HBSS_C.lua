@@ -624,7 +624,6 @@ n({
 })
 end)
 local func = loadstring(game:HttpGet(urls.url2))()
-local FindTool = loadstring(game:HttpGet(urls.url3))()
 local WindUI = loadstring(game:HttpGet(urls.url6))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
@@ -12801,7 +12800,8 @@ Window:OnDestroy(function()
     cleanup()
     print("Gravel.cc closed :(")
 end)
-task.wait(3)
+task.wait(2.5)
 loadstring(game:HttpGet(urls.url11))()
+local FindTool = loadstring(game:HttpGet(urls.url3))()
 return config
 -- fin
