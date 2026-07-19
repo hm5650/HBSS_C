@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “shoev” 
+           “shovel without a handle = sand.cc” 
                                            
                                - Gpssickle
 ]]
@@ -38,8 +38,7 @@ local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 local localPlayer = Players.LocalPlayer
-local plrs = game:GetService("Players")
-local plr = plrs.LocalPlayer
+local plr = Players.LocalPlayer
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local urls = {
@@ -57,6 +56,435 @@ local urls = {
     url9 = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     url10 = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
+
+local store = {
+    loadedFeatures = {},
+    featureStates = {},
+    pendingFeatures = {},
+    loadingQueue = {},
+    isProcessingQueue = false
+}
+
+local reg = {
+    core = {
+        dependencies = {},
+        load = function()
+            return true
+        end,
+        priority = 1
+    },
+    esp = {
+        dependencies = {"core"},
+        load = function()
+            if not config.espMasterEnabled then return false end
+            applyESPMaster(true)
+            return true
+        end,
+        priority = 2
+    },
+    silentAim = {
+        dependencies = {"core"},
+        load = function()
+            if not config.startsa then return false end
+            if gui.RingHolder then
+                gui.RingHolder.Visible = true
+            end
+            return true
+        end,
+        priority = 2
+    },
+    aimbot = {
+        dependencies = {"core"},
+        load = function()
+            if not config.aimbotEnabled then return false end
+            handleAimbotToggle(true)
+            aimbotfov()
+            return true
+        end,
+        priority = 2
+    },
+    hitbox = {
+        dependencies = {"core"},
+        load = function()
+            if not config.hitboxEnabled then return false end
+            applyhb()
+            return true
+        end,
+        priority = 3
+    },
+    antiAim = {
+        dependencies = {"core"},
+        load = function()
+            if not config.antiAimEnabled then return false end
+            return true
+        end,
+        priority = 3
+    },
+    autoFarm = {
+        dependencies = {"core"},
+        load = function()
+            if not config.autoFarmEnabled then return false end
+            autoFarmProcess()
+            return true
+        end,
+        priority = 3
+    },
+    client = {
+        dependencies = {"core"},
+        load = function()
+            if not config.clientMasterEnabled then return false end
+            applyClientMaster(true)
+            return true
+        end,
+        priority = 2
+    },
+    triggerBot = {
+        dependencies = {"core"},
+        load = function()
+            if not config.tbot.enabled then return false end
+            toggleTriggerBot(true)
+            return true
+        end,
+        priority = 3
+    },
+    bhop = {
+        dependencies = {"core"},
+        load = function()
+            if not config.bhop.enabled then return false end
+            toggleBHop(true)
+            return true
+        end,
+        priority = 3
+    },
+    spinbot = {
+        dependencies = {"core"},
+        load = function()
+            if not config.spinbot.enabled then return false end
+            spinbotUpdate()
+            return true
+        end,
+        priority = 3
+    },
+    silentAimHK = {
+        dependencies = {"core"},
+        load = function()
+            if not config.SA2_Enabled then return false end
+            return true
+        end,
+        priority = 2
+    }
+}
+
+-- lzl
+local LazyLoader = {
+    loaded = {},
+    loading = false,
+    queue = {},
+    bruhb = false
+}
+
+function LazyLoader:loadFeature(featureName)
+    if self.loaded[featureName] then
+        return true
+    end
+    
+    local registry = reg[featureName]
+    if not registry then
+        return false
+    end
+    for _, dep in ipairs(registry.dependencies or {}) do
+        if not self.loaded[dep] then
+            table.insert(self.queue, dep)
+        end
+    end
+    local success, result = pcall(registry.load)
+    if success and result then
+        self.loaded[featureName] = true
+        return true
+    end
+    
+    return false
+end
+function LazyLoader:loadFeatures(featureNames)
+    if type(featureNames) == "string" then
+        featureNames = {featureNames}
+    end
+    
+    for _, name in ipairs(featureNames) do
+        table.insert(self.queue, name)
+    end
+    
+    if not self.loading then
+        self:processQueue()
+    end
+end
+function LazyLoader:processQueue()
+    if self.loading then return end
+    self.loading = true
+    
+    while #self.queue > 0 do
+        local name = table.remove(self.queue, 1)
+        if not self.loaded[name] then
+            self:loadFeature(name)
+        end
+    end
+    
+    self.loading = false
+end
+function LazyLoader:unloadFeature(featureName)
+    if not self.loaded[featureName] then
+        return
+    end
+    local cleanupFunctions = {
+        esp = function()
+            for target in pairs(config.espData) do
+                removeESPLabel(target)
+            end
+            for target in pairs(config.highlightData) do
+                removeHighlightESP(target)
+            end
+            for target in pairs(config.lineESPData) do
+                removeLineESP(target)
+            end
+        end,
+        silentAim = function()
+            if gui.RingHolder then
+                gui.RingHolder.Visible = false
+            end
+            for pl in pairs(config.activeApplied) do
+                restorePartForPlayer(pl)
+            end
+        end,
+        aimbot = function()
+            handleAimbotToggle(false)
+        end,
+        hitbox = function()
+            for player in pairs(config.hitboxExpandedParts) do
+                restoreTorso(player)
+            end
+            config.hitboxExpandedParts = {}
+        end,
+        antiAim = function()
+            returnToOriginalPosition()
+        end,
+        autoFarm = function()
+            stopAutoFarm()
+        end,
+        client = function()
+            applyClientMaster(false)
+        end,
+        triggerBot = function()
+            toggleTriggerBot(false)
+        end,
+        bhop = function()
+            toggleBHop(false)
+        end,
+        spinbot = function()
+            if config.varibz.spinbotConnection then
+                config.varibz.spinbotConnection:Disconnect()
+                config.varibz.spinbotConnection = nil
+            end
+        end,
+        silentAimHK = function()
+            config.SA2_Enabled = false
+        end
+    }
+    
+    if cleanupFunctions[featureName] then
+        pcall(cleanupFunctions[featureName])
+    end
+    
+    self.loaded[featureName] = nil
+end
+local function jsdoit()
+    local originalCallbacks = {}
+    local mainToggles = {
+        autoFarm = {
+            getter = function() return config.autoFarmEnabled end,
+            setter = function(v)
+                config.autoFarmEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("autoFarm")
+                else
+                    LazyLoader:unloadFeature("autoFarm")
+                end
+            end
+        },
+        antiAim = {
+            getter = function() return config.antiAimEnabled end,
+            setter = function(v)
+                config.antiAimEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("antiAim")
+                else
+                    LazyLoader:unloadFeature("antiAim")
+                end
+            end
+        }
+    }
+    local visualToggles = {
+        esp = {
+            getter = function() return config.espMasterEnabled end,
+            setter = function(v)
+                config.espMasterEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("esp")
+                else
+                    LazyLoader:unloadFeature("esp")
+                end
+            end
+        }
+    }
+    local aimbotToggles = {
+        aimbot = {
+            getter = function() return config.aimbotEnabled end,
+            setter = function(v)
+                config.aimbotEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("aimbot")
+                else
+                    LazyLoader:unloadFeature("aimbot")
+                end
+            end
+        }
+    }
+    local silentToggles = {
+        silentAim = {
+            getter = function() return config.startsa end,
+            setter = function(v)
+                config.startsa = v
+                if v then
+                    LazyLoader:loadFeatures("silentAim")
+                else
+                    LazyLoader:unloadFeature("silentAim")
+                end
+            end
+        },
+        silentAimHK = {
+            getter = function() return config.SA2_Enabled end,
+            setter = function(v)
+                config.SA2_Enabled = v
+                if v then
+                    LazyLoader:loadFeatures("silentAimHK")
+                else
+                    LazyLoader:unloadFeature("silentAimHK")
+                end
+            end
+        }
+    }
+    local hitboxToggles = {
+        hitbox = {
+            getter = function() return config.hitboxEnabled end,
+            setter = function(v)
+                config.hitboxEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("hitbox")
+                else
+                    LazyLoader:unloadFeature("hitbox")
+                end
+            end
+        }
+    }
+    local clientToggles = {
+        client = {
+            getter = function() return config.clientMasterEnabled end,
+            setter = function(v)
+                config.clientMasterEnabled = v
+                if v then
+                    LazyLoader:loadFeatures("client")
+                else
+                    LazyLoader:unloadFeature("client")
+                end
+            end
+        }
+    }
+    local miscToggles = {
+        triggerBot = {
+            getter = function() return config.tbot.enabled end,
+            setter = function(v)
+                config.tbot.enabled = v
+                if v then
+                    LazyLoader:loadFeatures("triggerBot")
+                else
+                    LazyLoader:unloadFeature("triggerBot")
+                end
+            end
+        },
+        bhop = {
+            getter = function() return config.bhop.enabled end,
+            setter = function(v)
+                config.bhop.enabled = v
+                if v then
+                    LazyLoader:loadFeatures("bhop")
+                else
+                    LazyLoader:unloadFeature("bhop")
+                end
+            end
+        },
+        spinbot = {
+            getter = function() return config.spinbot.enabled end,
+            setter = function(v)
+                config.spinbot.enabled = v
+                if v then
+                    LazyLoader:loadFeatures("spinbot")
+                else
+                    LazyLoader:unloadFeature("spinbot")
+                end
+            end
+        }
+    }
+    
+    return {
+        main = mainToggles,
+        visual = visualToggles,
+        aimbot = aimbotToggles,
+        silent = silentToggles,
+        hitbox = hitboxToggles,
+        client = clientToggles,
+        misc = miscToggles
+    }
+end
+LazyLoader.bruhb = true
+function LazyLoader:loadEssentialFeatures()
+    local essential = {"core"}
+    self:loadFeatures(essential)
+end
+local oldInit = init
+init = function()
+    LazyLoader:loadEssentialFeatures()
+    local featuresToLoad = {}
+    if config.espMasterEnabled then table.insert(featuresToLoad, "esp") end
+    if config.startsa then table.insert(featuresToLoad, "silentAim") end
+    if config.aimbotEnabled then table.insert(featuresToLoad, "aimbot") end
+    if config.hitboxEnabled then table.insert(featuresToLoad, "hitbox") end
+    if config.antiAimEnabled then table.insert(featuresToLoad, "antiAim") end
+    if config.autoFarmEnabled then table.insert(featuresToLoad, "autoFarm") end
+    if config.clientMasterEnabled then table.insert(featuresToLoad, "client") end
+    if config.tbot.enabled then table.insert(featuresToLoad, "triggerBot") end
+    if config.bhop.enabled then table.insert(featuresToLoad, "bhop") end
+    if config.spinbot.enabled then table.insert(featuresToLoad, "spinbot") end
+    if config.SA2_Enabled then table.insert(featuresToLoad, "silentAimHK") end
+    
+    if #featuresToLoad > 0 then
+        LazyLoader:loadFeatures(featuresToLoad)
+    end
+    oldInit()
+end
+local oldCleanup = cleanup
+cleanup = function()
+    for featureName in pairs(LazyLoader.loaded) do
+        LazyLoader:unloadFeature(featureName)
+    end
+    
+    LazyLoader.loaded = {}
+    LazyLoader.queue = {}
+    LazyLoader.loading = false
+    LazyLoader.bruhb = false
+    
+    oldCleanup()
+end
+
+local toggles = jsdoit()
 loadstring(game:HttpGet(urls.url1))()
 local Alurt = loadstring(game:HttpGet(urls.url4))()
 
@@ -205,7 +633,7 @@ local ValidTargetParts = {"Head", "HumanoidRootPart", "Torso", "UpperTorso", "Lo
 local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
-local GetPlayers = plrs.GetPlayers
+local GetPlayers = Players.GetPlayers
 local GetPartsObscuringTarget = Camera.GetPartsObscuringTarget
 local lastCharacter = nil
 local camera = workspace.CurrentCamera
@@ -477,6 +905,7 @@ local config = {
             "🥀💔✌️🫩",
             "brochacho",
         },
+        savesParagraph = nil,
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -2533,7 +2962,7 @@ local function savePara()
     else
         for i, save in ipairs(saves) do
             local isCurrent = (save == SaveSystem.CurrentSave)
-            saveText = saveText .. "  " .. (isCurrent and "⟩ " or "> ") .. save .. (isCurrent and " (loaded)" or "") .. "\n"
+            saveText = saveText .. "  " .. (isCurrent and "✓ " or "> ") .. save .. (isCurrent and "!" or "") .. "\n"
         end
     end
     
@@ -2747,7 +3176,7 @@ local function GetClosestPlayer()
     local cameraPos = cameraCFrame.Position
     local maxTargetRange = config.SA2_TargetRange or 1000
     
-    for _, Player in next, GetPlayers(plrs) do
+    for _, Player in next, GetPlayers(Players) do
         if Player == plr then continue end
         if not ShouldTargetPlayer(Player) then continue end
         if config.ignoreForcefield and hasForcefield(Character) then
@@ -6621,6 +7050,130 @@ local function updateBHopQuickToggle()
     end
 end
 
+local ineedinvistool = function()
+local offset = 1100
+local invisible = false
+local grips = {}
+local heldTool
+local gripChanged
+local handle
+local weld
+local animstate
+function setDisplayDistance(distance)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
+            player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance
+            player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance
+        end
+    end
+end
+function invis()
+    if not invisible then
+        invisible = true
+        animstate = game.Players.LocalPlayer.Character.Animate.Enabled
+        game.Players.LocalPlayer.Character.Animate.Enabled = false
+        for _, track in pairs(game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
+            track:Stop()
+        end
+        if handle then handle:Destroy() end
+        if weld then weld:Destroy() end
+        handle = Instance.new("Part", workspace)
+        handle.Name = "Handle"
+        handle.Transparency = 1
+        handle.CanCollide = false
+        handle.Size = Vector3.new(2, 1, 1)
+        weld = Instance.new("Weld", handle)
+        weld.Part0 = handle
+        weld.Part1 = game.Players.LocalPlayer.Character.HumanoidRootPart
+        weld.C0 = CFrame.new(0, offset - 1.5, 0)
+        setDisplayDistance(offset + 100)
+        workspace.CurrentCamera.CameraSubject = handle
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, offset, 0)
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = offset
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+        for _, child in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if child:IsA("Tool") then
+                grips[child] = child.Grip
+            end
+        end
+    end
+end
+function vis()
+    if invisible then
+        invisible = false
+        if handle then handle:Destroy() end
+        if weld then weld:Destroy() end
+        game.Players.LocalPlayer.Character.Animate.Enabled = animstate or true
+        for _, child in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if child:IsA("Tool") then
+                child.Parent = game.Players.LocalPlayer.Backpack
+            end
+        end
+        for tool, grip in pairs(grips) do
+            if tool then
+                tool.Grip = grip
+            end
+        end
+        heldTool = nil
+        setDisplayDistance(100)
+        workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -offset, 0)
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "go invis"
+tool.RequiresHandle = false
+tool.CanBeDropped = false
+tool.Equipped:Connect(function()
+    wait()
+    if not invisible then
+        invis()
+        tool.Name = ">:3"
+    else
+        vis()
+        tool.Name = ":3"
+    end
+    tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
+    wait()
+    if invisible and child:IsA("Tool") and child ~= heldTool and child ~= tool then
+        heldTool = child
+        local lastGrip = heldTool.Grip
+        if not grips[heldTool] then
+            grips[heldTool] = lastGrip
+        end
+        game.Players.LocalPlayer.Character.Animate.Enabled = false
+        for _, track in pairs(game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
+            track:Stop()
+        end
+        
+        heldTool.Grip = heldTool.Grip * (CFrame.new(0, offset - 1.5, 1.5) * CFrame.Angles(math.rad(-90), 0, 0))
+        heldTool.Parent = game.Players.LocalPlayer.Backpack
+        heldTool.Parent = game.Players.LocalPlayer.Character
+        
+        if gripChanged then
+            gripChanged:Disconnect()
+        end
+        
+        gripChanged = heldTool:GetPropertyChangedSignal("Grip"):Connect(function()
+            wait()
+            if not invisible then
+                gripChanged:Disconnect()
+            end
+            if heldTool.Grip ~= lastGrip then
+                lastGrip = heldTool.Grip * (CFrame.new(0, offset - 1.5, 1.5) * CFrame.Angles(math.rad(-90), 0, 0))
+                heldTool.Grip = lastGrip
+                heldTool.Parent = game.Players.LocalPlayer.Backpack
+                heldTool.Parent = game.Players.LocalPlayer.Character
+            end
+        end)
+    end
+end)
+end
+
 -- bk
 RunService.Heartbeat:Connect(function(deltaTime)
     aimbotUpdate()
@@ -7700,8 +8253,45 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
-uianimate()
-task.wait(0.2)
+local rng4 = function()
+    local another = {
+        "WEEEEEEEEEEE",
+        ">.<",
+        "gravel > sand",
+        "gravel is geometric",
+        "I'm gravels",
+        "!11!1!!1!1",
+        "I hate http 429",
+        ":/",
+        "read the InfoTab (pls)",
+        "I'm mischievousjdjsh",
+        "ur welcom",
+        "Why is Gubby ai slop :(",
+        "[insert funny text here]",
+        "I'm a tag",
+        "universal & free script btw",
+        "ez win",
+    }
+    local tag = Window:Tag({
+        Title = another[math.random(1, #another)],
+        Icon = "github",
+        Color = Color3.fromHex("#1c1c1c"),
+        Border = true
+    })
+    local function updateTag()
+        if tag and tag.SetTitle then
+            local newMsg = another[math.random(1, #another)]
+            tag:SetTitle(newMsg)
+        end
+    end
+    task.spawn(function()
+        while true do
+            task.wait(5)
+            updateTag()
+        end
+    end)
+    return tag
+end
 local rng = function()
     local m = {
         ":0",
@@ -7859,7 +8449,6 @@ local rng = function()
         }
     })
 end
-rng()
 local rng2 = function()
     local tinf = {
         "bombastic side eye",
@@ -7920,14 +8509,11 @@ local rng2 = function()
         BarColor = Color3.fromRGB(0, 170, 255)
     })
 end
+task.wait(0.2)
+uianimate()
+rng()
 rng2()
-Window:Tag({
-    Title = "wowzerz it's a universal script :o",
-    Icon = "github",
-    Color = Color3.fromHex("#1c1c1c"),
-    Border = true
-})
-
+rng4()
 -- Main Tab
 local MainTab = Window:Tab({
     Title = "Main",
@@ -8666,11 +9252,22 @@ MainTab:Button({
     end
 })
 
-MainTab:Paragraph({
+config.varibz.savesParagraph = MainTab:Paragraph({
     Title = "Saves List",
-    Desc = savePara() .. "\n(Refresh by reloading da script, blame WindUI 4 dat)",
+    Desc = savePara() .. "\nit refreshes now!",
     Color = config.uicolor.darkGray
 })
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if config.varibz.savesParagraph then
+            local newDesc = savePara() .. "\nit refreshes now!"
+            pcall(function()
+                config.varibz.savesParagraph:SetDesc(newDesc)
+            end)
+        end
+    end
+end)
 end
 local VisualsTab = Window:Tab({
     Title = "Visuals",
@@ -10952,6 +11549,19 @@ MiscTab:Input({
             })
         end
     })
+    MiscTab:Button({
+        Title = "invistool (pls ignore)",
+        Desc = "'why do u need ts",
+        Callback = function()
+           ineedinvistool()
+            WindUI:Notify({
+                Title = "I'm hiding :3",
+                Content = "wouldn't call a script without an invistool",
+                Icon = "shovel",
+                Duration = 1
+            })
+        end
+    })
 MiscTab:Toggle({
     Title = "Enable BHop",
     Desc = "Toggle bunny hop on/off",
@@ -11560,6 +12170,11 @@ Note: sum features might not get saved properly D:
     InfoTab:Paragraph({
         Title = "Gravel (14/07/2026)",
         Desc = "Other bug fixes that I didn't count",
+        Color = config.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (19/07/2026)",
+        Desc = "Added: LazyLoader!\nAdded: UI Refreshing\nAdded: Additional stuff\nFixed Bugs: 7",
         Color = config.uicolor.darkGray
     })
 end
@@ -12182,6 +12797,10 @@ task.spawn(function()
     end
 end)
 init()
+Window:OnDestroy(function()
+    cleanup()
+    print("Gravel.cc closed :(")
+end)
 task.wait(3)
 loadstring(game:HttpGet(urls.url11))()
 return config
