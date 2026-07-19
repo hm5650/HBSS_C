@@ -57,21 +57,29 @@ local urls = {
     url10 = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
 
-local store = {
-    loadedFeatures = {},
-    featureStates = {},
-    pendingFeatures = {},
-    loadingQueue = {},
-    isProcessingQueue = false
+-- lzl
+local LazyLoader = {
+    loaded = {},
+    loading = false,
+    queue = {},
+    enabled = true,
+    processingInterval = 0.5,
+    maxQueueSize = 50,
+    lastProcessTime = 0,
+    performanceMode = true,
+    _connections = {},
+    _cleanupQueue = {},
+    _processing = false
 }
 
-local reg = {
+local featureConfig = {
     core = {
         dependencies = {},
-        load = function()
-            return true
-        end,
-        priority = 1
+        load = function() return true end,
+        unload = function() end,
+        priority = 1,
+        essential = true,
+        requiresGameLoad = false
     },
     esp = {
         dependencies = {"core"},
@@ -80,18 +88,29 @@ local reg = {
             applyESPMaster(true)
             return true
         end,
-        priority = 2
+        unload = function()
+            for target in pairs(config.espData) do removeESPLabel(target) end
+            for target in pairs(config.highlightData) do removeHighlightESP(target) end
+            for target in pairs(config.lineESPData) do removeLineESP(target) end
+        end,
+        priority = 2,
+        essential = false,
+        requiresGameLoad = true
     },
     silentAim = {
         dependencies = {"core"},
         load = function()
             if not config.startsa then return false end
-            if gui.RingHolder then
-                gui.RingHolder.Visible = true
-            end
+            if gui.RingHolder then gui.RingHolder.Visible = true end
             return true
         end,
-        priority = 2
+        unload = function()
+            if gui.RingHolder then gui.RingHolder.Visible = false end
+            for pl in pairs(config.activeApplied) do restorePartForPlayer(pl) end
+        end,
+        priority = 2,
+        essential = false,
+        requiresGameLoad = true
     },
     aimbot = {
         dependencies = {"core"},
@@ -101,7 +120,10 @@ local reg = {
             aimbotfov()
             return true
         end,
-        priority = 2
+        unload = function() handleAimbotToggle(false) end,
+        priority = 2,
+        essential = false,
+        requiresGameLoad = true
     },
     hitbox = {
         dependencies = {"core"},
@@ -110,7 +132,13 @@ local reg = {
             applyhb()
             return true
         end,
-        priority = 3
+        unload = function()
+            for player in pairs(config.hitboxExpandedParts) do restoreTorso(player) end
+            config.hitboxExpandedParts = {}
+        end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     antiAim = {
         dependencies = {"core"},
@@ -118,7 +146,10 @@ local reg = {
             if not config.antiAimEnabled then return false end
             return true
         end,
-        priority = 3
+        unload = function() returnToOriginalPosition() end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     autoFarm = {
         dependencies = {"core"},
@@ -127,7 +158,10 @@ local reg = {
             autoFarmProcess()
             return true
         end,
-        priority = 3
+        unload = function() stopAutoFarm() end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     client = {
         dependencies = {"core"},
@@ -136,7 +170,10 @@ local reg = {
             applyClientMaster(true)
             return true
         end,
-        priority = 2
+        unload = function() applyClientMaster(false) end,
+        priority = 2,
+        essential = false,
+        requiresGameLoad = true
     },
     triggerBot = {
         dependencies = {"core"},
@@ -145,7 +182,10 @@ local reg = {
             toggleTriggerBot(true)
             return true
         end,
-        priority = 3
+        unload = function() toggleTriggerBot(false) end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     bhop = {
         dependencies = {"core"},
@@ -154,7 +194,10 @@ local reg = {
             toggleBHop(true)
             return true
         end,
-        priority = 3
+        unload = function() toggleBHop(false) end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     spinbot = {
         dependencies = {"core"},
@@ -163,7 +206,15 @@ local reg = {
             spinbotUpdate()
             return true
         end,
-        priority = 3
+        unload = function()
+            if config.varibz.spinbotConnection then
+                config.varibz.spinbotConnection:Disconnect()
+                config.varibz.spinbotConnection = nil
+            end
+        end,
+        priority = 3,
+        essential = false,
+        requiresGameLoad = true
     },
     silentAimHK = {
         dependencies = {"core"},
@@ -171,320 +222,373 @@ local reg = {
             if not config.SA2_Enabled then return false end
             return true
         end,
-        priority = 2
+        unload = function() config.SA2_Enabled = false end,
+        priority = 2,
+        essential = false,
+        requiresGameLoad = true
     }
 }
 
--- lzl
-local LazyLoader = {
-    loaded = {},
-    loading = false,
-    queue = {},
-    bruhb = false
+local loadState = {
+    pending = {},
+    active = {},
+    failed = {},
+    retryCount = {},
+    MAX_RETRIES = 3,
+    loadingTimeout = 5
 }
+
+function LazyLoader:isReady()
+    return game:IsLoaded() and Players.LocalPlayer and Players.LocalPlayer.Character
+end
+
+function LazyLoader:getDependencies(feature)
+    local config = featureConfig[feature]
+    if not config then return {} end
+    local deps = {}
+    for _, dep in ipairs(config.dependencies or {}) do
+        if not self.loaded[dep] then
+            table.insert(deps, dep)
+        end
+    end
+    return deps
+end
+
+function LazyLoader:canLoad(feature)
+    local config = featureConfig[feature]
+    if not config then return false end
+    if config.requiresGameLoad and not self:isReady() then return false end
+    local deps = self:getDependencies(feature)
+    return #deps == 0
+end
 
 function LazyLoader:loadFeature(featureName)
-    if self.loaded[featureName] then
-        return true
-    end
+    if not self.enabled then return false end
+    if self.loaded[featureName] then return true end
+    if loadState.failed[featureName] then return false end
     
-    local registry = reg[featureName]
-    if not registry then
+    local config = featureConfig[featureName]
+    if not config then return false end
+    for _, dep in ipairs(config.dependencies or {}) do
+        if not self.loaded[dep] then
+            local success = self:loadFeature(dep)
+            if not success then
+                loadState.failed[featureName] = true
+                return false
+            end
+        end
+    end
+    local success = false
+    local startTime = tick()
+    
+    local function attemptLoad()
+        local result = config.load()
+        if result then
+            self.loaded[featureName] = true
+            loadState.active[featureName] = true
+            loadState.failed[featureName] = nil
+            loadState.retryCount[featureName] = nil
+            return true
+        end
         return false
     end
-    for _, dep in ipairs(registry.dependencies or {}) do
-        if not self.loaded[dep] then
-            table.insert(self.queue, dep)
+    local co = coroutine.create(function()
+        success = attemptLoad()
+    end)
+    
+    coroutine.resume(co)
+    while coroutine.status(co) ~= "dead" do
+        if tick() - startTime > loadState.loadingTimeout then
+            coroutine.close(co)
+            break
         end
+        task.wait(0.01)
     end
-    local success, result = pcall(registry.load)
-    if success and result then
-        self.loaded[featureName] = true
+    
+    if success then
         return true
-    end
-    
-    return false
-end
-function LazyLoader:loadFeatures(featureNames)
-    if type(featureNames) == "string" then
-        featureNames = {featureNames}
-    end
-    
-    for _, name in ipairs(featureNames) do
-        table.insert(self.queue, name)
-    end
-    
-    if not self.loading then
-        self:processQueue()
-    end
-end
-function LazyLoader:processQueue()
-    if self.loading then return end
-    self.loading = true
-    
-    while #self.queue > 0 do
-        local name = table.remove(self.queue, 1)
-        if not self.loaded[name] then
-            self:loadFeature(name)
+    else
+        loadState.retryCount[featureName] = (loadState.retryCount[featureName] or 0) + 1
+        if loadState.retryCount[featureName] >= loadState.MAX_RETRIES then
+            loadState.failed[featureName] = true
         end
+        return false
     end
-    
-    self.loading = false
 end
+
 function LazyLoader:unloadFeature(featureName)
-    if not self.loaded[featureName] then
-        return
-    end
-    local cleanupFunctions = {
-        esp = function()
-            for target in pairs(config.espData) do
-                removeESPLabel(target)
+    if not self.loaded[featureName] then return end
+    for name, loaded in pairs(self.loaded) do
+        if loaded and name ~= featureName then
+            local config = featureConfig[name]
+            if config then
+                for _, dep in ipairs(config.dependencies or {}) do
+                    if dep == featureName then
+                        return
+                    end
+                end
             end
-            for target in pairs(config.highlightData) do
-                removeHighlightESP(target)
-            end
-            for target in pairs(config.lineESPData) do
-                removeLineESP(target)
-            end
-        end,
-        silentAim = function()
-            if gui.RingHolder then
-                gui.RingHolder.Visible = false
-            end
-            for pl in pairs(config.activeApplied) do
-                restorePartForPlayer(pl)
-            end
-        end,
-        aimbot = function()
-            handleAimbotToggle(false)
-        end,
-        hitbox = function()
-            for player in pairs(config.hitboxExpandedParts) do
-                restoreTorso(player)
-            end
-            config.hitboxExpandedParts = {}
-        end,
-        antiAim = function()
-            returnToOriginalPosition()
-        end,
-        autoFarm = function()
-            stopAutoFarm()
-        end,
-        client = function()
-            applyClientMaster(false)
-        end,
-        triggerBot = function()
-            toggleTriggerBot(false)
-        end,
-        bhop = function()
-            toggleBHop(false)
-        end,
-        spinbot = function()
-            if config.varibz.spinbotConnection then
-                config.varibz.spinbotConnection:Disconnect()
-                config.varibz.spinbotConnection = nil
-            end
-        end,
-        silentAimHK = function()
-            config.SA2_Enabled = false
         end
-    }
+    end
     
-    if cleanupFunctions[featureName] then
-        pcall(cleanupFunctions[featureName])
+    local config = featureConfig[featureName]
+    if config and config.unload then
+        local success, err = pcall(config.unload)
+        if not success then
+            warn("Failed to unload " .. featureName .. ": " .. tostring(err))
+        end
     end
     
     self.loaded[featureName] = nil
+    loadState.active[featureName] = nil
 end
-local function jsdoit()
-    local originalCallbacks = {}
-    local mainToggles = {
-        autoFarm = {
-            getter = function() return config.autoFarmEnabled end,
-            setter = function(v)
-                config.autoFarmEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("autoFarm")
-                else
-                    LazyLoader:unloadFeature("autoFarm")
-                end
+
+function LazyLoader:queueFeature(featureName)
+    if not featureConfig[featureName] then return false end
+    if self.loaded[featureName] then return true end
+    if #self.queue >= self.maxQueueSize then return false end
+    for _, name in ipairs(self.queue) do
+        if name == featureName then return true end
+    end
+    
+    table.insert(self.queue, featureName)
+    if not self._processing then
+        self:startProcessing()
+    end
+    return true
+end
+
+function LazyLoader:startProcessing()
+    if self._processing or #self.queue == 0 then return end
+    self._processing = true
+    
+    task.spawn(function()
+        while #self.queue > 0 and self.enabled do
+            local feature = table.remove(self.queue, 1)
+            if feature and not self.loaded[feature] then
+                self:loadFeature(feature)
             end
-        },
-        antiAim = {
-            getter = function() return config.antiAimEnabled end,
-            setter = function(v)
-                config.antiAimEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("antiAim")
-                else
-                    LazyLoader:unloadFeature("antiAim")
-                end
-            end
-        }
-    }
-    local visualToggles = {
-        esp = {
-            getter = function() return config.espMasterEnabled end,
-            setter = function(v)
-                config.espMasterEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("esp")
-                else
-                    LazyLoader:unloadFeature("esp")
-                end
-            end
-        }
-    }
-    local aimbotToggles = {
-        aimbot = {
-            getter = function() return config.aimbotEnabled end,
-            setter = function(v)
-                config.aimbotEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("aimbot")
-                else
-                    LazyLoader:unloadFeature("aimbot")
-                end
-            end
-        }
-    }
-    local silentToggles = {
-        silentAim = {
-            getter = function() return config.startsa end,
-            setter = function(v)
-                config.startsa = v
-                if v then
-                    LazyLoader:loadFeatures("silentAim")
-                else
-                    LazyLoader:unloadFeature("silentAim")
-                end
-            end
-        },
-        silentAimHK = {
-            getter = function() return config.SA2_Enabled end,
-            setter = function(v)
-                config.SA2_Enabled = v
-                if v then
-                    LazyLoader:loadFeatures("silentAimHK")
-                else
-                    LazyLoader:unloadFeature("silentAimHK")
-                end
-            end
-        }
-    }
-    local hitboxToggles = {
-        hitbox = {
-            getter = function() return config.hitboxEnabled end,
-            setter = function(v)
-                config.hitboxEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("hitbox")
-                else
-                    LazyLoader:unloadFeature("hitbox")
-                end
-            end
-        }
-    }
-    local clientToggles = {
-        client = {
-            getter = function() return config.clientMasterEnabled end,
-            setter = function(v)
-                config.clientMasterEnabled = v
-                if v then
-                    LazyLoader:loadFeatures("client")
-                else
-                    LazyLoader:unloadFeature("client")
-                end
-            end
-        }
-    }
-    local miscToggles = {
-        triggerBot = {
-            getter = function() return config.tbot.enabled end,
-            setter = function(v)
-                config.tbot.enabled = v
-                if v then
-                    LazyLoader:loadFeatures("triggerBot")
-                else
-                    LazyLoader:unloadFeature("triggerBot")
-                end
-            end
-        },
-        bhop = {
-            getter = function() return config.bhop.enabled end,
-            setter = function(v)
-                config.bhop.enabled = v
-                if v then
-                    LazyLoader:loadFeatures("bhop")
-                else
-                    LazyLoader:unloadFeature("bhop")
-                end
-            end
-        },
-        spinbot = {
-            getter = function() return config.spinbot.enabled end,
-            setter = function(v)
-                config.spinbot.enabled = v
-                if v then
-                    LazyLoader:loadFeatures("spinbot")
-                else
-                    LazyLoader:unloadFeature("spinbot")
-                end
-            end
-        }
+            task.wait(self.processingInterval)
+        end
+        self._processing = false
+    end)
+end
+
+function LazyLoader:loadFeatures(featureNames)
+    if not self.enabled then return end
+    if type(featureNames) == "string" then
+        featureNames = {featureNames}
+    end
+    local sorted = {}
+    for _, name in ipairs(featureNames) do
+        local config = featureConfig[name]
+        if config then
+            table.insert(sorted, {name = name, priority = config.priority or 5})
+        end
+    end
+    
+    table.sort(sorted, function(a, b) return a.priority < b.priority end)
+    
+    for _, item in ipairs(sorted) do
+        self:queueFeature(item.name)
+    end
+    
+    self:startProcessing()
+end
+
+function LazyLoader:loadEssentialFeatures()
+    if not self.enabled then return end
+    if not self:isReady() then
+        local conn
+        conn = game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
+            conn:Disconnect()
+            self:loadEssentialFeatures()
+        end)
+        return
+    end
+    
+    local essential = {}
+    for name, config in pairs(featureConfig) do
+        if config.essential then
+            table.insert(essential, name)
+        end
+    end
+    self:loadFeatures(essential)
+end
+
+function LazyLoader:cleanup()
+    local features = {}
+    for name in pairs(self.loaded) do
+        local config = featureConfig[name]
+        if config and not config.essential then
+            table.insert(features, name)
+        end
+    end
+    table.sort(features, function(a, b)
+        local pa = featureConfig[a] and featureConfig[a].priority or 5
+        local pb = featureConfig[b] and featureConfig[b].priority or 5
+        return pa > pb
+    end)
+    
+    for _, name in ipairs(features) do
+        self:unloadFeature(name)
+    end
+    self.queue = {}
+    loadState.pending = {}
+    loadState.active = {}
+    loadState.failed = {}
+    loadState.retryCount = {}
+    self._processing = false
+    self._cleanupQueue = {}
+end
+
+function LazyLoader:setEnabled(enabled)
+    self.enabled = enabled
+    if not enabled then
+        self:cleanup()
+    else
+        self:loadEssentialFeatures()
+    end
+end
+
+function LazyLoader:getStatus()
+    local status = {
+        loaded = {},
+        loading = {},
+        failed = {},
+        queueSize = #self.queue,
+        isProcessing = self._processing
     }
     
-    return {
-        main = mainToggles,
-        visual = visualToggles,
-        aimbot = aimbotToggles,
-        silent = silentToggles,
-        hitbox = hitboxToggles,
-        client = clientToggles,
-        misc = miscToggles
-    }
-end
-LazyLoader.bruhb = true
-function LazyLoader:loadEssentialFeatures()
-    local essential = {"core"}
-    self:loadFeatures(essential)
+    for name in pairs(self.loaded) do
+        table.insert(status.loaded, name)
+    end
+    
+    for name in pairs(loadState.failed) do
+        table.insert(status.failed, name)
+    end
+    
+    return status
 end
 local oldInit = init
 init = function()
     LazyLoader:loadEssentialFeatures()
-    local featuresToLoad = {}
-    if config.espMasterEnabled then table.insert(featuresToLoad, "esp") end
-    if config.startsa then table.insert(featuresToLoad, "silentAim") end
-    if config.aimbotEnabled then table.insert(featuresToLoad, "aimbot") end
-    if config.hitboxEnabled then table.insert(featuresToLoad, "hitbox") end
-    if config.antiAimEnabled then table.insert(featuresToLoad, "antiAim") end
-    if config.autoFarmEnabled then table.insert(featuresToLoad, "autoFarm") end
-    if config.clientMasterEnabled then table.insert(featuresToLoad, "client") end
-    if config.tbot.enabled then table.insert(featuresToLoad, "triggerBot") end
-    if config.bhop.enabled then table.insert(featuresToLoad, "bhop") end
-    if config.spinbot.enabled then table.insert(featuresToLoad, "spinbot") end
-    if config.SA2_Enabled then table.insert(featuresToLoad, "silentAimHK") end
+    local toLoad = {}
+    if config.espMasterEnabled then table.insert(toLoad, "esp") end
+    if config.startsa then table.insert(toLoad, "silentAim") end
+    if config.aimbotEnabled then table.insert(toLoad, "aimbot") end
+    if config.hitboxEnabled then table.insert(toLoad, "hitbox") end
+    if config.antiAimEnabled then table.insert(toLoad, "antiAim") end
+    if config.autoFarmEnabled then table.insert(toLoad, "autoFarm") end
+    if config.clientMasterEnabled then table.insert(toLoad, "client") end
+    if config.tbot.enabled then table.insert(toLoad, "triggerBot") end
+    if config.bhop.enabled then table.insert(toLoad, "bhop") end
+    if config.spinbot.enabled then table.insert(toLoad, "spinbot") end
+    if config.SA2_Enabled then table.insert(toLoad, "silentAimHK") end
     
-    if #featuresToLoad > 0 then
-        LazyLoader:loadFeatures(featuresToLoad)
-    end
-    oldInit()
-end
-local oldCleanup = cleanup
-cleanup = function()
-    for featureName in pairs(LazyLoader.loaded) do
-        LazyLoader:unloadFeature(featureName)
+    if #toLoad > 0 then
+        LazyLoader:loadFeatures(toLoad)
     end
     
-    LazyLoader.loaded = {}
-    LazyLoader.queue = {}
-    LazyLoader.loading = false
-    LazyLoader.bruhb = false
-    
-    oldCleanup()
+    if oldInit then oldInit() end
 end
-
-local toggles = jsdoit()
+local function setupToggleBindings()
+    local bindings = {
+        autoFarm = {
+            get = function() return config.autoFarmEnabled end,
+            set = function(v)
+                config.autoFarmEnabled = v
+                if v then LazyLoader:queueFeature("autoFarm")
+                else LazyLoader:unloadFeature("autoFarm") end
+            end
+        },
+        antiAim = {
+            get = function() return config.antiAimEnabled end,
+            set = function(v)
+                config.antiAimEnabled = v
+                if v then LazyLoader:queueFeature("antiAim")
+                else LazyLoader:unloadFeature("antiAim") end
+            end
+        },
+        esp = {
+            get = function() return config.espMasterEnabled end,
+            set = function(v)
+                config.espMasterEnabled = v
+                if v then LazyLoader:queueFeature("esp")
+                else LazyLoader:unloadFeature("esp") end
+            end
+        },
+        aimbot = {
+            get = function() return config.aimbotEnabled end,
+            set = function(v)
+                config.aimbotEnabled = v
+                if v then LazyLoader:queueFeature("aimbot")
+                else LazyLoader:unloadFeature("aimbot") end
+            end
+        },
+        silentAim = {
+            get = function() return config.startsa end,
+            set = function(v)
+                config.startsa = v
+                if v then LazyLoader:queueFeature("silentAim")
+                else LazyLoader:unloadFeature("silentAim") end
+            end
+        },
+        silentAimHK = {
+            get = function() return config.SA2_Enabled end,
+            set = function(v)
+                config.SA2_Enabled = v
+                if v then LazyLoader:queueFeature("silentAimHK")
+                else LazyLoader:unloadFeature("silentAimHK") end
+            end
+        },
+        hitbox = {
+            get = function() return config.hitboxEnabled end,
+            set = function(v)
+                config.hitboxEnabled = v
+                if v then LazyLoader:queueFeature("hitbox")
+                else LazyLoader:unloadFeature("hitbox") end
+            end
+        },
+        client = {
+            get = function() return config.clientMasterEnabled end,
+            set = function(v)
+                config.clientMasterEnabled = v
+                if v then LazyLoader:queueFeature("client")
+                else LazyLoader:unloadFeature("client") end
+            end
+        },
+        triggerBot = {
+            get = function() return config.tbot.enabled end,
+            set = function(v)
+                config.tbot.enabled = v
+                if v then LazyLoader:queueFeature("triggerBot")
+                else LazyLoader:unloadFeature("triggerBot") end
+            end
+        },
+        bhop = {
+            get = function() return config.bhop.enabled end,
+            set = function(v)
+                config.bhop.enabled = v
+                if v then LazyLoader:queueFeature("bhop")
+                else LazyLoader:unloadFeature("bhop") end
+            end
+        },
+        spinbot = {
+            get = function() return config.spinbot.enabled end,
+            set = function(v)
+                config.spinbot.enabled = v
+                if v then LazyLoader:queueFeature("spinbot")
+                else LazyLoader:unloadFeature("spinbot") end
+            end
+        }
+    }
+    
+    return bindings
+end
+LazyLoader.enabled = true
+LazyLoader:loadEssentialFeatures()
+local toggles = setupToggleBindings()
 loadstring(game:HttpGet(urls.url1))()
 local Alurt = loadstring(game:HttpGet(urls.url4))()
 
@@ -12691,6 +12795,7 @@ function cleanup()
     config.currentAntiAimTarget = nil
     config.hitboxExpandedParts = {}
     config.hitboxOriginalSizes = {}
+    LazyLoader:cleanup()
 end
 
 local clearTargetCache = function()
@@ -12803,5 +12908,9 @@ end)
 task.wait(2.5)
 loadstring(game:HttpGet(urls.url11))()
 local FindTool = loadstring(game:HttpGet(urls.url3))()
-return config
+return {
+    config = config,
+    LazyLoader = LazyLoader,
+    toggles = toggles
+}
 -- fin
