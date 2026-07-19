@@ -8,7 +8,7 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “shovel without a handle = sand.cc” 
+           “RNGs are random number generator with memes :3” 
                                            
                                - Gpssickle
 ]]
@@ -1240,7 +1240,7 @@ local function rng3(tabName)
 end
 -- rng3("")
 
-local function givename()
+local function rng5()
     local currentDate = os.date("%m %d")
     local currentYear = tonumber(os.date("%Y"))
     local festiveTitles = {
@@ -1362,18 +1362,75 @@ local function uianimate()
     local openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not openButton then return end
     
-    local stroke = nil
-    local gradient = nil
+    local windowFrame = Window.UIElements.Main
+    if not windowFrame then return end
+    
+    -- Get or create stroke for open button
+    local openStroke = nil
+    local openGradient = nil
     
     for _, descendant in ipairs(openButton:GetDescendants()) do
         if descendant:IsA("UIStroke") then
-            stroke = descendant
+            openStroke = descendant
         elseif descendant:IsA("UIGradient") then
-            gradient = descendant
+            openGradient = descendant
         end
     end
     
-    if not stroke then return end
+    if not openStroke then return end
+    
+    -- Create stroke with gradient for the main window
+    local windowStroke = nil
+    local windowGradient = nil
+    
+    -- Check if window already has a stroke with gradient
+    for _, descendant in ipairs(windowFrame:GetDescendants()) do
+        if descendant:IsA("UIStroke") then
+            windowStroke = descendant
+            -- Look for gradient inside the stroke
+            for _, grad in ipairs(descendant:GetDescendants()) do
+                if grad:IsA("UIGradient") then
+                    windowGradient = grad
+                    break
+                end
+            end
+            break
+        end
+    end
+    
+    -- Create stroke if it doesn't exist
+    if not windowStroke then
+        windowStroke = Instance.new("UIStroke")
+        windowStroke.Thickness = 2
+        windowStroke.Color = Color3.fromRGB(255, 255, 255)
+        windowStroke.Transparency = 0.5
+        windowStroke.LineJoinMode = Enum.LineJoinMode.Round
+        windowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        windowStroke.Parent = windowFrame
+        
+        -- Create gradient for the stroke
+        windowGradient = Instance.new("UIGradient")
+        windowGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(144, 238, 144)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 200)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
+        })
+        windowGradient.Parent = windowStroke
+    end
+    
+    if not windowGradient then
+        windowGradient = Instance.new("UIGradient")
+        windowGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(144, 238, 144)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 200)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
+        })
+        windowGradient.Parent = windowStroke
+    end
+    
+    -- Match window stroke with open button stroke
+    windowStroke.Thickness = openStroke.Thickness
+    windowStroke.Transparency = openStroke.Transparency
     
     local TweenService = game:GetService("TweenService")
     local RunService = game:GetService("RunService")
@@ -1392,6 +1449,12 @@ local function uianimate()
     local maxThickness = 2
     local targetRotation = 0
     local currentRotation = 0
+    local windowTargetRotation = 0
+    local windowCurrentRotation = 0
+    
+    -- Store initial window stroke properties
+    local windowInitialThickness = windowStroke.Thickness
+    
     local function getNearestEnemy()
         local nearest = nil
         local nearestDist = math.huge
@@ -1415,10 +1478,18 @@ local function uianimate()
 
     local connection
     connection = RunService.Heartbeat:Connect(function(deltaTime)
-        if not stroke or not stroke.Parent then
+        -- Update open button stroke
+        if not openStroke or not openStroke.Parent then
             if connection then connection:Disconnect() end
             return
         end
+        
+        -- Update window stroke to match open button
+        if windowStroke and windowStroke.Parent then
+            windowStroke.Thickness = openStroke.Thickness
+            windowStroke.Transparency = openStroke.Transparency
+        end
+        
         character = lp.Character
         humanoid = character and character:FindFirstChildOfClass("Humanoid")
         if character and humanoid then
@@ -1452,7 +1523,7 @@ local function uianimate()
                 local thicknessRange = maxThickness - minThickness
                 local targetThickness = minThickness + (healthFactor * thicknessRange)
                 local enemy = getNearestEnemy()
-                if enemy and gradient then
+                if enemy and openGradient then
                     local enemyPos = enemy.Position
                     local rootPos = rootPart.Position
                     local direction = (enemyPos - rootPos).Unit
@@ -1463,25 +1534,48 @@ local function uianimate()
                 if rotDiff > 180 then rotDiff = rotDiff - 360 end
                 currentRotation = currentRotation + rotDiff * 0.05
                 
-                if gradient then
-                    gradient.Rotation = currentRotation
+                if openGradient then
+                    openGradient.Rotation = currentRotation
+                end
+                
+                -- Update window gradient rotation (slightly offset for visual variety)
+                if windowGradient then
+                    -- Window gradient follows the same enemy direction but with a slight delay
+                    local windowRotDiff = (targetRotation - windowCurrentRotation) % 360
+                    if windowRotDiff > 180 then windowRotDiff = windowRotDiff - 360 end
+                    windowCurrentRotation = windowCurrentRotation + windowRotDiff * 0.025 -- Slower follow
+                    windowGradient.Rotation = windowCurrentRotation
                 end
             end
         end
+        
         local currentTime = tick()
-        local pulseValue = (math.sin(currentTime * (1 / pulseSpeed) * math.pi * 2) + 1) / 2 -- ITS 0 TO 1 ME
+        local pulseValue = (math.sin(currentTime * (1 / pulseSpeed) * math.pi * 2) + 1) / 2
         local thicknessRange = maxThickness - minThickness
         local currentThickness = minThickness + (pulseValue * thicknessRange)
-        stroke.Thickness = currentThickness
-        local pulseTransparency = 0.1 + (pulseValue * 0.3)
-        stroke.Transparency = pulseTransparency
+        
+        -- Update both strokes
+        if openStroke then
+            openStroke.Thickness = currentThickness
+            local pulseTransparency = 0.1 + (pulseValue * 0.3)
+            openStroke.Transparency = pulseTransparency
+        end
+        
+        if windowStroke then
+            -- Window stroke follows the same pulse but slightly different for variety
+            local windowPulseValue = (math.sin(currentTime * (1 / (pulseSpeed * 0.9)) * math.pi * 2) + 1) / 2
+            local windowThickness = minThickness + (windowPulseValue * thicknessRange)
+            windowStroke.Thickness = windowThickness
+            local windowTransparency = 0.1 + (windowPulseValue * 0.3)
+            windowStroke.Transparency = windowTransparency
+        end
     end)
+    
     task.wait(0.1)
     if not connection or not connection.Connected then
         lo2l()
     end
 end
-
 local SaveSystem = {
     Folder = "Gravel_Saves",
     Extension = ".json",
@@ -8334,7 +8428,7 @@ elseif isTablet then
 end
 
 local Window = WindUI:CreateWindow({
-    Title = givename(),
+    Title = rng5(),
     Folder = "Gravel_Saves",
     Theme = "Dark",
     Icon = "shovel",
@@ -8356,41 +8450,138 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
-local rng4 = function()
-    local another = {
+local function rng4()
+    local messages = {
         "WEEEEEEEEEEE",
-        ">.<",
+        "I'm also a rng",
         "gravel > sand",
         "gravel is geometric",
-        "I'm gravels",
-        "!11!1!!1!1",
-        "I hate http 429",
+        "im gravels",
+        "im a exploit (I think....)",
+        "totally a real human typing ts",
+        "i hate http 429",
+        "wth is folk valley",
+        "is folk valley just ohio?",
+        "69",
+        "my autocorrect is fighting me",
+        "Hello there I'm gravel!! :v",
+        "try badapple in the misctab :3",
+        "I'm lazier than lazytown",
+        "hey cutie :3",
+        "ya handsome",
         ":/",
-        "read the InfoTab (pls)",
-        "I'm mischievousjdjsh",
+        ">:3",
+        ";D",
+        "tbh Idk wat ''.cc'' means :/",
+        "folk gravely",
+        "no I'm not sentient!1!1 >:(",
+        "Version: [non-existent]",
+        "Autofarm is loop tp but better",
+        "wowzerz :o",
+        "read the InfoTab pls",
+        "yahhhhhhhhh",
+        "feeling mischievouskkwwh",
         "ur welcom",
-        "Why is Gubby ai slop :(",
+        "why is gubby ai slop :(",
         "[insert funny text here]",
-        "I'm a tag",
+        "im a tag",
+        "r u hacking???",
         "universal & free script btw",
+        "I'm g.cc",
         "ez win",
+        "yes I played portal 2 and 1",
+        "I like half & life :3",
+        "lambda",
+        "www.gravel.com is real",
+        "I don't has discord",
+        "hbss means heybuddystopstealing",
+        "#############",
+        "broski lolski whatevski yessirski",
+        "ur ip is [redacted]",
+        "bloxycola yummy",
+        "sand.cc is smaller gravel",
+        "I work best on generic shooters",
+        "who's even reading ts 💔🥀",
+        "ts script works on adopt me",
+        "currently consuming gravel",
+        "Cframe view is op.. trust",
+        "don't touch the updaters >:(",
+        "360 means Omnidirectional",
+        "ts script is made with a txt file",
+        "ts script is completely made on a phone",
+        "SilentAim HB is unique :>",
+        "sjuwuwhebejkwob",
+        "28+#7372!+$+2-#+!djhs",
+        "yt: @gpssickle :3",
+        "credit me if u used a snippet >:[",
+        "it's sand.cc (a lie)",
+        "idk, sterling?",
+        "nice wood- I mean gaming chair",
+        ">_o",
+        "I'm rng4 btw",
+        "r u a furry?",
+        "I hate renderstepped...",
+        "if u pour water on a rock nothing happens",
+        "sunc %0.... jk"
     }
     local tag = Window:Tag({
-        Title = another[math.random(1, #another)],
+        Title = "",
         Icon = "github",
         Color = Color3.fromHex("#1c1c1c"),
         Border = true
     })
-    local function updateTag()
-        if tag and tag.SetTitle then
-            local newMsg = another[math.random(1, #another)]
-            tag:SetTitle(newMsg)
+    if not tag then
+        return
+    end
+    local currentText = ""
+    local cursorVisible = true
+    task.spawn(function()
+        while tag do
+            cursorVisible = not cursorVisible
+            if tag.SetTitle then
+                tag:SetTitle(currentText .. (cursorVisible and "_" or ""))
+            end
+            task.wait(0.45)
+        end
+    end)
+    local function setText(text)
+        currentText = text
+        if tag.SetTitle then
+            tag:SetTitle(text .. (cursorVisible and "_" or ""))
+        end
+    end
+    local function typeText(text)
+        local typed = ""
+        for i = 1, #text do
+            local char = text:sub(i, i)
+            typed ..= char
+            setText(typed)
+            local delay = math.random(25, 85) / 1000
+            if char == " " then
+                delay += math.random(40, 90) / 1000
+            elseif char:match("[%.%!%?,:]") then
+                delay += math.random(120, 250) / 1000
+            end
+            if math.random() < 0.05 then
+                delay += math.random(100, 300) / 1000
+            end
+            task.wait(delay)
+        end
+    end
+    local function eraseText()
+        local text = currentText
+        for i = #text, 0, -1 do
+            setText(text:sub(1, i))
+            task.wait(math.random(15, 40) / 1000)
         end
     end
     task.spawn(function()
-        while true do
-            task.wait(5)
-            updateTag()
+        while tag do
+            local message = messages[math.random(1, #messages)]
+            typeText(message)
+            task.wait(math.random(15, 35) / 10)
+            eraseText()
+            task.wait(math.random(2, 6) / 10)
         end
     end)
     return tag
