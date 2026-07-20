@@ -8,12 +8,17 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “RNGs are random number generator with memes :3” 
+           “Coding is easy... I think” 
                                            
                                - Gpssickle
 ]]
 
 -- Gravel.cc
+if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
+    return
+end
+getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
+
 repeat wait() until game:IsLoaded()
 
 for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
@@ -750,6 +755,7 @@ local clone_ref = cloneref or function(v) return v end
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
 local config = {
+    confIg = "Gravel",
     startsa = false,
     fovsize = 120,
     predic = 1,
@@ -1008,6 +1014,268 @@ local config = {
             "🥀💔✌️🫩",
             "brochacho",
         },
+--[[
+            {
+                "",
+            },
+]]
+        convo = {
+            {
+                "HEY",
+                "USER HEY",
+                "CAN YOU HEAR ME???",
+                "Ok Ive got ur attention",
+                "what I'm gonna say is",
+                "pls read the InfoTab :(",
+                "and credit me if u did a snippet :(",
+            },
+            {
+                "proto conversion",
+                "tbh idk wat I'm saying",
+            },
+            {
+                "alt+f4 = free robux",
+                "trust me it works",
+                "101% works I'm sure",
+            },
+            {
+                "who are u",
+                "yea like who r u",
+                "r u a gravel user?",
+                "hmmmmm ok then",
+            },
+            {
+                "My Rival,",
+                "My Idol,",
+                "You've got me suicidal",
+                "My love, your rage",
+                "Our dying claims to fame'",
+                "Our battle legendary,",
+                "Our fickle fraternizing,",
+                "A war inside my heart.",
+                "Until ###### it do us part",
+                "Bang, Bang, Bang, Bang",
+                "'Til I take you...",
+                "Down, Down, Down, Down",
+                "I want you in the ground!",
+            },
+            {
+                "Did you do your chores?",
+                "Yessirski!",
+                "Did you do your chores?",
+                "Yessirski!",
+                "Did you do your chores?",
+                "Yessirski!",
+                "When I get home it better be clean!",
+                "Did you do your chores?",
+                "Yessirski!",
+                "Did you do your chores?",
+                "Yessirski!",
+                "Did you do your chores?",
+                "Yessirski!",
+                "BOI WHY DID YA LIE TO ME",
+                "AHHHHHH",
+            },
+            {
+                "Y-YO, bro come over here",
+                "Check out my new shoes,",
+                "Theyre the brand new-",
+                "1-2, Buckle my shoeeee",
+                "3-4, Buckle some moreeeee",
+                "5-6, Nike-y Kicks",
+                "OH-OH-OhHH THAT IS SO FIRE",
+            },
+            {
+                "Cframe view is op",
+                "pls try it out",
+                "you'll like it :3",
+            },
+            {
+                "Aimware",
+                "is this actually aimware??",
+                "who knows",
+                "maybe it is",
+            },
+            {
+                "r u hacking??",
+                "I think u hackin",
+                "yea ur def hackin",
+            },
+            {
+                "you got ratted.",
+                "I'm serious",
+                "you've got ratted",
+                "I'm joking lol",
+            },
+            {
+                "ur ip is [Redacted]",
+                "no but seriously it is",
+                "I'm jk",
+                "what even is Redacted :/",
+            },
+            {
+                "is gravel js crushed rocks?",
+                "like genuinely???",
+                "gravel could be js crushed rocks",
+            },
+            {
+                "hbss means:",
+                "heybuddystopstealing",
+                "ye dat what it means",
+            },
+            {
+                "I'm 101% u'll like gravel :3",
+                "like I'm dat sure",
+                "(why am I glazing)",
+            },
+            {
+                "I work best on generic shooters",
+                "if it's not a generic shooter",
+                "I might break",
+            },
+            {
+                "why is http 429 my enemy",
+                "I SWEAR TO GOD",
+                "everytime i load gravel",
+                "it hits me with 429",
+                "like bro chill out",
+            },
+            {
+                "renderstepped is for chumps",
+                "heartbeat gang where u at",
+                "renderstepped makes me lag",
+                "heartbeat smooth like butter",
+            },
+            {
+                "did someone say spaghetti",
+                "my code is pasta",
+                "al dente and tangled",
+                "bon appetit",
+            },
+            {
+                "synapse x users be like",
+                "where my script at",
+                "script got executed",
+                "by a 2017 exploit",
+                "those were the days",
+            },
+            {
+                "nil errors are my passion",
+                "attempt to index nil",
+                "my favorite error",
+                "gets me every time",
+            },
+            {
+                "if u see a syntax error",
+                "just run it again",
+                "it'll fix itself",
+                "trust me bro",
+            },
+            {
+                "the 200 variable limit",
+                "is my sleep paralysis demon",
+                "i wake up screaming",
+                "at 3am thinking about it",
+            },
+            {
+                "when the ui library updates",
+                "and everything breaks",
+                "i ''love'' rewriting code",
+                "said no one ever",
+            },
+            {
+                "print() are too overrated",
+                "like bro it's just... idk even know :/",
+            },
+            {
+                "blox fruits players be like",
+                "is this for blox fruits",
+                "no it's for generic shooters",
+                "please learn to read",
+            },
+            {
+                "gaming chair diff fr",
+                "i got the 4000$ chair",
+                "that's why i never miss",
+                "totally not aimbot",
+                "or silentaim",
+                "or hitbox",
+                "or [insert feature here]",
+            },
+            {
+                "csgo players malding",
+                "when i hit a 360 no scope",
+                "jokes on them",
+                "i don't even play csgo",
+                "I play Roblox shooters",
+            },
+            {
+                "me and the boys",
+                "running the script",
+                "and getting banned",
+                "worth it every time",
+            },
+            {
+                "shoutout to the devs",
+                "that make this possible",
+                "we appreciate you",
+                "oh wait that's me :v",
+            },
+            {
+                "me debugging at 2am",
+                "why isn't it working",
+                "oh i forgot a comma",
+                "i'm going to sleep",
+            },
+            {
+                "half life 3 confirmed",
+                "gravel confirmed it",
+                "trust me bro",
+                "my uncle works at valve",
+            },
+            {
+                "the script is free",
+                "and open source",
+                "and has silent aim",
+                "what more could you want",
+            },
+            {
+                "i love when the script",
+                "works on the first try",
+                "that's a lie",
+                "it never does",
+            },
+            {
+                "200 variable limit is",
+                "my arch nemesis",
+                "we have beef",
+                "it started in 2024",
+            },
+            {
+                "the script is held together",
+                "by pure spite",
+                "and caffeine",
+                "mostly caffeine",
+            },
+            {
+                "me trying to explain",
+                "the code to someone",
+                "i don't even understand it",
+                "what do you want from me",
+            },
+            {
+                "is that a hack",
+                "no it's a gaming chair",
+                "my chair has aimbot",
+                "you should get one",
+            },
+            {
+                "wait this isn't a virus",
+                "i was told it was a virus",
+                "it's open source",
+                "you can literally read it",
+            },
+        },
         savesParagraph = nil,
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
@@ -1027,6 +1295,7 @@ local config = {
         patcher = true,
         bhopQuickToggleUI = nil,
         lastJumpTime = 0,
+        errors = true,
     },
     uicolor = {
         lightGreen = Color3.fromRGB(144, 238, 144),
@@ -1361,11 +1630,8 @@ local function uianimate()
     
     local openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not openButton then return end
-    
     local windowFrame = Window.UIElements.Main
     if not windowFrame then return end
-    
-    -- Get or create stroke for open button
     local openStroke = nil
     local openGradient = nil
     
@@ -1378,16 +1644,11 @@ local function uianimate()
     end
     
     if not openStroke then return end
-    
-    -- Create stroke with gradient for the main window
     local windowStroke = nil
     local windowGradient = nil
-    
-    -- Check if window already has a stroke with gradient
     for _, descendant in ipairs(windowFrame:GetDescendants()) do
         if descendant:IsA("UIStroke") then
             windowStroke = descendant
-            -- Look for gradient inside the stroke
             for _, grad in ipairs(descendant:GetDescendants()) do
                 if grad:IsA("UIGradient") then
                     windowGradient = grad
@@ -1397,8 +1658,6 @@ local function uianimate()
             break
         end
     end
-    
-    -- Create stroke if it doesn't exist
     if not windowStroke then
         windowStroke = Instance.new("UIStroke")
         windowStroke.Thickness = 2
@@ -1407,8 +1666,6 @@ local function uianimate()
         windowStroke.LineJoinMode = Enum.LineJoinMode.Round
         windowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         windowStroke.Parent = windowFrame
-        
-        -- Create gradient for the stroke
         windowGradient = Instance.new("UIGradient")
         windowGradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(144, 238, 144)),
@@ -1427,8 +1684,6 @@ local function uianimate()
         })
         windowGradient.Parent = windowStroke
     end
-    
-    -- Match window stroke with open button stroke
     windowStroke.Thickness = openStroke.Thickness
     windowStroke.Transparency = openStroke.Transparency
     
@@ -1451,8 +1706,6 @@ local function uianimate()
     local currentRotation = 0
     local windowTargetRotation = 0
     local windowCurrentRotation = 0
-    
-    -- Store initial window stroke properties
     local windowInitialThickness = windowStroke.Thickness
     
     local function getNearestEnemy()
@@ -1478,13 +1731,10 @@ local function uianimate()
 
     local connection
     connection = RunService.Heartbeat:Connect(function(deltaTime)
-        -- Update open button stroke
         if not openStroke or not openStroke.Parent then
             if connection then connection:Disconnect() end
             return
         end
-        
-        -- Update window stroke to match open button
         if windowStroke and windowStroke.Parent then
             windowStroke.Thickness = openStroke.Thickness
             windowStroke.Transparency = openStroke.Transparency
@@ -1538,12 +1788,10 @@ local function uianimate()
                     openGradient.Rotation = currentRotation
                 end
                 
-                -- Update window gradient rotation (slightly offset for visual variety)
                 if windowGradient then
-                    -- Window gradient follows the same enemy direction but with a slight delay
                     local windowRotDiff = (targetRotation - windowCurrentRotation) % 360
                     if windowRotDiff > 180 then windowRotDiff = windowRotDiff - 360 end
-                    windowCurrentRotation = windowCurrentRotation + windowRotDiff * 0.025 -- Slower follow
+                    windowCurrentRotation = windowCurrentRotation + windowRotDiff * 0.025
                     windowGradient.Rotation = windowCurrentRotation
                 end
             end
@@ -1553,8 +1801,6 @@ local function uianimate()
         local pulseValue = (math.sin(currentTime * (1 / pulseSpeed) * math.pi * 2) + 1) / 2
         local thicknessRange = maxThickness - minThickness
         local currentThickness = minThickness + (pulseValue * thicknessRange)
-        
-        -- Update both strokes
         if openStroke then
             openStroke.Thickness = currentThickness
             local pulseTransparency = 0.1 + (pulseValue * 0.3)
@@ -1562,7 +1808,6 @@ local function uianimate()
         end
         
         if windowStroke then
-            -- Window stroke follows the same pulse but slightly different for variety
             local windowPulseValue = (math.sin(currentTime * (1 / (pulseSpeed * 0.9)) * math.pi * 2) + 1) / 2
             local windowThickness = minThickness + (windowPulseValue * thicknessRange)
             windowStroke.Thickness = windowThickness
@@ -8450,80 +8695,14 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
+
 local function rng4()
-    local messages = {
-        "WEEEEEEEEEEE",
-        "I'm also a rng",
-        "gravel > sand",
-        "gravel is geometric",
-        "im gravels",
-        "im a exploit (I think....)",
-        "totally a real human typing ts",
-        "i hate http 429",
-        "wth is folk valley",
-        "is folk valley just ohio?",
-        "69",
-        "my autocorrect is fighting me",
-        "Hello there I'm gravel!! :v",
-        "try badapple in the misctab :3",
-        "I'm lazier than lazytown",
-        "hey cutie :3",
-        "ya handsome",
-        ":/",
-        ">:3",
-        ";D",
-        "tbh Idk wat ''.cc'' means :/",
-        "folk gravely",
-        "no I'm not sentient!1!1 >:(",
-        "Version: [non-existent]",
-        "Autofarm is loop tp but better",
-        "wowzerz :o",
-        "read the InfoTab pls",
-        "yahhhhhhhhh",
-        "feeling mischievouskkwwh",
-        "ur welcom",
-        "why is gubby ai slop :(",
-        "[insert funny text here]",
-        "im a tag",
-        "r u hacking???",
-        "universal & free script btw",
-        "I'm g.cc",
-        "ez win",
-        "yes I played portal 2 and 1",
-        "I like half & life :3",
-        "lambda",
-        "www.gravel.com is real",
-        "I don't has discord",
-        "hbss means heybuddystopstealing",
-        "#############",
-        "broski lolski whatevski yessirski",
-        "ur ip is [redacted]",
-        "bloxycola yummy",
-        "sand.cc is smaller gravel",
-        "I work best on generic shooters",
-        "who's even reading ts 💔🥀",
-        "ts script works on adopt me",
-        "currently consuming gravel",
-        "Cframe view is op.. trust",
-        "don't touch the updaters >:(",
-        "360 means Omnidirectional",
-        "ts script is made with a txt file",
-        "ts script is completely made on a phone",
-        "SilentAim HB is unique :>",
-        "sjuwuwhebejkwob",
-        "28+#7372!+$+2-#+!djhs",
-        "yt: @gpssickle :3",
-        "credit me if u used a snippet >:[",
-        "it's sand.cc (a lie)",
-        "idk, sterling?",
-        "nice wood- I mean gaming chair",
-        ">_o",
-        "I'm rng4 btw",
-        "r u a furry?",
-        "I hate renderstepped...",
-        "if u pour water on a rock nothing happens",
-        "sunc %0.... jk"
-    }
+    local usedConversations = {}
+    local availableIndices = {}
+    for i = 1, #config.varibz.convo do
+        table.insert(availableIndices, i)
+    end
+    
     local tag = Window:Tag({
         Title = "",
         Icon = "github",
@@ -8533,6 +8712,7 @@ local function rng4()
     if not tag then
         return
     end
+    
     local currentText = ""
     local cursorVisible = true
     task.spawn(function()
@@ -8544,12 +8724,14 @@ local function rng4()
             task.wait(0.45)
         end
     end)
+    
     local function setText(text)
         currentText = text
         if tag.SetTitle then
             tag:SetTitle(text .. (cursorVisible and "_" or ""))
         end
     end
+    
     local function typeText(text)
         local typed = ""
         for i = 1, #text do
@@ -8568,6 +8750,7 @@ local function rng4()
             task.wait(delay)
         end
     end
+    
     local function eraseText()
         local text = currentText
         for i = #text, 0, -1 do
@@ -8575,10 +8758,29 @@ local function rng4()
             task.wait(math.random(15, 40) / 1000)
         end
     end
+    
     task.spawn(function()
         while tag do
-            local message = messages[math.random(1, #messages)]
-            typeText(message)
+            if #availableIndices == 0 then
+                for i = 1, #config.varibz.convo do
+                    table.insert(availableIndices, i)
+                end
+                task.wait(math.random(20, 40) / 10)
+            end
+            local randomPos = math.random(1, #availableIndices)
+            local convoIndex = availableIndices[randomPos]
+            table.remove(availableIndices, randomPos)
+            local conversation = config.varibz.convo[convoIndex]
+            if conversation then
+                for index, message in ipairs(conversation) do
+                    typeText(message)
+                    
+                    if index < #conversation then
+                        task.wait(math.random(10, 30) / 10)
+                        eraseText()
+                    end
+                end
+            end
             task.wait(math.random(15, 35) / 10)
             eraseText()
             task.wait(math.random(2, 6) / 10)
@@ -9461,6 +9663,46 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
         end
     })
 
+MainTab:Toggle({
+    Title = "Errors",
+    Desc = "Enable/disable error catching",
+    Value = config.varibz.errors or true,
+    Callback = function(v)
+        config.varibz.errors = v
+        if v then
+            for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+                v:Enable()
+            end
+            for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+                v:Enable()
+            end
+            n({
+                Title = "Gravel.cc",
+                Content = "Error catching enabled",
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 255, 0)
+            })
+        else
+            for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+                v:Disable()
+            end
+            for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+                v:Disable()
+            end
+            n({
+                Title = "Gravel.cc",
+                Content = "Error catching disabled",
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
+    end
+})
+
 MainTab:Paragraph({
     Title = "Save/Load",
     Desc = "Save and load your configuration settings\n\n[sum features won't be saved mb :< ]",
@@ -9563,6 +9805,8 @@ task.spawn(function()
     end
 end)
 end
+
+-- VisualsTab
 local VisualsTab = Window:Tab({
     Title = "Visuals",
     Desc = rng3("Visuals"),
@@ -12987,6 +13231,7 @@ function cleanup()
     config.hitboxExpandedParts = {}
     config.hitboxOriginalSizes = {}
     LazyLoader:cleanup()
+    getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = false
 end
 
 local clearTargetCache = function()
