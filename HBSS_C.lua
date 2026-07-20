@@ -19,6 +19,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
+getgenv().sunc = "_C"
 
 local success, err = pcall(function()
 
@@ -51,11 +52,11 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local urls = {
     --hbss
-    url1 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_Loader_C.lua",
-    url2 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_Function_C.lua",
-    url3 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/SA2_FindTool_C.lua",
-    url11 = "https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_DeathHandler_C.lua",
-    --others
+    url1 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
+    url2 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
+    url3 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_FindTool" .. getgenv().sunc .. ".lua",
+    url11 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().sunc .. ".lua",
+    --other
     url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
     url6 = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
@@ -1024,6 +1025,7 @@ local config = {
 ]]
         convo = {
             {
+                typesp = "1",
                 "HEY",
                 "USER HEY",
                 "CAN YOU HEAR ME???",
@@ -1048,6 +1050,7 @@ local config = {
                 "hmmmmm ok then",
             },
             {
+                typesp = "1",
                 "My Rival,",
                 "My Idol,",
                 "You've got me suicidal",
@@ -1063,6 +1066,7 @@ local config = {
                 "I want you in the ground!",
             },
             {
+                typesp = "2.5",
                 "Did you do your chores?",
                 "Yessirski!",
                 "Did you do your chores?",
@@ -1080,13 +1084,94 @@ local config = {
                 "AHHHHHH",
             },
             {
+                typesp = "1",
                 "Y-YO, bro come over here",
+                "come over here, come over here",
                 "Check out my new shoes,",
                 "Theyre the brand new-",
                 "1-2, Buckle my shoeeee",
                 "3-4, Buckle some moreeeee",
                 "5-6, Nike-y Kicks",
                 "OH-OH-OhHH THAT IS SO FIRE",
+            },
+            {
+                typesp = "1",
+                "Error: (can't find message)",
+                "Error: (can't find message)",
+                "Error: (can't find message)",
+                "I'm not having errors actually",
+                "or maybe I am, who knows??",
+            },
+            {
+                "server authority",
+                "is laggyyyy :c",
+            },
+            {
+                typesp = "2.5",
+                ":o",
+                ":)",
+                ";)",
+                ";D",
+            },
+            {
+                "Mama, can I have cookie",
+                "No diabeto, roll back to kitchen",
+                "awwwwwwwww :(",
+            },
+            {
+                typesp = "1",
+                "I JUST HIT THE",
+                "JACKPOTTTTTTT",
+                "AY, AY, AY, AY, AY",
+                "I JUST HIT THE JACKPOT",
+            },
+            {
+                "I wouldn't say gravel is da best",
+                "idk there might be other scripts",
+                "that are hidden gems",
+                "well maybe gravel is one of em :v",
+            },
+            {
+                typesp = "2",
+                "All your base are belong to us",
+                "11113333777",
+                "TEH EPIK DUCK IS COMING!!!",
+                "GET OF MAH LAWN",
+                "ROFL",
+                "Muahahahaha!",
+            },
+            {
+                typesp = "1",
+                "if you could listen closely",
+                "you'll be a villian mostly",
+                "you have to chase a hero",
+                "and watch em' go from 1 to 0",
+                "just follow my moves.",
+                "and you'll be set-",
+                "to go and sneak around",
+                "just be careful",
+                "to make a single sound",
+                "as this superhero will be going-",
+                "on the around",
+                "now let's go and chase him down!",
+            },
+            {
+                "du bist gut genug...",
+                "Ich weiß nicht,",
+                "was die welt die sagt",
+                "bleib einfach nur du,",
+                "du bist gut genug!",
+                "du bist gut genug!",
+                "du bist gut genug!",
+                "du bist gut genug!",
+                "*fire music*",
+            },
+            {
+                typesp = "1",
+                "shimmy ey, shimmy ey, yaaa~",
+                "drake.. Swalalala.. drake",
+                "swalalala.. swalalala *sick beat*",
+                "*sick music*... keep streaking yah",
             },
             {
                 "Bro ts code is 13000+ lines long :(",
@@ -1105,6 +1190,7 @@ local config = {
                 "maybe it is",
             },
             {
+                typesp = "3",
                 ":3",
                 ">:3",
                 ":3",
@@ -1120,6 +1206,22 @@ local config = {
                 ":3",
                 ">:3",
                 "^w^",
+            },
+            {
+                "gravel cute :3",
+                ":3 :3",
+            },
+            {
+                typesp = "1.5",
+                "Didn't take that well.",
+                "Didn't take that well.",
+                "Felt like!",
+                "Didn't take that well.",
+                "Didn't take that well.",
+                "Felt like!",
+                "Didn't take that well.",
+                "Didn't take that well.",
+                "Felt like!",
             },
             {
                 "I'm not actually talking to u",
@@ -1157,7 +1259,7 @@ local config = {
             {
                 "I'm 101% u'll like gravel :3",
                 "like I'm dat sure",
-                "(why am I glazing)",
+                "(why am I self-glazing)",
             },
             {
                 "I work best on generic shooters",
@@ -1289,10 +1391,9 @@ local config = {
                 "mostly caffeine",
             },
             {
-                "me trying to explain",
-                "the code to someone",
-                "i don't even understand it",
-                "what do you want from me",
+                "Did you know",
+                "Water contains oxygen",
+                "so you could breath underwater",
             },
             {
                 "is that a hack",
@@ -1306,6 +1407,426 @@ local config = {
                 "it's open source",
                 "you can literally read it",
             },
+        },
+        popz = {
+            ":0",
+            ":7",
+            "my name is gravel what's yours?????",
+            "my zodiac sign is a shovel :p",
+            "gravel is rocky :o",
+            "graveeeeeeeelll",
+            ":p",
+            ">:3",
+            "Gravel is not Sentient idk wat ur talking about",
+            "sigmasigmaboug",
+            "I'm a rng pop-up that picks random messages 24/7",
+            "would dis script work on every gaem\nyh & noe",
+            "this script is 10000+ lines... oml :s",
+            "the UI ts using is WindUi and the notification is Alurt btw I just found it from ballmart",
+            "a free?! keyless?! script?! and open source?! that has silentaim?! wtf",
+            "the script is randomly picking messages your not freaking out :p",
+            "sorry xeno users or solarara I don't have the supporty support",
+            "nononononoonono this script ain't a virus so dat why I made it open src",
+            "Is that a gubby?\n\n- kreek",
+            "Error ur roblxo isn't support",
+            "ooh, nice computer you got their, Can I have it\n\n- Mario virus",
+            "something is coming in 3 days\n\n- verity",
+            "real",
+            "tuff",
+            "guhby this guhby that",
+            "2 atoms touch = big explosion",
+            "you can noclip when your atoms aligned\ntrust",
+            "I don't have DC btw",
+            "my code is used to be 8000+ now 9000+ and then 13000+ lines long, I canf do dis sh on mobile D:",
+            "flatgrass",
+            "search free robux to get free robux",
+            "alt-f4 = free rboux",
+            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.\n>\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
+            "^_^",
+            "^u^",
+            "^v^",
+            "half life 3 when?",
+            "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
+            "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
+            "Did you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nDid you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nWhen I get home it better be clean!\nDid you do your chores?\nyessirski!\nOH! BOI WHY DID U LIE TO ME!!!\nAHHHHH",
+            "Homework?\nNah!\nHomework?\nNah!\nHomework?\nNah!\nHomework?\ni did it at school\nNah!\nHomework?\nNah!\nHomework?\nNah!\nWHY ARE YOU CLASSES PHAILING\n AHHH D:",
+            "Turkey in the Straw!",
+            "du bist gut genug...\ndu bist gut genug...\ndu bist gut genug\ndu bist gut genug\n*fire music*",
+            "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat",
+            "*Stranger Things Intro*\ndustin lucas will mike...\nBURP",
+            "robloz where classic faces :‹",
+            "I'm not taking my sneakers off, I'm sneakers O'Toole",
+            "Gpssickle is a gps with a sickle",
+            "da script reached 8000 lines to 13000 o_o",
+            "just simply cheat through it\n\n quite literally",
+            "just simply go under it",
+            "just simply go over it",
+            "just simply script to it",
+            "just simply walk around it\n\n- Electracy",
+            "You die\n\n- StromBrew",
+            "sonion\ni learned this from meme culture don't ask me",
+            "I like trains",
+            "welcome to McDonald's.",
+            "you are my sunshine, my only sunshine",
+            "IS THAT SONIC WITH GRAY SHOES D:",
+            "Atoms never touch so dat means I didn't steal ur chocolate",
+            "Yeah, come gets some you freakin' wuss\n\n- Scout (not Taunt form dod)",
+            "sybau 🥀💔",
+            "these are meme reference ok",
+            "water + ice + melt = water",
+            "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
+            "1.61803398874989484820458683436563811772030917980576",
+            "print(''*prints cutely*'')\nerror(''*errors cutely*'')\nwarn(''*warns cutely*'')",
+            "Gravel.cc 🥀",
+            "my imagination has been powered",
+            "YOU NEVER SEE IT COMIIIIIIINNNG,\nyou'll see that my mind\nis to fast for eyes\nYOUR DONE INNNNNN\nBY THE\ntime is hit you, YOUR LAST SURPRISE",
+            "Gpssssssssssssssssssssssssssssssssssssssssickle",
+            "global positioning system with a sickle",
+            "The golden dandelion which is the golden dandelion",
+            "can u remind me the golden ratio next time",
+            "y'all think he look like; Steve Harvey?\n *Screams*",
+            "/kill @p",
+            "HBSS doesn't mean anything lolz\ni typed it randomly...",
+            "rbxm",
+            "why 'Gravel' ya know how sand gets in ur shoes..\ngravel does the same but it's for games",
+            "people barely use the bottab",
+            "I hate renderstepped...\n(probably because I keep misusing it)",
+            "is it Roblox or roadblocks or robloz who knows",
+            "''Does this work in Minecraft''",
+            "www.gravel.com ... why does this website exists?",
+            "imagine ur script getting mogged by a script made fully on a phone",
+            "dere is no Terraria final update D:",
+            "da cake isnt a lie... trust",
+            "iS ThAt ga hÆcker?????!?!?!!!?!???!?!",
+            "y is this drooling cat meme all over my fyp D:",
+            "tbh bro I'd go; [insert metalpipefalling.gif]",
+            "gravel vs sand vs rock vs thingamajang",
+            "GTA 6 when?",
+            "if they said ur a hacker say 'Ping Diff' and they'll believe u",
+            "w wedgeey 🥺\nw junglescripts 🥺",
+            "sand.cc when?",
+            "what version is this? well I don't fking know lol",
+            "scirpotjg iz hard :(",
+            "Roblox plz collabl",
+            "helloworld(''print'')",
+            "Markiplier & Larpiplier collab when?",
+            "61? 67?\nit's time for the letters to have fun\nabcdefghijklmnop\nL-M-N-O-P\nP\nP\nP\nP",
+            "hello whoever you are :D\ni don't have the capacity to see your usernames yet because I'm too lazy to script dat in",
+            "me is want chat roblox not age verif",
+            "this script isn't full ban proof so if you get banned DON'T blame on us when your using risky features :/",
+            "deres like idk amount of random messages I contains lolz",
+        },
+        popz2 = {
+            "wth is ts",
+            "hell nah",
+            "OHHHH HELLL NAH",
+            "pop-up goes bye bye",
+            "isn't phonk just noise?",
+            "guys it's a-a, a-a h-hacker!?!?!",
+            "tiki tiki",
+            "Nosirski!",
+            "[Eminem Throwing Meme.png]",
+            "why am I writing ts?",
+            "idk, sterling?",
+            "is that a toby?",
+            "click here or ur gay",
+            "lolzer-fying",
+        },
+        popz3 = {
+            "helohi",
+            "meeeeeoow :3 .... MAW >:3",
+            "Bang, Bang, Bang",
+            "20-20-20 Gugu Gaga dropkick",
+            "portal above portal below *jumps in*",
+            "Gugu Gaga Ultimated Flex Works",
+            "can gravel run doom?",
+            "ipad kid vs ipad, who would win?",
+            "ifone 90 proe max",
+            "image me missing one ',' on a large table..",
+            "Gravel supports Android 5-",
+            "your bluetooth device is ready to pair",
+            "why is there ai slop on my TikTok fyp....",
+            ":3 >:3 ›:3 :3",
+        },
+        tinf = {
+            "bombastic side eye",
+            "oh shiddings nott gud D:",
+            "67 vs 67",
+            "what's yer zodiac sign",
+            "hi I'm a rng",
+            "what's a brainfuck :s",
+            "Gravel.cc says be gravel",
+            "tag ur it",
+            "shimmy ey shimmy yaaa",
+            "so many references :o",
+            "me wants grabel :(",
+            "life never made lemons...",
+            "01001000 01101001",
+            "whoz dat",
+            "roblox is no longer robloz",
+            "user :3",
+            "water",
+            "GRAVEL-MAN",
+            "IM SKYLER WHITE, YO",
+            "my diet is gravel",
+            "6761694203602048",
+            "ur definitely using delta cuz idk",
+            "dab me up :>",
+            "how much saves do u has",
+            "O rly",
+            ":3",
+            "lololololooloo",
+        },
+        tinf2 = {
+            "rbxassetid://128670966889578",
+            "rbxassetid://132214308111067",
+            "rbxassetid://72509803293342",
+            "rbxassetid://130435138559679",
+            "rbxassetid://127155823074936",
+            "rbxassetid://126485931781624",
+        },
+        tinf3 = {
+    	    "rbxassetid://72298953503422",
+    	    "rbxassetid://17608357332",
+           "rbxassetid://130776885039264",
+           "rbxassetid://6303045144",
+           "rbxassetid://101513669346450",
+           "rbxassetid://17748195478",
+           "rbxassetid://17517499979",
+           "rbxassetid://119888856502065",
+        },
+        descs = {
+            Main = {
+                "y u touching my brain",
+                "brain goes brrr",
+                "main stuffz",
+                "da core settings",
+                "trust me i know what im doing",
+                "settings go here!",
+                "don't touch unless you know what ur doing",
+                "gravels shovel",
+                "the real tab",
+                "where da magic happens",
+                "hehe settings go brr",
+                "u have no idea what ur doing",
+                "baaa",
+                "it's big brain time.",
+                "pls be careful D:",
+                "yolo toggle it all",
+                "main main main main",
+                "core settings 4 core ppl",
+                "don't blame me if u break stuff",
+                "folk",
+                "read da text vro :1",
+            },
+            Visuals = {
+                "4 the blind ppl",
+                "oooh shiny",
+                "make game look cool",
+                "ESP go brrrrrr",
+                "seeing ppl through walls :o",
+                "visuals for da win",
+                "colorful stuff",
+                "vision 1+",
+                "walls are just suggestion",
+                "make em glow",
+                "I can see china from here!1!",
+                "see everything",
+                "game looks different now",
+                "seekify",
+                "your eyes will thank u",
+                "wallhack energy",
+                "highlight da enemies",
+                "rainbow vibes",
+                "visibility is key",
+                "what walls?",
+                "xray vision activated",
+                "visuals go crazy"
+            },
+            AntiAim = {
+                "I suck at dodging tab",
+                "dodge master 3000",
+                "u cant hit me >:3",
+                "evasion tactics",
+                "why can't I hit u",
+                "they cant touch this",
+                "pew = miss",
+                "anti-getting-shot",
+                "hit me if u can",
+                "can't touch this",
+                "matrix mode",
+                "teleports behind u",
+                "nothing personnel kid",
+                "dodgeball champion",
+                "good luck hitting me",
+                "disappear",
+                "now u see me, now u dont",
+                "trust im legit dodging",
+            },
+            Aimbot = {
+                "aimware-ing",
+                "lock on target",
+                "no mouse movement aim tab",
+                "i legit never miss",
+                "accuracy 1+",
+                "headshot da kidz",
+                "gaming chair mode",
+                "crosshair magnet",
+                "technically aim assist",
+                "aimlabs? never heard of her",
+                "perfect aim every time",
+                "aim at thing",
+                "precision inc",
+                "never miss u again",
+                "ur aim is insane",
+                "holeh aimbot",
+                "aimbot go crazy"
+            },
+            ["SilentAim (HB)"] = {
+                "hitbox x aimbot x silentaim x bullet tracker",
+                "Hitbox cousin",
+                "SilentAim & Hitbox made a baby",
+                "ssshhh its a secret",
+                "unaim-ful",
+                "where are you aiming at??",
+                "secret sauce"
+            },
+            ["SilentAim (HK)"] = {
+                "I'm the better option sonionster",
+                "hook-based baby",
+                "the true silent aim",
+                "raycast torture",
+                "the better silentsilentaim",
+                "raycast go brrr",
+                "uncatchable",
+                "legit looking I think..",
+                "aimbot 2.0",
+                "aim-ster",
+            },
+            Hitbox = {
+                "it's hitbox not HURTBOX D:<",
+                "size matters",
+                "make em bigger",
+                "expansion pack",
+                "hitbox go chud mode",
+                "bigger is better",
+                "easy mode",
+                "bro what's that hitbox",
+                "sizely",
+                "bigger hitbox bigger fun",
+                "they cant dodge",
+                "hurtbox",
+                "making targets fatter",
+                "hurt big box",
+                "big blob",
+            },
+            Reach = {
+                "1+1= √4",
+                "long arms",
+                "stretchy arms",
+                "extendo reach",
+                "touch things far away",
+                "long distance relationship",
+                "can i touch u from here :3",
+                "extendo mode",
+                "range extender",
+                "COME TO BRAZIL",
+                "touchy touchy",
+                "stretch armstrong",
+                "big reach modeldh",
+                "reach around",
+                "long arms gng🥀",
+                "kill aura for sowrds"
+            },
+            Client = {
+                "I don't hold the serverside blud",
+                "GOTTA GO FAST",
+                "I'm in a sugar rush",
+                "due to my gaming chair",
+                "client the client of client",
+            },
+            Miscellaneous = {
+                "random bs go!!!🔥🔥🔥🔥",
+                "the leftovers",
+                "extra stuff",
+                "bruh stuff",
+                "random stuff my brain made",
+                "the rest of em",
+                "thingamabob",
+                "experimental features",
+                "za-silly",
+                "wha",
+                "hidden gems",
+                "ragebait here",
+                "randomness",
+                "kiss me misc :3",
+                "extra goodies",
+            },
+            Info = {
+                "show me da papperz",
+                "the knowledge",
+                "read me.txt",
+                "info-man",
+                "VRO HELP ME OUT",
+                "what is this",
+                "guide time",
+                "ENLIGHTEN ME",
+                "*monkeg vs lion meme*",
+                "i can't understand ts 🥀😔",
+                "credits and stuff",
+                "dictionary",
+                "how to use roadblocked",
+                "info urself",
+                "wtf is this script",
+                "SPY???"
+            }
+        },
+        easterTitles = {
+            "Gravel.egg",
+            "gravel.easteeeeerrr",
+            "Gravel.eggcellent",
+            "Gravel.ILikeEgg",
+            "hunting 4 da gravel",
+            "easter shovel",
+        },
+        defaultTitles = {
+            "Gravel.cc", -- ts is da actual default 1 btw
+            "G.cc", -- ts is also how u say gravel
+            "HBSS.cc", -- again also gravel
+            "Gravel-est",
+            "Gravel-er",
+            "Graaaavel.cc",
+            "Gravelly.cc",
+            "Gravel.com",
+            "Hi! I'm Gravel.cc",
+            "Gravel enjoyer",
+            "GRAVEL.CC >:D",
+            "holy gravel.cc",
+            "GravelGravelGravel.cc",
+            "I like gravel",
+            "Gravel.cheatcheat",
+            "Gravel.yes",
+            "Gravel.no",
+            "Gravel.lua",
+            "GRAVEL GRAVEL.CC",
+        },
+        aprilFools = {
+            "Sand.cc",
+            "Aimware",
+            "Neverlose",
+            "RIBLOX MOD MENU 🔥🔥🔥",
+            "u got pranked",
+            "Gravel is sand",
+            "not gravel",
+            "Dirt.cc",
+            "Flour.cc",
+            "Brick.cc 2.0",
+            "I'm quitting (I think....)",
+            "CrushedStone.cc",
+            "cc.levarG",
+            "grvel",
+            "Enrique.cc",
+            "Adrian.cc",
         },
         savesParagraph = nil,
         wasEnabledBeforeDeath = false,
@@ -1328,211 +1849,26 @@ local config = {
         lastJumpTime = 0,
         errors = true,
     },
-    uicolor = {
-        lightGreen = Color3.fromRGB(144, 238, 144),
-        darkGray = Color3.fromRGB(40, 40, 40),
-        lightGray = Color3.fromRGB(200, 200, 200),
-        Red = Color3.fromRGB(255, 0, 0),
-        Blue = Color3.fromRGB(175, 221, 255),
-        Black = Color3.fromRGB(0, 0, 0)
-    },
-    windowSize = {
-        mobile = UDim2.fromOffset(650, 79),
-        tablet = UDim2.fromOffset(600, 80),
-        pc = UDim2.fromOffset(800, 70)
+    Gradow = {
+        uicolor = {
+            lightGreen = Color3.fromRGB(144, 238, 144),
+            darkGray = Color3.fromRGB(40, 40, 40),
+            lightGray = Color3.fromRGB(200, 200, 200),
+            Red = Color3.fromRGB(255, 0, 0),
+            Blue = Color3.fromRGB(175, 221, 255),
+            Black = Color3.fromRGB(0, 0, 0)
+        },
+        windowSize = {
+            mobile = UDim2.fromOffset(650, 79),
+            tablet = UDim2.fromOffset(600, 80),
+            pc = UDim2.fromOffset(800, 70)
+        }
     }
 }
 local rng = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
 
 local function rng3(tabName)
-    local descs = {
-        Main = {
-            "y u touching my brain",
-            "brain goes brrr",
-            "main stuffz",
-            "da core settings",
-            "trust me i know what im doing",
-            "settings go here!",
-            "don't touch unless you know what ur doing",
-            "gravels shovel",
-            "the real tab",
-            "where da magic happens",
-            "hehe settings go brr",
-            "u have no idea what ur doing",
-            "baaa",
-            "it's big brain time.",
-            "pls be careful D:",
-            "yolo toggle it all",
-            "main main main main",
-            "core settings 4 core ppl",
-            "don't blame me if u break stuff",
-            "folk",
-            "read da text vro :1",
-        },
-        Visuals = {
-            "4 the blind ppl",
-            "oooh shiny",
-            "make game look cool",
-            "ESP go brrrrrr",
-            "seeing ppl through walls :o",
-            "visuals for da win",
-            "colorful stuff",
-            "vision 1+",
-            "walls are just suggestion",
-            "make em glow",
-            "I can see china from here!1!",
-            "see everything",
-            "game looks different now",
-            "seekify",
-            "your eyes will thank u",
-            "wallhack energy",
-            "highlight da enemies",
-            "rainbow vibes",
-            "visibility is key",
-            "what walls?",
-            "xray vision activated",
-            "visuals go crazy"
-        },
-        AntiAim = {
-            "I suck at dodging tab",
-            "dodge master 3000",
-            "u cant hit me >:3",
-            "evasion tactics",
-            "why can't I hit u",
-            "they cant touch this",
-            "pew = miss",
-            "anti-getting-shot",
-            "hit me if u can",
-            "can't touch this",
-            "matrix mode",
-            "teleports behind u",
-            "nothing personnel kid",
-            "dodgeball champion",
-            "good luck hitting me",
-            "disappear",
-            "now u see me, now u dont",
-            "trust im legit dodging",
-        },
-        Aimbot = {
-            "aimware-ing",
-            "lock on target",
-            "no mouse movement aim tab",
-            "i legit never miss",
-            "accuracy 1+",
-            "headshot da kidz",
-            "gaming chair mode",
-            "crosshair magnet",
-            "technically aim assist",
-            "aimlabs? never heard of her",
-            "perfect aim every time",
-            "aim at thing",
-            "precision inc",
-            "never miss u again",
-            "ur aim is insane",
-            "holeh aimbot",
-            "aimbot go crazy"
-        },
-        ["SilentAim (HB)"] = {
-            "hitbox x aimbot x silentaim x bullet tracker",
-            "Hitbox cousin",
-            "SilentAim & Hitbox made a baby",
-            "ssshhh its a secret",
-            "unaim-ful",
-            "where are you aiming at??",
-            "secret sauce"
-        },
-        ["SilentAim (HK)"] = {
-            "I'm the better option sonionster",
-            "hook-based baby",
-            "the true silent aim",
-            "raycast torture",
-            "the better silentsilentaim",
-            "raycast go brrr",
-            "uncatchable",
-            "legit looking I think..",
-            "aimbot 2.0",
-            "aim-ster",
-        },
-        Hitbox = {
-            "it's hitbox not HURTBOX D:<",
-            "size matters",
-            "make em bigger",
-            "expansion pack",
-            "hitbox go chud mode",
-            "bigger is better",
-            "easy mode",
-            "bro what's that hitbox",
-            "sizely",
-            "bigger hitbox bigger fun",
-            "they cant dodge",
-            "hurtbox",
-            "making targets fatter",
-            "hurt big box",
-            "big blob",
-        },
-        Reach = {
-            "1+1= √4",
-            "long arms",
-            "stretchy arms",
-            "extendo reach",
-            "touch things far away",
-            "long distance relationship",
-            "can i touch u from here :3",
-            "extendo mode",
-            "range extender",
-            "COME TO BRAZIL",
-            "touchy touchy",
-            "stretch armstrong",
-            "big reach modeldh",
-            "reach around",
-            "long arms gng🥀",
-            "kill aura for sowrds"
-        },
-        Client = {
-            "I don't hold the serverside blud",
-            "GOTTA GO FAST",
-            "I'm in a sugar rush",
-            "due to my gaming chair",
-            "client the client of client",
-        },
-        Miscellaneous = {
-            "random bs go!!!🔥🔥🔥🔥",
-            "the leftovers",
-            "extra stuff",
-            "mama can I have cookie. no diabito, roll back",
-            "random stuff my brain made",
-            "the rest of em",
-            "thingamabob",
-            "experimental features",
-            "za-silly",
-            "wha",
-            "hidden gems",
-            "ragebait here",
-            "randomness",
-            "kiss me misc :3",
-            "extra goodies",
-        },
-        Info = {
-            "show me da papperz",
-            "the knowledge",
-            "read me.txt",
-            "info-man",
-            "VRO HELP ME OUT",
-            "what is this",
-            "guide time",
-            "ENLIGHTEN ME",
-            "*monkeg vs lion meme*",
-            "i can't understand ts 🥀😔",
-            "credits and stuff",
-            "dictionary",
-            "how to use roadblocked",
-            "info urself",
-            "wtf is this script",
-            "my dih"
-        }
-    }
-    
-    local tabDescs = descs[tabName]
+    local tabDescs = config.varibz.descs[tabName]
     if tabDescs and #tabDescs > 0 then
         return tabDescs[math.random(1, #tabDescs)]
     end
@@ -1596,19 +1932,9 @@ local function rng5()
         end
         return ("03 %02d"):format(G)
     end
-    
     local easterDate = getEasterDate(currentYear)
-    
-    local easterTitles = {
-        "Gravel.egg",
-        "gravel.easteeeeerrr",
-        "Gravel.eggcellent",
-        "Gravel.ILikeEgg",
-        "hunting 4 da gravel",
-        "easter shovel",
-    }
     if currentDate == easterDate then
-        return easterTitles[math.random(1, #easterTitles)]
+        return config.varibz.easterTitles[math.random(1, #config.varibz.easterTitles)]
     end
     for datePattern, titles in pairs(festiveTitles) do
         if currentDate == datePattern then
@@ -1616,59 +1942,18 @@ local function rng5()
         end
     end
     if currentDate == "04 01" then
-        local aprilFools = {
-            "Sand.cc",
-            "Aimware",
-            "Neverlose",
-            "RIBLOX MOD MENU 🔥🔥🔥",
-            "u got pranked",
-            "Gravel is sand",
-            "not gravel",
-            "Dirt.cc",
-            "Flour.cc",
-            "Brick.cc 2.0",
-            "I'm quitting (I think....)",
-            "CrushedStone.cc",
-            "cc.levarG",
-            "grvel",
-            "Enrique.cc",
-            "Adrian.cc",
-        }
-        return aprilFools[math.random(1, #aprilFools)]
+        return config.varibz.aprilFools[math.random(1, #config.varibz.aprilFools)]
     end
-    local defaultTitles = {
-        "Gravel.cc", -- ts is da actual default 1 btw
-        "G.cc", -- ts is also how u say gravel
-        "HBSS.cc", -- again also gravel
-        "Gravel-est",
-        "Gravel-er",
-        "Graaaavel.cc",
-        "Gravelly.cc",
-        "Gravel.com",
-        "Hi! I'm Gravel.cc",
-        "Gravel enjoyer",
-        "GRAVEL.CC >:D",
-        "holy gravel.cc",
-        "GravelGravelGravel.cc",
-        "I like gravel",
-        "Gravel.cheatcheat",
-        "Gravel.yes",
-        "Gravel.no",
-        "Gravel.lua",
-        "GRAVEL GRAVEL.CC",
-    }
-    return defaultTitles[math.random(1, #defaultTitles)]
+    return config.varibz.defaultTitles[math.random(1, #config.varibz.defaultTitles)]
 end
 local function uianimate()
     task.wait(0.1)
-    
     local openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not openButton then return end
     local windowFrame = Window.UIElements.Main
     if not windowFrame then return end
     local openStroke = nil
     local openGradient = nil
-    
     for _, descendant in ipairs(openButton:GetDescendants()) do
         if descendant:IsA("UIStroke") then
             openStroke = descendant
@@ -8699,11 +8984,11 @@ math.randomseed(os.time())
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local isTablet = UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
 
-local size = config.windowSize.pc
+local size = config.Gradow.windowSize.pc
 if isMobile then
-    size = config.windowSize.mobile
+    size = config.Gradow.windowSize.mobile
 elseif isTablet then
-    size = config.windowSize.tablet
+    size = config.Gradow.windowSize.tablet
 end
 
 local Window = WindUI:CreateWindow({
@@ -8766,30 +9051,68 @@ local function rng4()
         end
     end
     
-    local function typeText(text)
+    local defaults = {
+        minDelay = 25,
+        maxDelay = 85,
+        spaceExtraMin = 40,
+        spaceExtraMax = 90,
+        punctExtraMin = 120,
+        punctExtraMax = 250,
+        breakChance = 0.05,
+        breakExtraMin = 100,
+        breakExtraMax = 300,
+        messageWaitMin = 10,
+        messageWaitMax = 30,
+        convoWaitMin = 15,
+        convoWaitMax = 35,
+        eraseWaitMin = 2,
+        eraseWaitMax = 6,
+        eraseDelayMin = 15,
+        eraseDelayMax = 40,
+        cursorBlink = 0.45,
+        shuffleWaitMin = 20,
+        shuffleWaitMax = 40,
+    }
+    
+    local function getSpeedMultiplier(conversation)
+        if type(conversation) == "table" and conversation.typesp then
+            local speedVal = tonumber(conversation.typesp)
+            if speedVal then
+                if speedVal > 0 then
+                    return 1 / speedVal
+                elseif speedVal < 0 then
+                    return math.abs(speedVal)
+                end
+            end
+        end
+        return 1
+    end
+    
+    local function typeText(text, speedMultiplier)
         local typed = ""
         for i = 1, #text do
             local char = text:sub(i, i)
             typed ..= char
             setText(typed)
-            local delay = math.random(25, 85) / 1000
+            
+            local delay = (math.random(defaults.minDelay, defaults.maxDelay) / 1000) * speedMultiplier
             if char == " " then
-                delay += math.random(40, 90) / 1000
+                delay = delay + (math.random(defaults.spaceExtraMin, defaults.spaceExtraMax) / 1000) * speedMultiplier
             elseif char:match("[%.%!%?,:]") then
-                delay += math.random(120, 250) / 1000
+                delay = delay + (math.random(defaults.punctExtraMin, defaults.punctExtraMax) / 1000) * speedMultiplier
             end
-            if math.random() < 0.05 then
-                delay += math.random(100, 300) / 1000
+            if math.random() < defaults.breakChance then
+                delay = delay + (math.random(defaults.breakExtraMin, defaults.breakExtraMax) / 1000) * speedMultiplier
             end
             task.wait(delay)
         end
     end
     
-    local function eraseText()
+    local function eraseText(speedMultiplier)
         local text = currentText
         for i = #text, 0, -1 do
             setText(text:sub(1, i))
-            task.wait(math.random(15, 40) / 1000)
+            task.wait((math.random(defaults.eraseDelayMin, defaults.eraseDelayMax) / 1000) * speedMultiplier)
         end
     end
     
@@ -8799,192 +9122,67 @@ local function rng4()
                 for i = 1, #config.varibz.convo do
                     table.insert(availableIndices, i)
                 end
-                task.wait(math.random(20, 40) / 10)
+                task.wait(math.random(defaults.shuffleWaitMin, defaults.shuffleWaitMax) / 10)
             end
             local randomPos = math.random(1, #availableIndices)
             local convoIndex = availableIndices[randomPos]
             table.remove(availableIndices, randomPos)
             local conversation = config.varibz.convo[convoIndex]
             if conversation then
-                for index, message in ipairs(conversation) do
-                    typeText(message)
+                local speedMultiplier = getSpeedMultiplier(conversation)
+                
+                local messages = {}
+                if type(conversation) == "table" then
+                    for key, value in ipairs(conversation) do
+                        table.insert(messages, value)
+                    end
+                else
+                    messages = {conversation}
+                end
+                
+                for index, message in ipairs(messages) do
+                    typeText(message, speedMultiplier)
                     
-                    if index < #conversation then
-                        task.wait(math.random(10, 30) / 10)
-                        eraseText()
+                    if index < #messages then
+                        local waitTime = (math.random(defaults.messageWaitMin, defaults.messageWaitMax) / 10) * speedMultiplier
+                        task.wait(waitTime)
+                        eraseText(speedMultiplier)
                     end
                 end
+                
+                local convoWait = (math.random(defaults.convoWaitMin, defaults.convoWaitMax) / 10) * speedMultiplier
+                task.wait(convoWait)
+                eraseText(speedMultiplier)
+                task.wait((math.random(defaults.eraseWaitMin, defaults.eraseWaitMax) / 10) * speedMultiplier)
             end
-            task.wait(math.random(15, 35) / 10)
-            eraseText()
-            task.wait(math.random(2, 6) / 10)
         end
     end)
-task.wait(1)
-local fpsTag = Window:Tag({
-    Title = "FPS: 0",
-    Icon = "clock",
-    Color = Color3.fromHex("#00ff88")
-})
-if fpsTag then
-    local accum = 0
-    RunService.Heartbeat:Connect(function(deltaTime)
-        accum = accum + deltaTime
-        if accum >= 0.5 then
-            local fps = math.round(1 / math.max(deltaTime, 1e-6))
-            if fpsTag.SetTitle then
-                fpsTag:SetTitle("FPS: " .. fps)
+    
+    task.wait(1)
+    local fpsTag = Window:Tag({
+        Title = "FPS: 0",
+        Icon = "clock",
+        Color = Color3.fromHex("#00ff88")
+    })
+    if fpsTag then
+        local accum = 0
+        RunService.Heartbeat:Connect(function(deltaTime)
+            accum = accum + deltaTime
+            if accum >= 0.5 then
+                local fps = math.round(1 / math.max(deltaTime, 1e-6))
+                if fpsTag.SetTitle then
+                    fpsTag:SetTitle("FPS: " .. fps)
+                end
+                accum = accum - 0.5
             end
-            accum = accum - 0.5
-        end
-    end)
-end
+        end)
+    end
     return tag
 end
 local rng = function()
-    local m = {
-        ":0",
-        ":7",
-        "my name is gravel what's yours?????",
-        "my zodiac sign is a shovel :p",
-        "gravel is rocky :o",
-        "graveeeeeeeelll",
-        ":p",
-        ">:3",
-        "Gravel is not Sentient idk wat ur talking about",
-        "sigmasigmaboug",
-        "I'm a rng pop-up that picks random messages 24/7",
-        "would dis script work on every gaem\nyh & noe",
-        "this script is 10000+ lines... oml :s",
-        "the UI ts using is WindUi and the notification is Alurt btw I just found it from ballmart",
-        "a free?! keyless?! script?! and open source?! that has silentaim?! wtf",
-        "the script is randomly picking messages your not freaking out :p",
-        "sorry xeno users or solarara I don't have the supporty support",
-        "nononononoonono this script ain't a virus so dat why I made it open src",
-        "Is that a gubby?\n\n- kreek",
-        "Error ur roblxo isn't support",
-        "ooh, nice computer you got their, Can I have it\n\n- Mario virus",
-        "something is coming in 3 days\n\n- verity",
-        "real",
-        "tuff",
-        "guhby this guhby that",
-        "2 atoms touch = big explosion",
-        "you can noclip when your atoms aligned\ntrust",
-        "I don't have DC btw",
-        "my code is used to be 8000+ now 9000+ and then 13000+ lines long, I canf do dis sh on mobile D:",
-        "flatgrass",
-        "search free robux to get free robux",
-        "alt-f4 = free rboux",
-        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.\n>\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
-        "^_^",
-        "^u^",
-        "^v^",
-        "half life 3 when?",
-        "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
-        "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
-        "Did you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nDid you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nWhen I get home it better be clean!\nDid you do your chores?\nyessirski!\nOH! BOI WHY DID U LIE TO ME!!!\nAHHHHH",
-        "Homework?\nNah!\nHomework?\nNah!\nHomework?\nNah!\nHomework?\ni did it at school\nNah!\nHomework?\nNah!\nHomework?\nNah!\nWHY ARE YOU CLASSES PHAILING\n AHHH D:",
-        "Turkey in the Straw!",
-        "du bist gut genug...\ndu bist gut genug...\ndu bist gut genug\ndu bist gut genug\n*fire music*",
-        "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat",
-        "*Stranger Things Intro*\ndustin lucas will mike...\nBURP",
-        "robloz where classic faces :‹",
-        "I'm not taking my sneakers off, I'm sneakers O'Toole",
-        "Gpssickle is a gps with a sickle",
-        "da script reached 8000 lines to 13000 o_o",
-        "just simply cheat through it\n\n quite literally",
-        "just simply go under it",
-        "just simply go over it",
-        "just simply script to it",
-        "just simply walk around it\n\n- Electracy",
-        "You die\n\n- StromBrew",
-        "sonion\ni learned this from meme culture don't ask me",
-        "I like trains",
-        "welcome to McDonald's.",
-        "you are my sunshine, my only sunshine",
-        "IS THAT SONIC WITH GRAY SHOES D:",
-        "Atoms never touch so dat means I didn't steal ur chocolate",
-        "Yeah, come gets some you freakin' wuss\n\n- Scout (not Taunt form dod)",
-        "sybau 🥀💔",
-        "these are meme reference ok",
-        "water + ice + melt = water",
-        "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
-        "1.61803398874989484820458683436563811772030917980576",
-        "print(''*prints cutely*'')\nerror(''*errors cutely*'')\nwarn(''*warns cutely*'')",
-        "Gravel.cc 🥀",
-        "my imagination has been powered",
-        "YOU NEVER SEE IT COMIIIIIIINNNG,\nyou'll see that my mind\nis to fast for eyes\nYOUR DONE INNNNNN\nBY THE\ntime is hit you, YOUR LAST SURPRISE",
-        "Gpssssssssssssssssssssssssssssssssssssssssickle",
-        "global positioning system with a sickle",
-        "The golden dandelion which is the golden dandelion",
-        "can u remind me the golden ratio next time",
-        "y'all think he look like; Steve Harvey?\n *Screams*",
-        "/kill @p",
-        "HBSS doesn't mean anything lolz\ni typed it randomly...",
-        "rbxm",
-        "why 'Gravel' ya know how sand gets in ur shoes..\ngravel does the same but it's for games",
-        "people barely use the bottab",
-        "I hate renderstepped...\n(probably because I keep misusing it)",
-        "is it Roblox or roadblocks or robloz who knows",
-        "''Does this work in Minecraft''",
-        "www.gravel.com ... why does this website exists?",
-        "imagine ur script getting mogged by a script made fully on a phone",
-        "dere is no Terraria final update D:",
-        "da cake isnt a lie... trust",
-        "iS ThAt ga hÆcker?????!?!?!!!?!???!?!",
-        "y is this drooling cat meme all over my fyp D:",
-        "tbh bro I'd go; [insert metalpipefalling.gif]",
-        "gravel vs sand vs rock vs thingamajang",
-        "GTA 6 when?",
-        "if they said ur a hacker say 'Ping Diff' and they'll believe u",
-        "w wedgeey 🥺\nw junglescripts 🥺",
-        "sand.cc when?",
-        "what version is this? well I don't fking know lol",
-        "scirpotjg iz hard :(",
-        "Roblox plz collabl",
-        "helloworld(''print'')",
-        "Markiplier & Larpiplier collab when?",
-        "61? 67?\nit's time for the letters to have fun\nabcdefghijklmnop\nL-M-N-O-P\nP\nP\nP\nP",
-        "hello whoever you are :D\ni don't have the capacity to see your usernames yet because I'm too lazy to script dat in",
-        "me is want chat roblox not age verif",
-        "this script isn't full ban proof so if you get banned DON'T blame on us when your using risky features :/",
-        "deres like idk amount of random messages I contains lolz",
-    }
-    local ml = {
-        "wth is ts",
-        "hell nah",
-        "OHHHH HELLL NAH",
-        "pop-up goes bye bye",
-        "isn't phonk just noise?",
-        "guys it's a-a, a-a h-hacker!?!?!",
-        "tiki tiki",
-        "Nosirski!",
-        "[Eminem Throwing Meme.png]",
-        "why am I writing ts?",
-        "idk, sterling?",
-        "is that a toby?",
-        "click here or ur gay",
-        "lolzer-fying",
-    }
-    local McDonalds = {
-        "helohi",
-        "meeeeeoow :3 .... MAW >:3",
-        "Bang, Bang, Bang",
-        "20-20-20 Gugu Gaga dropkick",
-        "portal above portal below *jumps in*",
-        "Gugu Gaga Ultimated Flex Works",
-        "can gravel run doom?",
-        "ipad kid vs ipad, who would win?",
-        "ifone 90 proe max",
-        "image me missing one ',' on a large table..",
-        "Gravel supports Android 5-",
-        "your bluetooth device is ready to pair",
-        "why is there ai slop on my TikTok fyp....",
-        ":3 >:3 ›:3 :3",
-    }
-    local Spotify = ml[math.random(1, #ml)]
-    local YouTube = m[math.random(1, #m)]
-    local Netflix = McDonalds[math.random(1, #McDonalds)]
+    local Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
+    local YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
+    local Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)]
     return WindUI:Popup({
         Title = Netflix,
         Icon = "shovel",
@@ -8999,56 +9197,9 @@ local rng = function()
     })
 end
 local rng2 = function()
-    local tinf = {
-        "bombastic side eye",
-        "oh shiddings nott gud D:",
-        "67 vs 67",
-        "what's yer zodiac sign",
-        "hi I'm a rng",
-        "what's a brainfuck :s",
-        "Gravel.cc says be gravel",
-        "tag ur it",
-        "shimmy ey shimmy yaaa",
-        "so many references :o",
-        "me wants grabel :(",
-        "life never made lemons...",
-        "01001000 01101001",
-        "whoz dat",
-        "roblox is no longer robloz",
-        "user :3",
-        "water",
-        "GRAVEL-MAN",
-        "IM SKYLER WHITE, YO",
-        "my diet is gravel",
-        "6761694203602048",
-        "ur definitely using delta cuz idk",
-        "dab me up :>",
-        "how much saves do u has",
-        "O rly",
-        ":3",
-        "lololololooloo",
-    }
-    local bju = tinf[math.random(1, #tinf)]
-    local tinf2 = {
-        "rbxassetid://128670966889578",
-        "rbxassetid://132214308111067",
-        "rbxassetid://72509803293342",
-        "rbxassetid://130435138559679",
-        "rbxassetid://127155823074936",
-        "rbxassetid://126485931781624",
-    }
-    local bju2 = tinf2[math.random(1, #tinf2)]
-    local tinf3 = {
-	    "rbxassetid://72298953503422",
-	    "rbxassetid://17608357332",
-       "rbxassetid://130776885039264",
-       "rbxassetid://6303045144",
-       "rbxassetid://101513669346450",
-       "rbxassetid://17748195478",
-       "rbxassetid://17517499979",
-       "rbxassetid://119888856502065",
-    }
-    local bju3 = tinf3[math.random(1, #tinf3)]
+    local bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)]
+    local bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
+    local bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
     n({
         Title = "Gravel.cc :3",
         Content = bju,
@@ -9068,18 +9219,18 @@ local MainTab = Window:Tab({
     Title = "Main",
     Desc = rng3("Main"),
     Icon = "hammer",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     MainTab:Paragraph({
         Title = "MainTab Settings",
         Desc = "Global settings for targeting and utilities",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Paragraph({
         Title = "Global",
         Desc = "Global configurations",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Dropdown({
@@ -9329,13 +9480,13 @@ MainTab:Keybind({
     MainTab:Paragraph({
         Title = "Utilities",
         Desc = "AutoFarm and utility features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Paragraph({
         Title = "Gravel",
         Desc = "[ Autofarm might not work for every game]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     MainTab:Toggle({
@@ -9528,15 +9679,15 @@ MainTab:Toggle({
     })
     
     MainTab:Paragraph({
-        Title = "Antikick [ We didn't made this ]",
+        Title = "Antikick [ I didn't made this ]",
         Desc = "Client-side anti-kick protection",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Paragraph({
         Title = "Gravel",
         Desc = "[ AntiKick only prevents client kicks ]\n[ Good Injectors are recommend ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     MainTab:Toggle({
@@ -9594,13 +9745,13 @@ MainTab:Toggle({
     MainTab:Paragraph({
         Title = "Optimization",
         Desc = "Performance optimization settings",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Paragraph({
         Title = "Optimization",
         Desc = "Copy and execute optimization code",
-        Color = config.uicolor.darkGray,
+        Color = config.Gradow.uicolor.darkGray,
         Buttons = {
             {
                 Title = "Copy Code",
@@ -9759,7 +9910,7 @@ MainTab:Toggle({
 MainTab:Paragraph({
     Title = "Save/Load",
     Desc = "Save and load your configuration settings\n\n[sum features won't be saved mb :< ]",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 MainTab:Input({
@@ -9844,7 +9995,7 @@ MainTab:Button({
 config.varibz.savesParagraph = MainTab:Paragraph({
     Title = "Saves List",
     Desc = savePara() .. "\nit refreshes now!",
-    Color = config.uicolor.darkGray
+    Color = config.Gradow.uicolor.darkGray
 })
 task.spawn(function()
     while true do
@@ -9864,12 +10015,12 @@ local VisualsTab = Window:Tab({
     Title = "Visuals",
     Desc = rng3("Visuals"),
     Icon = "eye",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     VisualsTab:Paragraph({
         Title = "ESP Master",
         Desc = "Master control for ESP features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     VisualsTab:Space()
     VisualsTab:Toggle({
@@ -9903,7 +10054,7 @@ local VisualsTab = Window:Tab({
     VisualsTab:Paragraph({
         Title = "ESP Components",
         Desc = "Individual ESP component settings",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     VisualsTab:Toggle({
@@ -10070,7 +10221,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "ESP Colors",
     Desc = "Customize ESP colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10129,7 +10280,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "FOV Colors",
     Desc = "Customize FOV ring colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10166,7 +10317,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "Silent Aim (HK) Colors",
     Desc = "Customize Silent Aim HK colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10197,7 +10348,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "TriggerBot Colors",
     Desc = "Customize TriggerBot colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10217,7 +10368,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "Hitbox Colors",
     Desc = "Customize hitbox colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10245,7 +10396,7 @@ VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "Reach Colors",
     Desc = "Customize reach visualizer colors",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
@@ -10266,18 +10417,18 @@ local AntiAimTab = Window:Tab({
     Title = "AntiAim",
     Desc = rng3("AntiAim"),
     Icon = "shield",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     AntiAimTab:Paragraph({
         Title = "Gravel",
         Desc = "[ Bad Injectors might work here ]\n[ This might not work on every game ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 
     AntiAimTab:Paragraph({
         Title = "AntiAim Master",
         Desc = "Master control for AntiAim features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     AntiAimTab:Toggle({
@@ -10313,7 +10464,7 @@ local AntiAimTab = Window:Tab({
     AntiAimTab:Paragraph({
         Title = "AntiAim Modes",
         Desc = "Different AntiAim evasion modes",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     AntiAimTab:Toggle({
@@ -10384,7 +10535,7 @@ local AntiAimTab = Window:Tab({
     AntiAimTab:Paragraph({
         Title = "AntiAim Settings",
         Desc = "Configuration for AntiAim modes",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     AntiAimTab:Slider({
@@ -10480,7 +10631,7 @@ local AntiAimTab = Window:Tab({
 AntiAimTab:Paragraph({
     Title = "Other",
     Desc = "other stuff",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 AntiAimTab:Toggle({
@@ -10595,18 +10746,18 @@ local AimbotTab = Window:Tab({
     Title = "Aimbot",
     Desc = rng3("Aimbot"),
     Icon = "crosshair",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     AimbotTab:Paragraph({
         Title = "Gravel",
         Desc = "[ Bad Injectors might work here ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     AimbotTab:Paragraph({
         Title = "Aimbot Master",
         Desc = "Master control for aimbot features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     AimbotTab:Space()
     AimbotTab:Toggle({
@@ -10640,7 +10791,7 @@ local AimbotTab = Window:Tab({
     AimbotTab:Paragraph({
         Title = "Aimbot Settings",
         Desc = "Configuration for aimbot behavior",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     AimbotTab:Toggle({
@@ -10709,18 +10860,18 @@ local SilentAimTab = Window:Tab({
     Title = "SilentAim (HB)",
     Desc = rng3("SilentAim (HB)"),
     Icon = "circle",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     SilentAimTab:Paragraph({
         Title = "Gravel",
         Desc = "[ Hitbox Based ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 
     SilentAimTab:Paragraph({
         Title = "SilentAim Master",
         Desc = "Master control for hitbox silent aim",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     SilentAimTab:Toggle({
@@ -10767,7 +10918,7 @@ local SilentAimTab = Window:Tab({
     SilentAimTab:Paragraph({
         Title = "SilentAim Settings",
         Desc = "Configuration for silent aim behavior",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     SilentAimTab:Toggle({
@@ -10875,18 +11026,18 @@ local SilentAimTab2 = Window:Tab({
     Title = "SilentAim (HK)",
     Desc = rng3("SilentAim (HK)"),
     Icon = "target",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     SilentAimTab2:Paragraph({
         Title = "Gravel",
         Desc = "[ Hooked Based ]\n[ Bad injectors might not work here ]\n[ risky towards anticheats ]\n[ Might not work on every game ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     SilentAimTab2:Paragraph({
         Title = "SilentAim Master",
         Desc = "Master control for hook-based silent aim",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     SilentAimTab2:Toggle({
@@ -10909,7 +11060,7 @@ local SilentAimTab2 = Window:Tab({
     SilentAimTab2:Paragraph({
         Title = "SilentAim Settings",
         Desc = "Configuration for hook-based silent aim",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     SilentAimTab2:Toggle({
@@ -11053,18 +11204,18 @@ local HitboxTab = Window:Tab({
     Title = "Hitbox",
     Desc = rng3("Hitbox"),
     Icon = "box",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     HitboxTab:Paragraph({
         Title = "Gravel",
         Desc = "[ Bad Injectors might work here ]\n[ This might not work on every game ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     HitboxTab:Paragraph({
         Title = "Hitbox Master",
         Desc = "Master control for hitbox expansion",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     HitboxTab:Toggle({
@@ -11103,7 +11254,7 @@ local HitboxTab = Window:Tab({
     HitboxTab:Paragraph({
         Title = "Hitbox Settings",
         Desc = "Configuration for hitbox expansion",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     HitboxTab:Dropdown({
@@ -11151,18 +11302,18 @@ local ReachTab = Window:Tab({
     Title = "Reach",
     Desc = rng3("Reach"),
     Icon = "sword",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     ReachTab:Paragraph({
         Title = "Gravel",
         Desc = "[ FireTouchInterest ]\n[ Melees Recommended ]\n[ Bad Injectors might work here ]\n[ This might not work for every game ]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     ReachTab:Paragraph({
         Title = "Reach Master",
         Desc = "Master control for extended reach",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     local visualizer = Instance.new("Part") 
@@ -11204,7 +11355,7 @@ local ReachTab = Window:Tab({
     ReachTab:Paragraph({
         Title = "Reach Settings",
         Desc = "Configuration for extended reach",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ReachTab:Dropdown({
@@ -11235,7 +11386,7 @@ local ReachTab = Window:Tab({
     ReachTab:Paragraph({
         Title = "Visuals",
         Desc = "Visual settings for reach indicator",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ReachTab:Toggle({
@@ -11438,7 +11589,7 @@ local ReachTab = Window:Tab({
     ReachTab:Paragraph({
         Title = "Utilities",
         Desc = "Utility functions for reach",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ReachTab:Button({
@@ -11503,12 +11654,12 @@ local ClientTab = Window:Tab({
     Title = "Client",
     Desc = rng3("Client"),
     Icon = "user",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     ClientTab:Paragraph({
         Title = "Client Master",
         Desc = "Master control for client features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ClientTab:Toggle({
@@ -11523,7 +11674,7 @@ local ClientTab = Window:Tab({
     ClientTab:Paragraph({
         Title = "Client Features",
         Desc = "Individual client feature toggles",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ClientTab:Toggle({
@@ -11595,7 +11746,7 @@ local ClientTab = Window:Tab({
     ClientTab:Paragraph({
         Title = "Client Values",
         Desc = "Numerical values for client features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ClientTab:Slider({
@@ -11652,7 +11803,7 @@ local ClientTab = Window:Tab({
     ClientTab:Paragraph({
         Title = "Client Stuff",
         Desc = "Additional client utilities",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     ClientTab:Toggle({
@@ -11948,12 +12099,12 @@ local MiscTab = Window:Tab({
     Title = "Miscellaneous",
     Desc = rng3("Miscellaneous"),
     Icon = "settings",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
 MiscTab:Paragraph({
     Title = "Trigger Bot",
     Desc = "Automatically shoot when crosshair is on target\nNot mobile friendly!",
-    Color = config.uicolor.lightGreen
+    Color = config.Gradow.uicolor.lightGreen
 })
 
 MiscTab:Toggle({
@@ -12062,7 +12213,7 @@ MiscTab:Input({
     MiscTab:Paragraph({
         Title = "Other",
         Desc = "Additional miscellaneous features",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
 
     MiscTab:Button({
@@ -12515,100 +12666,100 @@ local InfoTab = Window:Tab({
     Title = "Info",
     Desc = rng3("Info"),
     Icon = "info",
-    IconColor = config.uicolor.lightGray
+    IconColor = config.Gradow.uicolor.lightGray
 }) do
     InfoTab:Paragraph({
         Title = "Gravel",
         Desc = "Our YouTube channel is @gpssickle\nim mischievousidhwkwuhd",
-        Color = config.uicolor.Red
+        Color = config.Gradow.uicolor.Red
     })
     InfoTab:Paragraph({
         Title = "Gravel; SRC",
         Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source... if ur using a snippet that came from gravel.... credit me or I cry :(",
-        Color = config.uicolor.Black
+        Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
         Title = "Tabs",
         Desc = "Information about each tab",
-        Color = config.uicolor.Blue
+        Color = config.Gradow.uicolor.Blue
     })
     
     InfoTab:Paragraph({
         Title = "MainTab",
         Desc = "All basic features, Team targeting, Configuring, optimizing and etc",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "Visualstab",
         Desc = "Changes your visuals full bright or rendering in esps",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "AntiAimTab",
         Desc = "It would do it's best to make your opponents miss every shot",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "AimbotTab",
         Desc = "Manipulates your camera and it would automatically aim at your opponents",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "SilentAimTab (HB)",
         Desc = "Automatically resizes opponents hitbox and aligning it to your crosshair or the center of your screen (the only working SilentAim)",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "SilentAimTab (HK)",
         Desc = "Intercepts raycasts to accurately hit targets.",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 
     InfoTab:Paragraph({
         Title = "HitboxTab",
         Desc = "Resizes opponents hitbox to easily hit or shoot at opponents",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "ReachTab",
         Desc = "Resizes your melee or any tools Firetouchinterest to hit opponents further",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "ClientTab",
         Desc = "Change your walkspeed or jump power or even fly around to dodge any attacks from your opponents",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "MiscTab",
         Desc = "Basically experiment any features that are or aren't related to combating",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "InfoTab",
         Desc = "InfoTab the tab that your in just shows informations or details",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 
     InfoTab:Paragraph({
         Title = "BotTab",
         Desc = "Deleted due to 200 variable limit & uselessness",
-        Color = config.uicolor.Red
+        Color = config.Gradow.uicolor.Red
     })
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Guide",
         Desc = "Tutorial for some features\n[for now it's the save/load]",
-        Color = config.uicolor.Blue
+        Color = config.Gradow.uicolor.Blue
     })
 InfoTab:Paragraph({
     Title = "Save/Load Guide",
@@ -12625,153 +12776,153 @@ InfoTab:Paragraph({
 
 Note: sum features might not get saved properly D:
 ]],
-    Color = config.uicolor.darkGray
+    Color = config.Gradow.uicolor.darkGray
 })
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Credits",
         Desc = "Credits to other creators",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
     
     InfoTab:Paragraph({
         Title = "Gravel: UI",
         Desc = "UI: WindUI (Footagesus)\nNotification: Alurt (Zwolf)\nand the other guy",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel: AntiKick",
         Desc = "AntiKick: Pixeluted (I think...)",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel: Math",
         Desc = "Mathematicalmatics: my teacher & the other other guy",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Updatelog",
         Desc = "Update history and changes\n\nGravel (DD/MM/YYYY)",
-        Color = config.uicolor.lightGreen
+        Color = config.Gradow.uicolor.lightGreen
     })
 
     InfoTab:Paragraph({
         Title = "Gravel (14/01/2026)",
         Desc = "Added: Legacy\nAdded: Reachtab\nAdded: Wallbang in Silentaim HK\nFixed Bugs: 0",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "Gravel (22/01/2026)",
         Desc = "Added: MiscTab\nChanged: Redesigned the OptionGui\nFixed Bugs: 9",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "Gravel (23/01/2026)",
         Desc = "Fixed: Execution Problem\nFixed: Bugs in the SilentAimTab (HK)\nAdded: BackgroundBlur on the loading screeen\nFixed Bugs: 27",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (02/02/2026)",
         Desc = "Changed: DummyUI to WindUI Rewritten UI Creation\nFixed: Keybind Systems are now more accurate and Rewritten\nFixed: SilentAimTab (HK) hooks now less laggy\nFixed: Loop Errors\nFixed: Notification Spam\nAdded: Colorpickers to the VisualsTab\nAdded: Random Messages to the OpenButton and Popup UI\nFixed: UI Causing errors, Callback errors\nFixed Bugs: 34+",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (10/02/2026)",
         Desc = "Added: Optimization and tweaks\nFixed: Optimized SilentAimTab (HK)\nAdded: Distance limitation to SilentAimTab (HK)\nAdded: Cache Optimization\nFixed Bugs: 5",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (06/05/2026)",
         Desc = "More optimizations!",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (18/05/2026)",
         Desc = "Removed: Bot Tab has been removed to avoid 200 variable limit\nInfo: SilentAim (HK) would no longer work at this time.\nAdded: Cam-Y or WallOver toggle to SilentAimTab (HB)\nAdded: Cframe View to MiscTab\nInfo: At this time Gravel.cc might be buggy for now.",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (18/05/2026)",
         Desc = "Removed: SilentAim (HK) is now removed due to an update :(",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (18/05/2026)",
         Desc = "Improved: SilentAim (HB) Accuracy",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (19/06/2026)",
         Desc = "Fixed: Targeting Systems\nFixed Bugs: 10",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (21/06/2026)",
         Desc = "Re-Added: SilentAim (HK) [Nothing wrong actually happened.. I'm just stupid]",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (23/06/2026)",
         Desc = "Fixed: SilentAim (HK) Targeting issues\nMoved: WallOver/Cam-Y to MiscTab\nAdded: ScaleToScreen Toggle & STSDistance to SilentAim (HB)\nAdded: some other additional features :p",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (25/06/2026)",
         Desc = "Added: Triggerbot & Spinbot in the MiscTab\nAdded: Additional stuff & optimization \nFixed Bugs: 7",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (27/06/2026)",
         Desc = "Added: Bhop in the MiscTab\nAdded: Draggable toggle for QuickToggles in MainTab\nMoved: Spinbot in the AntiAimTab\nFixed: Hitbox freezing issue\nAdded: Keybind for TriggerBot Wallcheck 'Y'\nChanged Client Keybind to 'N'\nFixed Bugs: 1",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (28/06/2026)",
         Desc = "Added: Save/Load in the MainTab :3",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (01/07/2026)",
         Desc = "Fixed: Save/Load bugs\nFixed: Hitbox bugs\nFixed Bugs: 5",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (06/07/2026)",
         Desc = "Added: Guide Section in InfoTab",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (07/07/2026)",
         Desc = "Fixed: Fixed sum lags",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (07/07/2026)",
         Desc = "Ignore forcefield now supports SilentAim (HK)",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (13/07/2026)",
         Desc = "Desync is back :>\nits in the AntiAim Tab!",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (14/07/2026)",
         Desc = "Other bug fixes that I didn't count",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (19/07/2026)",
         Desc = "Added: LazyLoader!\nAdded: UI Refreshing\nAdded: Additional stuff\nFixed Bugs: 7",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (20/07/2026)",
         Desc = "Error da handle",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 end
 
@@ -12780,7 +12931,7 @@ end
     InfoTab:Paragraph({
         Title = "Gravel (DD/07/2026)",
         Desc = "",
-        Color = config.uicolor.darkGray
+        Color = config.Gradow.uicolor.darkGray
     })
 ]]
 
