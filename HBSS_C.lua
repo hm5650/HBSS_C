@@ -1066,6 +1066,20 @@ local config = {
                 "I want you in the ground!",
             },
             {
+                typesp = "1",
+                "My bread was\nburnt to a crisp",
+                "It's not like it's inedible\nor anything, I guess...",
+                "I wish it was fluffy like usual\nif only it didn't get burnt...",
+                "I guess there's no use in wishing now...",
+                "",
+                "My bread was\nburnt to a crisp",
+                "It's rock hard...",
+                "Not that it's inedible\nor anything, I guess...",
+                "I really hope its\nnot burnt tomorrow",
+                "It's bound to be better, right?",
+                "I guess there's no use in wishing now...",
+            },
+            {
                 typesp = "2.5",
                 "Did you do your chores?",
                 "Yessirski!",
@@ -1086,7 +1100,7 @@ local config = {
             {
                 typesp = "1",
                 "Y-YO, bro come over here",
-                "come over here, come over here",
+                "come over here,\ncome over here",
                 "Check out my new shoes,",
                 "Theyre the brand new-",
                 "1-2, Buckle my shoeeee",
@@ -1407,6 +1421,328 @@ local config = {
                 "it's open source",
                 "you can literally read it",
             },
+            {
+                typesp = "1",
+                "hey u",
+                "yea u",
+                "the one reading this",
+                "how's ur day going?",
+                "mine's gravely :p",
+                "get it?",
+                "gravely?",
+                "like gravel?",
+                "ok i'll stop",
+            },
+            {
+                typesp = "1.5",
+                "so uh",
+                "u ever just",
+                "look at a rock",
+                "and think 'wow'",
+                "that's me",
+                "i'm the rock",
+                "gravel specifically",
+                "nice 2 meet u :3",
+            },
+            {
+                typesp = "2",
+                "ur probably using this",
+                "to destroy some kids",
+                "in a roblox game",
+                "i respect that",
+                "get rekt nerd >:D",
+                "haha i'm just joking",
+                "or am i?",
+                ";)",
+            },
+            {
+                typesp = "1",
+                "psst",
+                "hey",
+                "over here",
+                "yea u",
+                "wanna know a secret?",
+                "gravel is made of",
+                "crushed rocks",
+                "mind blown :o",
+            },
+            {
+                typesp = "1",
+                "r u a hacker?",
+                "cuz u seem sus",
+                "wait i'm the script",
+                "i'm literally hacking\nfor u",
+                "i'm the sus one",
+                "my bad :p",
+            },
+            {
+                "mastermz plzzlz\nshowcase mAh script",
+                "plzlzllzllzzzzz",
+                "like super duper pleasszz",
+            },
+            {
+                "u ever just",
+                "open a script",
+                "and it works",
+                "first try?",
+                "yea me neither",
+                "this is like my 50th version",
+                "we don't talk about v1\noh yea g.cc dont has versions...",
+            },
+            {
+                typesp = "1.5",
+                "if u get banned",
+                "don't blame me",
+                "i'm just a rock",
+                "rocks can't be blamed",
+                "it's the law",
+                "i think",
+                "i didn't read it",
+            },
+            {
+                "what's ur favorite",
+                "type of rock?",
+                "mine's gravel obv",
+                "but igneous is cool too",
+                "pumice floats",
+                "that's wild",
+                "nature is crazy :o",
+            },
+            {
+                typesp = "2",
+                "u think ur ready",
+                "for the gravel experience?",
+                "u think ur ready",
+                "for the SILENT AIM??",
+                "u think ur ready",
+                "for the HITBOX??",
+                "probably not :P",
+            },
+            {
+                "some people use aimbot",
+                "some people use silent aim",
+                "but real ones",
+                "use gravel",
+                "and a gaming chair",
+                "obviously",
+            },
+            {
+                typesp = "1",
+                "warning:",
+                "this script may cause",
+                "excessive winning",
+                "opponents crying",
+                "and accusations",
+                "of being a hacker",
+                "u have been warned >:D",
+            },
+            {
+                "what do u call",
+                "a sad rock?",
+                "a crying pebble :(",
+                "what do u call",
+                "a happy rock?",
+                "a gravely boy :D",
+            },
+            {
+                typesp = "1",
+                "u ever think about",
+                "how i'm talking to u",
+                "through text",
+                "on a screen",
+                "in a game",
+                "about rocks",
+                "life is weird man",
+            },
+            {
+                "if u read this far",
+                "u deserve a medal",
+                "or a rock",
+                "here's a virtual rock",
+                "🥔",
+                "wait that's a potato",
+                "close enough :p",
+            },
+            {
+                typesp = "1.5",
+                "gravel's motto:",
+                "be rocky",
+                "be rough",
+                "be resilient",
+                "and don't get kicked",
+                "by the server",
+                "or anticheat",
+            },
+            {
+                "some people use",
+                "expensive hacks",
+                "we use free ones",
+                "and they work better",
+                "take that capitalism",
+                ":v",
+            },
+            {
+                typesp = "2",
+                "u know what's underrated?",
+                "the sound of gravel",
+                "crunch crunch",
+                "satisfying as heck",
+                "u can't change my mind",
+            },
+            {
+                "me: 'i'll make a clean script'",
+                "also me:",
+                "*13000+ lines later*",
+                "what is organization?",
+                "i don't know her",
+                ":s",
+            },
+            {
+                typesp = "1",
+                "this script contains:",
+                " - 100% pure gravel",
+                " - premium aim",
+                " - secret sauce",
+                " - questionable code",
+                " - the tears of enemies",
+                "read the ingredients",
+                "u won't :P",
+            },
+            {
+                "the gravel community",
+                "is small",
+                "but we are mighty",
+                "like a pebble",
+                "with a grudge",
+                "don't mess with us",
+                ">:D",
+            },
+            {
+                typesp = "3",
+                "i'm not a robot",
+                "i'm a gravel",
+                "robots are metal",
+                "gravel is rock",
+                "big difference",
+                "checkmate atheists",
+                ":v",
+            },
+            {
+                "u ever get so bored",
+                "u read script messages",
+                "like these?",
+                "same tbh",
+                "i wrote them",
+                "i have no life",
+                "respect the grind",
+            },
+            {
+                typesp = "2",
+                "u ever try to explain",
+                "what gravel is",
+                "to someone?",
+                " 'it's a script' ",
+                " 'for roblox' ",
+                " 'with aimbot' ",
+                "they never understand",
+                "sadge :(",
+            },
+            {
+                "me trying to decide",
+                "what feature to add next:",
+                "*spins wheel*",
+                "it lands on 'more jokes'",
+                "so here we are",
+                "u're welcome :D",
+            },
+            {
+                typesp = "1",
+                "if u enjoy this script",
+                "tell a friend",
+                "if u don't enjoy it",
+                "tell a da Robloz support",
+                "either way",
+                "gravel supports u",
+            },
+            {
+                typesp = "1",
+                "i love it when",
+                "the script loads",
+                "and nothing breaks",
+                "that's the best feeling",
+                "better than winning",
+                "better than robux",
+                "pure joy",
+            },
+            {
+                "u ever just",
+                "silent aim someone",
+                "and they go",
+                " '??? how' ",
+                "and then u say ping diff",
+                "well I did that",
+            },
+            {
+                "i'm not saying",
+                "gravel is the best",
+                "but i'm also not saying",
+                "it's NOT the best",
+                "so it's the bes but not da best-est",
+                "llikee does that make sense?",
+            },
+            {
+                typesp = "1",
+                "u ever just",
+                "accidentally write",
+                "a really good feature",
+                "and not know how",
+                "u did it?",
+                "that's most of gravel",
+                "happy accidents",
+                ":D",
+            },
+            {
+                "i should probably",
+                "document this code",
+                "but that's future me's",
+                "problem",
+                "present me wants",
+                "to add more jokes",
+                "priorities :v",
+            },
+            {
+                typesp = "1",
+                "if u see me in game",
+                "no u didn't",
+                "if u see me hacking",
+                "no u didn't",
+                "if u see me winning",
+                "that's just skill",
+                "gravel skill",
+                ";D",
+            },
+        },
+        defaults = {
+            minDelay = 25,
+            maxDelay = 85,
+            spaceExtraMin = 40,
+            spaceExtraMax = 90,
+            punctExtraMin = 120,
+            punctExtraMax = 250,
+            breakChance = 0.05,
+            breakExtraMin = 100,
+            breakExtraMax = 300,
+            messageWaitMin = 10,
+            messageWaitMax = 30,
+            convoWaitMin = 15,
+            convoWaitMax = 35,
+            eraseWaitMin = 2,
+            eraseWaitMax = 6,
+            eraseDelayMin = 15,
+            eraseDelayMax = 40,
+            cursorBlink = 0.45,
+            shuffleWaitMin = 20,
+            shuffleWaitMax = 40,
         },
         popz = {
             ":0",
@@ -1850,6 +2186,8 @@ local config = {
         errors = true,
     },
     Gradow = {
+        textcursor = "_",
+        textcursor2 = "  ",
         uicolor = {
             lightGreen = Color3.fromRGB(144, 238, 144),
             darkGray = Color3.fromRGB(40, 40, 40),
@@ -2375,6 +2713,8 @@ function saveConfig(saveName)
             HoldKeysEnabled = config.HoldKeysEnabled,
             HoldKeybind = config.Keybinds.HoldKeybind,
             varibz_CameraDistance = config.varibz.CameraDistance,
+            Gradow_textcursor = config.Gradow.textcursor,
+            Gradow_textcursor2 = config.Gradow.textcursor2,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -3224,6 +3564,12 @@ function loadSave(saveName)
     if cfg.HoldKeysEnabled ~= nil then config.HoldKeysEnabled = cfg.HoldKeysEnabled end
     if cfg.HoldKeybind then config.Keybinds.HoldKeybind = cfg.HoldKeybind end
     if cfg.varibz_CameraDistance then config.varibz.CameraDistance = cfg.varibz_CameraDistance end
+    if cfg.Gradow_textcursor then 
+        config.Gradow.textcursor = cfg.Gradow_textcursor 
+    end
+    if cfg.Gradow_textcursor2 then 
+        config.Gradow.textcursor2 = cfg.Gradow_textcursor2 
+    end
     if cfg.varibz_patcherwait then config.varibz.patcherwait = cfg.varibz_patcherwait end
     if cfg.varibz_lowpatcherwait then config.varibz.lowpatcherwait = cfg.varibz_lowpatcherwait end
     if cfg.varibz_patcher ~= nil then config.varibz.patcher = cfg.varibz_patcher end
@@ -9038,7 +9384,7 @@ local function rng4()
         while tag do
             cursorVisible = not cursorVisible
             if tag.SetTitle then
-                tag:SetTitle(currentText .. (cursorVisible and "_" or ""))
+                tag:SetTitle(currentText .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
             end
             task.wait(0.45)
         end
@@ -9047,32 +9393,9 @@ local function rng4()
     local function setText(text)
         currentText = text
         if tag.SetTitle then
-            tag:SetTitle(text .. (cursorVisible and "_" or ""))
+            tag:SetTitle(text .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
         end
     end
-    
-    local defaults = {
-        minDelay = 25,
-        maxDelay = 85,
-        spaceExtraMin = 40,
-        spaceExtraMax = 90,
-        punctExtraMin = 120,
-        punctExtraMax = 250,
-        breakChance = 0.05,
-        breakExtraMin = 100,
-        breakExtraMax = 300,
-        messageWaitMin = 10,
-        messageWaitMax = 30,
-        convoWaitMin = 15,
-        convoWaitMax = 35,
-        eraseWaitMin = 2,
-        eraseWaitMax = 6,
-        eraseDelayMin = 15,
-        eraseDelayMax = 40,
-        cursorBlink = 0.45,
-        shuffleWaitMin = 20,
-        shuffleWaitMax = 40,
-    }
     
     local function getSpeedMultiplier(conversation)
         if type(conversation) == "table" and conversation.typesp then
@@ -9087,24 +9410,87 @@ local function rng4()
         end
         return 1
     end
+    local function isLetter(char)
+        return char:match("[%a]") ~= nil
+    end
+    local function isRepeatedChar(text, position)
+        if position <= 1 then return false end
+        local currentChar = text:sub(position, position)
+        local prevChar = text:sub(position - 1, position - 1)
+        return currentChar == prevChar and isLetter(currentChar)
+    end
+    local function getRepeatedRunLength(text, position)
+        if position > #text then return 0 end
+        local char = text:sub(position, position)
+        if not isLetter(char) then return 0 end
+        
+        local runLength = 0
+        for i = position, #text do
+            if text:sub(i, i) == char then
+                runLength = runLength + 1
+            else
+                break
+            end
+        end
+        return runLength
+    end
     
     local function typeText(text, speedMultiplier)
         local typed = ""
-        for i = 1, #text do
+        local i = 1
+        
+        while i <= #text do
             local char = text:sub(i, i)
-            typed ..= char
-            setText(typed)
-            
-            local delay = (math.random(defaults.minDelay, defaults.maxDelay) / 1000) * speedMultiplier
-            if char == " " then
-                delay = delay + (math.random(defaults.spaceExtraMin, defaults.spaceExtraMax) / 1000) * speedMultiplier
-            elseif char:match("[%.%!%?,:]") then
-                delay = delay + (math.random(defaults.punctExtraMin, defaults.punctExtraMax) / 1000) * speedMultiplier
+            if char == "\n" then
+                typed ..= char
+                setText(typed)
+                i = i + 1
+                continue
             end
-            if math.random() < defaults.breakChance then
-                delay = delay + (math.random(defaults.breakExtraMin, defaults.breakExtraMax) / 1000) * speedMultiplier
+            local runLength = getRepeatedRunLength(text, i)
+            if runLength > 2 then
+                local repeatedChar = text:sub(i, i)
+                local totalCharsInRun = runLength
+                local charsTyped = 0
+                typed ..= repeatedChar
+                setText(typed)
+                local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                task.wait(delay)
+                charsTyped = charsTyped + 1
+                i = i + 1
+                local baseDelay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                while charsTyped < totalCharsInRun and i <= #text and text:sub(i, i) == repeatedChar do
+                    typed ..= repeatedChar
+                    setText(typed)
+                    local holdDelay
+                    if charsTyped <= 2 then
+                        holdDelay = baseDelay * (math.random(15, 25) / 10)
+                    else
+                        holdDelay = baseDelay * (math.random(2, 5) / 10)
+                    end
+                    holdDelay = holdDelay * (math.random(8, 12) / 10)
+                    
+                    task.wait(holdDelay)
+                    charsTyped = charsTyped + 1
+                    i = i + 1
+                end
+                task.wait(baseDelay * math.random(1, 3))
+            else
+                typed ..= char
+                setText(typed)
+                
+                local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                if char == " " then
+                    delay = delay + (math.random(config.varibz.defaults.spaceExtraMin, config.varibz.defaults.spaceExtraMax) / 1000) * speedMultiplier
+                elseif char:match("[%.%!%?,:]") then
+                    delay = delay + (math.random(config.varibz.defaults.punctExtraMin, config.varibz.defaults.punctExtraMax) / 1000) * speedMultiplier
+                end
+                if math.random() < config.varibz.defaults.breakChance then
+                    delay = delay + (math.random(config.varibz.defaults.breakExtraMin, config.varibz.defaults.breakExtraMax) / 1000) * speedMultiplier
+                end
+                task.wait(delay)
+                i = i + 1
             end
-            task.wait(delay)
         end
     end
     
@@ -9112,7 +9498,7 @@ local function rng4()
         local text = currentText
         for i = #text, 0, -1 do
             setText(text:sub(1, i))
-            task.wait((math.random(defaults.eraseDelayMin, defaults.eraseDelayMax) / 1000) * speedMultiplier)
+            task.wait((math.random(config.varibz.defaults.eraseDelayMin, config.varibz.defaults.eraseDelayMax) / 1000) * speedMultiplier)
         end
     end
     
@@ -9122,7 +9508,7 @@ local function rng4()
                 for i = 1, #config.varibz.convo do
                     table.insert(availableIndices, i)
                 end
-                task.wait(math.random(defaults.shuffleWaitMin, defaults.shuffleWaitMax) / 10)
+                task.wait(math.random(config.varibz.defaults.shuffleWaitMin, config.varibz.defaults.shuffleWaitMax) / 10)
             end
             local randomPos = math.random(1, #availableIndices)
             local convoIndex = availableIndices[randomPos]
@@ -9144,16 +9530,16 @@ local function rng4()
                     typeText(message, speedMultiplier)
                     
                     if index < #messages then
-                        local waitTime = (math.random(defaults.messageWaitMin, defaults.messageWaitMax) / 10) * speedMultiplier
+                        local waitTime = (math.random(config.varibz.defaults.messageWaitMin, config.varibz.defaults.messageWaitMax) / 10) * speedMultiplier
                         task.wait(waitTime)
                         eraseText(speedMultiplier)
                     end
                 end
                 
-                local convoWait = (math.random(defaults.convoWaitMin, defaults.convoWaitMax) / 10) * speedMultiplier
+                local convoWait = (math.random(config.varibz.defaults.convoWaitMin, config.varibz.defaults.convoWaitMax) / 10) * speedMultiplier
                 task.wait(convoWait)
                 eraseText(speedMultiplier)
-                task.wait((math.random(defaults.eraseWaitMin, defaults.eraseWaitMax) / 10) * speedMultiplier)
+                task.wait((math.random(config.varibz.defaults.eraseWaitMin, config.varibz.defaults.eraseWaitMax) / 10) * speedMultiplier)
             end
         end
     end)
@@ -9168,12 +9554,12 @@ local function rng4()
         local accum = 0
         RunService.Heartbeat:Connect(function(deltaTime)
             accum = accum + deltaTime
-            if accum >= 0.5 then
+            if accum >= 0.3 then
                 local fps = math.round(1 / math.max(deltaTime, 1e-6))
                 if fpsTag.SetTitle then
                     fpsTag:SetTitle("FPS: " .. fps)
                 end
-                accum = accum - 0.5
+                accum = accum - 0.3
             end
         end)
     end
@@ -10214,6 +10600,27 @@ VisualsTab:Toggle({
                 BarColor = Color3.fromRGB(255, 0, 0)
             })
         end
+    end
+})
+
+VisualsTab:Input({
+    Title = "Tag's TextCursor",
+    Desc = "bro... who even needs ts 💔",
+    Placeholder = "_",
+    Value = "_",
+    ClearTextOnFocus = true,
+    Callback = function(hahahaaha)
+        config.Gradow.textcursor = hahahaaha
+    end
+})
+VisualsTab:Input({
+    Title = "Tag's TextCursor2",
+    Desc = "alr vro 🥀",
+    Placeholder = "  ",
+    Value = "  ",
+    ClearTextOnFocus = true,
+    Callback = function(lollllll)
+        config.Gradow.textcursor2 = lollllll
     end
 })
 
