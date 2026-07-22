@@ -1,4 +1,4 @@
---[[
+print([[
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⡿⣷⣄⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣧⣈⣻⣷
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠟⠉⠙⠛⠁
@@ -8,11 +8,10 @@
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “how to become a professional shovel-est... step one dig” 
+           “be cringe, they'll judge anyway :v” 
                                            
                                - Gpssickle
-]]
-
+]])
 
 -- Gravel.cc
 if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
@@ -50,7 +49,7 @@ local localPlayer = Players.LocalPlayer
 local plr = Players.LocalPlayer
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local urls = {
+urls = {
     --hbss
     url1 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
     url2 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
@@ -72,7 +71,7 @@ local lzl = {
     loading = false,
     q = {},
     enabled = true,
-    int = 0.5,
+    int = 3,
     maxQ = 50,
     lastT = 0,
     perf = true,
@@ -736,6 +735,7 @@ n({
     BarColor = Color3.fromRGB(0, 170, 255)
 })
 end)
+--                               ⸜( ˃ ᵕ ˂ )⸝♡
 local func = loadstring(game:HttpGet(urls.url2))()
 local WindUI = loadstring(game:HttpGet(urls.url6))()
 task.wait(0.8) -- I hate http 429 errors...
@@ -758,7 +758,7 @@ local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
-local config = {
+config = {
     confIg = "Gravel",
     startsa = false,
     fovsize = 120,
@@ -1080,6 +1080,12 @@ local config = {
                 "I guess there's no use in wishing now...",
             },
             {
+                "I'm lazier than lazytown",
+                "that's literally how lazy iam",
+                "it's true but also not true",
+                "ok whatevski",
+            },
+            {
                 typesp = "2.5",
                 "Did you do your chores?",
                 "Yessirski!",
@@ -1188,7 +1194,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 13000+ lines long :(",
+                "Bro ts code is 14000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp",
             },
@@ -1236,6 +1242,14 @@ local config = {
                 "Didn't take that well.",
                 "Didn't take that well.",
                 "Felt like!",
+            },
+            {
+                "I somehow see what's beautiful,",
+                "In things that are ephemeral",
+                "Am I only friend of mine",
+                "Love is just.. a piece of time\nin the world",
+                "In the world",
+                "And I couldn't help but fall\nin love again",
             },
             {
                 "I'm not actually talking to u",
@@ -1592,7 +1606,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*13000+ lines later*",
+                "*14000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -1773,7 +1787,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 13000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 14000+ lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -1793,7 +1807,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 13000 o_o",
+            "da script reached 8000 lines to 14000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2184,10 +2198,33 @@ local config = {
         bhopQuickToggleUI = nil,
         lastJumpTime = 0,
         errors = true,
+        Rng5stuff = nil,
+        Rng3dis = {},
     },
     Gradow = {
         textcursor = "_",
         textcursor2 = "  ",
+        uianimate = {
+            connection = nil,
+            basePosition = nil,
+            lastPosition = Vector3.new(0, 0, 0),
+            movementOffset = 0,
+            smoothOffset = 0,
+            pulseSpeed = 0.02,
+            minThickness = 0.80,
+            maxThickness = 2,
+            targetRotation = 0,
+            currentRotation = 0,
+            windowTargetRotation = 0,
+            windowCurrentRotation = 0,
+            windowInitialThickness = nil,
+            openButton = nil,
+            windowFrame = nil,
+            openStroke = nil,
+            openGradient = nil,
+            windowStroke = nil,
+            windowGradient = nil
+        },
         uicolor = {
             lightGreen = Color3.fromRGB(144, 238, 144),
             darkGray = Color3.fromRGB(40, 40, 40),
@@ -2203,18 +2240,9 @@ local config = {
         }
     }
 }
-local rng = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
-
-local function rng3(tabName)
-    local tabDescs = config.varibz.descs[tabName]
-    if tabDescs and #tabDescs > 0 then
-        return tabDescs[math.random(1, #tabDescs)]
-    end
-    return "description missing D:"
-end
--- rng3("")
-
+local lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
 local function rng5()
+    if config.varibz.Rng5stuff then return config.varibz.Rng5stuff end
     local currentDate = os.date("%m %d")
     local currentYear = tonumber(os.date("%Y"))
     local festiveTitles = {
@@ -2262,87 +2290,110 @@ local function rng5()
         local F = (2*(year%4)+4*(year%7)+6*E+D)%7
         local G = (22+E+F)
         if E == 29 and F == 6 then
-            return "04 19"
+            config.varibz.Rng5stuff = "04 19"
+            return config.varibz.Rng5stuff
         elseif E == 28 and F == 6 then
-            return "04 18"
+            config.varibz.Rng5stuff = "04 18"
+            return config.varibz.Rng5stuff
         elseif 31 < G then
-            return ("04 %02d"):format(G-31)
+            config.varibz.Rng5stuff = ("04 %02d"):format(G-31)
+            return config.varibz.Rng5stuff
         end
-        return ("03 %02d"):format(G)
+        config.varibz.Rng5stuff = ("03 %02d"):format(G)
+        return config.varibz.Rng5stuff
     end
     local easterDate = getEasterDate(currentYear)
     if currentDate == easterDate then
-        return config.varibz.easterTitles[math.random(1, #config.varibz.easterTitles)]
+        config.varibz.Rng5stuff = config.varibz.easterTitles[math.random(1, #config.varibz.easterTitles)]
+        return config.varibz.Rng5stuff
     end
     for datePattern, titles in pairs(festiveTitles) do
         if currentDate == datePattern then
-            return titles[math.random(1, #titles)]
+            config.varibz.Rng5stuff = titles[math.random(1, #titles)]
+            return config.varibz.Rng5stuff
         end
     end
     if currentDate == "04 01" then
-        return config.varibz.aprilFools[math.random(1, #config.varibz.aprilFools)]
+        config.varibz.Rng5stuff = config.varibz.aprilFools[math.random(1, #config.varibz.aprilFools)]
+        return config.varibz.Rng5stuff
     end
-    return config.varibz.defaultTitles[math.random(1, #config.varibz.defaultTitles)]
+    config.varibz.Rng5stuff = config.varibz.defaultTitles[math.random(1, #config.varibz.defaultTitles)]
+    return config.varibz.Rng5stuff
+end
+
+local function rng3(tabName)
+    if config.varibz.Rng3dis[tabName] then return config.varibz.Rng3dis[tabName] end
+    local tabDescs = config.varibz.descs[tabName]
+    if tabDescs and #tabDescs > 0 then
+        config.varibz.Rng3dis[tabName] = tabDescs[math.random(1, #tabDescs)]
+        return config.varibz.Rng3dis[tabName]
+    end
+    config.varibz.Rng3dis[tabName] = "description missing D:"
+    return config.varibz.Rng3dis[tabName]
 end
 local function uianimate()
     task.wait(0.1)
-    local openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
-    if not openButton then return end
-    local windowFrame = Window.UIElements.Main
-    if not windowFrame then return end
-    local openStroke = nil
-    local openGradient = nil
-    for _, descendant in ipairs(openButton:GetDescendants()) do
+    config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
+    if not config.Gradow.uianimate.openButton then return end
+    config.Gradow.uianimate.windowFrame = Window.UIElements.Main
+    if not config.Gradow.uianimate.windowFrame then return end
+    
+    config.Gradow.uianimate.openStroke = nil
+    config.Gradow.uianimate.openGradient = nil
+    for _, descendant in ipairs(config.Gradow.uianimate.openButton:GetDescendants()) do
         if descendant:IsA("UIStroke") then
-            openStroke = descendant
+            config.Gradow.uianimate.openStroke = descendant
         elseif descendant:IsA("UIGradient") then
-            openGradient = descendant
+            config.Gradow.uianimate.openGradient = descendant
         end
     end
     
-    if not openStroke then return end
-    local windowStroke = nil
-    local windowGradient = nil
-    for _, descendant in ipairs(windowFrame:GetDescendants()) do
+    if not config.Gradow.uianimate.openStroke then return end
+    
+    config.Gradow.uianimate.windowStroke = nil
+    config.Gradow.uianimate.windowGradient = nil
+    for _, descendant in ipairs(config.Gradow.uianimate.windowFrame:GetDescendants()) do
         if descendant:IsA("UIStroke") then
-            windowStroke = descendant
+            config.Gradow.uianimate.windowStroke = descendant
             for _, grad in ipairs(descendant:GetDescendants()) do
                 if grad:IsA("UIGradient") then
-                    windowGradient = grad
+                    config.Gradow.uianimate.windowGradient = grad
                     break
                 end
             end
             break
         end
     end
-    if not windowStroke then
-        windowStroke = Instance.new("UIStroke")
-        windowStroke.Thickness = 2
-        windowStroke.Color = Color3.fromRGB(255, 255, 255)
-        windowStroke.Transparency = 0.5
-        windowStroke.LineJoinMode = Enum.LineJoinMode.Round
-        windowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        windowStroke.Parent = windowFrame
-        windowGradient = Instance.new("UIGradient")
-        windowGradient.Color = ColorSequence.new({
+    
+    if not config.Gradow.uianimate.windowStroke then
+        config.Gradow.uianimate.windowStroke = Instance.new("UIStroke")
+        config.Gradow.uianimate.windowStroke.Thickness = 2
+        config.Gradow.uianimate.windowStroke.Color = Color3.fromRGB(255, 255, 255)
+        config.Gradow.uianimate.windowStroke.Transparency = 0.5
+        config.Gradow.uianimate.windowStroke.LineJoinMode = Enum.LineJoinMode.Round
+        config.Gradow.uianimate.windowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        config.Gradow.uianimate.windowStroke.Parent = config.Gradow.uianimate.windowFrame
+        config.Gradow.uianimate.windowGradient = Instance.new("UIGradient")
+        config.Gradow.uianimate.windowGradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(144, 238, 144)),
             ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 200)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
         })
-        windowGradient.Parent = windowStroke
+        config.Gradow.uianimate.windowGradient.Parent = config.Gradow.uianimate.windowStroke
     end
     
-    if not windowGradient then
-        windowGradient = Instance.new("UIGradient")
-        windowGradient.Color = ColorSequence.new({
+    if not config.Gradow.uianimate.windowGradient then
+        config.Gradow.uianimate.windowGradient = Instance.new("UIGradient")
+        config.Gradow.uianimate.windowGradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(144, 238, 144)),
             ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 200)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
         })
-        windowGradient.Parent = windowStroke
+        config.Gradow.uianimate.windowGradient.Parent = config.Gradow.uianimate.windowStroke
     end
-    windowStroke.Thickness = openStroke.Thickness
-    windowStroke.Transparency = openStroke.Transparency
+    
+    config.Gradow.uianimate.windowStroke.Thickness = config.Gradow.uianimate.openStroke.Thickness
+    config.Gradow.uianimate.windowStroke.Transparency = config.Gradow.uianimate.openStroke.Transparency
     
     local TweenService = game:GetService("TweenService")
     local RunService = game:GetService("RunService")
@@ -2350,24 +2401,23 @@ local function uianimate()
     local lp = Players.LocalPlayer
     local character = lp.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-    local buttonFrame = openButton
-    local basePosition = buttonFrame.Position
-    local lastPosition = Vector3.new(0, 0, 0)
-    local movementOffset = 0
-    local smoothOffset = 0
-    local pulseSpeed = 0.02
-    local pulseThickness = 2
-    local minThickness = 0.80
-    local maxThickness = 2
-    local targetRotation = 0
-    local currentRotation = 0
-    local windowTargetRotation = 0
-    local windowCurrentRotation = 0
-    local windowInitialThickness = windowStroke.Thickness
+    local buttonFrame = config.Gradow.uianimate.openButton
+    config.Gradow.uianimate.basePosition = buttonFrame.Position
+    config.Gradow.uianimate.lastPosition = Vector3.new(0, 0, 0)
+    config.Gradow.uianimate.movementOffset = 0
+    config.Gradow.uianimate.smoothOffset = 0
+    config.Gradow.uianimate.pulseSpeed = 0.02
+    config.Gradow.uianimate.minThickness = 0.80
+    config.Gradow.uianimate.maxThickness = 2
+    config.Gradow.uianimate.targetRotation = 0
+    config.Gradow.uianimate.currentRotation = 0
+    config.Gradow.uianimate.windowTargetRotation = 0
+    config.Gradow.uianimate.windowCurrentRotation = 0
+    config.Gradow.uianimate.windowInitialThickness = config.Gradow.uianimate.windowStroke.Thickness
     
     local function getNearestEnemy()
         local nearest = nil
-        local nearestDist = math.huge
+        local nearestDist = 677
         local lpos = character and character:FindFirstChild("HumanoidRootPart")
         if not lpos then return nil end
         
@@ -2386,15 +2436,18 @@ local function uianimate()
         return nearest
     end
 
-    local connection
-    connection = RunService.Heartbeat:Connect(function(deltaTime)
-        if not openStroke or not openStroke.Parent then
-            if connection then connection:Disconnect() end
+    if config.Gradow.uianimate.connection then
+        config.Gradow.uianimate.connection:Disconnect()
+    end
+    
+    config.Gradow.uianimate.connection = RunService.Heartbeat:Connect(function(deltaTime)
+        if not config.Gradow.uianimate.openStroke or not config.Gradow.uianimate.openStroke.Parent then
+            if config.Gradow.uianimate.connection then config.Gradow.uianimate.connection:Disconnect() end
             return
         end
-        if windowStroke and windowStroke.Parent then
-            windowStroke.Thickness = openStroke.Thickness
-            windowStroke.Transparency = openStroke.Transparency
+        if config.Gradow.uianimate.windowStroke and config.Gradow.uianimate.windowStroke.Parent then
+            config.Gradow.uianimate.windowStroke.Thickness = config.Gradow.uianimate.openStroke.Thickness
+            config.Gradow.uianimate.windowStroke.Transparency = config.Gradow.uianimate.openStroke.Transparency
         end
         
         character = lp.Character
@@ -2406,7 +2459,7 @@ local function uianimate()
                 local velocity = rootPart.Velocity
                 local moveSpeed = velocity.Magnitude
                 local targetOffset = math.min(moveSpeed / 50, 8)
-                smoothOffset = smoothOffset + (targetOffset - smoothOffset) * 0.1
+                config.Gradow.uianimate.smoothOffset = config.Gradow.uianimate.smoothOffset + (targetOffset - config.Gradow.uianimate.smoothOffset) * 0.1
                 local moveX = -velocity.X * 0.02
                 local moveY = -velocity.Y * 0.02
                 local moveZ = -velocity.Z * 0.02
@@ -2415,10 +2468,10 @@ local function uianimate()
                 moveY = math.clamp(moveY, -maxOffset, maxOffset)
                 moveZ = math.clamp(moveZ, -maxOffset, maxOffset)
                 local newPos = UDim2.new(
-                    basePosition.X.Scale,
-                    basePosition.X.Offset + moveX,
-                    basePosition.Y.Scale,
-                    basePosition.Y.Offset + moveY + smoothOffset * 0.3
+                    config.Gradow.uianimate.basePosition.X.Scale,
+                    config.Gradow.uianimate.basePosition.X.Offset + moveX,
+                    config.Gradow.uianimate.basePosition.Y.Scale,
+                    config.Gradow.uianimate.basePosition.Y.Offset + moveY + config.Gradow.uianimate.smoothOffset * 0.3
                 )
                 buttonFrame.Position = newPos
                 local healthPercent = humanoid.Health / humanoid.MaxHealth
@@ -2426,55 +2479,54 @@ local function uianimate()
                 local baseSpeed = 0.5
                 local minSpeed = 0.15
                 local maxSpeed = 0.8
-                pulseSpeed = maxSpeed - (healthFactor * (maxSpeed - minSpeed))
-                local thicknessRange = maxThickness - minThickness
-                local targetThickness = minThickness + (healthFactor * thicknessRange)
+                config.Gradow.uianimate.pulseSpeed = maxSpeed - (healthFactor * (maxSpeed - minSpeed))
+                local thicknessRange = config.Gradow.uianimate.maxThickness - config.Gradow.uianimate.minThickness
                 local enemy = getNearestEnemy()
-                if enemy and openGradient then
+                if enemy and config.Gradow.uianimate.openGradient then
                     local enemyPos = enemy.Position
                     local rootPos = rootPart.Position
                     local direction = (enemyPos - rootPos).Unit
                     local angle = math.deg(math.atan2(direction.Z, direction.X))
-                    targetRotation = angle
+                    config.Gradow.uianimate.targetRotation = angle
                 end
-                local rotDiff = (targetRotation - currentRotation) % 360
+                local rotDiff = (config.Gradow.uianimate.targetRotation - config.Gradow.uianimate.currentRotation) % 360
                 if rotDiff > 180 then rotDiff = rotDiff - 360 end
-                currentRotation = currentRotation + rotDiff * 0.05
+                config.Gradow.uianimate.currentRotation = config.Gradow.uianimate.currentRotation + rotDiff * 0.05
                 
-                if openGradient then
-                    openGradient.Rotation = currentRotation
+                if config.Gradow.uianimate.openGradient then
+                    config.Gradow.uianimate.openGradient.Rotation = config.Gradow.uianimate.currentRotation
                 end
                 
-                if windowGradient then
-                    local windowRotDiff = (targetRotation - windowCurrentRotation) % 360
+                if config.Gradow.uianimate.windowGradient then
+                    local windowRotDiff = (config.Gradow.uianimate.targetRotation - config.Gradow.uianimate.windowCurrentRotation) % 360
                     if windowRotDiff > 180 then windowRotDiff = windowRotDiff - 360 end
-                    windowCurrentRotation = windowCurrentRotation + windowRotDiff * 0.025
-                    windowGradient.Rotation = windowCurrentRotation
+                    config.Gradow.uianimate.windowCurrentRotation = config.Gradow.uianimate.windowCurrentRotation + windowRotDiff * 0.025
+                    config.Gradow.uianimate.windowGradient.Rotation = config.Gradow.uianimate.windowCurrentRotation
                 end
             end
         end
         
         local currentTime = tick()
-        local pulseValue = (math.sin(currentTime * (1 / pulseSpeed) * math.pi * 2) + 1) / 2
-        local thicknessRange = maxThickness - minThickness
-        local currentThickness = minThickness + (pulseValue * thicknessRange)
-        if openStroke then
-            openStroke.Thickness = currentThickness
+        local pulseValue = (math.sin(currentTime * (1 / config.Gradow.uianimate.pulseSpeed) * math.pi * 2) + 1) / 2
+        local thicknessRange = config.Gradow.uianimate.maxThickness - config.Gradow.uianimate.minThickness
+        local currentThickness = config.Gradow.uianimate.minThickness + (pulseValue * thicknessRange)
+        if config.Gradow.uianimate.openStroke then
+            config.Gradow.uianimate.openStroke.Thickness = currentThickness
             local pulseTransparency = 0.1 + (pulseValue * 0.3)
-            openStroke.Transparency = pulseTransparency
+            config.Gradow.uianimate.openStroke.Transparency = pulseTransparency
         end
         
-        if windowStroke then
-            local windowPulseValue = (math.sin(currentTime * (1 / (pulseSpeed * 0.9)) * math.pi * 2) + 1) / 2
-            local windowThickness = minThickness + (windowPulseValue * thicknessRange)
-            windowStroke.Thickness = windowThickness
+        if config.Gradow.uianimate.windowStroke then
+            local windowPulseValue = (math.sin(currentTime * (1 / (config.Gradow.uianimate.pulseSpeed * 0.9)) * math.pi * 2) + 1) / 2
+            local windowThickness = config.Gradow.uianimate.minThickness + (windowPulseValue * thicknessRange)
+            config.Gradow.uianimate.windowStroke.Thickness = windowThickness
             local windowTransparency = 0.1 + (windowPulseValue * 0.3)
-            windowStroke.Transparency = windowTransparency
+            config.Gradow.uianimate.windowStroke.Transparency = windowTransparency
         end
     end)
     
     task.wait(0.1)
-    if not connection or not connection.Connected then
+    if not config.Gradow.uianimate.connection or not config.Gradow.uianimate.connection.Connected then
         lo2l()
     end
 end
@@ -5574,13 +5626,9 @@ local function tptocrossWithAlignment(target)
     if not alignPart then return false end
     local offsetFromRoot = alignPart.Position - targetRoot.Position
     local newRootPos = targetPos - offsetFromRoot
-
-    pcall(function()
-        local directionToCamera = (cameraPos - newRootPos).Unit
-        local lookAt = CFrame.new(newRootPos, newRootPos + directionToCamera)
-        targetRoot.CFrame = lookAt
-    end)
-    
+    local directionToCamera = (cameraPos - newRootPos).Unit
+    local lookAt = CFrame.new(newRootPos, newRootPos + directionToCamera)
+    targetRoot.CFrame = lookAt
     return true
 end
 local function checkTargetHealth(target)
@@ -5718,11 +5766,7 @@ local function teleportTargetToLocalPlayerFront(target)
     local frontOffset = localCFrame.LookVector * config.autoFarmDistance
     local frontPos = localRoot.Position + frontOffset
     frontPos = Vector3.new(frontPos.X, targetRoot.Position.Y, frontPos.Z)
-    
-    pcall(function()
-        targetRoot.CFrame = CFrame.new(frontPos, localRoot.Position)
-    end)
-    
+    targetRoot.CFrame = CFrame.new(frontPos, localRoot.Position)
     return true
 end
 
@@ -5779,18 +5823,12 @@ local function teleportLocalPlayer(direction, distance)
     if not localPlayer.Character then return end
     local humanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
-    
     local currentPos = humanoidRootPart.Position
     local newPos = currentPos + (direction * distance)
-    
     if not config.originalPosition then
         config.originalPosition = currentPos
     end
-    
-    pcall(function()
-        humanoidRootPart.CFrame = CFrame.new(newPos)
-    end)
-    
+    humanoidRootPart.CFrame = CFrame.new(newPos)
     config.isTeleported = true
 end
 
@@ -5798,11 +5836,7 @@ local function returnToOriginalPosition()
     if not config.originalPosition or not localPlayer.Character then return end
     local humanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
-    
-    pcall(function()
-        humanoidRootPart.CFrame = CFrame.new(config.originalPosition)
-    end)
-    
+    humanoidRootPart.CFrame = CFrame.new(config.originalPosition)
     config.originalPosition = nil
     config.isTeleported = false
     config.currentAntiAimTarget = nil
@@ -5828,11 +5862,7 @@ local function teleportAboveTarget(target)
     if not config.originalPosition then
         config.originalPosition = localRoot.Position
     end
-    
-    pcall(function()
-        localRoot.CFrame = CFrame.new(abovePos)
-    end)
-    
+    localRoot.CFrame = CFrame.new(abovePos)
     config.currentAntiAimTarget = target
     config.isTeleported = true
 end
@@ -5855,10 +5885,7 @@ local function teleportBehindTarget(target)
         config.originalPosition = localRoot.Position
     end
     
-    pcall(function()
-        localRoot.CFrame = CFrame.new(behindPos)
-    end)
-    
+    localRoot.CFrame = CFrame.new(behindPos)
     config.currentAntiAimTarget = target
     config.isTeleported = true
 end
@@ -9345,7 +9372,7 @@ local Window = WindUI:CreateWindow({
     Size = size,
     HideSearchBar = false,
     OpenButton = {
-        Title = rng,
+        Title = lezzzgoo,
         Enabled = true,
         Draggable = true,
         Color = ColorSequence.new({
@@ -9367,7 +9394,6 @@ local function rng4()
     for i = 1, #config.varibz.convo do
         table.insert(availableIndices, i)
     end
-    
     local tag = Window:Tag({
         Title = "",
         Icon = "github",
@@ -9377,14 +9403,21 @@ local function rng4()
     if not tag then
         return
     end
-    
     local currentText = ""
     local cursorVisible = true
+    local function isWindowMinimized()
+        if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
+        local sizeY = Window.UIElements.Main.Size.Y.Offset
+        if sizeY < 50 then return true end
+        return false
+    end
     task.spawn(function()
         while tag do
-            cursorVisible = not cursorVisible
-            if tag.SetTitle then
-                tag:SetTitle(currentText .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
+            if not isWindowMinimized() then
+                cursorVisible = not cursorVisible
+                if tag.SetTitle then
+                    tag:SetTitle(currentText .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
+                end
             end
             task.wait(0.45)
         end
@@ -9423,7 +9456,6 @@ local function rng4()
         if position > #text then return 0 end
         local char = text:sub(position, position)
         if not isLetter(char) then return 0 end
-        
         local runLength = 0
         for i = position, #text do
             if text:sub(i, i) == char then
@@ -9434,12 +9466,15 @@ local function rng4()
         end
         return runLength
     end
-    
     local function typeText(text, speedMultiplier)
         local typed = ""
         local i = 1
         
         while i <= #text do
+            while isWindowMinimized() do
+                task.wait(0.1)
+            end
+            
             local char = text:sub(i, i)
             if char == "\n" then
                 typed ..= char
@@ -9497,13 +9532,19 @@ local function rng4()
     local function eraseText(speedMultiplier)
         local text = currentText
         for i = #text, 0, -1 do
+            while isWindowMinimized() do
+                task.wait(0.1)
+            end
             setText(text:sub(1, i))
             task.wait((math.random(config.varibz.defaults.eraseDelayMin, config.varibz.defaults.eraseDelayMax) / 1000) * speedMultiplier)
         end
     end
-    
     task.spawn(function()
         while tag do
+            while isWindowMinimized() do
+                task.wait(0.5)
+            end
+            
             if #availableIndices == 0 then
                 for i = 1, #config.varibz.convo do
                     table.insert(availableIndices, i)
@@ -9552,7 +9593,15 @@ local function rng4()
     })
     if fpsTag then
         local accum = 0
+        local function isWindowMinimized()
+            if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
+            local sizeY = Window.UIElements.Main.Size.Y.Offset
+            if sizeY < 50 then return true end
+            return false
+        end
+        
         RunService.Heartbeat:Connect(function(deltaTime)
+            if isWindowMinimized() then return end
             accum = accum + deltaTime
             if accum >= 0.3 then
                 local fps = math.round(1 / math.max(deltaTime, 1e-6))
@@ -14141,3 +14190,4 @@ if not success then
     error(err)
 end
 -- fin
+--                     .⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠.
