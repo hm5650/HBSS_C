@@ -8,7 +8,7 @@ print([[
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “be cringe, they'll judge anyway :v” 
+           “I like this dastardly tomfoolery :D” 
                                            
                                - Gpssickle
 ]])
@@ -47,16 +47,21 @@ local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 local localPlayer = Players.LocalPlayer
 local plr = Players.LocalPlayer
-local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
---                    ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
-urls = {
-    --hbss
+local ScreenGui = Instance.new("ScreenGui")
+local CircleFrame = Instance.new("Frame")
+local UIStroke = Instance.new("UIStroke")
+local UICorner = Instance.new("UICorner")
+--                        ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
+local urls = {
+    --hbss completely random useless & useful modules :]
     hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
     sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
     sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_FindTool" .. getgenv().sunc .. ".lua",
     hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().sunc .. ".lua",
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/getInfo" .. getgenv().sunc .. ".lua",
+    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().sunc .. ".lua",
+    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().sunc .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -67,8 +72,8 @@ urls = {
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
 
-lp_info = loadstring(game:HttpGet(urls.showmyipadress_jk))()
-function showurwholeipadress()
+local lp_info = loadstring(game:HttpGet(urls.showmyipadress_jk))()
+function showurwholeipadress3827103828827273637()
     print(lp_info.lp_username)
     print(lp_info.lp_displayname)
     print(lp_info.lp_id)
@@ -78,20 +83,7 @@ function showurwholeipadress()
 end
 
 -- unprofessionalism professionist 🥀
-lzl = {
-    loaded = {},
-    loading = false,
-    q = {},
-    enabled = true,
-    int = 3,
-    maxQ = 50,
-    lastT = 0,
-    perf = true,
-    _con = {},
-    _clean = {},
-    _proc = false
-}
-
+local lzl = loadstring(game:HttpGet(urls.lzlzlzlzlzl))()
 local fCfg = {
     core = {
         dep = {},
@@ -246,371 +238,341 @@ local fCfg = {
         prio = 2,
         ess = false,
         reqGame = true
-    }
-}
-
-lState = {
-    pend = {},
-    act = {},
-    fail = {},
-    retry = {},
-    maxRet = 3,
-    timeout = 5
-}
-
-function lzl:isReady()
-    return game:IsLoaded() and Players.LocalPlayer and Players.LocalPlayer.Character
-end
-
-function lzl:getDeps(feature)
-    local cfg = fCfg[feature]
-    if not cfg then return {} end
-    local deps = {}
-    for _, dep in ipairs(cfg.dep or {}) do
-        if not self.loaded[dep] then
-            table.insert(deps, dep)
-        end
-    end
-    return deps
-end
-
-function lzl:canLoad(feature)
-    local cfg = fCfg[feature]
-    if not cfg then return false end
-    if cfg.reqGame and not self:isReady() then return false end
-    local deps = self:getDeps(feature)
-    return #deps == 0
-end
-
-function lzl:load(featureName)
-    if not self.enabled then return false end
-    if self.loaded[featureName] then return true end
-    if lState.fail[featureName] then return false end
-    
-    local cfg = fCfg[featureName]
-    if not cfg then return false end
-    for _, dep in ipairs(cfg.dep or {}) do
-        if not self.loaded[dep] then
-            local success = self:load(dep)
-            if not success then
-                lState.fail[featureName] = true
-                return false
-            end
-        end
-    end
-    local success = false
-    local startTime = tick()
-    
-    local function attempt()
-        local result = cfg.load()
-        if result then
-            self.loaded[featureName] = true
-            lState.act[featureName] = true
-            lState.fail[featureName] = nil
-            lState.retry[featureName] = nil
+    },
+    viewing = {
+        dep = {"core"},
+        load = function()
+            if not config.Viewing then return false end
             return true
-        end
-        return false
-    end
-    local co = coroutine.create(function()
-        success = attempt()
-    end)
-    
-    coroutine.resume(co)
-    while coroutine.status(co) ~= "dead" do
-        if tick() - startTime > lState.timeout then
-            coroutine.close(co)
-            break
-        end
-        task.wait(0.01)
-    end
-    
-    if success then
-        return true
-    else
-        lState.retry[featureName] = (lState.retry[featureName] or 0) + 1
-        if lState.retry[featureName] >= lState.maxRet then
-            lState.fail[featureName] = true
-        end
-        return false
-    end
-end
-
-function lzl:unload(featureName)
-    if not self.loaded[featureName] then return end
-    for name, loaded in pairs(self.loaded) do
-        if loaded and name ~= featureName then
-            local cfg = fCfg[name]
-            if cfg then
-                for _, dep in ipairs(cfg.dep or {}) do
-                    if dep == featureName then
-                        return
+        end,
+        unload = function()
+            config.Viewing = false
+            if config.varibz.ViewConnection then
+                config.varibz.ViewConnection:Disconnect()
+                config.varibz.ViewConnection = nil
+            end
+            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    camYOffset = {
+        dep = {"core"},
+        load = function()
+            if not config.camYOffsetEnabled then return false end
+            if not config.camYOffsetConnection then
+                config.camYOffsetConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                    if config.camYOffsetEnabled then
+                        local cam = workspace.CurrentCamera
+                        if cam then
+                            if not config.camYOffsetOriginalCFrame then
+                                config.camYOffsetOriginalCFrame = cam.CFrame
+                            end
+                            local offset = Vector3.new(0, config.camYOffsetValue, 0)
+                            local newCFrame = CFrame.new(
+                                cam.CFrame.Position + offset,
+                                cam.CFrame.Position + offset + cam.CFrame.LookVector
+                            )
+                            cam.CFrame = newCFrame
+                        end
                     end
+                end)
+            end
+            return true
+        end,
+        unload = function()
+            if config.camYOffsetConnection then
+                config.camYOffsetConnection:Disconnect()
+                config.camYOffsetConnection = nil
+            end
+            config.camYOffsetOriginalCFrame = nil
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    truss = {
+        dep = {"core"},
+        load = function()
+            if not config.trussEnabled then return false end
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            if character then
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    if config.trussPart then
+                        config.trussPart:Destroy()
+                        config.trussPart = nil
+                    end
+                    if config.trussConnection then
+                        config.trussConnection:Disconnect()
+                        config.trussConnection = nil
+                    end
+                    config.trussPart = Instance.new("TrussPart")
+                    config.trussPart.Transparency = 1
+                    config.trussPart.Size = Vector3.new(2, 10, 2)
+                    config.trussPart.Parent = workspace
+                    config.trussPart.CanCollide = true
+                    config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
+                    config.trussConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                        if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
+                            config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
+                        else
+                            if config.trussConnection then
+                                config.trussConnection:Disconnect()
+                                config.trussConnection = nil
+                            end
+                        end
+                    end)
                 end
             end
-        end
-    end
-    
-    local cfg = fCfg[featureName]
-    if cfg and cfg.unload then
-        local success, err = pcall(cfg.unload)
-        if not success then
-            warn("Failed to unload " .. featureName .. ": " .. tostring(err))
-        end
-    end
-    
-    self.loaded[featureName] = nil
-    lState.act[featureName] = nil
-end
-
-function lzl:queue(featureName)
-    if not fCfg[featureName] then return false end
-    if self.loaded[featureName] then return true end
-    if #self.q >= self.maxQ then return false end
-    for _, name in ipairs(self.q) do
-        if name == featureName then return true end
-    end
-    
-    table.insert(self.q, featureName)
-    if not self._proc then
-        self:start()
-    end
-    return true
-end
-
-function lzl:start()
-    if self._proc or #self.q == 0 then return end
-    self._proc = true
-    
-    task.spawn(function()
-        while #self.q > 0 and self.enabled do
-            local feature = table.remove(self.q, 1)
-            if feature and not self.loaded[feature] then
-                self:load(feature)
+            return true
+        end,
+        unload = function()
+            if config.trussPart then
+                config.trussPart:Destroy()
+                config.trussPart = nil
             end
-            task.wait(self.int)
-        end
-        self._proc = false
-    end)
-end
-
-function lzl:loadFeats(featureNames)
-    if not self.enabled then return end
-    if type(featureNames) == "string" then
-        featureNames = {featureNames}
-    end
-    local sorted = {}
-    for _, name in ipairs(featureNames) do
-        local cfg = fCfg[name]
-        if cfg then
-            table.insert(sorted, {name = name, prio = cfg.prio or 5})
-        end
-    end
-    
-    table.sort(sorted, function(a, b) return a.prio < b.prio end)
-    
-    for _, item in ipairs(sorted) do
-        self:queue(item.name)
-    end
-    
-    self:start()
-end
-
-function lzl:loadEss()
-    if not self.enabled then return end
-    if not self:isReady() then
-        local conn
-        conn = game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
-            conn:Disconnect()
-            self:loadEss()
-        end)
-        return
-    end
-    
-    local essential = {}
-    for name, cfg in pairs(fCfg) do
-        if cfg.ess then
-            table.insert(essential, name)
-        end
-    end
-    self:loadFeats(essential)
-end
-
-function lzl:cleanup()
-    local features = {}
-    for name in pairs(self.loaded) do
-        local cfg = fCfg[name]
-        if cfg and not cfg.ess then
-            table.insert(features, name)
-        end
-    end
-    table.sort(features, function(a, b)
-        local pa = fCfg[a] and fCfg[a].prio or 5
-        local pb = fCfg[b] and fCfg[b].prio or 5
-        return pa > pb
-    end)
-    
-    for _, name in ipairs(features) do
-        self:unload(name)
-    end
-    self.q = {}
-    lState.pend = {}
-    lState.act = {}
-    lState.fail = {}
-    lState.retry = {}
-    self._proc = false
-    self._clean = {}
-end
-
-function lzl:setEnabled(enabled)
-    self.enabled = enabled
-    if not enabled then
-        self:cleanup()
-    else
-        self:loadEss()
-    end
-end
-
-function lzl:getStatus()
-    local status = {
-        loaded = {},
-        loading = {},
-        failed = {},
-        queueSize = #self.q,
-        isProcessing = self._proc
+            if config.trussConnection then
+                config.trussConnection:Disconnect()
+                config.trussConnection = nil
+            end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    airwalk = {
+        dep = {"core"},
+        load = function()
+            if not config.airwalkEnabled then return false end
+            local character = game.Players.LocalPlayer.Character
+            if character then
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    config.airwalkPart = Instance.new("Part")
+                    config.airwalkPart.Transparency = 1
+                    config.airwalkPart.Size = Vector3.new(7, 2, 3)
+                    config.airwalkPart.Parent = workspace
+                    config.airwalkPart.CanCollide = true
+                    config.airwalkPart.Anchored = true
+                    config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
+                    if config.airwalkConnection then
+                        config.airwalkConnection:Disconnect()
+                        config.airwalkConnection = nil
+                    end
+                    config.airwalkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                        if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
+                            config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
+                        else
+                            if config.airwalkConnection then
+                                config.airwalkConnection:Disconnect()
+                                config.airwalkConnection = nil
+                            end
+                        end
+                    end)
+                end
+            end
+            return true
+        end,
+        unload = function()
+            if config.airwalkPart then
+                config.airwalkPart:Destroy()
+                config.airwalkPart = nil
+            end
+            if config.airwalkConnection then
+                config.airwalkConnection:Disconnect()
+                config.airwalkConnection = nil
+            end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    autorespawn = {
+        dep = {"core"},
+        load = function()
+            if not config.autorespawnEnabled then return false end
+            config.autorespawnConnections = config.autorespawnConnections or {}
+            config.autorespawnDeathPosition = nil
+            local player = game.Players.LocalPlayer
+            local function setupRespawn(character)
+                local humanoid = character:WaitForChild("Humanoid")
+                local rootPart = character:WaitForChild("HumanoidRootPart")
+                if config.autorespawnConnections.died then
+                    config.autorespawnConnections.died:Disconnect()
+                end
+                config.autorespawnConnections.died = humanoid.Died:Connect(function()
+                    if config.autorespawnEnabled then
+                        config.autorespawnDeathPosition = rootPart.CFrame
+                    end
+                end)
+            end
+            local function teleportToDeathPosition(newCharacter)
+                if config.autorespawnEnabled and config.autorespawnDeathPosition then
+                    local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
+                    newRoot.CFrame = config.autorespawnDeathPosition
+                    config.autorespawnDeathPosition = nil
+                end
+            end
+            if player.Character then
+                setupRespawn(player.Character)
+            end
+            if config.autorespawnConnections.characterAdded then
+                config.autorespawnConnections.characterAdded:Disconnect()
+            end
+            config.autorespawnConnections.characterAdded = player.CharacterAdded:Connect(function(character)
+                if config.autorespawnEnabled then
+                    character:WaitForChild("Humanoid")
+                    character:WaitForChild("HumanoidRootPart")
+                    teleportToDeathPosition(character)
+                    setupRespawn(character)
+                end
+            end)
+            return true
+        end,
+        unload = function()
+            config.autorespawnDeathPosition = nil
+            if config.autorespawnConnections then
+                for _, connection in pairs(config.autorespawnConnections) do
+                    if connection then
+                        connection:Disconnect()
+                    end
+                end
+                config.autorespawnConnections = {}
+            end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    fullbright = {
+        dep = {"core"},
+        load = function()
+            if not config.fbenabled then return false end
+            local lighting = game:GetService("Lighting")
+            fullBrightSettings = {
+                Ambient = lighting.Ambient,
+                Brightness = lighting.Brightness,
+                ClockTime = lighting.ClockTime,
+                FogEnd = lighting.FogEnd,
+                GlobalShadows = lighting.GlobalShadows,
+                OutdoorAmbient = lighting.OutdoorAmbient
+            }
+            lighting.Ambient = Color3.fromRGB(255, 255, 255)
+            lighting.Brightness = 2
+            lighting.FogEnd = 100000
+            lighting.GlobalShadows = false
+            lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+            lighting.ClockTime = 14
+            return true
+        end,
+        unload = function()
+            if fullBrightSettings then
+                local lighting = game:GetService("Lighting")
+                for property, value in pairs(fullBrightSettings) do
+                    lighting[property] = value
+                end
+                fullBrightSettings = nil
+            end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    quickToggles = {
+        dep = {"core"},
+        load = function()
+            if not config.QuickToggles then return false end
+            CreateQT()
+            return true
+        end,
+        unload = function() KillQT() end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    bhopQuickToggle = {
+        dep = {"core"},
+        load = function()
+            if not config.bhop.quickToggleEnabled then return false end
+            updateBHopQuickToggle()
+            return true
+        end,
+        unload = function()
+            if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
+                config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
+                config.varibz.bhopQuickToggleUI = nil
+            end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    antiafk = {
+        dep = {"core"},
+        load = function()
+            if not config.antiafk then return false end
+            return true
+        end,
+        unload = function() config.antiafk = false end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    fastspawn = {
+        dep = {"core"},
+        load = function()
+            if not config.fastspawn then return false end
+            return true
+        end,
+        unload = function() config.fastspawn = false end,
+        prio = 4,
+        ess = false,
+        reqGame = true
+    },
+    reach = {
+        dep = {"core"},
+        load = function()
+            if not config.reach.enabled then return false end
+            return true
+        end,
+        unload = function()
+            config.reach.enabled = false
+            if visualizer then visualizer.Parent = nil end
+            if autoSwingConnection then
+                autoSwingConnection:Disconnect()
+                autoSwingConnection = nil
+            end
+        end,
+        prio = 3,
+        ess = false,
+        reqGame = true
+    },
+    visualizer = {
+        dep = {"core", "reach"},
+        load = function()
+            if not config.visualizer.enabled then return false end
+            return true
+        end,
+        unload = function()
+            config.visualizer.enabled = false
+            if visualizer then visualizer.Parent = nil end
+        end,
+        prio = 4,
+        ess = false,
+        reqGame = true
     }
-    
-    for name in pairs(self.loaded) do
-        table.insert(status.loaded, name)
-    end
-    
-    for name in pairs(lState.fail) do
-        table.insert(status.failed, name)
-    end
-    
-    return status
+}
+for name, cfg in pairs(fCfg) do
+    lzl:registerFeature(name, cfg)
 end
-local oldInit = init
-init = function()
-    lzl:loadEss()
-    local toLoad = {}
-    if config.espMasterEnabled then table.insert(toLoad, "esp") end
-    if config.startsa then table.insert(toLoad, "silentAim") end
-    if config.aimbotEnabled then table.insert(toLoad, "aimbot") end
-    if config.hitboxEnabled then table.insert(toLoad, "hitbox") end
-    if config.antiAimEnabled then table.insert(toLoad, "antiAim") end
-    if config.autoFarmEnabled then table.insert(toLoad, "autoFarm") end
-    if config.clientMasterEnabled then table.insert(toLoad, "client") end
-    if config.tbot.enabled then table.insert(toLoad, "triggerBot") end
-    if config.bhop.enabled then table.insert(toLoad, "bhop") end
-    if config.spinbot.enabled then table.insert(toLoad, "spinbot") end
-    if config.SA2_Enabled then table.insert(toLoad, "silentAimHK") end
-    
-    if #toLoad > 0 then
-        lzl:loadFeats(toLoad)
-    end
-    
-    if oldInit then oldInit() end
-end
-local function setupToggleBindings()
-    local bindings = {
-        autoFarm = {
-            get = function() return config.autoFarmEnabled end,
-            set = function(v)
-                config.autoFarmEnabled = v
-                if v then lzl:queue("autoFarm")
-                else lzl:unload("autoFarm") end
-            end
-        },
-        antiAim = {
-            get = function() return config.antiAimEnabled end,
-            set = function(v)
-                config.antiAimEnabled = v
-                if v then lzl:queue("antiAim")
-                else lzl:unload("antiAim") end
-            end
-        },
-        esp = {
-            get = function() return config.espMasterEnabled end,
-            set = function(v)
-                config.espMasterEnabled = v
-                if v then lzl:queue("esp")
-                else lzl:unload("esp") end
-            end
-        },
-        aimbot = {
-            get = function() return config.aimbotEnabled end,
-            set = function(v)
-                config.aimbotEnabled = v
-                if v then lzl:queue("aimbot")
-                else lzl:unload("aimbot") end
-            end
-        },
-        silentAim = {
-            get = function() return config.startsa end,
-            set = function(v)
-                config.startsa = v
-                if v then lzl:queue("silentAim")
-                else lzl:unload("silentAim") end
-            end
-        },
-        silentAimHK = {
-            get = function() return config.SA2_Enabled end,
-            set = function(v)
-                config.SA2_Enabled = v
-                if v then lzl:queue("silentAimHK")
-                else lzl:unload("silentAimHK") end
-            end
-        },
-        hitbox = {
-            get = function() return config.hitboxEnabled end,
-            set = function(v)
-                config.hitboxEnabled = v
-                if v then lzl:queue("hitbox")
-                else lzl:unload("hitbox") end
-            end
-        },
-        client = {
-            get = function() return config.clientMasterEnabled end,
-            set = function(v)
-                config.clientMasterEnabled = v
-                if v then lzl:queue("client")
-                else lzl:unload("client") end
-            end
-        },
-        triggerBot = {
-            get = function() return config.tbot.enabled end,
-            set = function(v)
-                config.tbot.enabled = v
-                if v then lzl:queue("triggerBot")
-                else lzl:unload("triggerBot") end
-            end
-        },
-        bhop = {
-            get = function() return config.bhop.enabled end,
-            set = function(v)
-                config.bhop.enabled = v
-                if v then lzl:queue("bhop")
-                else lzl:unload("bhop") end
-            end
-        },
-        spinbot = {
-            get = function() return config.spinbot.enabled end,
-            set = function(v)
-                config.spinbot.enabled = v
-                if v then lzl:queue("spinbot")
-                else lzl:unload("spinbot") end
-            end
-        }
-    }
-    
-    return bindings
-end
-lzl.enabled = true
+
+lzl:setConfig(fCfg)
 lzl:loadEss()
-local toggles = setupToggleBindings()
 loadstring(game:HttpGet(urls.hbssloader))()
-Alurt = loadstring(game:HttpGet(urls.imalurtingyou))()
+local Alurt = loadstring(game:HttpGet(urls.imalurtingyou))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
@@ -619,19 +581,6 @@ local function n(opts)
         end)
     end
 end
-
-local notif1 = (function()
-    pcall(function()
-        n({
-            Title = "Script started!",
-            Content = "May be unstable/dont work on some games",
-            Audio = "rbxassetid://17208361335",
-            Length = 1,
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(0, 170, 255)
-        })
-    end)
-end)()
 
 n({
     Title = "Gravel.cc",
@@ -750,6 +699,7 @@ end)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
 func = loadstring(game:HttpGet(urls.sa2func))()
 local WindUI = loadstring(game:HttpGet(urls.ilikedisui))()
+local SaveUI = loadstring(game:HttpGet(urls.uithesavory))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -765,17 +715,16 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local bhopConnection = nil
-local sa2this = {}
 local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
-SaveSystem = {
+getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel = {
     Folder = "Gravel_Saves",
     Extension = ".json",
     CurrentSave = nil
 }
-config = {
+local config = {
     confIg = "Gravel",
     startsa = false,
     fovsize = 120,
@@ -1190,32 +1139,32 @@ config = {
                 "I party like I'm 21! CX",
                 "20?",
                 "21!",
-                "I party like I'm 21! :o",
+                "I party like I'm 21! :D",
                 "20?",
-                "21",
+                "21! :v",
                 "20?",
                 "20?",
                 "21! :c",
                 "20?",
                 "20?",
-                "21! ヘ⁠（⁠。⁠□⁠°⁠）⁠ヘ",
+                "21! D:",
                 "20?",
                 "20?",
                 "21! D:",
                 "2-2-2-2?",
-                "21! ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯",
+                "21! o_O",
                 "20?",
                 "20?",
                 "21! ^⁠_⁠^",
                 "20?",
                 "20?",
-                "21! (⁠;⁠;⁠;⁠・⁠_⁠・⁠)",
+                "21! :3",
                 "20?",
                 "20?",
                 "21? :p",
                 "2-2-2-2?",
                 "20?",
-                "21? ＼⁠(⁠^⁠o⁠^⁠)⁠／",
+                "21?",
             },
             {
                 typesp = "1.5",
@@ -2372,7 +2321,7 @@ config = {
     }
 }
 local lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
-function rng5()
+local function rng5()
     if config.varibz.Rng5stuff then return config.varibz.Rng5stuff end
     local currentDate = os.date("%m %d")
     local currentYear = tonumber(os.date("%Y"))
@@ -2462,7 +2411,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-function uianimate()
+function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -2663,17 +2612,17 @@ function uianimate()
 end
 
 local function getSavePath(saveName)
-    return SaveSystem.Folder .. "/" .. saveName .. SaveSystem.Extension
+    return getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder .. "/" .. saveName .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Extension
 end
 
 local function getSaveList()
     local saves = {}
-    if not isfolder(SaveSystem.Folder) then
+    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) then
         return saves
     end
     
-    for _, file in ipairs(listfiles(SaveSystem.Folder)) do
-        local fileName = file:match("([^/]+)" .. SaveSystem.Extension .. "$")
+    for _, file in ipairs(listfiles(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder)) do
+        local fileName = file:match("([^/]+)" .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Extension .. "$")
         if fileName then
             table.insert(saves, fileName)
         end
@@ -2702,7 +2651,7 @@ local function loadSaveData(saveName)
     return success and decoded or nil
 end
 
-function saveConfig(saveName)
+local function saveConfig(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
             Title = "Save System",
@@ -2916,8 +2865,8 @@ function saveConfig(saveName)
         return false
     end
     
-    if not isfolder(SaveSystem.Folder) then
-        pcall(function() makefolder(SaveSystem.Folder) end)
+    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) then
+        pcall(function() makefolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) end)
     end
     
     local path = getSavePath(saveName)
@@ -2944,7 +2893,7 @@ function saveConfig(saveName)
     end
 end
 
-function deleteSave(saveName)
+local function deleteSave(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
             Title = "Save System",
@@ -3109,7 +3058,7 @@ local function deleteAllSaves()
                                 })
                             end
                             
-                            SaveSystem.CurrentSave = nil
+                            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave = nil
                             confirmCount = 0
                         else
                             showConfirmation()
@@ -3417,7 +3366,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
     end)
 end
 
-function loadSave(saveName)
+local function loadSave(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
             Title = "Save System",
@@ -3756,7 +3705,7 @@ function loadSave(saveName)
     if cfg.varibz_lowpatcherwait then config.varibz.lowpatcherwait = cfg.varibz_lowpatcherwait end
     if cfg.varibz_patcher ~= nil then config.varibz.patcher = cfg.varibz_patcher end
     if cfg.varibz_lowpatcher ~= nil then config.varibz.lowpatcher = cfg.varibz_lowpatcher end
-    SaveSystem.CurrentSave = saveName
+    getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave = saveName
     pcall(function()
         updateTeamTargetModes()
         syncSilentAimWithMaster()
@@ -4250,105 +4199,20 @@ local function savePara()
         saveText = saveText .. "  There isn't any saves 💔🥀"
     else
         for i, save in ipairs(saves) do
-            local isCurrent = (save == SaveSystem.CurrentSave)
+            local isCurrent = (save == getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave)
             saveText = saveText .. "  " .. (isCurrent and "✓ " or "> ") .. save .. (isCurrent and "!" or "") .. "\n"
         end
     end
     
     return saveText
 end
-function ehhhh()
-    local folder = config.Gradow.uiThemeSave.Folder
-    if not isfolder(folder) then
-        pcall(function()
-            makefolder(folder)
-        end)
-    end
+SaveUI:init(WindUI, config)
+local function loadUISettings()
+    return SaveUI:autoLoad()
 end
-
-function findthefolders()
-    return config.Gradow.uiThemeSave.Folder .. "/" .. config.Gradow.uiThemeSave.FileName
+local function saveUISettings(theme, transparency)
+    return SaveUI:save(theme, transparency)
 end
-
-function gist()
-    ehhhh()
-    local path = findthefolders()
-    if not isfile(path) then
-        return false
-    end
-    local success, data = pcall(function()
-        return readfile(path)
-    end)
-    if not success or not data then
-        return false
-    end
-    local success, decoded = pcall(function()
-        return game:GetService("HttpService"):JSONDecode(data)
-    end)
-    if not success or not decoded then
-        return false
-    end
-    pcall(function()
-        if decoded.theme and WindUI and WindUI.SetTheme then
-            config.Gradow.uiThemeSave.CurrentTheme = decoded.theme
-            WindUI:SetTheme(decoded.theme)
-        end
-        if decoded.transparency ~= nil then
-            config.Gradow.uiThemeSave.CurrentTransparency = decoded.transparency
-            WindUI.TransparencyValue = decoded.transparency
-            if WindUI.Transparent then
-                WindUI.Window:ToggleTransparency(true)
-            end
-        end
-    end)
-    
-    return true
-end
-
-function dogist(theme, transparency)
-    ehhhh()
-    
-    local dataToSave = {
-        theme = theme or config.Gradow.uiThemeSave.CurrentTheme,
-        transparency = transparency or config.Gradow.uiThemeSave.CurrentTransparency,
-        savedAt = os.time()
-    }
-    
-    local success, encoded = pcall(function()
-        return game:GetService("HttpService"):JSONEncode(dataToSave)
-    end)
-    if not success then
-        WindUI:Notify({
-            Title = "UI Save Error",
-            Content = "Failed to encode UI settings! :c",
-            Icon = "x",
-            Duration = 2
-        })
-        return false
-    end
-    local path = findthefolders()
-    local success, err = pcall(function()
-        writefile(path, encoded)
-    end)
-    if success then
-        WindUI:Notify({
-            Title = "UI Saved!",
-            Content = ":D",
-            Icon = "check",
-            Duration = 2
-        })
-        return true
-    else
-        WindUI:Notify({
-            Title = "UI Save Error",
-            Content = "Failed to save D:",
-            Icon = "x",
-            Duration = 2
-        })
-        return false
-    end
-end
-
 function respawn(plr)
     if not config or not config.fastspawn then 
         return 
@@ -5052,16 +4916,9 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
     return OldIndex(Self, Index)
 end))
 end)
-
-local ScreenGui = Instance.new("ScreenGui")
-local CircleFrame = Instance.new("Frame")
-local UIStroke = Instance.new("UIStroke")
-local UICorner = Instance.new("UICorner")
-
 ScreenGui.Name = "FOVSys"
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.IgnoreGuiInset = true
-
 CircleFrame.Name = "FOVCircle"
 CircleFrame.Parent = ScreenGui
 CircleFrame.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -5069,10 +4926,8 @@ CircleFrame.BackgroundColor3 = config.SA2_FovColor
 CircleFrame.BackgroundTransparency = 1
 CircleFrame.BorderSizePixel = 0
 CircleFrame.Visible = false
-
 UICorner.CornerRadius = UDim.new(1, 0)
 UICorner.Parent = CircleFrame
-
 UIStroke.Color = config.SA2_FovColor
 UIStroke.Thickness = 1
 UIStroke.Transparency = 1 - config.SA2_FovTransparency
@@ -9573,6 +9428,21 @@ local function applyClientMaster(state)
     end
 end
 
+--[[
+     _      ___         ____  ______
+    | | /| / (_)__  ___/ / / / /  _/
+    | |/ |/ / / _ \/ _  / /_/ // /  
+    |__/|__/_/_//_/\_,_/\____/___/
+    
+    Roblox UI Library for scripts
+    
+    To view the source code, see the `src/` folder on the official GitHub repository.
+    
+    Author: Footagesus (Footages, .ftgs, oftgs)
+    Github: https://github.com/Footagesus/WindUI
+    Discord: https://discord.gg/ftgs-development-hub-1300692552005189632
+    License: MIT
+]]
 -- ui neuron activation starter
 math.randomseed(os.time())
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
@@ -9897,13 +9767,13 @@ function rng2()
     })
 end
 task.wait(0.2)
-uianimate()
+uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
 rng()
 rng2()
 rng4()
 task.spawn(function()
     task.wait(0.5)
-    gist()
+    SaveUI:autoLoad() 
 end)
 local MainTab = Window:Tab({
     Title = "Main",
@@ -11186,7 +11056,7 @@ VisualsTab:Dropdown({
     Callback = function(selectedTheme)
         local success, err = pcall(function()
             WindUI:SetTheme(selectedTheme)
-            config.Gradow.uiThemeSave.CurrentTheme = selectedTheme
+            SaveUI:setTheme(selectedTheme)
             n({
                 Title = "Theme Changed",
                 Content = "Switched to " .. selectedTheme,
@@ -11201,6 +11071,7 @@ VisualsTab:Dropdown({
         end
     end
 })
+
 VisualsTab:Slider({
     Title = "Transparency Value",
     Desc = "Adjust UI window transparency",
@@ -11213,7 +11084,7 @@ VisualsTab:Slider({
     },
     Callback = function(value)
         WindUI.TransparencyValue = value
-        config.Gradow.uiThemeSave.CurrentTransparency = value
+        SaveUI:setTransparency(value)
         if WindUI.Transparent then
             WindUI.Window:ToggleTransparency(true)
         end
@@ -11227,9 +11098,7 @@ VisualsTab:Button({
     Callback = function()
         local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
         local currentTransparency = WindUI.TransparencyValue or 0.15
-        config.Gradow.uiThemeSave.CurrentTheme = currentTheme
-        config.Gradow.uiThemeSave.CurrentTransparency = currentTransparency
-        dogist(currentTheme, currentTransparency)
+        SaveUI:save(currentTheme, currentTransparency)
     end
 })
 
@@ -11238,7 +11107,7 @@ VisualsTab:Button({
     Desc = "Reload da UI settings (btw the savedui file can autoload)",
     Icon = "download",
     Callback = function()
-        local success = gist()
+        local success = SaveUI:load()
         if success then
             WindUI:Notify({
                 Title = "UI Loaded!",
@@ -14269,7 +14138,7 @@ local function init()
     getgenv().ED_AntiKickCheckCaller = true
     print("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33")
     print("01000111 01110000 01110011 73 69 63 6B 6C 65")
-    showurwholeipadress() -- it doesn't actually...
+    showurwholeipadress3827103828827273637() -- it doesn't actually...
 end
 function cleanup()
     pcall(function()
@@ -14635,4 +14504,9 @@ if not success then
     error(err)
 end
 -- fin
---                     _.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._
+--[[
+                     _.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._
+CAN YOU GUYS STAWP ASKINF ME "it doesn't work on [insert game name]"
+DIS IS A UNIVERSAL SCRIPT VROROO
+IT DONT WORK ON ALL GAMES IN DA UNIVERSE
+]]
