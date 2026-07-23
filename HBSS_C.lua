@@ -49,24 +49,36 @@ local localPlayer = Players.LocalPlayer
 local plr = Players.LocalPlayer
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+--                    ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
 urls = {
     --hbss
-    url1 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
-    url2 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
-    url3 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_FindTool" .. getgenv().sunc .. ".lua",
-    url11 = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().sunc .. ".lua",
+    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
+    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
+    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_FindTool" .. getgenv().sunc .. ".lua",
+    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().sunc .. ".lua",
+    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/getInfo" .. getgenv().sunc .. ".lua",
     --other
-    url4 = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
-    url5 = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
-    url6 = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
-    url7 = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
-    url8 = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
-    url9 = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
-    url10 = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
+    imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
+    adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
+    ilikedisui = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
+    ewitsabadapple = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
+    tpuabasically = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
+    imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
+    wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
 
+lp_info = loadstring(game:HttpGet(urls.showmyipadress_jk))()
+function showurwholeipadress()
+    print(lp_info.lp_username)
+    print(lp_info.lp_displayname)
+    print(lp_info.lp_id)
+    print(lp_info.lp_accountage)
+    print(lp_info.lp_retroslopscore)
+    print(lp_info.lp_isitretroslop)
+end
+
 -- unprofessionalism professionist 🥀
-local lzl = {
+lzl = {
     loaded = {},
     loading = false,
     q = {},
@@ -237,7 +249,7 @@ local fCfg = {
     }
 }
 
-local lState = {
+lState = {
     pend = {},
     act = {},
     fail = {},
@@ -597,8 +609,8 @@ end
 lzl.enabled = true
 lzl:loadEss()
 local toggles = setupToggleBindings()
-loadstring(game:HttpGet(urls.url1))()
-local Alurt = loadstring(game:HttpGet(urls.url4))()
+loadstring(game:HttpGet(urls.hbssloader))()
+Alurt = loadstring(game:HttpGet(urls.imalurtingyou))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
@@ -632,7 +644,7 @@ n({
 
 task.wait(2.30)
 pcall(function()
-loadstring(game:HttpGet(urls.url5))()
+loadstring(game:HttpGet(urls.adonisabuse))()
 local getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, lower, gsub, match = getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, string.lower, string.gsub, string.match
 if getgenv().ED_AntiKick then
     return
@@ -736,8 +748,8 @@ n({
 })
 end)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
-local func = loadstring(game:HttpGet(urls.url2))()
-local WindUI = loadstring(game:HttpGet(urls.url6))()
+func = loadstring(game:HttpGet(urls.sa2func))()
+local WindUI = loadstring(game:HttpGet(urls.ilikedisui))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -758,6 +770,11 @@ local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
+SaveSystem = {
+    Folder = "Gravel_Saves",
+    Extension = ".json",
+    CurrentSave = nil
+}
 config = {
     confIg = "Gravel",
     startsa = false,
@@ -870,6 +887,8 @@ config = {
     aimbot360OriginalFOV = 100,
     gp = 200,
     gp2 = 1,
+    customFOVEnabled = false,
+    customFOVValue = 70,
     fbenabled = false,
     targetSeenMode = "Switch",
     targetSeenSwitchRate = 0.2,
@@ -994,6 +1013,7 @@ config = {
             "Gui size decreases",
             "dude",
             "yh",
+            lp_info.lp_displayname,
             "how graveling of u",
             "rock solid ui",
             "what",
@@ -1025,14 +1045,40 @@ config = {
 ]]
         convo = {
             {
-                typesp = "1",
+                typesp = "1.5",
                 "HEY",
-                "USER HEY",
+                "{displayname} HEY",
                 "CAN YOU HEAR ME???",
                 "Ok Ive got ur attention",
                 "what I'm gonna say is",
                 "pls read the InfoTab :(",
                 "and credit me if u did a snippet :(",
+            },
+            {
+                typesp = "2",
+                "I AM A SURGEON",
+                "I AM A SURGEON",
+                "I AM- IAM A SURGEON",
+                "IAM A SURGEON",
+            },
+            {
+                typesp = "2",
+                "i am an fucking architect",
+                "GOD DAMN IT, IM JUST STUCK",
+                "SELLING SHIT FURNITURE",
+                "BECAUSE SOMEONE WONT GET OFF",
+                "THEIR FAT FUCKING ASS AND HELP ME.",
+            },
+            {
+                typesp = "2",
+                "Hikinuku kasetto, ohsi komu risetto",
+                "Mayoi komu meiro",
+                "Susume domo daruseenyo",
+                "Doa no saki ni boku no senaka ga mieta\nfurimuita saki ni kibiu ga mieta",
+                "Jigoku no hate nado doko ni aru no ka\nideguchi wa mada nano?",
+                "Kuru, Kuru, Kuru,\nKurikaesu, Kurikaesu, Kurikaesu",
+                "FuraFura, FuraFura,\nFurakutaru, Furakutaru, Furakutaru, Furakutaru",
+                "looping the rooms\ntype shi 💔",
             },
             {
                 "proto conversion",
@@ -1050,7 +1096,7 @@ config = {
                 "hmmmmm ok then",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "My Rival,",
                 "My Idol,",
                 "You've got me suicidal",
@@ -1066,7 +1112,27 @@ config = {
                 "I want you in the ground!",
             },
             {
-                typesp = "1",
+                "Ugh, this kitchen is\nso hard to clean",
+                "If only there was a easier way!",
+                "",
+                "Hi, I'm DErek Baum,\nsay goodbye to daily stains & dirty surfaces",
+                "with new KITCHEN GUN!!",
+                "This sink is filthy",
+                "but just 3 shots from KITCHEN GUN",
+                "BANG!, BANG!, BANG!",
+                "and it sparkles like new!",
+            },
+            {
+                "This toilet is so hard to clean!",
+                "There must be a easier way",
+                "",
+                "HI!, I'm DERek baum & i declare war\non toilets with new TOILET GRENADE",
+                "just pull the pin, pop it in the bowl,\nput the lid down",
+                "and let TOILET GRENADE do the rest!",
+                "BAAAAANNNNGGG!!!!",
+            },
+            {
+                typesp = "2",
                 "My bread was\nburnt to a crisp",
                 "It's not like it's inedible\nor anything, I guess...",
                 "I wish it was fluffy like usual\nif only it didn't get burnt...",
@@ -1078,6 +1144,11 @@ config = {
                 "I really hope its\nnot burnt tomorrow",
                 "It's bound to be better, right?",
                 "I guess there's no use in wishing now...",
+            },
+            {
+                "ur retroslop score is {retroscore}",
+                "ye I'm deaduzz",
+                "tbh... idc lol ur fine {displayname}",
             },
             {
                 "I'm lazier than lazytown",
@@ -1104,8 +1175,8 @@ config = {
                 "AHHHHHH",
             },
             {
-                typesp = "1",
-                "Y-YO, bro come over here",
+                typesp = "1.5",
+                "Y-YO, {displayname} come over here",
                 "come over here,\ncome over here",
                 "Check out my new shoes,",
                 "Theyre the brand new-",
@@ -1115,7 +1186,39 @@ config = {
                 "OH-OH-OhHH THAT IS SO FIRE",
             },
             {
-                typesp = "1",
+                typesp = "2.3",
+                "I party like I'm 21! CX",
+                "20?",
+                "21!",
+                "I party like I'm 21! :o",
+                "20?",
+                "21",
+                "20?",
+                "20?",
+                "21! :c",
+                "20?",
+                "20?",
+                "21! ヘ⁠（⁠。⁠□⁠°⁠）⁠ヘ",
+                "20?",
+                "20?",
+                "21! D:",
+                "2-2-2-2?",
+                "21! ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯",
+                "20?",
+                "20?",
+                "21! ^⁠_⁠^",
+                "20?",
+                "20?",
+                "21! (⁠;⁠;⁠;⁠・⁠_⁠・⁠)",
+                "20?",
+                "20?",
+                "21? :p",
+                "2-2-2-2?",
+                "20?",
+                "21? ＼⁠(⁠^⁠o⁠^⁠)⁠／",
+            },
+            {
+                typesp = "1.5",
                 "Error: (can't find message)",
                 "Error: (can't find message)",
                 "Error: (can't find message)",
@@ -1125,6 +1228,7 @@ config = {
             {
                 "server authority",
                 "is laggyyyy :c",
+                "like bro??? y is it so laggy :(((",
             },
             {
                 typesp = "2.5",
@@ -1139,7 +1243,7 @@ config = {
                 "awwwwwwwww :(",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "I JUST HIT THE",
                 "JACKPOTTTTTTT",
                 "AY, AY, AY, AY, AY",
@@ -1158,22 +1262,33 @@ config = {
                 "TEH EPIK DUCK IS COMING!!!",
                 "GET OF MAH LAWN",
                 "ROFL",
+                "{userid}",
                 "Muahahahaha!",
             },
             {
-                typesp = "1",
+                "ur accountage is {accountage}",
+                "idk even know why I'm saying ts",
+            },
+            {
+                typesp = "1.5",
                 "if you could listen closely",
-                "you'll be a villian mostly",
+                "you'll be a villain mostly",
                 "you have to chase a hero",
                 "and watch em' go from 1 to 0",
                 "just follow my moves.",
                 "and you'll be set-",
                 "to go and sneak around",
                 "just be careful",
-                "to make a single sound",
+                "to not make a single sound",
                 "as this superhero will be going-",
                 "on the around",
                 "now let's go and chase him down!",
+                "",
+                "is that a sick song {displayname}?",
+            },
+            {
+                "name me a fictional villian\nthat no-1 h8s",
+                "it's Robbie Rotten",
             },
             {
                 "du bist gut genug...",
@@ -1187,7 +1302,7 @@ config = {
                 "*fire music*",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "shimmy ey, shimmy ey, yaaa~",
                 "drake.. Swalalala.. drake",
                 "swalalala.. swalalala *sick beat*",
@@ -1196,11 +1311,11 @@ config = {
             {
                 "Bro ts code is 14000+ lines long :(",
                 "I ''can't'' do dis shi :[",
-                "plz heseelepp",
+                "plz heseelepp me {displayname}",
             },
             {
                 "Cframe view is op",
-                "pls try it out",
+                "pls try it out {displayname}",
                 "you'll like it :3",
             },
             {
@@ -1230,6 +1345,7 @@ config = {
             {
                 "gravel cute :3",
                 ":3 :3",
+                ":3:3:3:3:3:3:3:3:3:3:3",
             },
             {
                 typesp = "1.5",
@@ -1244,6 +1360,7 @@ config = {
                 "Felt like!",
             },
             {
+                typesp = "1.5",
                 "I somehow see what's beautiful,",
                 "In things that are ephemeral",
                 "Am I only friend of mine",
@@ -1269,10 +1386,11 @@ config = {
                 "I'm joking lol",
             },
             {
-                "ur ip is [Redacted]",
+                "ur social security number\nis [{userid}]",
                 "no but seriously it is",
                 "I'm jk",
-                "what even is Redacted :/",
+                "what even is {userid} :b",
+                "oh wait that's ur userid mb",
             },
             {
                 "is gravel js crushed rocks?",
@@ -1369,6 +1487,7 @@ config = {
                 "jokes on them",
                 "i don't even play csgo",
                 "I play Roblox shooters",
+                "so as u {displayname}",
             },
             {
                 "me and the boys",
@@ -1430,14 +1549,18 @@ config = {
                 "you should get one",
             },
             {
+                "Gravel has 0 calories 2 burn",
+                "so yeh {displayname} dis is\nwhy gravel can do dis",
+            },
+            {
                 "wait this isn't a virus",
                 "i was told it was a virus",
                 "it's open source",
                 "you can literally read it",
             },
             {
-                typesp = "1",
-                "hey u",
+                typesp = "1.5",
+                "hey {displayname}",
                 "yea u",
                 "the one reading this",
                 "how's ur day going?",
@@ -1450,7 +1573,7 @@ config = {
             {
                 typesp = "1.5",
                 "so uh",
-                "u ever just",
+                "{displayname} u ever just",
                 "look at a rock",
                 "and think 'wow'",
                 "that's me",
@@ -1470,7 +1593,7 @@ config = {
                 ";)",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "psst",
                 "hey",
                 "over here",
@@ -1481,7 +1604,7 @@ config = {
                 "mind blown :o",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "r u a hacker?",
                 "cuz u seem sus",
                 "wait i'm the script",
@@ -1541,7 +1664,7 @@ config = {
                 "obviously",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "warning:",
                 "this script may cause",
                 "excessive winning",
@@ -1559,7 +1682,7 @@ config = {
                 "a gravely boy :D",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "u ever think about",
                 "how i'm talking to u",
                 "through text",
@@ -1612,7 +1735,7 @@ config = {
                 ":s",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "this script contains:",
                 " - 100% pure gravel",
                 " - premium aim",
@@ -1670,7 +1793,7 @@ config = {
                 "u're welcome :D",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "if u enjoy this script",
                 "tell a friend",
                 "if u don't enjoy it",
@@ -1679,7 +1802,7 @@ config = {
                 "gravel supports u",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "i love it when",
                 "the script loads",
                 "and nothing breaks",
@@ -1705,7 +1828,7 @@ config = {
                 "llikee does that make sense?",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "u ever just",
                 "accidentally write",
                 "a really good feature",
@@ -1725,7 +1848,7 @@ config = {
                 "priorities :v",
             },
             {
-                typesp = "1",
+                typesp = "1.5",
                 "if u see me in game",
                 "no u didn't",
                 "if u see me hacking",
@@ -1861,7 +1984,7 @@ config = {
             "helloworld(''print'')",
             "Markiplier & Larpiplier collab when?",
             "61? 67?\nit's time for the letters to have fun\nabcdefghijklmnop\nL-M-N-O-P\nP\nP\nP\nP",
-            "hello whoever you are :D\ni don't have the capacity to see your usernames yet because I'm too lazy to script dat in",
+            "hello whoever you are :D\ni don't have the capacity to see your usernames yet because I'm too lazy to script dat in\noh wait ur name is " .. lp_info.lp_displayname .. "\n cool name!",
             "me is want chat roblox not age verif",
             "this script isn't full ban proof so if you get banned DON'T blame on us when your using risky features :/",
             "deres like idk amount of random messages I contains lolz",
@@ -2157,10 +2280,11 @@ config = {
             "Gravel.cheatcheat",
             "Gravel.yes",
             "Gravel.no",
-            "Gravel.lua",
+            "Gravel.lua", -- ts one makes sense
             "GRAVEL GRAVEL.CC",
         },
-        aprilFools = {
+        aprilFools = { 
+            -- BRO WHAT ARE U LOOKING AT DONT SPOIL THE APRIL FOOLS JOKE D:<
             "Sand.cc",
             "Aimware",
             "Neverlose",
@@ -2200,6 +2324,7 @@ config = {
         errors = true,
         Rng5stuff = nil,
         Rng3dis = {},
+        orgfov = nil,
     },
     Gradow = {
         textcursor = "_",
@@ -2225,6 +2350,12 @@ config = {
             windowStroke = nil,
             windowGradient = nil
         },
+        uiThemeSave = {
+            Folder = "Gravel_Saves/assets",
+            FileName = "SavedUI.json",
+            CurrentTheme = "Dark",
+            CurrentTransparency = 0.15,
+        },
         uicolor = {
             lightGreen = Color3.fromRGB(144, 238, 144),
             darkGray = Color3.fromRGB(40, 40, 40),
@@ -2241,7 +2372,7 @@ config = {
     }
 }
 local lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
-local function rng5()
+function rng5()
     if config.varibz.Rng5stuff then return config.varibz.Rng5stuff end
     local currentDate = os.date("%m %d")
     local currentYear = tonumber(os.date("%Y"))
@@ -2331,7 +2462,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-local function uianimate()
+function uianimate()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -2530,11 +2661,6 @@ local function uianimate()
         lo2l()
     end
 end
-local SaveSystem = {
-    Folder = "Gravel_Saves",
-    Extension = ".json",
-    CurrentSave = nil
-}
 
 local function getSavePath(saveName)
     return SaveSystem.Folder .. "/" .. saveName .. SaveSystem.Extension
@@ -2765,6 +2891,8 @@ function saveConfig(saveName)
             HoldKeysEnabled = config.HoldKeysEnabled,
             HoldKeybind = config.Keybinds.HoldKeybind,
             varibz_CameraDistance = config.varibz.CameraDistance,
+            customFOVEnabled = config.customFOVEnabled,
+            customFOVValue = config.customFOVValue,
             Gradow_textcursor = config.Gradow.textcursor,
             Gradow_textcursor2 = config.Gradow.textcursor2,
             varibz_patcherwait = config.varibz.patcherwait,
@@ -3616,6 +3744,8 @@ function loadSave(saveName)
     if cfg.HoldKeysEnabled ~= nil then config.HoldKeysEnabled = cfg.HoldKeysEnabled end
     if cfg.HoldKeybind then config.Keybinds.HoldKeybind = cfg.HoldKeybind end
     if cfg.varibz_CameraDistance then config.varibz.CameraDistance = cfg.varibz_CameraDistance end
+    if cfg.customFOVEnabled ~= nil then config.customFOVEnabled = cfg.customFOVEnabled end
+    if cfg.customFOVValue then config.customFOVValue = cfg.customFOVValue end
     if cfg.Gradow_textcursor then 
         config.Gradow.textcursor = cfg.Gradow_textcursor 
     end
@@ -4126,6 +4256,97 @@ local function savePara()
     end
     
     return saveText
+end
+function ehhhh()
+    local folder = config.Gradow.uiThemeSave.Folder
+    if not isfolder(folder) then
+        pcall(function()
+            makefolder(folder)
+        end)
+    end
+end
+
+function findthefolders()
+    return config.Gradow.uiThemeSave.Folder .. "/" .. config.Gradow.uiThemeSave.FileName
+end
+
+function gist()
+    ehhhh()
+    local path = findthefolders()
+    if not isfile(path) then
+        return false
+    end
+    local success, data = pcall(function()
+        return readfile(path)
+    end)
+    if not success or not data then
+        return false
+    end
+    local success, decoded = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(data)
+    end)
+    if not success or not decoded then
+        return false
+    end
+    pcall(function()
+        if decoded.theme and WindUI and WindUI.SetTheme then
+            config.Gradow.uiThemeSave.CurrentTheme = decoded.theme
+            WindUI:SetTheme(decoded.theme)
+        end
+        if decoded.transparency ~= nil then
+            config.Gradow.uiThemeSave.CurrentTransparency = decoded.transparency
+            WindUI.TransparencyValue = decoded.transparency
+            if WindUI.Transparent then
+                WindUI.Window:ToggleTransparency(true)
+            end
+        end
+    end)
+    
+    return true
+end
+
+function dogist(theme, transparency)
+    ehhhh()
+    
+    local dataToSave = {
+        theme = theme or config.Gradow.uiThemeSave.CurrentTheme,
+        transparency = transparency or config.Gradow.uiThemeSave.CurrentTransparency,
+        savedAt = os.time()
+    }
+    
+    local success, encoded = pcall(function()
+        return game:GetService("HttpService"):JSONEncode(dataToSave)
+    end)
+    if not success then
+        WindUI:Notify({
+            Title = "UI Save Error",
+            Content = "Failed to encode UI settings! :c",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+    local path = findthefolders()
+    local success, err = pcall(function()
+        writefile(path, encoded)
+    end)
+    if success then
+        WindUI:Notify({
+            Title = "UI Saved!",
+            Content = ":D",
+            Icon = "check",
+            Duration = 2
+        })
+        return true
+    else
+        WindUI:Notify({
+            Title = "UI Save Error",
+            Content = "Failed to save D:",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
 end
 
 function respawn(plr)
@@ -9366,9 +9587,11 @@ end
 
 local Window = WindUI:CreateWindow({
     Title = rng5(),
+    Author = "[dis guy Gpssickle]",
     Folder = "Gravel_Saves",
     Theme = "Dark",
-    Icon = "shovel",
+    Icon = "rbxassetid://96858797315175",
+	 IconSize = 38,
     Size = size,
     HideSearchBar = false,
     OpenButton = {
@@ -9387,6 +9610,7 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
+WindUI.Window:ToggleTransparency(true)
 
 local function rng4()
     local usedConversations = {}
@@ -9405,12 +9629,31 @@ local function rng4()
     end
     local currentText = ""
     local cursorVisible = true
+    local function getPlayerInfo()
+        local info = {}
+        if lp_info then
+            info.username = lp_info.lp_username or "Unknown"
+            info.displayname = lp_info.lp_displayname or info.username
+            info.id = lp_info.lp_id or "Unknown"
+            info.accountage = lp_info.lp_accountage or "Unknown"
+            info.retroscore = lp_info.lp_retroslopscore or "Unknown"
+        else
+            info.username = "Player"
+            info.displayname = "Player"
+            info.id = "Unknown"
+            info.accountage = "Unknown"
+            info.retroscore = "Unknown"
+        end
+        return info
+    end
+    
     local function isWindowMinimized()
         if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
         local sizeY = Window.UIElements.Main.Size.Y.Offset
         if sizeY < 50 then return true end
         return false
     end
+    
     task.spawn(function()
         while tag do
             if not isWindowMinimized() then
@@ -9429,6 +9672,16 @@ local function rng4()
             tag:SetTitle(text .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
         end
     end
+    local function processText(text)
+        local info = getPlayerInfo()
+        local processed = text
+        processed = processed:gsub("{username}", info.username)
+        processed = processed:gsub("{displayname}", info.displayname)
+        processed = processed:gsub("{userid}", info.id)
+        processed = processed:gsub("{accountage}", info.accountage)
+        processed = processed:gsub("{retroscore}", info.retroscore)
+        return processed
+    end
     
     local function getSpeedMultiplier(conversation)
         if type(conversation) == "table" and conversation.typesp then
@@ -9443,15 +9696,11 @@ local function rng4()
         end
         return 1
     end
+    
     local function isLetter(char)
         return char:match("[%a]") ~= nil
     end
-    local function isRepeatedChar(text, position)
-        if position <= 1 then return false end
-        local currentChar = text:sub(position, position)
-        local prevChar = text:sub(position - 1, position - 1)
-        return currentChar == prevChar and isLetter(currentChar)
-    end
+    
     local function getRepeatedRunLength(text, position)
         if position > #text then return 0 end
         local char = text:sub(position, position)
@@ -9466,25 +9715,27 @@ local function rng4()
         end
         return runLength
     end
+    
     local function typeText(text, speedMultiplier)
+        local processedText = processText(text)
         local typed = ""
         local i = 1
         
-        while i <= #text do
+        while i <= #processedText do
             while isWindowMinimized() do
                 task.wait(0.1)
             end
             
-            local char = text:sub(i, i)
+            local char = processedText:sub(i, i)
             if char == "\n" then
                 typed ..= char
                 setText(typed)
                 i = i + 1
                 continue
             end
-            local runLength = getRepeatedRunLength(text, i)
+            local runLength = getRepeatedRunLength(processedText, i)
             if runLength > 2 then
-                local repeatedChar = text:sub(i, i)
+                local repeatedChar = processedText:sub(i, i)
                 local totalCharsInRun = runLength
                 local charsTyped = 0
                 typed ..= repeatedChar
@@ -9494,7 +9745,7 @@ local function rng4()
                 charsTyped = charsTyped + 1
                 i = i + 1
                 local baseDelay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
-                while charsTyped < totalCharsInRun and i <= #text and text:sub(i, i) == repeatedChar do
+                while charsTyped < totalCharsInRun and i <= #processedText and processedText:sub(i, i) == repeatedChar do
                     typed ..= repeatedChar
                     setText(typed)
                     local holdDelay
@@ -9539,6 +9790,7 @@ local function rng4()
             task.wait((math.random(config.varibz.defaults.eraseDelayMin, config.varibz.defaults.eraseDelayMax) / 1000) * speedMultiplier)
         end
     end
+    
     task.spawn(function()
         while tag do
             while isWindowMinimized() do
@@ -9614,7 +9866,7 @@ local function rng4()
     end
     return tag
 end
-local rng = function()
+function rng()
     local Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
     local YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
     local Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)]
@@ -9631,7 +9883,7 @@ local rng = function()
         }
     })
 end
-local rng2 = function()
+function rng2()
     local bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)]
     local bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
     local bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
@@ -9649,7 +9901,10 @@ uianimate()
 rng()
 rng2()
 rng4()
--- Main Tab
+task.spawn(function()
+    task.wait(0.5)
+    gist()
+end)
 local MainTab = Window:Tab({
     Title = "Main",
     Desc = rng3("Main"),
@@ -9840,15 +10095,6 @@ MainTab:Keybind({
 })
 
 MainTab:Keybind({
-    Title = "TriggerBot Wall Check",
-    Desc = "Toggle wall check for TriggerBot",
-    Value = config.Keybinds.tbotwallcheck or "Y",
-    Callback = function(key)
-        config.Keybinds.tbotwallcheck = key
-    end
-})
-
-MainTab:Keybind({
     Title = "BHop",
     Desc = "Toggle Bunny Hop",
     Value = config.Keybinds.bhop or "V",
@@ -9908,6 +10154,14 @@ MainTab:Keybind({
     Value = config.Keybinds.silentaimhkwallcheck or "T",
     Callback = function(key)
         config.Keybinds.silentaimhkwallcheck = key
+    end
+})
+MainTab:Keybind({
+    Title = "TriggerBot Wall Check",
+    Desc = "Toggle wall check for TriggerBot",
+    Value = config.Keybinds.tbotwallcheck or "Y",
+    Callback = function(key)
+        config.Keybinds.tbotwallcheck = key
     end
 })
 
@@ -10652,6 +10906,47 @@ VisualsTab:Toggle({
     end
 })
 
+VisualsTab:Toggle({
+    Title = "FOV",
+    Desc = "Override the game's default FOV",
+    Value = config.customFOVEnabled or false,
+    Callback = function(v)
+        config.customFOVEnabled = v
+        local camera = workspace.CurrentCamera
+        if v then
+            if config.varibz.orgfov == nil then
+                config.varibz.orgfov = camera.FieldOfView
+            end
+            camera.FieldOfView = config.customFOVValue or 70
+        else
+            if config.varibz.orgfov then
+                camera.FieldOfView = config.varibz.orgfov
+            end
+        end
+    end
+})
+
+VisualsTab:Slider({
+    Title = "FOV Value",
+    Desc = "Adjust Field Of View",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "bruhs",
+    Value = {
+        Min = 10,
+        Max = 120,
+        Default = config.customFOVValue or 70
+    },
+    Callback = function(value)
+        config.customFOVValue = value
+        local camera = workspace.CurrentCamera
+        
+        if config.customFOVEnabled then
+            camera.FieldOfView = value
+        end
+    end
+})
+
 VisualsTab:Input({
     Title = "Tag's TextCursor",
     Desc = "bro... who even needs ts 💔",
@@ -10664,7 +10959,7 @@ VisualsTab:Input({
 })
 VisualsTab:Input({
     Title = "Tag's TextCursor2",
-    Desc = "alr vro 🥀",
+    Desc = "alr vro ??",
     Placeholder = "  ",
     Value = "  ",
     ClearTextOnFocus = true,
@@ -10864,6 +11159,101 @@ VisualsTab:Colorpicker({
     LockedTitle = "Locked message",
     Callback = function(color)
         config.visualizer.color = color
+    end
+})
+
+VisualsTab:Space()
+VisualsTab:Paragraph({
+    Title = "Theme",
+    Desc = "Customize the UI appearance",
+    Color = config.Gradow.uicolor.lightGreen
+})
+
+local function getthemez()
+    local themes = {}
+    for themeName, _ in pairs(WindUI.Themes) do
+        table.insert(themes, themeName)
+    end
+    return themes
+end
+currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
+VisualsTab:Dropdown({
+    Title = "UI Theme",
+    Desc = "Change UI theme",
+    Values = getthemez(),
+    Value = currentTheme,
+    Multi = false,
+    Callback = function(selectedTheme)
+        local success, err = pcall(function()
+            WindUI:SetTheme(selectedTheme)
+            config.Gradow.uiThemeSave.CurrentTheme = selectedTheme
+            n({
+                Title = "Theme Changed",
+                Content = "Switched to " .. selectedTheme,
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 170, 255)
+            })
+        end)
+        if not success then
+            warn("blame windui: " .. tostring(err))
+        end
+    end
+})
+VisualsTab:Slider({
+    Title = "Transparency Value",
+    Desc = "Adjust UI window transparency",
+    IsTextbox = true,
+    Step = 0.05,
+    Value = {
+        Min = 0,
+        Max = 1,
+        Default = 0.15
+    },
+    Callback = function(value)
+        WindUI.TransparencyValue = value
+        config.Gradow.uiThemeSave.CurrentTransparency = value
+        if WindUI.Transparent then
+            WindUI.Window:ToggleTransparency(true)
+        end
+    end
+})
+
+VisualsTab:Button({
+    Title = "Save UI Settings",
+    Desc = "Save current theme & trans",
+    Icon = "save",
+    Callback = function()
+        local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
+        local currentTransparency = WindUI.TransparencyValue or 0.15
+        config.Gradow.uiThemeSave.CurrentTheme = currentTheme
+        config.Gradow.uiThemeSave.CurrentTransparency = currentTransparency
+        dogist(currentTheme, currentTransparency)
+    end
+})
+
+VisualsTab:Button({
+    Title = "Reload UI Settings",
+    Desc = "Reload da UI settings (btw the savedui file can autoload)",
+    Icon = "download",
+    Callback = function()
+        local success = gist()
+        if success then
+            WindUI:Notify({
+                Title = "UI Loaded!",
+                Content = "Theme & transparency loaded :7",
+                Icon = "check",
+                Duration = 2
+            })
+        else
+            WindUI:Notify({
+                Title = "UI Load Error",
+                Content = "No saved UI settings found! :[",
+                Icon = "x",
+                Duration = 2
+            })
+        end
     end
 })
 end
@@ -12676,7 +13066,7 @@ MiscTab:Input({
         Title = "badapple (pls ignore)",
         Desc = "alt+f4",
         Callback = function()
-              loadstring(game:HttpGet(urls.url7))()
+              loadstring(game:HttpGet(urls.ewitsabadapple))()
         end
     })
 
@@ -12684,7 +13074,7 @@ MiscTab:Input({
         Title = "bringparts (pls ignore)",
         Desc = "WHO FLUNGED ME1!!11!1 D:",
         Callback = function()
-              loadstring(game:HttpGet(urls.url8))()
+              loadstring(game:HttpGet(urls.tpuabasically))()
         end
     })
 
@@ -12692,7 +13082,7 @@ MiscTab:Input({
         Title = "Brick.cc (pls ignore)",
         Desc = "I has da powa of unanchored (yes brick is back again :D!!1!1)",
         Callback = function()
-              loadstring(game:HttpGet(urls.url9))()
+              loadstring(game:HttpGet(urls.imbricked))()
         end
     })
 
@@ -12738,7 +13128,7 @@ MiscTab:Input({
         Title = "iwanttobanishthisspecificplayer (pls ignore)",
         Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
         Callback = function()
-           loadstring(game:HttpGet(urls.url10))()
+           loadstring(game:HttpGet(urls.wflingguiname))()
             WindUI:Notify({
                 Title = "insane gui name",
                 Content = "right???",
@@ -13166,7 +13556,7 @@ local InfoTab = Window:Tab({
     
     InfoTab:Paragraph({
         Title = "SilentAimTab (HB)",
-        Desc = "Automatically resizes opponents hitbox and aligning it to your crosshair or the center of your screen (the only working SilentAim)",
+        Desc = "Automatically resizes opponents hitbox and aligning it to your crosshair or the center of your screen",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -13214,7 +13604,7 @@ local InfoTab = Window:Tab({
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Guide",
-        Desc = "Tutorial for some features\n[for now it's the save/load]",
+        Desc = "Tutorial for some features",
         Color = config.Gradow.uicolor.Blue
     })
 InfoTab:Paragraph({
@@ -13234,6 +13624,55 @@ Note: sum features might not get saved properly D:
 ]],
     Color = config.Gradow.uicolor.darkGray
 })
+InfoTab:Paragraph({
+        Title = "Silent Aim (HB) Guide",
+        Desc = [[
+This is the most unique silent aim in the script.
+It works by dynamically resizing the target's hitbox to match your FOV circle/crosshair, making it easier to hit
+
+1. 'Scale To Screen': Makes the hitbox size adapt to your screen, ensuring it covers the FOV circle perfectly, best for third-person shooters
+
+2. 'STS Distance': Adjusts the scaling to prevent the hitbox from clipping into you
+
+3. 'WallOver': Found in the MiscTab it's the closest thing for wallbang for Silent Aim (HB) it allows you to shoot over walls!
+]],
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Optimization Guide",
+        Desc = [[
+The script can be heavy. Use these settings to improve performance.
+
+1. 'Updaters speed': Increase this value to reduce how often features like ESP and Hitbox update (e.g., set to 1.0 for better performance).
+
+2. 'Cache Cleaners': Turn off if you have a powerful PC to improve responsiveness.
+
+3. 'Low Render': Drops the game's graphics quality to boost FPS.
+
+4. 'Errors': Disable to suppress error messages in the console prevents error spam that causes lag.
+]],
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "RNG",
+        Desc = [[
+What is RNG? It stands for Random Number Generator.
+Gravel uses it for picking random messages cuz yes
+
+1. 'Open Button Title': The text on the button to open it would change everytime you reload the script
+
+2. 'Tag Messages': The scrolling text at the top of the GUI, cycling through silly messages and references.
+
+3. 'Popup Messages': The popup that appears when you load the script.
+
+4. 'Notifications': The random titles and sounds in notifications just to jumpscare u
+
+5. 'Tabs': Holding down a tab shows a Tooltip/Description which also has rng text :v
+
+I luv rng's. :3
+]],
+        Color = config.Gradow.uicolor.darkGray
+    })
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Credits",
@@ -13378,6 +13817,11 @@ Note: sum features might not get saved properly D:
     InfoTab:Paragraph({
         Title = "Gravel (20/07/2026)",
         Desc = "Error da handle",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (23/07/2026)",
+        Desc = "some QOL bs",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -13825,6 +14269,7 @@ local function init()
     getgenv().ED_AntiKickCheckCaller = true
     print("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33")
     print("01000111 01110000 01110011 73 69 63 6B 6C 65")
+    showurwholeipadress() -- it doesn't actually...
 end
 function cleanup()
     pcall(function()
@@ -14169,8 +14614,8 @@ Window:OnDestroy(function()
     print("Gravel.cc closed :(")
 end)
 task.wait(2.5)
-loadstring(game:HttpGet(urls.url11))()
-local FindTool = loadstring(game:HttpGet(urls.url3))()
+loadstring(game:HttpGet(urls.hbsshandlecorpses))()
+FindTool = loadstring(game:HttpGet(urls.sa2findtool))()
 return {
     config = config,
     lzl = lzl,
@@ -14186,8 +14631,8 @@ if not success then
         v:Enable()
     end
     getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = false
-    warn("folkkk wat is ts 🥀💔:" .. tostring(err))
+    warn("Gpssickle what kind of error is ts 🥀💔:" .. tostring(err))
     error(err)
 end
 -- fin
---                     .⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠.
+--                     _.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._
