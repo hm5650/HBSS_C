@@ -1,22 +1,25 @@
-if getgenv().Gravel_UIAutoSave then
-    return
+
+local module = {}
+local SaveSystem = {
+    Folder = "Gravel_Saves",
+    AssetsFolder = "Gravel_Saves/assets",
+    FileName = "SavedUI.json",
+    SaveInterval = 0.5
+}
+local function getSavePath()
+    return SaveSystem.Folder .. "/assets/" .. SaveSystem.FileName
 end
-getgenv().Gravel_UIAutoSave = true
-local function ensureAssetFolder()
-    local folderPath = "Gravel_Saves/assets"
-    if not isfolder(folderPath) then
-        pcall(function()
-            makefolder(folderPath)
-        end)
+local function ensureFoldersExist()
+    if not isfolder(SaveSystem.Folder) then
+        pcall(function() makefolder(SaveSystem.Folder) end)
     end
-    return folderPath
+    if not isfolder(SaveSystem.AssetsFolder) then
+        pcall(function() makefolder(SaveSystem.AssetsFolder) end)
+    end
 end
-local function getUISavePath()
-    local assetFolder = ensureAssetFolder()
-    return assetFolder .. "/SavedUI.json"
-end
-local function loadUISettings()
-    local path = getUISavePath()
+local function loadUIData()
+    ensureFoldersExist()
+    local path = getSavePath()
     if not isfile(path) then
         return nil
     end
@@ -34,96 +37,125 @@ local function loadUISettings()
     end
     return nil
 end
-local function saveUISettings(themeName, transparency)
-    local path = getUISavePath()
-    local data = {
-        version = "1.0",
-        timestamp = os.time(),
-        theme = themeName or "Dark",
-        transparency = transparency or 0.15
-    }
+local function saveUIData(data)
+    ensureFoldersExist()
     local success, encoded = pcall(function()
         return game:GetService("HttpService"):JSONEncode(data)
     end)
     if not success then
-        warn("Failed to encode UI data:", tostring(err))
+        warn("Failed to encode UI data: " .. tostring(err))
         return false
     end
+    local path = getSavePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    if success then
-        return true
-    else
-        warn("Failed to save UI data:", tostring(err))
+    if not success then
+        warn("Failed to save UI data: " .. tostring(err))
         return false
     end
+    return true
 end
-local function LoadUI()
-    local settings = loadUISettings()
-    if not settings then
-        return false
-    end
-    local success = pcall(function()
-        if Window and WindUI then
-            if settings.theme and settings.theme ~= "" then
-                local themes = WindUI.Themes
-                if themes and themes[settings.theme] then
-                    WindUI:SetTheme(settings.theme)
-                end
+local function getCurrentUIState()
+    local state = {
+        theme = "Dark",
+        transparency = 0.15
+    }
+    pcall(function()
+        if WindUI and WindUI.Theme and WindUI.Theme.Name then
+            state.theme = WindUI.Theme.Name
+        end
+    end)
+    pcall(function()
+        if WindUI and WindUI.TransparencyValue ~= nil then
+            state.transparency = WindUI.TransparencyValue
+        end
+    end)
+    return state
+end
+local function applyUIState(state)
+    if not state then return false end
+    local success = true
+    if state.theme then
+        pcall(function()
+            if WindUI and WindUI.SetTheme then
+                WindUI:SetTheme(state.theme)
             end
-            if settings.transparency ~= nil then
-                WindUI.TransparencyValue = settings.transparency
+        end)
+    end
+    if state.transparency ~= nil then
+        pcall(function()
+            if WindUI then
+                WindUI.TransparencyValue = state.transparency
                 if WindUI.Transparent then
                     WindUI.Window:ToggleTransparency(true)
                 end
             end
-        end
-    end)
+        end)
+    end
     return success
 end
-local function setupAutoSave()
-    if not Window or not WindUI then
+function module.LoadUI()
+    local data = loadUIData()
+    if data then
+        applyUIState(data)
+        return true
+    else
+        local defaultState = {
+            theme = "Dark",
+            transparency = 0.15
+        }
+        saveUIData(defaultState)
+        return false
+    end
+end
+function module.SaveUI()
+    local state = getCurrentUIState()
+    return saveUIData(state)
+end
+function module.StartAutoSave(interval)
+    interval = interval or SaveSystem.SaveInterval
+    module.StopAutoSave()
+    module._autoSaveConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        if module._saveTimer and tick() - module._saveTimer >= interval then
+            module._saveTimer = tick()
+            module.SaveUI()
+        end
+    end)
+    module._saveTimer = tick()
+end
+function module.StopAutoSave()
+    if module._autoSaveConnection then
+        module._autoSaveConnection:Disconnect()
+        module._autoSaveConnection = nil
+    end
+    module._saveTimer = nil
+end
+function module.SetupThemeDetection()
+    if module._themeDetectionSetup then
         return
     end
-    local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
-    local currentTransparency = WindUI.TransparencyValue or 0.15
-    saveUISettings(currentTheme, currentTransparency)
-end
-local function startAutoSaveLoop()
-    local lastTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
-    local lastTransparency = WindUI.TransparencyValue or 0.15
+    module._themeDetectionSetup = true
     task.spawn(function()
-        while getgenv().Gravel_UIAutoSave do
+        while true do
+            task.wait(0.1)
             pcall(function()
-                if Window and WindUI then
-                    local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
-                    local currentTransparency = WindUI.TransparencyValue or 0.15
-                    if currentTheme ~= lastTheme or currentTransparency ~= lastTransparency then
-                        saveUISettings(currentTheme, currentTransparency)
-                        lastTheme = currentTheme
-                        lastTransparency = currentTransparency
-                    end
+                if WindUI and WindUI._themeDropdown then
                 end
             end)
-            task.wait(0.5)
         end
     end)
 end
-pcall(function()
-    local success = LoadUI()
-    if success then
-        print("ui loaded")
-    else
-        print("ui didnt even have anything to load 🥀")
-    end
-end)
-setupAutoSave()
-startAutoSaveLoop()
-getgenv().Gravel_LoadUI = LoadUI
-getgenv().Gravel_SaveUI = saveUISettings
-return {
-    LoadUI = LoadUI,
-    SaveUI = saveUISettings,
-    getUISavePath = getUISavePath
-}
+function module.Init()
+    ensureFoldersExist()
+    module.SetupThemeDetection()
+    module.LoadUI()
+    module.StartAutoSave()
+    return module
+end
+function module.Cleanup()
+    module.StopAutoSave()
+    module._themeDetectionSetup = false
+end
+module.Init()
+return module
