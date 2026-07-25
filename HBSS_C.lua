@@ -18,7 +18,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().sunc = ""
+getgenv().sunc = "_C"
 
 local success, err = pcall(function()
 
