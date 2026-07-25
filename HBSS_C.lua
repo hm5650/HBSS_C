@@ -1,24 +1,51 @@
 print([[
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⡿⣷⣄⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣧⣈⣻⣷
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠟⠉⠙⠛⠁
-⠀⠀⢀⣴⣿⣦⡀⢀⣴⠿⠁⠀⠀⠀⠀⠀
-⠀⣴⡿⠋⠀⢹⣿⣿⡁⠀⠀⠀⠀⠀⠀⠀
-⢰⣿⠀⠀    ⠉⠙⣿⣦⠀⠀⠀⠀⠀⠀
-⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
-⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-           
-           “my ssn is 017-3 and I can't remember other 9 digits :v” 
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡉⠳⣄⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡟⠉⠻⣦⡈⠳⣄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣇⠀⠀⠈⢻⣦⣼⠇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠋⣹⡷⠶⠶⠟⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠋⣠⠞⠋⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠋⣠⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠋⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⡴⠷⣄⠀⢀⣠⡴⠋⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢀⣴⠋⠀⠀⢈⣿⠟⠙⢷⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⣾⠁⠀⠀⠀⣿⡁⢀⣴⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⢸⡇⠀⠀⠀⠀⠈⠛⠛⠁⠈⢳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠈⢷⣄⣀⣀⣀⣀⣤⡴⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+           “shovel upgrade 1+” 
                                            
                                - Gpssickle
 ]])
 
--- Gravel.cc
+-- Gravel.cc (or HBSS :v)
 if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "" -- type '_C' for da testing version of gravel.cc :3
+-- excusemesir. dere was somebody u known b4
+local excusemesir = {
+    Players = game:GetService("Players"),
+    RunService = game:GetService("RunService"),
+    UserInputService = game:GetService("UserInputService"),
+    VirtualUser = game:GetService("VirtualUser"),
+    TweenService = game:GetService("TweenService"),
+    VirtualInputManager = game:GetService("VirtualInputManager"),
+    HttpService = game:GetService("HttpService"),
+    SoundService = game:GetService("SoundService"),
+    Workspace = game:GetService("Workspace"),
+    Lighting = game:GetService("Lighting"),
+    ScriptContext = game:GetService("ScriptContext"),
+    LogService = game:GetService("LogService"),
+    CoreGui = game:GetService("CoreGui"),
+    Teams = game:GetService("Teams"),
+    StarterGui = game:GetService("StarterGui"),
+}
+
 
 local success, err = pcall(function()
 
@@ -33,23 +60,11 @@ for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
 end
 
 -- spaghetti code yummy :>
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local VirtualUser = game:GetService('VirtualUser')
-local TweenService = game:GetService("TweenService")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local Teams = game:GetService("Teams")
-local HttpService = game:GetService("HttpService")
-local HttpService = game:GetService("HttpService")
-local Workspace = game:GetService("Workspace")
-local Lighting = game:GetService("Lighting")
-local SoundService = game:GetService("SoundService")
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
-local localPlayer = Players.LocalPlayer
-local plr = Players.LocalPlayer
-local LocalPlayer = Players.LocalPlayer
+local player = excusemesir.Players.LocalPlayer
+local PlayerGui =excusemesir player:WaitForChild("PlayerGui")
+local localPlayer = excusemesir.Players.LocalPlayer
+local plr = excusemesir.Players.LocalPlayer
+local LocalPlayer = excusemesir.Players.LocalPlayer
 local ScreenGui = Instance.new("ScreenGui")
 local CircleFrame = Instance.new("Frame")
 local UIStroke = Instance.new("UIStroke")
@@ -73,19 +88,44 @@ local urls = {
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
-
-local lp_info = loadstring(game:HttpGet(urls.showmyipadress_jk))()
-function showurwholeipadress3827103828827273637()
-    print(lp_info.lp_username)
-    print(lp_info.lp_displayname)
-    print(lp_info.lp_id)
-    print(lp_info.lp_accountage)
-    print(lp_info.lp_retroslopscore)
-    print(lp_info.lp_isitretroslop)
+local function gist(url, how, sigma)
+    how = how or 10
+    sigma = sigma or 1
+    local attempts = 0
+    local dat1error = nil
+    while attempts < how do
+        local success, result = pcall(function()
+            return game:HttpGet(url)
+        end)
+        if success then
+            return result
+        else
+            attempts = attempts + 1
+            dat1error = result
+            if string.find(tostring(result), "429") or string.find(tostring(result), "Too many Requests 🥀") then
+                local waitTime = sigma * (2 ^ (attempts - 1))
+                warn("http 429 ✌️😔: " .. waitTime .. " seconds... (Attempt " .. attempts .. "/" .. how .. ")")
+                task.wait(waitTime)
+            else
+                warn("http error 💔🥀: " .. tostring(result) .. ". Retrying in " .. sigma .. " seconds... (Attempt " .. attempts .. "/" .. how .. ")")
+                task.wait(sigma)
+            end
+        end
+    end
+    error("can't get url :( after " .. how .. " attempts: " .. tostring(dat1error))
 end
 
+local lp_info = loadstring(gist(urls.showmyipadress_jk))()
+print(lp_info.lp_username)
+print(lp_info.lp_displayname)
+print(lp_info.lp_id)
+print(lp_info.lp_accountage)
+print(lp_info.lp_retroslopscore)
+print(lp_info.lp_isitretroslop)
+settings().Rendering.MeshPartDetailLevel = 1
+settings().Rendering.EagerBulkExecution = true
 -- unprofessionalism professionist 🥀
-local lzl = loadstring(game:HttpGet(urls.lzlzlzlzlzl))()
+local lzl = loadstring(gist(urls.lzlzlzlzlzl))()
 local fCfg = {
     core = {
         dep = {},
@@ -573,8 +613,8 @@ end
 
 lzl:setConfig(fCfg)
 lzl:loadEss()
-loadstring(game:HttpGet(urls.hbssloader))()
-local Alurt = loadstring(game:HttpGet(urls.imalurtingyou))()
+loadstring(gist(urls.hbssloader))()
+local Alurt = loadstring(gist(urls.imalurtingyou))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
@@ -595,7 +635,7 @@ n({
 
 task.wait(2.30)
 pcall(function()
-loadstring(game:HttpGet(urls.adonisabuse))()
+loadstring(gist(urls.adonisabuse))()
 local getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, lower, gsub, match = getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, string.lower, string.gsub, string.match
 if getgenv().ED_AntiKick then
     return
@@ -695,9 +735,9 @@ n({
 })
 end)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
-local func = loadstring(game:HttpGet(urls.sa2func))()
-local WindUI = loadstring(game:HttpGet(urls.ilikedisui))()
-local SaveUI = loadstring(game:HttpGet(urls.uithesavory))()
+local func = loadstring(gist(urls.sa2func))()
+local WindUI = loadstring(gist(urls.ilikedisui))()
+local SaveUI = loadstring(gist(urls.uithesavory))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -705,14 +745,13 @@ local ValidTargetParts = {"Head", "HumanoidRootPart", "Torso", "UpperTorso", "Lo
 local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
-local GetPlayers = Players.GetPlayers
+local GetPlayers = excusemesir.Players.GetPlayers
 local GetPartsObscuringTarget = Camera.GetPartsObscuringTarget
 local lastCharacter = nil
 local camera = workspace.CurrentCamera
 local humanoid = nil
 local character = nil
 local updateESPColors = function() end
-local bhopConnection = nil
 local clone_ref = cloneref or function(v) return v end
 
 -- random stuff lololol
@@ -722,6 +761,7 @@ getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel = {
     Extension = ".json",
     CurrentSave = nil
 }
+-- cfg
 local config = {
     confIg = "Gravel",
     startsa = false,
@@ -748,6 +788,7 @@ local config = {
     SA2_TArea = 35,
     SA2_TargetRange = 1000,
     SA2_Wallbang = false,
+    SA2_BulletTeleport = false,
     currentTarget = nil,
     espc = Color3.fromRGB(255, 182, 193),
     esptargetc = Color3.fromRGB(255, 255, 0),
@@ -2027,6 +2068,15 @@ local config = {
            "rbxassetid://17517499979",
            "rbxassetid://119888856502065",
         },
+        uwu = {
+            "rbxassetid://72298953503422",
+            "rbxassetid://17608357332",
+            "rbxassetid://130776885039264",
+            "rbxassetid://6303045144",
+            "rbxassetid://101513669346450",
+            "rbxassetid://17748195478",
+            "rbxassetid://17517499979",
+        },
         descs = {
             Main = {
                 "y u touching my brain",
@@ -2271,6 +2321,7 @@ local config = {
         triggerBotConnection = nil,
         sa2thing = 0,
         sa2stuff = 0.5,
+        sa2this = false,
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -2278,6 +2329,7 @@ local config = {
         lowpatcher = true,
         patcherwait = 0.5,
         patcher = true,
+        bhopConnection = nil,
         bhopQuickToggleUI = nil,
         lastJumpTime = 0,
         errors = true,
@@ -2511,7 +2563,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
         local lpos = character and character:FindFirstChild("HumanoidRootPart")
         if not lpos then return nil end
         
-        for _, player in ipairs(Players:GetPlayers()) do
+        for _, player in ipairs(excusemesir.Players:GetPlayers()) do
             if player ~= lp and player.Character then
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if root then
@@ -2795,6 +2847,7 @@ local function saveConfig(saveName)
             SA2_Enabled = config.SA2_Enabled,
             SA2_Wallcheck = config.SA2_Wallcheck,
             SA2_Wallbang = config.SA2_Wallbang,
+            SA2_BulletTeleport = config.SA2_BulletTeleport,
             SA2_ThreeSixtyMode = config.SA2_ThreeSixtyMode,
             SA2_Method = config.SA2_Method,
             SA2_TargetPart = config.SA2_TargetPart,
@@ -3365,6 +3418,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
     end)
 end
 
+-- ^_^/
 local function loadSave(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
@@ -3635,6 +3689,7 @@ local function loadSave(saveName)
     if cfg.SA2_Wallcheck ~= nil then config.SA2_Wallcheck = cfg.SA2_Wallcheck end
     if cfg.SA2_Wallbang ~= nil then config.SA2_Wallbang = cfg.SA2_Wallbang end
     if cfg.SA2_ThreeSixtyMode ~= nil then config.SA2_ThreeSixtyMode = cfg.SA2_ThreeSixtyMode end
+    if cfg.SA2_BulletTeleport ~= nil then config.SA2_BulletTeleport = cfg.SA2_BulletTeleport end
     if cfg.SA2_Method then config.SA2_Method = cfg.SA2_Method end
     if cfg.SA2_TargetPart then config.SA2_TargetPart = cfg.SA2_TargetPart end
     if cfg.SA2_HitChance then config.SA2_HitChance = cfg.SA2_HitChance end
@@ -3882,7 +3937,7 @@ local function loadSave(saveName)
                     local Valid = {}
                     local masterTarget = config.masterTarget or "Players"
                     if masterTarget == "Players" or masterTarget == "Both" then
-                        for _, plr in ipairs(Players:GetPlayers()) do
+                        for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
                             if plr ~= Players.LocalPlayer
                                 and plr.Character
                                 and plr.Character:FindFirstChild("HumanoidRootPart")
@@ -4402,6 +4457,9 @@ local function syncSilentAimWithMaster()
 end
 
 local function GetClosestPlayer()
+    if not config.varibz.sa2this then
+        return cachedTarget or nil
+    end
     if config.varibz.respawnLock or not plr.Character then
         config.SA2_currentTarget = nil
         return nil
@@ -4442,7 +4500,7 @@ local function GetClosestPlayer()
     local bestScreenDist = math.huge
     local isTargetSeen = (targetMode == "TargetSeen")
 
-    for _, player in ipairs(Players:GetPlayers()) do
+    for _, player in ipairs(excusemesir.Players:GetPlayers()) do
         if player == plr then continue end
         if not isTargetable(player) then continue end
 
@@ -4636,13 +4694,15 @@ if OldIndex then
     OldIndex = nil
 end
 
-RunService.Heartbeat:Connect(function(deltaTime)
+excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     config.varibz.sa2thing += deltaTime
     
     if config.varibz.sa2thing >= config.varibz.sa2stuff then
         config.varibz.sa2thing = 0
         if config.SA2_Enabled then
+            config.varibz.sa2this = true
             cachedTarget = GetClosestPlayer()
+            config.varibz.sa2this = false
         end
     end
 end)
@@ -4656,7 +4716,6 @@ local function calc_chance(chance)
         return math.random(1, 100) <= chance
     end
 end
-
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
 local OldNamecall
@@ -4677,14 +4736,43 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             config.SA2_FovIsTargeted = false
             return OldNamecall(...)
         end
-        
         local HitPart = cachedTarget
         if not HitPart then
             config.SA2_FovIsTargeted = false
             return OldNamecall(...)
         end
-        
         config.SA2_FovIsTargeted = true
+        if config.SA2_BulletTeleport then
+            if Method == "FindPartOnRay" then
+                local A_Ray = Arguments[2]
+                local Origin = A_Ray.Origin
+                local Direction = A_Ray.Direction
+                local hitPosition = HitPart.Position
+                local toTarget = (hitPosition - Origin)
+                local distance = toTarget.Magnitude
+                if distance > 0 then
+                    local dir = toTarget.Unit
+                    local newOrigin = hitPosition - (dir * 2)
+                    local newDirection = dir * (distance + 2)
+                    Arguments[2] = Ray.new(newOrigin, newDirection)
+                    return OldNamecall(unpack(Arguments))
+                end
+                
+            elseif Method == "Raycast" then
+                local Origin = Arguments[2]
+                local Direction = Arguments[3]
+                local hitPosition = HitPart.Position
+                local toTarget = (hitPosition - Origin)
+                local distance = toTarget.Magnitude
+                if distance > 0 then
+                    local dir = toTarget.Unit
+                    local newOrigin = hitPosition - (dir * 2)
+                    Arguments[2] = newOrigin
+                    Arguments[3] = dir * (distance + 2)
+                    return OldNamecall(unpack(Arguments))
+                end
+            end
+        end
         
         if config.SA2_Wallbang then
             if Method == "FindPartOnRay" then
@@ -4708,6 +4796,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
                 return fakeResult
             end
         end
+        
         if (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
             if validate_args(Arguments, ExpectedArguments.FindPartOnRay) then
                 local A_Ray = Arguments[2]
@@ -4727,7 +4816,6 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     
     return OldNamecall(...)
 end))
-
 local OldIndex
 OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
     if config.varibz.respawnLock then
@@ -4786,7 +4874,7 @@ UIStroke.Thickness = 1
 UIStroke.Transparency = 1 - config.SA2_FovTransparency
 UIStroke.Parent = CircleFrame
 
-RunService.Heartbeat:Connect(function()
+excusemesir.RunService.Heartbeat:Connect(function()
     local viewportSize = Camera.ViewportSize
     if viewportSize.X == 0 then return end
     
@@ -4839,8 +4927,8 @@ local function unsetSpawnLocation()
 end
 game:GetService('Players').LocalPlayer.Idled:Connect(function()
     if config.antiafk then
-        VirtualUser:CaptureController()
-        VirtualUser:ClickButton2(Vector2.new())
+        excusemesir.VirtualUser:CaptureController()
+        excusemesir.VirtualUser:ClickButton2(Vector2.new())
     end
 end)
 
@@ -4898,7 +4986,7 @@ local function ineednextgenrep(state)
         if config.desyncLoop then
             config.desyncLoop:Disconnect()
         end
-        config.desyncLoop = RunService.Heartbeat:Connect(function()
+        config.desyncLoop = excusemesir.RunService.Heartbeat:Connect(function()
             if not config.desyncActive then return end
             if config.desyncSeat and config.desyncSeat.Parent then
                 local c = LocalPlayer.Character
@@ -5164,7 +5252,7 @@ local function applyESPMaster(state)
     updateESPColors()
 end
 
-RunService.Heartbeat:Connect(function()
+excusemesir.RunService.Heartbeat:Connect(function()
     local currentTime = tick()
     if currentTime - config.varibz.lastTargetUpdate > 0.6 then
         config.varibz.lastTargetUpdate = currentTime
@@ -5216,7 +5304,7 @@ local function getAllTargets(getTargetSeen)
     local targets = {}
 
     if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, pl in ipairs(Players:GetPlayers()) do
+        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
             if pl ~= localPlayer then
                 if getTargetSeen then
                     local char = getTargetCharacter(pl)
@@ -5402,7 +5490,7 @@ local function canSeeTarget(target)
     local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
     
     local ignoreList = {localPlayer.Character}
-    for _, player in ipairs(Players:GetPlayers()) do
+    for _, player in ipairs(excusemesir.Players:GetPlayers()) do
         if player.Character then
             table.insert(ignoreList, player.Character)
         end
@@ -5578,7 +5666,7 @@ local function autoFarmProcess()
         config.autoFarmLoop = nil
     end
     
-    config.autoFarmLoop = RunService.Heartbeat:Connect(function()
+    config.autoFarmLoop = excusemesir.RunService.Heartbeat:Connect(function()
         if not config.autoFarmEnabled or not localPlayer.Character or not camera then
             if config.autoFarmLoop then
                 config.autoFarmLoop:Disconnect()
@@ -6058,7 +6146,7 @@ local function antiAimUpdate()
     if config.raycastAntiAim then
         local wasTargeted = false
         
-        for _, player in ipairs(Players:GetPlayers()) do
+        for _, player in ipairs(excusemesir.Players:GetPlayers()) do
             if player ~= localPlayer and plralive(player) then
                 local shouldCheck = true
                 if config.antiAimGetTarget == "TargetSeen" then
@@ -6132,7 +6220,7 @@ local function wallCheck(targetPos, sourcePos)
         table.insert(ignoreList, localPlayer.Character)
     end
 
-    for _, otherPlayer in ipairs(Players:GetPlayers()) do
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
         if otherPlayer.Character then
             table.insert(ignoreList, otherPlayer.Character)
         end
@@ -6452,7 +6540,7 @@ local function makeesp(targetPlayer)
             pcall(function() config.espData[targetPlayer].connection:Disconnect() end)
         end
         
-        local conn = RunService.Heartbeat:Connect(function()
+        local conn = excusemesir.RunService.Heartbeat:Connect(function()
             local tchar = getTargetCharacter(targetPlayer)
             local charExists = tchar and tchar.Parent
             
@@ -7327,7 +7415,7 @@ local function aimbotWallCheck(targetPos, sourcePos)
         table.insert(ignoreList, localPlayer.Character)
     end
 
-    for _, otherPlayer in ipairs(Players:GetPlayers()) do
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
         if otherPlayer.Character then
             table.insert(ignoreList, otherPlayer.Character)
         end
@@ -7749,7 +7837,7 @@ local function triggerBotUpdate()
                 if config.tbot.wallCheck then
                     local ray = Ray.new(camera.CFrame.Position, (targetPart.Position - camera.CFrame.Position).Unit * (targetPart.Position - camera.CFrame.Position).Magnitude)
                     local ignoreList = {localPlayer.Character}
-                    for _, p in ipairs(Players:GetPlayers()) do
+                    for _, p in ipairs(excusemesir.Players:GetPlayers()) do
                         if p.Character then
                             table.insert(ignoreList, p.Character)
                         end
@@ -7856,7 +7944,7 @@ local function toggleTriggerBot(state)
     if state then
         createTriggerBotFOV()
         if not config.varibz.triggerBotConnection then
-            config.varibz.triggerBotConnection = RunService.Heartbeat:Connect(triggerBotUpdate)
+            config.varibz.triggerBotConnection = excusemesir.RunService.Heartbeat:Connect(triggerBotUpdate)
         end
     else
         if config.tbot.fovCircle and config.tbot.fovCircle.ScreenGui then
@@ -7937,7 +8025,7 @@ local function toggleBHop(state)
             config.varibz.bhopConnection:Disconnect()
             config.varibz.bhopConnection = nil
         end
-        config.varibz.bhopConnection = RunService.Heartbeat:Connect(bhopUpdate)
+        config.varibz.bhopConnection = excusemesir.RunService.Heartbeat:Connect(bhopUpdate)
     else
         if config.varibz.bhopConnection then
             config.varibz.bhopConnection:Disconnect()
@@ -8019,21 +8107,21 @@ local function createBHopQuickToggle()
         label.Text = newState and "BHop<" or "BHop"
         
         if newState then
-            local onTween = TweenService:Create(circle, tweenInfo, {
+            local onTween = excusemesir.TweenService:Create(circle, tweenInfo, {
                 Position = UDim2.new(1, -16, 0, 1),
                 BackgroundColor3 = Color3.fromRGB(0, 170, 0)
             })
-            local bgOnTween = TweenService:Create(toggleBg, tweenInfo, {
+            local bgOnTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
                 BackgroundColor3 = Color3.fromRGB(0, 100, 0)
             })
             onTween:Play()
             bgOnTween:Play()
         else
-            local offTween = TweenService:Create(circle, tweenInfo, {
+            local offTween = excusemesir.TweenService:Create(circle, tweenInfo, {
                 Position = UDim2.new(0, 1, 0, 1),
                 BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             })
-            local bgOffTween = TweenService:Create(toggleBg, tweenInfo, {
+            local bgOffTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
                 BackgroundColor3 = Color3.fromRGB(15, 15, 15)
             })
             offTween:Play()
@@ -8123,7 +8211,7 @@ local handle
 local weld
 local animstate
 function setDisplayDistance(distance)
-    for _, player in pairs(game.Players:GetPlayers()) do
+    for _, player in pairs(game.excusemesir.Players:GetPlayers()) do
         if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
             player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance
             player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance
@@ -8238,7 +8326,7 @@ end)
 end
 
 -- bk
-RunService.Heartbeat:Connect(function(deltaTime)
+excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     aimbotUpdate()
     updateLineESP()
     hb()
@@ -8246,7 +8334,7 @@ RunService.Heartbeat:Connect(function(deltaTime)
 end)
 
 local function isMobileDevice()
-    local ok, val = pcall(function() return UserInputService.TouchEnabled end)
+    local ok, val = pcall(function() return excusemesir.UserInputService.TouchEnabled end)
     return ok and val
 end
 local function CreateQT()
@@ -8323,11 +8411,11 @@ local function CreateQT()
 
         local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
         local function toggleOn()
-            local onTween = TweenService:Create(circle, tweenInfo, {
+            local onTween = excusemesir.TweenService:Create(circle, tweenInfo, {
                 Position = UDim2.new(1, -18, 0, 1),
                 BackgroundColor3 = Color3.fromRGB(0, 170, 0)
             })
-            local bgOnTween = TweenService:Create(toggleBg, tweenInfo, {
+            local bgOnTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
                 BackgroundColor3 = Color3.fromRGB(0, 100, 0)
             })
             onTween:Play()
@@ -8335,11 +8423,11 @@ local function CreateQT()
         end
 
         local function toggleOff()
-            local offTween = TweenService:Create(circle, tweenInfo, {
+            local offTween = excusemesir.TweenService:Create(circle, tweenInfo, {
                 Position = UDim2.new(0, 1, 0, 1),
                 BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             })
-            local bgOffTween = TweenService:Create(toggleBg, tweenInfo, {
+            local bgOffTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
                 BackgroundColor3 = Color3.fromRGB(15, 15, 15)
             })
             offTween:Play()
@@ -8422,7 +8510,7 @@ local function CreateQT()
                         corner.Parent = feedback
                         feedback.Parent = screenGui
                         
-                        local fadeOut = TweenService:Create(feedback, TweenInfo.new(0.3), {
+                        local fadeOut = excusemesir.TweenService:Create(feedback, TweenInfo.new(0.3), {
                             BackgroundTransparency = 1,
                             Size = UDim2.new(0, 0, 0, 0)
                         })
@@ -9143,7 +9231,7 @@ local function TpWalkStart()
             if not humanoid or humanoid.Health <= 0 or not rootPart then
                 task.wait(0.1)
             else
-                local delta = RunService.Heartbeat:Wait()
+                local delta = excusemesir.RunService.Heartbeat:Wait()
                 if humanoid.MoveDirection.Magnitude > 0 then
                     local moveDirection = humanoid.MoveDirection.Unit
                     local velocity = moveDirection * (config.clientCFrameSpeed or 1) * 50
@@ -9298,8 +9386,8 @@ end
 ]]
 -- ui neuron activation starter
 math.randomseed(os.time())
-local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-local isTablet = UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
+local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
+local isTablet = excusemesir.UserInputService.TouchEnabled and excusemesir.UserInputService.KeyboardEnabled
 
 local size = config.Gradow.windowSize.pc
 if isMobile then
@@ -9575,7 +9663,7 @@ local function rng4()
             return false
         end
         
-        RunService.Heartbeat:Connect(function(deltaTime)
+        excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
             if isWindowMinimized() then return end
             accum = accum + deltaTime
             if accum >= 0.3 then
@@ -10209,7 +10297,7 @@ local Config = {
     MEMORY_CLEANUP_THRESHOLD = 500,
 }
 
-local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
+local Optiz = loadstring(gist('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
                     setclipboard(code)
                     WindUI:Notify({
                         Title = "Optimization",
@@ -10633,15 +10721,15 @@ VisualsTab:Button({
     Title = "Kill Lighting",
     Desc = "get rid of lighting it's useless :/",
     Callback = function()
-        Lighting.Technology = Enum.Technology.Legacy
-        Lighting.FogEnd = 1e9
-        Lighting.EnvironmentDiffuseScale = 0
-        Lighting.EnvironmentSpecularScale = 0
-        Lighting.GlobalShadows = false
-        Lighting.ShadowSoftness = 0
-        Lighting.Brightness = math.max(Lighting.Brightness, 2)
-        Lighting.Ambient = Color3.fromRGB(110, 110, 110)
-        Lighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
+        excusemesirLighting.Technology = Enum.Technology.Legacy
+        excusemesirLighting.FogEnd = 1e9
+        excusemesirLighting.EnvironmentDiffuseScale = 0
+        excusemesirLighting.EnvironmentSpecularScale = 0
+        excusemesirLighting.GlobalShadows = false
+        excusemesirLighting.ShadowSoftness = 0
+        excusemesirLighting.Brightness = math.max(Lighting.Brightness, 2)
+        excusemesirLighting.Ambient = Color3.fromRGB(110, 110, 110)
+        excusemesirLighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
         settings().Rendering.QualityLevel = 1
         for _, v in ipairs(Lighting:GetChildren()) do
             if v:IsA("BloomEffect")
@@ -11670,14 +11758,14 @@ local SilentAimTab2 = Window:Tab({
     
     SilentAimTab2:Toggle({
         Title = "WallBang",
-        Desc = "Shoot through walls",
+        Desc = "Shoot through walls... (self-explanatory)",
         Value = config.SA2_Wallbang or false,
         Callback = function(v)
             config.SA2_Wallbang = v
             if v then
                 n({
                     Title = "WallBang",
-                    Content = "Enabled Will shoot through walls",
+                    Content = "Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -11695,6 +11783,34 @@ local SilentAimTab2 = Window:Tab({
             end
         end
     })
+
+SilentAimTab2:Toggle({
+    Title = "Bullet Teleport",
+    Desc = "Teleports bullet origin to target :]",
+    Value = config.SA2_BulletTeleport or false,
+    Callback = function(v)
+        config.SA2_BulletTeleport = v
+        if v then
+            n({
+                Title = "Bullet Teleport",
+                Content = "Enabled",
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 170, 255)
+            })
+        else
+            n({
+                Title = "Bullet Teleport",
+                Content = "Disabled",
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
+    end
+})
     
     SilentAimTab2:Toggle({
         Title = "360 Mode",
@@ -12816,7 +12932,7 @@ MiscTab:Input({
         Title = "badapple (pls ignore)",
         Desc = "alt+f4",
         Callback = function()
-              loadstring(game:HttpGet(urls.ewitsabadapple))()
+              loadstring(gist(urls.ewitsabadapple))()
         end
     })
 
@@ -12824,7 +12940,7 @@ MiscTab:Input({
         Title = "bringparts (pls ignore)",
         Desc = "WHO FLUNGED ME1!!11!1 D:",
         Callback = function()
-              loadstring(game:HttpGet(urls.tpuabasically))()
+              loadstring(gist(urls.tpuabasically))()
         end
     })
 
@@ -12832,7 +12948,7 @@ MiscTab:Input({
         Title = "Brick.cc (pls ignore)",
         Desc = "I has da powa of unanchored (yes brick is back again :D!!1!1)",
         Callback = function()
-              loadstring(game:HttpGet(urls.imbricked))()
+              loadstring(gist(urls.imbricked))()
         end
     })
 
@@ -12878,7 +12994,7 @@ MiscTab:Input({
         Title = "iwanttobanishthisspecificplayer (pls ignore)",
         Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
         Callback = function()
-           loadstring(game:HttpGet(urls.wflingguiname))()
+           loadstring(gist(urls.wflingguiname))()
             WindUI:Notify({
                 Title = "insane gui name",
                 Content = "right???",
@@ -13044,7 +13160,7 @@ MiscTab:Toggle({
             local nearestDistance = math.huge
             local masterTarget = config.masterTarget or "Players"
             if masterTarget == "Players" or masterTarget == "Both" then
-                for _, plr in ipairs(Players:GetPlayers()) do
+                for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
                     if plr ~= localPlayer
                         and plr.Character
                         and plr.Character:FindFirstChild("HumanoidRootPart")
@@ -13258,6 +13374,7 @@ MiscTab:Slider({
 end
 
 -- Info Tab
+--               ＼⁠(⁠^⁠o⁠^⁠)⁠／
 local InfoTab = Window:Tab({
     Title = "Info",
     Desc = rng3("Info"),
@@ -13921,18 +14038,18 @@ local function init()
     syncSilentAimWithMaster()
     nextgenrepre()
     initKeybinds()
-    for _, pl in ipairs(Players:GetPlayers()) do
+    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
         end
     end
 
-    Players.PlayerAdded:Connect(function(pl)
+    excusemesir.Players.PlayerAdded:Connect(function(pl)
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
         end
     end)
-    for _, pl in ipairs(Players:GetPlayers()) do
+    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
             if config.hitboxEnabled and targethb(pl) then
@@ -13943,7 +14060,7 @@ local function init()
             end
         end
     end
-    Players.PlayerAdded:Connect(function(pl)
+    excusemesir.Players.PlayerAdded:Connect(function(pl)
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
             
@@ -13963,11 +14080,11 @@ local function init()
         end
     end)
     
-    Players.PlayerRemoving:Connect(function(pl)
+    excusemesir.Players.PlayerRemoving:Connect(function(pl)
         cleanplrdata(pl)
     end)
     
-    for _, pl in ipairs(Players:GetPlayers()) do
+    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
             if config.espMasterEnabled then
@@ -13985,7 +14102,7 @@ local function init()
         end
     end
     
-    Players.PlayerAdded:Connect(function(pl)
+    excusemesir.Players.PlayerAdded:Connect(function(pl)
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
             task.wait(0.5)
@@ -14004,7 +14121,7 @@ local function init()
             end
         end
     end)
-    RunService:BindToRenderStep("FOVhbUpdater_Modern", Enum.RenderPriority.First.Value, onRenderStep)
+    excusemesir.RunService:BindToRenderStep("FOVhbUpdater_Modern", Enum.RenderPriority.First.Value, onRenderStep)
     task.wait(1)
     config.SA2_Wallbang = true
     config.varibz.lowpatcher = false
@@ -14019,9 +14136,62 @@ local function init()
     getgenv().ED_AntiKickCheckCaller = true
     print("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33")
     print("01000111 01110000 01110011 73 69 63 6B 6C 65")
-    showurwholeipadress3827103828827273637() -- it doesn't actually...
 end
+
 local function cleanup()
+    pcall(function()
+        local owo = config.varibz.uwu[math.random(1, #config.varibz.uwu)]
+        local explosionGui = Instance.new("ScreenGui")
+        local flash = Instance.new("Frame")
+        local explosion = Instance.new("ImageLabel")
+        local memeSound = Instance.new("Sound")
+        local explosionSound = Instance.new("Sound")
+        explosionGui.Name = "bang"
+        explosionGui.ResetOnSpawn = false
+        explosionGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        explosionGui.Parent = localPlayer:WaitForChild("PlayerGui")
+        flash.Name = "Flash"
+        flash.Size = UDim2.new(1, 0, 1, 0)
+        flash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        flash.BackgroundTransparency = 0
+        flash.ZIndex = 9
+        flash.Parent = explosionGui
+        explosion.Name = "Explosion"
+        explosion.Size = UDim2.new(0, 200, 0, 200)
+        explosion.Position = UDim2.new(0.5, 0, 0.5, 0)
+        explosion.AnchorPoint = Vector2.new(0.5, 0.5)
+        explosion.BackgroundTransparency = 1
+        explosion.Image = "rbxassetid://128670966889578"
+        explosion.ImageTransparency = 0
+        explosion.ZIndex = 10
+        explosion.Parent = explosionGui
+        memeSound.SoundId = owo
+        memeSound.Volume = 1
+        memeSound.Parent = explosionGui
+        memeSound:Play()
+        explosionSound.SoundId = "rbxassetid://8447388510"
+        explosionSound.Volume = 2
+        explosionSound.Parent = explosionGui
+        explosionSound:Play()
+        
+        local flashTween = excusemesir.TweenService:Create(flash, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 1
+        })
+        local explosionTween = excusemesir.TweenService:Create(explosion, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 850, 0, 850),
+            ImageTransparency = 0.2
+        })
+        flashTween:Play()
+        explosionTween:Play()
+        task.wait(1.2)
+        local fadeOut = excusemesir.TweenService:Create(explosion, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            ImageTransparency = 1,
+            Size = UDim2.new(0, 1200, 0, 1200)
+        })
+        fadeOut:Play()
+        task.wait(0.6)
+        explosionGui:Destroy()
+    end)
     pcall(function()
         RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
         RunService:UnbindFromRenderStep("ESPUpdater")
@@ -14256,16 +14426,14 @@ local function cleanup()
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = false
     end)
 end
-local clearTargetCache = function()
-    pcall(function()
-        config.SA2_currentTarget = nil
-        config.currentTarget = nil
-        config.aimbotCurrentTarget = nil
-        config.SA2_FovIsTargeted = false
-        config.targetSeenTargets = {}
-        config.autoFarmTargets = {}
-        config.autoFarmCompleted = {}
-    end)
+local function clearTargetCache()
+    config.SA2_currentTarget = nil
+    config.currentTarget = nil
+    config.aimbotCurrentTarget = nil
+    config.SA2_FovIsTargeted = false
+    config.targetSeenTargets = {}
+    config.autoFarmTargets = {}
+    config.autoFarmCompleted = {}
 end
 task.spawn(function()
     while config.varibz.lowpatcher do
@@ -14364,8 +14532,8 @@ Window:OnDestroy(function()
     print("Gravel.cc closed :(")
 end)
 task.wait(2.5)
-loadstring(game:HttpGet(urls.hbsshandlecorpses))()
-loadstring(game:HttpGet(urls.sa2findtool))()
+loadstring(gist(urls.hbsshandlecorpses))()
+loadstring(gist(urls.sa2findtool))()
 return {
     config = config,
     lzl = lzl,
