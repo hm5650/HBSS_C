@@ -8,7 +8,7 @@ print([[
 ⠸⣿⡀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀⠀⠀
 ⠀⠙⠻⠿⠿⠟⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
            
-           “I like this dastardly tomfoolery :D” 
+           “my ssn is 017-3 and I can't remember other 9 digits :v” 
                                            
                                - Gpssickle
 ]])
@@ -18,7 +18,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().sunc = "_C"
+getgenv().sunc = ""
 
 local success, err = pcall(function()
 
@@ -41,7 +41,9 @@ local TweenService = game:GetService("TweenService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local Teams = game:GetService("Teams")
 local HttpService = game:GetService("HttpService")
-local AntiAimTabWorkspace = game:GetService("Workspace")
+local HttpService = game:GetService("HttpService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
 local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
@@ -632,7 +634,6 @@ getgenv().ED_AntiKick = {
     CheckCaller = true
 }
 
-pcall(function()
 local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local self, message = ...
     local method = getnamecallmethod()
@@ -658,9 +659,6 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
 
     return OldNamecall(...)
 end))
-end)
-
-pcall(function()
 local OldFunction; OldFunction = hookfunction(LocalPlayer.Kick, function(...)
     local self, Message = ...
 
@@ -685,7 +683,7 @@ local OldFunction; OldFunction = hookfunction(LocalPlayer.Kick, function(...)
     end
     return OldFunction(...)
 end)
-end)
+
 
 n({
     Title = "Gravel.cc",
@@ -1695,13 +1693,25 @@ local config = {
                 "u won't :P",
             },
             {
-                "the gravel community",
-                "is small",
-                "but we are mighty",
-                "like a pebble",
-                "with a grudge",
-                "don't mess with us",
-                ">:D",
+                typesp = "0.2",
+                "I'm typing soooo slowwwww",
+                "like super slow",
+                "to make u impatient",
+            },
+            {
+                typesp = "5",
+                "IM TYPING SUPER DUPER FAST",
+                "IM TYPING SO FAST U CANT EVEN",
+                "READ ALL OF IT >:D",
+                "MWAHAHAHAHAHAHAH",
+                "EUGEAUYIQHIFU82-2;1866646649",
+                "IVE ALSO SMASHED MAH KEYBOARD",
+            },
+            {
+                "can you tell me ur ssn",
+                "like......",
+                "I want ur ssn for like....",
+                "no reason",
             },
             {
                 typesp = "3",
@@ -2949,7 +2959,6 @@ local function deleteAllSaves()
         })
         return false
     end
-    
     local confirmCount = 0
     local maxConfirmations = 3
     local memeTitles = {
@@ -2961,49 +2970,29 @@ local function deleteAllSaves()
         "SURE SURELY SUREY??",
         "YOU 1E60 SURE???",
     }
-    
     local yesVariants = {
-        "Yes",
-        "Yeah",
-        "Yessir",
-        "YESSIRSKI!",
-        "YAA",
-        "HELL YA",
-        "KILL ALL THE SAVES!!",
-        "IM FR",
-        "IM SUPER SURE",
-        "IM SO SURE THAT IM SURE!!",
+        "Yes", "Yeah", "Yessir", "YESSIRSKI!", "YAA",
+        "HELL YA", "KILL ALL THE SAVES!!", "IM FR",
+        "IM SUPER SURE", "IM SO SURE THAT IM SURE!!",
         "SAVES GO TO HELL!!",
     }
-    
     local noVariants = {
-        "Nah",
-        "Pass",
-        "HECK NAH",
-        "WHAT RUE DOING USER???",
-        "NOOO",
-        "OH NOES",
-        "DENIAL",
-        "NO I LIKE MAH SAVES",
+        "Nah", "Pass", "HECK NAH", "WHAT RUE DOING USER???",
+        "NOOO", "OH NOES", "DENIAL", "NO I LIKE MAH SAVES",
     }
-    
     local function getRandomMemeTitle()
         return memeTitles[math.random(1, #memeTitles)]
     end
-    
     local function getRandomYes()
         return yesVariants[math.random(1, #yesVariants)]
     end
-    
     local function getRandomNo()
         return noVariants[math.random(1, #noVariants)]
     end
-    
     local function showConfirmation()
         local currentTitle = getRandomMemeTitle()
         local currentYes = getRandomYes()
         local currentNo = getRandomNo()
-        
         WindUI:Popup({
             Title = currentTitle,
             Icon = "trash",
@@ -3022,23 +3011,29 @@ local function deleteAllSaves()
                     Variant = "Danger",
                     Callback = function()
                         confirmCount = confirmCount + 1
-                        
                         if confirmCount >= maxConfirmations then
                             local deletedCount = 0
                             local failedSaves = {}
-                            
                             for _, save in ipairs(saves) do
-                                local success = deleteSave(save)
-                                if success then
+                                local path = getSavePath(save)
+                                local success, err = pcall(function()
+                                    if isfile(path) then
+                                        delfile(path)
+                                        return true
+                                    else
+                                        return false, "file not found"
+                                    end
+                                end)
+
+                                if success and success ~= false then
                                     deletedCount = deletedCount + 1
                                 else
-                                    table.insert(failedSaves, save)
+                                    table.insert(failedSaves, save .. " (" .. tostring(err) .. ")")
                                 end
                             end
-                            
                             if deletedCount > 0 then
                                 WindUI:Notify({
-                                    Title = "Save System :c",
+                                    Title = "Save System",
                                     Content = string.format(
                                         "Deleted %d/%d saves successfully!",
                                         deletedCount,
@@ -3048,18 +3043,22 @@ local function deleteAllSaves()
                                     Duration = 3
                                 })
                             end
-                            
                             if #failedSaves > 0 then
                                 WindUI:Notify({
                                     Title = "Save System",
                                     Content = "Failed to delete: " .. table.concat(failedSaves, ", "),
                                     Icon = "x",
-                                    Duration = 3
+                                    Duration = 4
                                 })
                             end
-                            
                             getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave = nil
                             confirmCount = 0
+                            if config.varibz.savesParagraph then
+                                local newDesc = savePara() .. "\nit refreshes now!"
+                                pcall(function()
+                                    config.varibz.savesParagraph:SetDesc(newDesc)
+                                end)
+                            end
                         else
                             showConfirmation()
                         end
@@ -3082,7 +3081,7 @@ local function deleteAllSaves()
             }
         })
     end
-    
+
     showConfirmation()
     return true
 end
@@ -4404,342 +4403,198 @@ end
 
 local function GetClosestPlayer()
     if config.varibz.respawnLock or not plr.Character then
-        if config.SA2_currentTarget then
-            config.SA2_currentTarget = nil
-            updateESPColors()
-        end
+        config.SA2_currentTarget = nil
         return nil
     end
-    
-    local Closest = nil
-    local ShortestDistance = math.huge
-    local LowestHealth = math.huge
-    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-    local allTargets = {}
-    local cameraCFrame = Camera.CFrame
-    local cameraPos = cameraCFrame.Position
-    local maxTargetRange = config.SA2_TargetRange or 1000
-    
-    for _, Player in next, GetPlayers(Players) do
-        if Player == plr then continue end
-        if not ShouldTargetPlayer(Player) then continue end
-        if config.ignoreForcefield and hasForcefield(Character) then
-            continue
-        end
-        local Character = Player.Character
-        if not Character then continue end
-        local Humanoid = FindFirstChild(Character, "Humanoid")
-        if not Humanoid or Humanoid.Health <= 0 then continue end
 
-        if config.SA2_Wallcheck and not IsPlayerVisible(Player) then continue end
-        
-        local bodyPartsToCheck = {"HumanoidRootPart", "Head", "Torso", "UpperTorso"}
-        local foundPart = nil
-        
-        for _, partName in ipairs(bodyPartsToCheck) do
-            local bodyPart = FindFirstChild(Character, partName)
-            if bodyPart then
-                foundPart = bodyPart
-                break
-            end
+    local cam = Camera
+    local viewport = cam.ViewportSize
+    local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
+    local camPos = cam.CFrame.Position
+    local maxRange = config.SA2_TargetRange or 1000
+    local fovRadius = config.SA2_FovRadius
+    local wallCheckEnabled = config.SA2_Wallcheck
+    local threeSixty = config.SA2_ThreeSixtyMode
+    local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
+    local teamTarget = config.SA2_TeamTarget or "Enemies"
+    local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
+    local ignoreFF = config.ignoreForcefield
+    local localTeam = plr.Team
+
+    local function isTargetable(player)
+        if player == plr then return false end
+        if teamTarget == "All" then return true end
+        local targetTeam = player.Team
+        if not localTeam or not targetTeam then
+            return teamTarget == "Enemies"
         end
-        
-        if not foundPart then continue end
-        
-        local targetPos = foundPart.Position
-        local worldDist = (cameraPos - targetPos).Magnitude
-        if worldDist > maxTargetRange then continue end
-        
-        if config.SA2_ThreeSixtyMode then
-            table.insert(allTargets, {
-                player = Player,
-                character = Character,
-                part = foundPart,
-                humanoid = Humanoid,
-                health = Humanoid.Health,
-                worldDist = worldDist,
-                in360Mode = true,
-                screenPos = nil,
-                onScreen = true,
-                distanceToCenter = 0
-            })
+        if teamTarget == "Enemies" then
+            return localTeam ~= targetTeam
         else
-            local screenPos, onScreen = func.GetScreenPosition(targetPos)
-            if not onScreen then continue end
-            screenPos = screenPos + Vector2.new(0, config.SA2_TArea)
-            
-            local distToFov = (screenCenter - screenPos).Magnitude
-            if distToFov > config.SA2_FovRadius then continue end
-            
-            table.insert(allTargets, {
-                player = Player,
-                character = Character,
-                part = foundPart,
-                humanoid = Humanoid,
-                health = Humanoid.Health,
-                screenPos = screenPos,
-                onScreen = onScreen,
-                distanceToCenter = distToFov,
-                worldDist = worldDist,
-                in360Mode = false
-            })
+            return localTeam == targetTeam
         end
     end
-    
-    if #allTargets == 0 then
-        if config.SA2_currentTarget then
-            config.SA2_currentTarget = nil
-            updateESPColors()
+    local candidates = {}
+    local bestTarget = nil
+    local bestDist = math.huge
+    local bestHealth = math.huge
+    local bestWorldDist = math.huge
+    local bestScreenDist = math.huge
+    local isTargetSeen = (targetMode == "TargetSeen")
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player == plr then continue end
+        if not isTargetable(player) then continue end
+
+        local char = player.Character
+        if not char then continue end
+
+        if ignoreFF and hasForcefield(char) then continue end
+
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then continue end
+        local part = nil
+        if targetPartName then
+            part = char:FindFirstChild(targetPartName)
         end
-        return nil
-    end
-    local aliveTargets = {}
-    for _, target in ipairs(allTargets) do
-        if target.humanoid and target.humanoid.Health > 0 then
-            table.insert(aliveTargets, target)
+        if not part then
+            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso")
         end
-    end
-    
-    if #aliveTargets == 0 then
-        if config.SA2_currentTarget then
-            config.SA2_currentTarget = nil
-            updateESPColors()
-        end
-        return nil
-    end
-    
-    local newClosestPlayer = nil
-    local getTargetMethod = config.masterGetTarget or config.SA2_GetTarget or "Closest"
-    
-    if config.SA2_ThreeSixtyMode then
-        if getTargetMethod == "Lowest Health" then
-            local bestTarget = nil
-            local bestHealth = math.huge
-            
-            for _, target in ipairs(aliveTargets) do
-                if target.in360Mode and target.health < bestHealth then
-                    bestHealth = target.health
-                    bestTarget = target
-                end
+        if not part then continue end
+        local targetPos = part.Position
+        local worldDist = (camPos - targetPos).Magnitude
+        if worldDist > maxRange then continue end
+        if wallCheckEnabled then
+            local direction = targetPos - camPos
+            local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
+            local ignore = {plr.Character, char}
+            local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignore)
+            if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
+                continue
             end
-            
-            if bestTarget then
-                local actualTargetPart = GetActualTargetPart()
-                Closest = bestTarget.character[actualTargetPart] or bestTarget.part
-                newClosestPlayer = bestTarget.player
-            end
-        elseif getTargetMethod == "TargetSeen" then
-            local sortedTargets = {}
-            for _, target in ipairs(aliveTargets) do
-                if target.in360Mode then
-                    table.insert(sortedTargets, target)
-                end
-            end
-            
-            table.sort(sortedTargets, function(a, b)
-                return a.worldDist < b.worldDist
-            end)
-            
-            if #sortedTargets > 0 then
-                if config.targetSeenMode == "Switch" then
-                    local currentTime = tick()
-                    if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                        config.lastTargetSwitchTime = currentTime
-                        
-                        if not config.SA2_currentTarget then
-                            local closestTarget = sortedTargets[1]
-                            local actualTargetPart = GetActualTargetPart()
-                            Closest = closestTarget.character[actualTargetPart] or closestTarget.part
-                            config.SA2_currentTarget = closestTarget.player
-                            newClosestPlayer = closestTarget.player
-                        else
-                            local currentIndex = nil
-                            for i, target in ipairs(sortedTargets) do
-                                if target.player == config.SA2_currentTarget then
-                                    currentIndex = i
-                                    break
-                                end
-                            end
-                            
-                            if currentIndex then
-                                local nextIndex = (currentIndex % #sortedTargets) + 1
-                                local nextTarget = sortedTargets[nextIndex]
-                                local actualTargetPart = GetActualTargetPart()
-                                Closest = nextTarget.character[actualTargetPart] or nextTarget.part
-                                config.SA2_currentTarget = nextTarget.player
-                                newClosestPlayer = nextTarget.player
-                            else
-                                local closestTarget = sortedTargets[1]
-                                local actualTargetPart = GetActualTargetPart()
-                                Closest = closestTarget.character[actualTargetPart] or closestTarget.part
-                                config.SA2_currentTarget = closestTarget.player
-                                newClosestPlayer = closestTarget.player
-                            end
-                        end
-                    else
-                        if config.SA2_currentTarget then
-                            for _, target in ipairs(sortedTargets) do
-                                if target.player == config.SA2_currentTarget then
-                                    local actualTargetPart = GetActualTargetPart()
-                                    Closest = target.character[actualTargetPart] or target.part
-                                    newClosestPlayer = target.player
-                                    break
-                                end
-                            end
-                        end
+        end
+        local screenPos, onScreen
+        if not threeSixty then
+            screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
+            if not onScreen or screenPos.Z <= 0 then continue end
+            local screenVec = Vector2.new(screenPos.X, screenPos.Y)
+            local distPx = (screenVec - center).Magnitude
+            if distPx > fovRadius then continue end
+            local health = humanoid.Health
+            if isTargetSeen then
+                table.insert(candidates, {
+                    player = player,
+                    part = part,
+                    humanoid = humanoid,
+                    health = health,
+                    screenDist = distPx,
+                    worldDist = worldDist,
+                    screenVec = screenVec,
+                    inFOV = true
+                })
+            else
+                if targetMode == "Closest" then
+                    if distPx < bestScreenDist then
+                        bestScreenDist = distPx
+                        bestTarget = {player = player, part = part}
                     end
-                elseif config.targetSeenMode == "All" then
-                    local closestTarget = sortedTargets[1]
-                    if closestTarget then
-                        local actualTargetPart = GetActualTargetPart()
-                        Closest = closestTarget.character[actualTargetPart] or closestTarget.part
-                        config.SA2_currentTarget = closestTarget.player
-                        newClosestPlayer = closestTarget.player
+                elseif targetMode == "Lowest Health" then
+                    if health < bestHealth then
+                        bestHealth = health
+                        bestTarget = {player = player, part = part}
                     end
                 end
             end
         else
-            local bestTarget = nil
-            local bestDist = math.huge
-            
-            for _, target in ipairs(aliveTargets) do
-                if target.in360Mode and target.worldDist < bestDist then
-                    bestDist = target.worldDist
-                    bestTarget = target
+            local health = humanoid.Health
+            if isTargetSeen then
+                table.insert(candidates, {
+                    player = player,
+                    part = part,
+                    humanoid = humanoid,
+                    health = health,
+                    screenDist = 0,
+                    worldDist = worldDist,
+                    screenVec = Vector2.new(0, 0),
+                    inFOV = true
+                })
+            else
+                if targetMode == "Closest" then
+                    if worldDist < bestWorldDist then
+                        bestWorldDist = worldDist
+                        bestTarget = {player = player, part = part}
+                    end
+                elseif targetMode == "Lowest Health" then
+                    if health < bestHealth then
+                        bestHealth = health
+                        bestTarget = {player = player, part = part}
+                    end
                 end
-            end
-            
-            if bestTarget then
-                local actualTargetPart = GetActualTargetPart()
-                Closest = bestTarget.character[actualTargetPart] or bestTarget.part
-                newClosestPlayer = bestTarget.player
             end
         end
-    else
-        if getTargetMethod == "Lowest Health" then
-            for _, target in ipairs(aliveTargets) do
-                if target.onScreen and target.health < LowestHealth then
-                    LowestHealth = target.health
-                    local actualTargetPart = GetActualTargetPart()
-                    Closest = target.character[actualTargetPart] or target.part
-                    newClosestPlayer = target.player
-                end
-            end
-        elseif getTargetMethod == "TargetSeen" then
-            local targetsInFOV = {}
-            
-            for _, target in ipairs(aliveTargets) do
-                if target.onScreen and target.distanceToCenter <= config.SA2_FovRadius then
-                    table.insert(targetsInFOV, target)
-                end
-            end
-            
-            if #targetsInFOV > 0 then
-                if config.targetSeenMode == "Switch" then
-                    local currentTime = tick()
-                    if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                        config.lastTargetSwitchTime = currentTime
-                        
-                        if not config.SA2_currentTarget then
-                            local closestInFOV = nil
-                            local closestDist = math.huge
-                            for _, target in ipairs(targetsInFOV) do
-                                if target.distanceToCenter < closestDist then
-                                    closestDist = target.distanceToCenter
-                                    closestInFOV = target
-                                end
-                            end
-                            if closestInFOV then
-                                local actualTargetPart = GetActualTargetPart()
-                                Closest = closestInFOV.character[actualTargetPart] or closestInFOV.part
-                                config.SA2_currentTarget = closestInFOV.player
-                                newClosestPlayer = closestInFOV.player
-                            end
-                        else
-                            local currentIndex = nil
-                            for i, target in ipairs(targetsInFOV) do
-                                if target.player == config.SA2_currentTarget then
-                                    currentIndex = i
-                                    break
-                                end
-                            end
-                            
-                            if currentIndex then
-                                local nextIndex = (currentIndex % #targetsInFOV) + 1
-                                local nextTarget = targetsInFOV[nextIndex]
-                                local actualTargetPart = GetActualTargetPart()
-                                Closest = nextTarget.character[actualTargetPart] or nextTarget.part
-                                config.SA2_currentTarget = nextTarget.player
-                                newClosestPlayer = nextTarget.player
-                            else
-                                local closestInFOV = nil
-                                local closestDist = math.huge
-                                for _, target in ipairs(targetsInFOV) do
-                                    if target.distanceToCenter < closestDist then
-                                        closestDist = target.distanceToCenter
-                                        closestInFOV = target
-                                    end
-                                end
-                                if closestInFOV then
-                                    local actualTargetPart = GetActualTargetPart()
-                                    Closest = closestInFOV.character[actualTargetPart] or closestInFOV.part
-                                    config.SA2_currentTarget = closestInFOV.player
-                                    newClosestPlayer = closestInFOV.player
-                                end
-                            end
+    end
+    if isTargetSeen and #candidates > 0 then
+        table.sort(candidates, function(a, b)
+            return a.worldDist < b.worldDist
+        end)
+        if config.targetSeenMode == "Switch" then
+            local currentTime = tick()
+            if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+                config.lastTargetSwitchTime = currentTime
+                
+                if not config.SA2_currentTarget then
+                    local target = candidates[1]
+                    bestTarget = {player = target.player, part = target.part}
+                    config.SA2_currentTarget = target.player
+                else
+                    local currentIndex = nil
+                    for i, target in ipairs(candidates) do
+                        if target.player == config.SA2_currentTarget then
+                            currentIndex = i
+                            break
                         end
+                    end
+                    
+                    if currentIndex then
+                        local nextIndex = (currentIndex % #candidates) + 1
+                        local target = candidates[nextIndex]
+                        bestTarget = {player = target.player, part = target.part}
+                        config.SA2_currentTarget = target.player
                     else
-                        if config.SA2_currentTarget then
-                            for _, target in ipairs(targetsInFOV) do
-                                if target.player == config.SA2_currentTarget then
-                                    local actualTargetPart = GetActualTargetPart()
-                                    Closest = target.character[actualTargetPart] or target.part
-                                    newClosestPlayer = target.player
-                                    break
-                                end
-                            end
-                        end
-                    end
-                elseif config.targetSeenMode == "All" then
-                    local closestInFOV = nil
-                    local closestDist = math.huge
-                    for _, target in ipairs(targetsInFOV) do
-                        if target.distanceToCenter < closestDist then
-                            closestDist = target.distanceToCenter
-                            closestInFOV = target
-                        end
-                    end
-                    if closestInFOV then
-                        local actualTargetPart = GetActualTargetPart()
-                        Closest = closestInFOV.character[actualTargetPart] or closestInFOV.part
-                        config.SA2_currentTarget = closestInFOV.player
-                        newClosestPlayer = closestInFOV.player
+                        local target = candidates[1]
+                        bestTarget = {player = target.player, part = target.part}
+                        config.SA2_currentTarget = target.player
                     end
                 end
             else
-                config.SA2_currentTarget = nil
-                newClosestPlayer = nil
-            end
-        else
-            for _, target in ipairs(aliveTargets) do
-                if target.onScreen and target.distanceToCenter <= config.SA2_FovRadius and target.distanceToCenter < ShortestDistance then
-                    local actualTargetPart = GetActualTargetPart()
-                    Closest = target.character[actualTargetPart] or target.part
-                    ShortestDistance = target.distanceToCenter
-                    newClosestPlayer = target.player
+                if config.SA2_currentTarget then
+                    for _, target in ipairs(candidates) do
+                        if target.player == config.SA2_currentTarget then
+                            bestTarget = {player = target.player, part = target.part}
+                            break
+                        end
+                    end
                 end
+            end
+        elseif config.targetSeenMode == "All" then
+            local target = candidates[1]
+            if target then
+                bestTarget = {player = target.player, part = target.part}
+                config.SA2_currentTarget = target.player
             end
         end
     end
-    
-    if newClosestPlayer ~= config.SA2_currentTarget then
-        config.SA2_currentTarget = newClosestPlayer
-        updateESPColors()
+    if bestTarget then
+        if config.SA2_currentTarget ~= bestTarget.player then
+            config.SA2_currentTarget = bestTarget.player
+            updateESPColors()
+        end
+        return bestTarget.part
+    else
+        config.SA2_currentTarget = nil
+        return nil
     end
-    
-    return Closest
 end
-
 local ExpectedArguments = {
     FindPartOnRay = {
         ArgCountRequired = 2,
@@ -4802,7 +4657,8 @@ local function calc_chance(chance)
     end
 end
 
-pcall(function()
+
+-- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
 local OldNamecall
 OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     if config.varibz.respawnLock then
@@ -4871,10 +4727,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     
     return OldNamecall(...)
 end))
-end)
 
-
-pcall(function()
 local OldIndex
 OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
     if config.varibz.respawnLock then
@@ -4883,7 +4736,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
     
     if config.SA2_Enabled and config.SA2_Method == "Mouse.Hit" and not checkcaller() and Self == mouse then
         if Index == "Target" or Index == "target" then
-            local HitPart = GetClosestPlayer()
+            local HitPart = cachedTarget
             if HitPart then
                 config.SA2_FovIsTargeted = true
                 return HitPart
@@ -4891,7 +4744,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
                 config.SA2_FovIsTargeted = false
             end
         elseif Index == "Hit" or Index == "hit" then
-            local HitPart = GetClosestPlayer()
+            local HitPart = cachedTarget
             if HitPart then
                 config.SA2_FovIsTargeted = true
                 return HitPart.CFrame
@@ -4903,7 +4756,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
         elseif Index == "Y" or Index == "y" then
             return mouse.Y
         elseif Index == "UnitRay" then
-            local HitPart = GetClosestPlayer()
+            local HitPart = cachedTarget
             if HitPart then
                 config.SA2_FovIsTargeted = true
                 return Ray.new(mouse.Origin, (HitPart.Position - mouse.Origin).Unit)
@@ -4915,7 +4768,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
     
     return OldIndex(Self, Index)
 end))
-end)
+
 ScreenGui.Name = "FOVSys"
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.IgnoreGuiInset = true
@@ -4944,7 +4797,7 @@ RunService.Heartbeat:Connect(function()
         return
     end
     if config.SA2_Enabled and config.SA2_FovVisible and not config.SA2_ThreeSixtyMode then
-        local currentTarget = GetClosestPlayer()
+        local currentTarget = cachedTarget
         
         CircleFrame.Visible = true
         CircleFrame.Position = UDim2.new(0, screenCenter.X, 0, screenCenter.Y)
@@ -10772,6 +10625,34 @@ VisualsTab:Toggle({
                 Image = "rbxassetid://4483362458",
                 BarColor = Color3.fromRGB(255, 0, 0)
             })
+        end
+    end
+})
+
+VisualsTab:Button({
+    Title = "Kill Lighting",
+    Desc = "get rid of lighting it's useless :/",
+    Callback = function()
+        Lighting.Technology = Enum.Technology.Legacy
+        Lighting.FogEnd = 1e9
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.GlobalShadows = false
+        Lighting.ShadowSoftness = 0
+        Lighting.Brightness = math.max(Lighting.Brightness, 2)
+        Lighting.Ambient = Color3.fromRGB(110, 110, 110)
+        Lighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
+        settings().Rendering.QualityLevel = 1
+        for _, v in ipairs(Lighting:GetChildren()) do
+            if v:IsA("BloomEffect")
+            or v:IsA("BlurEffect")
+            or v:IsA("ColorCorrectionEffect")
+            or v:IsA("DepthOfFieldEffect")
+            or v:IsA("SunRaysEffect")
+            or v:IsA("Atmosphere")
+            or v:IsA("Sky") then
+                v:Destroy()
+            end
         end
     end
 })
