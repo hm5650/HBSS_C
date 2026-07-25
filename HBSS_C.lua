@@ -18,7 +18,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().sunc = "_C"
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
 
 local success, err = pcall(function()
 
@@ -57,13 +57,13 @@ local UICorner = Instance.new("UICorner")
 --                        ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
 local urls = {
     --hbss completely random useless & useful modules :]
-    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_Loader" .. getgenv().sunc .. ".lua",
-    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_Function" .. getgenv().sunc .. ".lua",
-    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/SA2_FindTool" .. getgenv().sunc .. ".lua",
-    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().sunc .. ".lua",
-    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/getInfo" .. getgenv().sunc .. ".lua",
-    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().sunc .. ".lua",
-    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().sunc .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().sunc .. ".lua",
+    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -695,7 +695,7 @@ n({
 })
 end)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
-func = loadstring(game:HttpGet(urls.sa2func))()
+local func = loadstring(game:HttpGet(urls.sa2func))()
 local WindUI = loadstring(game:HttpGet(urls.ilikedisui))()
 local SaveUI = loadstring(game:HttpGet(urls.uithesavory))()
 task.wait(0.8) -- I hate http 429 errors...
@@ -14021,7 +14021,7 @@ local function init()
     print("01000111 01110000 01110011 73 69 63 6B 6C 65")
     showurwholeipadress3827103828827273637() -- it doesn't actually...
 end
-function cleanup()
+local function cleanup()
     pcall(function()
         RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
         RunService:UnbindFromRenderStep("ESPUpdater")
@@ -14365,7 +14365,7 @@ Window:OnDestroy(function()
 end)
 task.wait(2.5)
 loadstring(game:HttpGet(urls.hbsshandlecorpses))()
-FindTool = loadstring(game:HttpGet(urls.sa2findtool))()
+loadstring(game:HttpGet(urls.sa2findtool))()
 return {
     config = config,
     lzl = lzl,
