@@ -288,7 +288,7 @@ local function createOption(name, iconId, pos, text, description)
 end
 
 local YesBtn, OldIcon, OldTitle, OldDesc, OldIconContainer = createOption("Yes", 
-    "rbxassetid://132214308111067", 
+    "rbxassetid://7734056878", 
     UDim2.new(0.05, 0, 0.3, 0), 
     "LEGACY VERSION", 
     "Good old days won't be updated\n(Bad injectors work here)"
@@ -365,7 +365,7 @@ YesBtn.MouseButton1Click:Connect(function()
 end)
 
 NoBtn.MouseButton1Click:Connect(function()
-    get("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/HBSS_New.lua")
+    get("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_New_C.lua")
 end)
 
 tw()
