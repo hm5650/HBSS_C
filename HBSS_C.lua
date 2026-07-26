@@ -61,7 +61,6 @@ end
 
 -- spaghetti code yummy :>
 local player = excusemesir.Players.LocalPlayer
-local PlayerGui =excusemesir player:WaitForChild("PlayerGui")
 local localPlayer = excusemesir.Players.LocalPlayer
 local plr = excusemesir.Players.LocalPlayer
 local LocalPlayer = excusemesir.Players.LocalPlayer
@@ -124,6 +123,7 @@ print(lp_info.lp_retroslopscore)
 print(lp_info.lp_isitretroslop)
 settings().Rendering.MeshPartDetailLevel = 1
 settings().Rendering.EagerBulkExecution = true
+
 -- unprofessionalism professionist 🥀
 local lzl = loadstring(gist(urls.lzlzlzlzlzl))()
 local fCfg = {
@@ -2359,12 +2359,6 @@ local config = {
             openGradient = nil,
             windowStroke = nil,
             windowGradient = nil
-        },
-        uiThemeSave = {
-            Folder = "Gravel_Saves/assets",
-            FileName = "SavedUI.json",
-            CurrentTheme = "Dark",
-            CurrentTransparency = 0.15,
         },
         uicolor = {
             lightGreen = Color3.fromRGB(144, 238, 144),
@@ -14178,8 +14172,8 @@ local function cleanup()
         explosionGui:Destroy()
     end)
     pcall(function()
-        RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
-        RunService:UnbindFromRenderStep("ESPUpdater")
+        excusemesir.RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
+        excusemesir.RunService:UnbindFromRenderStep("ESPUpdater")
         stopAutoFarm()
         KillQT()
         config.varibz.aimbot360LoopRunning = false
@@ -14294,7 +14288,7 @@ local function cleanup()
         config.centerLocked = {}
         config.fbenabled = false
         if fullBrightSettings then
-            local lighting = game:GetService("Lighting")
+            local lighting = excusemesir.Lighting
             for property, value in pairs(fullBrightSettings) do
                 lighting[property] = value
             end
@@ -14305,7 +14299,7 @@ local function cleanup()
             config.varibz.ViewConnection:Disconnect()
             config.varibz.ViewConnection = nil
         end
-        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+        excusemesir.Workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
         config.camYOffsetEnabled = false
         if config.camYOffsetConnection then
             config.camYOffsetConnection:Disconnect()
@@ -14400,10 +14394,10 @@ local function cleanup()
             lzl.loaded = {}
             lzl.q = {}
         end
-        for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+        for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
         end
-        for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+        for _, v in pairs(getconnections(excusemesir.LogService.MessageOut)) do
             v:Enable()
         end
         config.varibz.lowpatcher = false
