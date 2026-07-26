@@ -1,9 +1,9 @@
-
+-- Errors be like: "Attempt to index nil" 🥀
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local SoundService = game:GetService("SoundService")
-
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 local gui = Instance.new("ScreenGui")
@@ -18,6 +18,9 @@ local plrs = game:GetService("Players")
 local blurEffect = Instance.new("BlurEffect")
 local plr = plrs.LocalPlayer
 local filesText = Instance.new("TextLabel")
+local memeText = Instance.new("TextLabel")
+local floatOffset = 0
+local floatDirection = 1
 blurEffect.Size = 0
 blurEffect.Parent = game:GetService("Lighting")
 gui.Name = "load"
@@ -37,7 +40,7 @@ center.Parent = bg
 icon.Size = UDim2.fromScale(0.5, 0.5)
 icon.Position = UDim2.fromScale(0.5, 0.10)
 icon.AnchorPoint = Vector2.new(0.5, 0.5)
-icon.Image = "rbxassetid://7734056878"
+icon.Image = "rbxassetid://96858797315175"
 icon.BackgroundTransparency = 1
 icon.ImageTransparency = 1
 icon.ScaleType = Enum.ScaleType.Fit
@@ -84,6 +87,113 @@ filesText.TextColor3 = Color3.fromRGB(180, 180, 180)
 filesText.TextTransparency = 1
 filesText.BackgroundTransparency = 1
 filesText.Parent = center
+memeText.Size = UDim2.fromScale(1, 0.12)
+memeText.Position = UDim2.fromScale(0.5, 0.96)
+memeText.AnchorPoint = Vector2.new(0.5, 0.5)
+memeText.Text = ""
+memeText.Font = Enum.Font.Code
+memeText.TextSize = 12
+memeText.TextColor3 = Color3.fromRGB(120, 120, 120)
+memeText.TextTransparency = 1
+memeText.BackgroundTransparency = 1
+memeText.Parent = center
+
+local rngTitles = {
+    "Gravel.cc", "G.cc", "HBSS.cc", "Gravel-est", "Gravel-er", 
+    "Graaaavel.cc", "Gravelly.cc", "Gravel.com", "Hi! I'm Gravel.cc",
+    "Gravel enjoyer", "GRAVEL.CC >:D", "holy gravel.cc",
+    "GravelGravelGravel.cc", "I like gravel", "Gravel.cheatcheat",
+    "Gravel.yes", "Gravel.no", "Gravel.lua", "GRAVEL GRAVEL.CC",
+    "rock solid ui", "gravel is not sand", "is gravel just sand",
+    "gravel cute :3", "gravel go brr", "Gpssickle's child",
+    "shovel upgrade 1+", "crushed rocks simulator",
+    "the gravel experience", "Gravel :3", "gravel sim",
+    "I'm feelin' gravelly"
+}
+
+local rngMemes = {
+    "did someone say spaghetti",
+    "my code is pasta",
+    "al dente and tangled",
+    "bon appetit",
+    "gaming chair diff fr",
+    "i got the 4000$ chair",
+    "that's why i never miss",
+    "totally not aimbot",
+    "me and the boys",
+    "running the script",
+    "and getting banned",
+    "worth it every time",
+    "the script is free",
+    "and open source",
+    "and has silent aim",
+    "what more could you want",
+    "Error: can't find message",
+    "i'm not having errors actually",
+    "or maybe I am, who knows??",
+    "is that a hack?",
+    "no it's a gaming chair",
+    "my chair has aimbot",
+    "you should get one",
+    "please read the InfoTab",
+    "and credit me if u did a snippet",
+    "i'm not a robot",
+    "i'm a gravel",
+    "robots are metal",
+    "gravel is rock",
+    "big difference",
+    "checkmate atheists",
+    "u ever just",
+    "silent aim someone",
+    "and they go '??? how'",
+    "and then u say ping diff",
+    "well I did that",
+    "i love when the script",
+    "works on the first try",
+    "that's a lie",
+    "it never does",
+    "Gravel has 0 calories 2 burn",
+    "wait this isn't a virus",
+    "i was told it was a virus",
+    "it's open source",
+    "you can literally read it",
+    "is that a toby?",
+    "meow :3 .... MAW >:3",
+    "Gugu Gaga Ultimated Flex Works",
+    "can gravel run doom?",
+    "ipad kid vs ipad, who would win?",
+    "why is there ai slop on my TikTok fyp",
+    "bombastic side eye",
+    "oh shiddings nott gud D:",
+    "what's a brainfuck :s",
+    "Gravel.cc says be gravel",
+    "me wants grabel :(",
+    "life never made lemons...",
+    "01001000 01101001",
+    "roblox is no longer robloz",
+    "GRAVEL-MAN",
+    "IM SKYLER WHITE, YO",
+    "my diet is gravel",
+    "ur definitely using delta cuz idk",
+    "dab me up :>",
+    "how much saves do u has",
+    "O rly",
+    ":3",
+    "lololololooloo",
+    "wth is ts",
+    "hell nah",
+    "OHHHH HELLL NAH",
+    "pop-up goes bye bye",
+    "isn't phonk just noise?",
+    "guys it's a-a, a-a h-hacker!?!?!",
+    "tiki tiki",
+    "Nosirski!",
+    "click here or ur gay",
+    "lolzer-fying",
+    "helohi",
+    "portal above portal below *jumps in*",
+    "ifone 90 proe max"
+}
 
 local fadeIn = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 TweenService:Create(blurEffect, fadeIn, {Size = 24}):Play()
@@ -93,6 +203,85 @@ TweenService:Create(brand, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(loadingText, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(bar, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(filesText, fadeIn, {TextTransparency = 0}):Play()
+TweenService:Create(memeText, fadeIn, {TextTransparency = 0}):Play()
+
+task.spawn(function()
+    while gui and gui.Parent do
+        floatOffset = floatOffset + (0.5 * floatDirection)
+        if floatOffset > 15 then
+            floatDirection = -1
+        elseif floatOffset < -15 then
+            floatDirection = 1
+        end
+        icon.Position = UDim2.fromScale(0.5, 0.10 + (floatOffset / 1000))
+        task.wait(0.02)
+    end
+end)
+
+task.spawn(function()
+    local lastTitleChange = 0
+    while gui and gui.Parent do
+        local elapsed = tick() - lastTitleChange
+        if elapsed > math.random(3, 7) then
+            local newTitle = rngTitles[math.random(1, #rngTitles)]
+            local tween = TweenService:Create(brand, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                TextTransparency = 1
+            })
+            tween:Play()
+            tween.Completed:Wait()
+            brand.Text = newTitle
+            local tween2 = TweenService:Create(brand, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                TextTransparency = 0
+            })
+            tween2:Play()
+            lastTitleChange = tick()
+        end
+        task.wait(0.5)
+    end
+end)
+
+task.spawn(function()
+    local currentText = ""
+    local cursorVisible = true
+    local charIndex = 1
+    local isErasing = false
+    local currentMessage = ""
+    
+    while gui and gui.Parent do
+        if not isErasing and (not currentMessage or currentMessage == "") then
+            currentMessage = rngMemes[math.random(1, #rngMemes)]
+            charIndex = 1
+            currentText = ""
+        end
+        
+        if not isErasing then
+            if charIndex <= #currentMessage then
+                currentText = currentText .. currentMessage:sub(charIndex, charIndex)
+                charIndex = charIndex + 1
+                memeText.Text = currentText .. (cursorVisible and "_" or " ")
+                task.wait(math.random(3, 8) / 100)
+            else
+                task.wait(math.random(15, 35) / 10)
+                isErasing = true
+            end
+        else
+            if #currentText > 0 then
+                currentText = currentText:sub(1, #currentText - 1)
+                memeText.Text = currentText .. (cursorVisible and "_" or " ")
+                task.wait(math.random(2, 5) / 100)
+            else
+                isErasing = false
+                currentMessage = ""
+                task.wait(math.random(5, 15) / 10)
+            end
+        end
+        
+        cursorVisible = not cursorVisible
+        if not isErasing and currentText ~= "" then
+            memeText.Text = currentText .. (cursorVisible and "_" or " ")
+        end
+    end
+end)
 
 task.spawn(function()
     local totalBars = 20
@@ -121,6 +310,8 @@ task.spawn(function()
     local adjustedMaxDuration = maxDuration + extraDelay
     local totalFiles = #saveFiles
     local processedFiles = 0
+    local loadingStates = {"Loading.", "Loading..", "Loading...", "Loading...."}
+    local stateIndex = 1
     
     while elapsed < adjustedMaxDuration do
         task.wait(math.random(10, 30) / 100)
@@ -153,13 +344,9 @@ task.spawn(function()
         local visual = string.rep("|", filled)
         local empty = string.rep(" ", totalBars - filled)
         bar.Text = "[" .. visual .. empty .. "]"
-        if math.random() < 0.3 then
-            loadingText.Text = "Loading."
-        elseif math.random() < 0.6 then
-            loadingText.Text = "Loading.."
-        else
-            loadingText.Text = "Loading..."
-        end
+        
+        stateIndex = (stateIndex % #loadingStates) + 1
+        loadingText.Text = loadingStates[stateIndex]
     end
     filled = totalBars
     bar.Text = "[" .. string.rep("|", totalBars) .. "]"
@@ -181,6 +368,7 @@ task.spawn(function()
     TweenService:Create(loadingText, fadeOut, {TextTransparency = 1}):Play()
     TweenService:Create(bar, fadeOut, {TextTransparency = 1}):Play()
     TweenService:Create(filesText, fadeOut, {TextTransparency = 1}):Play()
+    TweenService:Create(memeText, fadeOut, {TextTransparency = 1}):Play()
 
     task.wait(1)
     gui:Destroy()
