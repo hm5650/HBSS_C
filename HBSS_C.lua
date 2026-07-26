@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 local excusemesir = {
     Players = game:GetService("Players"),
@@ -878,7 +878,6 @@ local config = {
     customFOVEnabled = false,
     customFOVValue = 70,
     fbenabled = false,
-    targetSeenMode = "Switch",
     targetSeenSwitchRate = 0.2,
     lastTargetSwitchTime = 0,
     targetSeenTargets = {},
@@ -2732,7 +2731,6 @@ local function saveConfig(saveName)
             masterTarget = config.masterTarget,
             masterGetTarget = config.masterGetTarget,
             targetSeenSwitchRate = config.targetSeenSwitchRate,
-            targetSeenMode = config.targetSeenMode,
             ignoreForcefield = config.ignoreForcefield,
             autoFarmEnabled = config.autoFarmEnabled,
             autoFarmWallCheck = config.autoFarmWallCheck,
@@ -3595,7 +3593,6 @@ local function loadSave(saveName)
     if cfg.masterGetTarget then config.masterGetTarget = cfg.masterGetTarget end
     if cfg.targetSeenSwitchRate then config.targetSeenSwitchRate = cfg.targetSeenSwitchRate end
     if cfg.targetSeenMode then config.targetSeenMode = cfg.targetSeenMode end
-    if cfg.ignoreForcefield ~= nil then config.ignoreForcefield = cfg.ignoreForcefield end
     if cfg.autoFarmEnabled ~= nil then config.autoFarmEnabled = cfg.autoFarmEnabled end
     if cfg.autoFarmWallCheck ~= nil then config.autoFarmWallCheck = cfg.autoFarmWallCheck end
     if cfg.autoFarmDistance then config.autoFarmDistance = cfg.autoFarmDistance end
@@ -4457,9 +4454,6 @@ local function syncSilentAimWithMaster()
 end
 
 local function GetClosestPlayer()
-    if not config.varibz.sa2this then
-        return cachedTarget or nil
-    end
     if config.varibz.respawnLock or not plr.Character then
         config.SA2_currentTarget = nil
         return nil
@@ -4467,7 +4461,6 @@ local function GetClosestPlayer()
 
     local cam = Camera
     local viewport = cam.ViewportSize
-    local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
     local camPos = cam.CFrame.Position
     local maxRange = config.SA2_TargetRange or 1000
     local fovRadius = config.SA2_FovRadius
@@ -4478,6 +4471,23 @@ local function GetClosestPlayer()
     local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
     local ignoreFF = config.ignoreForcefield
     local localTeam = plr.Team
+
+    local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
+    local maxRangeSq = maxRange * maxRange
+    
+    local bestPart = nil
+    local bestPlayer = nil
+    local bestScreenDist = math.huge
+    local bestWorldDist = math.huge
+    local bestHealth = math.huge
+
+    local candidates = nil
+    local candidateCount = 0
+    local isTargetSeen = (targetMode == "TargetSeen")
+    
+    if isTargetSeen then
+        candidates = {}
+    end
 
     local function isTargetable(player)
         if player == plr then return false end
@@ -4492,163 +4502,164 @@ local function GetClosestPlayer()
             return localTeam == targetTeam
         end
     end
-    local candidates = {}
-    local bestTarget = nil
-    local bestDist = math.huge
-    local bestHealth = math.huge
-    local bestWorldDist = math.huge
-    local bestScreenDist = math.huge
-    local isTargetSeen = (targetMode == "TargetSeen")
 
     for _, player in ipairs(excusemesir.Players:GetPlayers()) do
-        if player == plr then continue end
-        if not isTargetable(player) then continue end
+        if player ~= plr and isTargetable(player) then
+            local char = player.Character
+            if not char then continue end
 
-        local char = player.Character
-        if not char then continue end
+            if ignoreFF and hasForcefield(char) then continue end
 
-        if ignoreFF and hasForcefield(char) then continue end
-
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if not humanoid or humanoid.Health <= 0 then continue end
-        local part = nil
-        if targetPartName then
-            part = char:FindFirstChild(targetPartName)
-        end
-        if not part then
-            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso")
-        end
-        if not part then continue end
-        local targetPos = part.Position
-        local worldDist = (camPos - targetPos).Magnitude
-        if worldDist > maxRange then continue end
-        if wallCheckEnabled then
-            local direction = targetPos - camPos
-            local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
-            local ignore = {plr.Character, char}
-            local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignore)
-            if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
-                continue
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then continue end
+            
+            local head = char:FindFirstChild("Head")
+            local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso")
+            
+            local part = nil
+            if targetPartName then
+                part = char:FindFirstChild(targetPartName)
             end
-        end
-        local screenPos, onScreen
-        if not threeSixty then
-            screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
-            if not onScreen or screenPos.Z <= 0 then continue end
-            local screenVec = Vector2.new(screenPos.X, screenPos.Y)
-            local distPx = (screenVec - center).Magnitude
-            if distPx > fovRadius then continue end
+            if not part then
+                part = head or root
+            end
+            if not part then continue end
+            
+            local targetPos = part.Position
+            
+            local diffX = targetPos.X - camPos.X
+            local diffY = targetPos.Y - camPos.Y
+            local diffZ = targetPos.Z - camPos.Z
+            local worldDistSq = diffX * diffX + diffY * diffY + diffZ * diffZ
+            
+            if worldDistSq > maxRangeSq then continue end
+            
+            if wallCheckEnabled then
+                local direction = Vector3.new(diffX, diffY, diffZ)
+                local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
+                local ignore = {plr.Character, char}
+                local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignore)
+                if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
+                    continue
+                end
+            end
+            
+            local worldDist = math.sqrt(worldDistSq)
             local health = humanoid.Health
-            if isTargetSeen then
-                table.insert(candidates, {
-                    player = player,
-                    part = part,
-                    humanoid = humanoid,
-                    health = health,
-                    screenDist = distPx,
-                    worldDist = worldDist,
-                    screenVec = screenVec,
-                    inFOV = true
-                })
-            else
-                if targetMode == "Closest" then
+            
+            if not threeSixty then
+                local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
+                if not onScreen or screenPos.Z <= 0 then continue end
+                
+                local distX = screenPos.X - center.X
+                local distY = screenPos.Y - center.Y
+                local distPx = math.sqrt(distX * distX + distY * distY)
+                
+                if distPx > fovRadius then continue end
+                
+                if isTargetSeen then
+                    candidateCount = candidateCount + 1
+                    candidates[candidateCount] = {
+                        player = player,
+                        part = part,
+                        health = health,
+                        screenDist = distPx,
+                        worldDist = worldDist
+                    }
+                elseif targetMode == "Closest" then
                     if distPx < bestScreenDist then
                         bestScreenDist = distPx
-                        bestTarget = {player = player, part = part}
+                        bestPart = part
+                        bestPlayer = player
                     end
                 elseif targetMode == "Lowest Health" then
                     if health < bestHealth then
                         bestHealth = health
-                        bestTarget = {player = player, part = part}
+                        bestPart = part
+                        bestPlayer = player
                     end
+                end
+            else
+                if isTargetSeen then
+                    candidateCount = candidateCount + 1
+                    candidates[candidateCount] = {
+                        player = player,
+                        part = part,
+                        health = health,
+                        screenDist = 0,
+                        worldDist = worldDist
+                    }
+                elseif targetMode == "Closest" then
+                    if worldDist < bestWorldDist then
+                        bestWorldDist = worldDist
+                        bestPart = part
+                        bestPlayer = player
+                    end
+                elseif targetMode == "Lowest Health" then
+                    if health < bestHealth then
+                        bestHealth = health
+                        bestPart = part
+                        bestPlayer = player
+                    end
+                end
+            end
+        end
+    end
+
+    if isTargetSeen and candidateCount > 0 then
+        local currentTime = tick()
+        if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+            config.lastTargetSwitchTime = currentTime
+            
+            if not config.SA2_currentTarget then
+                bestPlayer = candidates[1].player
+                bestPart = candidates[1].part
+            else
+                local currentIdx = nil
+                for i = 1, candidateCount do
+                    if candidates[i].player == config.SA2_currentTarget then
+                        currentIdx = i
+                        break
+                    end
+                end
+                
+                if currentIdx then
+                    local nextIdx = (currentIdx % candidateCount) + 1
+                    bestPlayer = candidates[nextIdx].player
+                    bestPart = candidates[nextIdx].part
+                else
+                    bestPlayer = candidates[1].player
+                    bestPart = candidates[1].part
                 end
             end
         else
-            local health = humanoid.Health
-            if isTargetSeen then
-                table.insert(candidates, {
-                    player = player,
-                    part = part,
-                    humanoid = humanoid,
-                    health = health,
-                    screenDist = 0,
-                    worldDist = worldDist,
-                    screenVec = Vector2.new(0, 0),
-                    inFOV = true
-                })
-            else
-                if targetMode == "Closest" then
-                    if worldDist < bestWorldDist then
-                        bestWorldDist = worldDist
-                        bestTarget = {player = player, part = part}
-                    end
-                elseif targetMode == "Lowest Health" then
-                    if health < bestHealth then
-                        bestHealth = health
-                        bestTarget = {player = player, part = part}
+            if config.SA2_currentTarget then
+                for i = 1, candidateCount do
+                    if candidates[i].player == config.SA2_currentTarget then
+                        bestPlayer = candidates[i].player
+                        bestPart = candidates[i].part
+                        break
                     end
                 end
+            end
+            if not bestPlayer and candidateCount > 0 then
+                bestPlayer = candidates[1].player
+                bestPart = candidates[1].part
             end
         end
     end
-    if isTargetSeen and #candidates > 0 then
-        table.sort(candidates, function(a, b)
-            return a.worldDist < b.worldDist
-        end)
-        if config.targetSeenMode == "Switch" then
-            local currentTime = tick()
-            if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                config.lastTargetSwitchTime = currentTime
-                
-                if not config.SA2_currentTarget then
-                    local target = candidates[1]
-                    bestTarget = {player = target.player, part = target.part}
-                    config.SA2_currentTarget = target.player
-                else
-                    local currentIndex = nil
-                    for i, target in ipairs(candidates) do
-                        if target.player == config.SA2_currentTarget then
-                            currentIndex = i
-                            break
-                        end
-                    end
-                    
-                    if currentIndex then
-                        local nextIndex = (currentIndex % #candidates) + 1
-                        local target = candidates[nextIndex]
-                        bestTarget = {player = target.player, part = target.part}
-                        config.SA2_currentTarget = target.player
-                    else
-                        local target = candidates[1]
-                        bestTarget = {player = target.player, part = target.part}
-                        config.SA2_currentTarget = target.player
-                    end
-                end
-            else
-                if config.SA2_currentTarget then
-                    for _, target in ipairs(candidates) do
-                        if target.player == config.SA2_currentTarget then
-                            bestTarget = {player = target.player, part = target.part}
-                            break
-                        end
-                    end
-                end
-            end
-        elseif config.targetSeenMode == "All" then
-            local target = candidates[1]
-            if target then
-                bestTarget = {player = target.player, part = target.part}
-                config.SA2_currentTarget = target.player
-            end
-        end
-    end
-    if bestTarget then
-        if config.SA2_currentTarget ~= bestTarget.player then
-            config.SA2_currentTarget = bestTarget.player
+
+    if bestPlayer then
+        if config.SA2_currentTarget ~= bestPlayer then
+            config.SA2_currentTarget = bestPlayer
             updateESPColors()
         end
-        return bestTarget.part
+        return bestPart
     else
+        if not isTargetSeen then
+            candidates = nil
+            candidateCount = 0
+        end
         config.SA2_currentTarget = nil
         return nil
     end
@@ -5978,43 +5989,36 @@ local function findClosestEnemy()
     if #potentialTargets > 0 then
         if mode == "TargetSeen" then
             if #targetsInView > 0 then
-                if config.targetSeenMode == "Switch" then
-                    local currentTime = tick()
-                    if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                        config.lastTargetSwitchTime = currentTime
+                local currentTime = tick()
+                if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+                    config.lastTargetSwitchTime = currentTime
+                    
+                    if not config.currentAntiAimTarget then
+                        table.sort(targetsInView, function(a, b)
+                            return a.distance < b.distance
+                        end)
+                        best = targetsInView[1].target
+                    else
+                        local currentIndex = nil
+                        for i, target in ipairs(targetsInView) do
+                            if target.target == config.currentAntiAimTarget then
+                                currentIndex = i
+                                break
+                            end
+                        end
                         
-                        if not config.currentAntiAimTarget then
+                        if currentIndex then
+                            local nextIndex = (currentIndex % #targetsInView) + 1
+                            best = targetsInView[nextIndex].target
+                        else
                             table.sort(targetsInView, function(a, b)
                                 return a.distance < b.distance
                             end)
                             best = targetsInView[1].target
-                        else
-                            local currentIndex = nil
-                            for i, target in ipairs(targetsInView) do
-                                if target.target == config.currentAntiAimTarget then
-                                    currentIndex = i
-                                    break
-                                end
-                            end
-                            
-                            if currentIndex then
-                                local nextIndex = (currentIndex % #targetsInView) + 1
-                                best = targetsInView[nextIndex].target
-                            else
-                                table.sort(targetsInView, function(a, b)
-                                    return a.distance < b.distance
-                                end)
-                                best = targetsInView[1].target
-                            end
                         end
-                    else
-                        best = config.currentAntiAimTarget
                     end
                 else
-                    table.sort(targetsInView, function(a, b)
-                        return a.distance < b.distance
-                    end)
-                    best = targetsInView[1].target
+                    best = config.currentAntiAimTarget
                 end
             else
                 return nil
@@ -7523,50 +7527,49 @@ local function aimbotUpdate()
             if #targetsInFOV > 0 then
                 config.targetSeenTargets = targetsInFOV
                 
-                if config.targetSeenMode == "Switch" then
-                    local currentTime = tick()
-                    if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                        config.lastTargetSwitchTime = currentTime
+                local currentTime = tick()
+                if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+                    config.lastTargetSwitchTime = currentTime
+                    
+                    if not config.aimbotCurrentTarget then
+                        table.sort(targetsInFOV, function(a, b)
+                            return a.worldDist < b.worldDist
+                        end)
+                        bestTarget = targetsInFOV[1]
+                    else
+                        local currentIndex = nil
+                        for i, target in ipairs(targetsInFOV) do
+                            if target.target == config.aimbotCurrentTarget then
+                                currentIndex = i
+                                break
+                            end
+                        end
                         
-                        if not config.aimbotCurrentTarget then
+                        if currentIndex then
+                            local nextIndex = (currentIndex % #targetsInFOV) + 1
+                            bestTarget = targetsInFOV[nextIndex]
+                        else
                             table.sort(targetsInFOV, function(a, b)
                                 return a.worldDist < b.worldDist
                             end)
                             bestTarget = targetsInFOV[1]
-                        else
-                            local currentIndex = nil
-                            for i, target in ipairs(targetsInFOV) do
-                                if target.target == config.aimbotCurrentTarget then
-                                    currentIndex = i
-                                    break
-                                end
-                            end
-                            
-                            if currentIndex then
-                                local nextIndex = (currentIndex % #targetsInFOV) + 1
-                                bestTarget = targetsInFOV[nextIndex]
-                            else
-                                table.sort(targetsInFOV, function(a, b)
-                                    return a.worldDist < b.worldDist
-                                end)
-                                bestTarget = targetsInFOV[1]
-                            end
                         end
-                    else
-                        if config.aimbotCurrentTarget then
-                            for _, target in ipairs(targetsInFOV) do
-                                if target.target == config.aimbotCurrentTarget then
-                                    bestTarget = target
-                                    break
-                                end
+                    end
+                else
+                    if config.aimbotCurrentTarget then
+                        for _, target in ipairs(targetsInFOV) do
+                            if target.target == config.aimbotCurrentTarget then
+                                bestTarget = target
+                                break
                             end
                         end
                     end
-                elseif config.targetSeenMode == "All" then
-                    table.sort(targetsInFOV, function(a, b)
-                        return a.worldDist < b.worldDist
-                    end)
-                    bestTarget = targetsInFOV[1]
+                    if not bestTarget and #targetsInFOV > 0 then
+                        table.sort(targetsInFOV, function(a, b)
+                            return a.worldDist < b.worldDist
+                        end)
+                        bestTarget = targetsInFOV[1]
+                    end
                 end
             end
         elseif targetingMode == "Lowest Health" then
@@ -7610,7 +7613,6 @@ local function aimbotUpdate()
         end
     end
 end
-
 local function aimbotfov()
     if config.aimbotFOVRing and config.aimbotFOVRing.ScreenGui and config.aimbotFOVRing.ScreenGui.Parent then
         config.aimbotFOVRing.ScreenGui:Destroy()
@@ -8805,52 +8807,36 @@ local function onRenderStep()
         config.targetSeenTargets = targetsInFOV
         
         if #targetsInFOV > 0 then
-            if config.targetSeenMode == "Switch" then
-                local currentTime = tick()
-                if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                    config.lastTargetSwitchTime = currentTime
-                    if not config.currentTarget then
+            local currentTime = tick()
+            if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+                config.lastTargetSwitchTime = currentTime
+                if not config.currentTarget then
+                    local randomIndex = math.random(1, #targetsInFOV)
+                    best = targetsInFOV[randomIndex]
+                else
+                    local currentIndex = nil
+                    for i, target in ipairs(targetsInFOV) do
+                        if target.player == config.currentTarget then
+                            currentIndex = i
+                            break
+                        end
+                    end
+                    
+                    if currentIndex then
+                        local nextIndex = (currentIndex % #targetsInFOV) + 1
+                        best = targetsInFOV[nextIndex]
+                    else
                         local randomIndex = math.random(1, #targetsInFOV)
                         best = targetsInFOV[randomIndex]
-                    else
-                        local currentIndex = nil
-                        for i, target in ipairs(targetsInFOV) do
-                            if target.player == config.currentTarget then
-                                currentIndex = i
-                                break
-                            end
-                        end
-                        
-                        if currentIndex then
-                            local nextIndex = (currentIndex % #targetsInFOV) + 1
-                            best = targetsInFOV[nextIndex]
-                        else
-                            local randomIndex = math.random(1, #targetsInFOV)
-                            best = targetsInFOV[randomIndex]
-                        end
-                    end
-                else
-                    if config.currentTarget then
-                        for _, target in ipairs(targetsInFOV) do
-                            if target.player == config.currentTarget then
-                                best = target
-                                break
-                            end
-                        end
                     end
                 end
-            elseif config.targetSeenMode == "All" then
-                for _, target in ipairs(targetsInFOV) do
-                    if target.player ~= config.currentTarget then
-                        local diameter = calculateDiameter(target.worldDist, radiusPx, camera)
-                        applySizeToPart(target.player, diameter, target.part)
-                    end
-                end
-                local closestDist = math.huge
-                for _, target in ipairs(targetsInFOV) do
-                    if target.worldDist < closestDist then
-                        closestDist = target.worldDist
-                        best = target
+            else
+                if config.currentTarget then
+                    for _, target in ipairs(targetsInFOV) do
+                        if target.player == config.currentTarget then
+                            best = target
+                            break
+                        end
                     end
                 end
             end
@@ -8896,7 +8882,7 @@ local function onRenderStep()
         
         if best and pl == best.player then
             shouldRemove = false
-        elseif config.silentGetTarget == "TargetSeen" and config.targetSeenMode == "All" then
+        elseif config.silentGetTarget == "TargetSeen" then
             local stillInFOV = false
             for _, target in ipairs(config.targetSeenTargets or {}) do
                 if target.player == pl then
@@ -9006,7 +8992,7 @@ local function onRenderStep()
         end
     end
     
-    if config.silentGetTarget == "TargetSeen" and config.targetSeenMode == "All" then
+    if config.silentGetTarget == "TargetSeen" then
         for _, target in ipairs(config.targetSeenTargets or {}) do
             if target.player ~= (best and best.player) and plralive(target.player) then
                 local diameter = calculateDiameter(target.worldDist, radiusPx, camera)
@@ -9016,7 +9002,6 @@ local function onRenderStep()
         end
     end
 end
-
 local function getClosestVictim()
     if not Options.TargetPart.Value then return end
     local Closest
