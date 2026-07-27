@@ -10708,15 +10708,15 @@ VisualsTab:Button({
     Title = "Kill Lighting",
     Desc = "get rid of lighting it's useless :/",
     Callback = function()
-        excusemesirLighting.Technology = Enum.Technology.Legacy
-        excusemesirLighting.FogEnd = 1e9
-        excusemesirLighting.EnvironmentDiffuseScale = 0
-        excusemesirLighting.EnvironmentSpecularScale = 0
-        excusemesirLighting.GlobalShadows = false
-        excusemesirLighting.ShadowSoftness = 0
-        excusemesirLighting.Brightness = math.max(Lighting.Brightness, 2)
-        excusemesirLighting.Ambient = Color3.fromRGB(110, 110, 110)
-        excusemesirLighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
+        excusemesir.Lighting.Technology = Enum.Technology.Legacy
+        excusemesir.Lighting.FogEnd = 1e9
+        excusemesir.Lighting.EnvironmentDiffuseScale = 0
+        excusemesir.Lighting.EnvironmentSpecularScale = 0
+        excusemesir.Lighting.GlobalShadows = false
+        excusemesir.Lighting.ShadowSoftness = 0
+        excusemesir.Lighting.Brightness = math.max(Lighting.Brightness, 2)
+        excusemesir.Lighting.Ambient = Color3.fromRGB(110, 110, 110)
+        excusemesir.Lighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
         settings().Rendering.QualityLevel = 1
         for _, v in ipairs(Lighting:GetChildren()) do
             if v:IsA("BloomEffect")
