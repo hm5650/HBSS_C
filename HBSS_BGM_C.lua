@@ -18,14 +18,16 @@ local BGM = {
     CustomMusic = {},
     _sound = nil,
     _isPlaying = false,
+    _n = nil,
 }
-function BGM:init(windUI, config)
+function BGM:init(windUI, config, notificationFunc)
     if not windUI then
         warn("BGM: WindUI reference required!")
         return false
     end
     self._windUI = windUI
     self._config = config
+    self._n = notificationFunc or function() end
     self:autoLoad()
     self:setupSound()
     self._initialized = true
@@ -198,33 +200,98 @@ function BGM:save()
         return game:GetService("HttpService"):JSONEncode(dataToSave)
     end)
     if not success then
+        if self._n then
+            self._n({
+                Title = "BGM Error",
+                Content = "Failed to encode BGM data!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
         return false
     end
     local path = self:getFilePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    return success
+    if success then
+        if self._n then
+            self._n({
+                Title = "BGM Saved!",
+                Content = "BGM settings saved successfully!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 255, 0)
+            })
+        end
+        return true
+    else
+        if self._n then
+            self._n({
+                Title = "BGM Error",
+                Content = "Failed to save BGM settings!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
+        return false
+    end
 end
 function BGM:load()
     if not self._initialized then
+        warn("BGM: Module not initialized! Call :init() first.")
         return false
     end
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
+        if self._n then
+            self._n({
+                Title = "BGM Error",
+                Content = "No saved BGM data found!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
         return false
     end
     local success, data = pcall(function()
         return readfile(path)
     end)
     if not success or not data then
+        if self._n then
+            self._n({
+                Title = "BGM Error",
+                Content = "Failed to read BGM data!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
         return false
     end
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
     if not success or not decoded then
+        if self._n then
+            self._n({
+                Title = "BGM Error",
+                Content = "Failed to parse BGM data!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
         return false
     end
     if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
@@ -234,6 +301,16 @@ function BGM:load()
     if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
     if decoded.customMusic then self.CustomMusic = decoded.customMusic end
     self:updateSound()
+    if self._n then
+        self._n({
+            Title = "BGM Loaded!",
+            Content = "BGM settings loaded successfully!",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
+        })
+    end
     return true
 end
 function BGM:autoLoad()
@@ -281,7 +358,27 @@ function BGM:delete()
         pcall(function()
             delfile(path)
         end)
+        if self._n then
+            self._n({
+                Title = "BGM Deleted",
+                Content = "BGM save file deleted!",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 255, 0)
+            })
+        end
         return true
+    end
+    if self._n then
+        self._n({
+            Title = "BGM Error",
+            Content = "No BGM save file found!",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
+        })
     end
     return false
 end
