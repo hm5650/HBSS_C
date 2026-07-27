@@ -1,266 +1,246 @@
 local BGM = {
     Folder = "Gravel_Saves/assets",
     FileName = "SavedBGM.json",
+    CurrentSoundId = nil,
+    CurrentTitle = "None",
+    CurrentVolume = 1,
+    CurrentPitch = 1,
+    IsPlaying = false,
+    SoundInstance = nil,
+    Presets = {
+        { id = "128586477335903", title = "PeanutButter" },
+        { id = "93162865190777", title = "KwikFlip" }
+    },
+    CustomSounds = {},
     _initialized = false,
     _windUI = nil,
     _config = nil,
-    _notifFunc = nil,
-    DefaultMusic = {
-        { id = "128586477335903", title = "Peanut Butter" },
-        { id = "93162865190777", title = "KwikFlip" }
-    },
-    CurrentMusic = {
-        enabled = false,
-        volume = 1,
-        pitch = 1,
-        currentId = "128586477335903",
-        currentTitle = "Peanut Butter"
-    },
-    CustomMusic = {},
-    _sound = nil,
-    _isPlaying = false,
+    _currentDropDownValue = nil,
+    _soundConnection = nil
 }
-function BGM:init(windUI, config, notifFunc)
-    if not windUI then return false end
+function BGM:init(windUI, config)
+    if not windUI then
+        warn("BGM: WindUI reference required!")
+        return false
+    end
     self._windUI = windUI
     self._config = config
-    self._notifFunc = notifFunc or function() end
-    self:autoLoad()
-    self._sound = Instance.new("Sound")
-    self._sound.Name = "BGMPlayer"
-    self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
-    self._sound.Volume = self.CurrentMusic.volume
-    self._sound.Looped = true
-    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
-    self._sound.Parent = SoundService
-    if self.CurrentMusic.enabled then
-        self:play()
-    end
     self._initialized = true
+    self:ensureFolder()
+    self:load()
     return true
-end
-function BGM:play()
-    if not self._sound then return end
-    self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
-    self._sound.Volume = self.CurrentMusic.volume
-    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
-    pcall(function() self._sound:Play() end)
-    self._isPlaying = true
-end
-function BGM:stop()
-    if self._sound then
-        pcall(function() self._sound:Stop() end)
-        self._isPlaying = false
-    end
-end
-function BGM:updateSound()
-    if not self._sound then
-        self:setupSound()
-        return
-    end
-    self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
-    self._sound.Volume = self.CurrentMusic.volume
-    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
-    if self.CurrentMusic.enabled then
-        self:play()
-    else
-        self:stop()
-    end
-end
-function BGM:getAllMusic()
-    local all = {}
-    for _, m in ipairs(self.DefaultMusic) do table.insert(all, m) end
-    for _, m in ipairs(self.CustomMusic) do table.insert(all, m) end
-    return all
-end
-function BGM:getMusicById(id)
-    for _, m in ipairs(self:getAllMusic()) do
-        if m.id == id then return m end
-    end
-    return nil
-end
-function BGM:getCurrentTitle()
-    local m = self:getMusicById(self.CurrentMusic.currentId)
-    return m and m.title or "Unknown"
-end
-function BGM:addCustomMusic(id, title)
-    if not id or id == "" then return false, "Enter a music ID!" end
-    if not title or title == "" then return false, "Enter a title!" end
-    for _, m in ipairs(self:getAllMusic()) do
-        if m.id == id then return false, "ID already exists!" end
-    end
-    table.insert(self.CustomMusic, { id = id, title = title })
-    self:save()
-    return true, "Added '" .. title .. "'!"
-end
-function BGM:deleteCustomMusic(id)
-    for i, m in ipairs(self.CustomMusic) do
-        if m.id == id then
-            table.remove(self.CustomMusic, i)
-            if self.CurrentMusic.currentId == id then
-                self.CurrentMusic.currentId = self.DefaultMusic[1].id
-                self.CurrentMusic.currentTitle = self.DefaultMusic[1].title
-                self:updateSound()
-            end
-            self:save()
-            return true, "Deleted '" .. m.title .. "'!"
-        end
-    end
-    return false, "Music not found!"
-end
-function BGM:setCurrentMusic(id)
-    local m = self:getMusicById(id)
-    if not m then return false, "Music not found!" end
-    self.CurrentMusic.currentId = id
-    self.CurrentMusic.currentTitle = m.title
-    self:updateSound()
-    self:save()
-    return true, "Switched to '" .. m.title .. "'"
-end
-function BGM:setEnabled(enabled)
-    self.CurrentMusic.enabled = enabled
-    if enabled then self:updateSound() else self:stop() end
-    self:save()
-end
-function BGM:setVolume(vol)
-    self.CurrentMusic.volume = math.clamp(vol, 0, 5)
-    if self._sound then self._sound.Volume = self.CurrentMusic.volume end
-    self:save()
-end
-function BGM:setPitch(pitch)
-    self.CurrentMusic.pitch = math.clamp(pitch, 0.5, 3)
-    if self._sound then self._sound.PlaybackSpeed = self.CurrentMusic.pitch end
-    self:save()
 end
 function BGM:ensureFolder()
     if not isfolder(self.Folder) then
-        pcall(function() makefolder(self.Folder) end)
+        pcall(function()
+            makefolder(self.Folder)
+        end)
     end
 end
 function BGM:getFilePath()
     return self.Folder .. "/" .. self.FileName
 end
-function BGM:save()
-    if not self._initialized then
-        warn("BGM: Not initialized!")
-        return false
+function BGM:getAllSounds()
+    local all = {}
+    for _, preset in ipairs(self.Presets) do
+        table.insert(all, { id = preset.id, title = preset.title, isPreset = true })
     end
+    for _, custom in ipairs(self.CustomSounds) do
+        table.insert(all, { id = custom.id, title = custom.title, isPreset = false })
+    end
+    return all
+end
+function BGM:getSoundById(id)
+    for _, preset in ipairs(self.Presets) do
+        if preset.id == id then
+            return { id = preset.id, title = preset.title, isPreset = true }
+        end
+    end
+    for _, custom in ipairs(self.CustomSounds) do
+        if custom.id == id then
+            return { id = custom.id, title = custom.title, isPreset = false }
+        end
+    end
+    return nil
+end
+function BGM:getDropdownValues()
+    local values = {}
+    for _, sound in ipairs(self:getAllSounds()) do
+        table.insert(values, sound.title .. " (" .. sound.id .. ")")
+    end
+    if #values == 0 then
+        table.insert(values, "None")
+    end
+    return values
+end
+function BGM:addCustomSound(id, title)
+    if not id or id == "" then
+        return false, "ID cannot be empty!"
+    end
+    if not title or title == "" then
+        title = "Custom_" .. id
+    end
+    for _, sound in ipairs(self:getAllSounds()) do
+        if sound.id == id then
+            return false, "Sound ID already exists!"
+        end
+    end
+    table.insert(self.CustomSounds, { id = id, title = title })
+    self:save()
+    return true, "Added custom sound: " .. title
+end
+function BGM:deleteCustomSound(id)
+    for i, sound in ipairs(self.CustomSounds) do
+        if sound.id == id then
+            table.remove(self.CustomSounds, i)
+            if self.CurrentSoundId == id then
+                self:stop()
+                self.CurrentSoundId = nil
+                self.CurrentTitle = "None"
+            end
+            self:save()
+            return true, "Deleted: " .. sound.title
+        end
+    end
+    return false, "Sound not found or is a preset!"
+end
+function BGM:play(id, volume, pitch)
+    self:stop()
+    local soundData = self:getSoundById(id)
+    if not soundData then
+        return false, "Sound not found!"
+    end
+    volume = volume or self.CurrentVolume or 1
+    pitch = pitch or self.CurrentPitch or 1
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. id
+    sound.Volume = volume
+    sound.PlaybackSpeed = pitch
+    sound.Looped = true
+    sound.Parent = game:GetService("SoundService")
+    sound:Play()
+    self.SoundInstance = sound
+    self.CurrentSoundId = id
+    self.CurrentTitle = soundData.title
+    self.CurrentVolume = volume
+    self.CurrentPitch = pitch
+    self.IsPlaying = true
+    if self._soundConnection then
+        self._soundConnection:Disconnect()
+    end
+    self._soundConnection = sound.Stopped:Connect(function()
+        if self.SoundInstance and self.SoundInstance == sound then
+            self.SoundInstance = nil
+            self.IsPlaying = false
+        end
+    end)
+    self:save()
+    return true, "Now playing: " .. soundData.title
+end
+function BGM:stop()
+    if self.SoundInstance then
+        self.SoundInstance:Stop()
+        self.SoundInstance:Destroy()
+        self.SoundInstance = nil
+    end
+    if self._soundConnection then
+        self._soundConnection:Disconnect()
+        self._soundConnection = nil
+    end
+    self.IsPlaying = false
+end
+function BGM:toggle(id, volume, pitch)
+    if self.IsPlaying and self.CurrentSoundId == id then
+        self:stop()
+        self:save()
+        return false, "Stopped"
+    else
+        return self:play(id, volume, pitch)
+    end
+end
+function BGM:setVolume(volume)
+    volume = math.clamp(volume, 0, 5)
+    self.CurrentVolume = volume
+    if self.SoundInstance then
+        self.SoundInstance.Volume = volume
+    end
+    self:save()
+    return true
+end
+function BGM:setPitch(pitch)
+    pitch = math.clamp(pitch, 0.1, 3)
+    self.CurrentPitch = pitch
+    if self.SoundInstance then
+        self.SoundInstance.PlaybackSpeed = pitch
+    end
+    self:save()
+    return true
+end
+function BGM:save()
     self:ensureFolder()
-    local data = {
-        enabled = self.CurrentMusic.enabled,
-        volume = self.CurrentMusic.volume,
-        pitch = self.CurrentMusic.pitch,
-        currentId = self.CurrentMusic.currentId,
-        currentTitle = self.CurrentMusic.currentTitle,
-        customMusic = self.CustomMusic,
+    local dataToSave = {
+        currentSoundId = self.CurrentSoundId,
+        currentTitle = self.CurrentTitle,
+        currentVolume = self.CurrentVolume,
+        currentPitch = self.CurrentPitch,
+        isPlaying = self.IsPlaying,
+        customSounds = self.CustomSounds,
         savedAt = os.time()
     }
     local success, encoded = pcall(function()
-        return game:GetService("HttpService"):JSONEncode(data)
+        return game:GetService("HttpService"):JSONEncode(dataToSave)
     end)
     if not success then
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Save Error", Content = "Failed to encode!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(255,0,0), Length = 2 })
-        end
         return false
     end
     local path = self:getFilePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    if success then
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Saved!", Content = "BGM settings saved!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(0,255,0), Length = 2 })
-        end
-        return true
-    else
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Save Error", Content = "Failed to save!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(255,0,0), Length = 2 })
-        end
-        return false
-    end
+    return success
 end
 function BGM:load()
-    if not self._initialized then
-        warn("BGM: Not initialized!")
-        return false
-    end
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Load Error", Content = "No saved data found!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(255,0,0), Length = 2 })
-        end
         return false
     end
-    local success, data = pcall(function() return readfile(path) end)
+    local success, data = pcall(function()
+        return readfile(path)
+    end)
     if not success or not data then
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Load Error", Content = "Failed to read file!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(255,0,0), Length = 2 })
-        end
         return false
     end
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
     if not success or not decoded then
-        if self._notifFunc then
-            self._notifFunc({ Title = "BGM Load Error", Content = "Failed to parse data!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(255,0,0), Length = 2 })
-        end
         return false
     end
     pcall(function()
-        if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
-        if decoded.volume ~= nil then self.CurrentMusic.volume = decoded.volume end
-        if decoded.pitch ~= nil then self.CurrentMusic.pitch = decoded.pitch end
-        if decoded.currentId then self.CurrentMusic.currentId = decoded.currentId end
-        if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
-        if decoded.customMusic then self.CustomMusic = decoded.customMusic end
-        self:updateSound()
+        if decoded.customSounds then
+            self.CustomSounds = decoded.customSounds
+        end
+        self.CurrentSoundId = decoded.currentSoundId
+        self.CurrentTitle = decoded.currentTitle or "None"
+        self.CurrentVolume = decoded.currentVolume or 1
+        self.CurrentPitch = decoded.currentPitch or 1
+        self.IsPlaying = decoded.isPlaying or false
+        if self.IsPlaying and self.CurrentSoundId then
+            self:play(self.CurrentSoundId, self.CurrentVolume, self.CurrentPitch)
+        end
     end)
-    if self._notifFunc then
-        self._notifFunc({ Title = "BGM Loaded!", Content = "BGM settings loaded!", Image = "rbxassetid://4483362458", BarColor = Color3.fromRGB(0,170,255), Length = 2 })
-    end
-    return true
-end
-function BGM:autoLoad()
-    if not self._initialized then return false end
-    self:ensureFolder()
-    local path = self:getFilePath()
-    if not isfile(path) then return false end
-    local success, data = pcall(function() return readfile(path) end)
-    if not success or not data then return false end
-    local success, decoded = pcall(function()
-        return game:GetService("HttpService"):JSONDecode(data)
-    end)
-    if not success or not decoded then return false end
-    if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
-    if decoded.volume ~= nil then self.CurrentMusic.volume = decoded.volume end
-    if decoded.pitch ~= nil then self.CurrentMusic.pitch = decoded.pitch end
-    if decoded.currentId then self.CurrentMusic.currentId = decoded.currentId end
-    if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
-    if decoded.customMusic then self.CustomMusic = decoded.customMusic end
     return true
 end
 function BGM:reset()
-    self.CurrentMusic.enabled = false
-    self.CurrentMusic.volume = 1
-    self.CurrentMusic.pitch = 1
-    self.CurrentMusic.currentId = self.DefaultMusic[1].id
-    self.CurrentMusic.currentTitle = self.DefaultMusic[1].title
-    self.CustomMusic = {}
-    self:updateSound()
+    self:stop()
+    self.CustomSounds = {}
+    self.CurrentSoundId = nil
+    self.CurrentTitle = "None"
+    self.CurrentVolume = 1
+    self.CurrentPitch = 1
+    self.IsPlaying = false
     self:save()
     return true
-end
-function BGM:cleanup()
-    if self._sound then
-        pcall(function()
-            self._sound:Stop()
-            self._sound:Destroy()
-        end)
-        self._sound = nil
-    end
-    self._isPlaying = false
 end
 return BGM
