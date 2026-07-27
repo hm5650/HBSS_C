@@ -1,7 +1,8 @@
--- HBSS_BMG.lua
+-- BLLEHHH >:P
 local BMG = {
     Folder = "Gravel_Saves/assets",
     FileName = "SavedBMG.json",
+    CustomIdsFile = "StoredAssetIDs.json",
     CurrentMusicId = "128586477335903",
     CurrentTitle = "PeanutButter",
     Volume = 1,
@@ -30,6 +31,7 @@ function BMG:init(windUI, config)
     if config and config.BMG then
         self.Folder = config.BMG.Folder or self.Folder
         self.FileName = config.BMG.FileName or self.FileName
+        self.CustomIdsFile = config.BMG.CustomIdsFile or self.CustomIdsFile
         self.CurrentMusicId = config.BMG.CurrentMusicId or self.CurrentMusicId
         self.CurrentTitle = config.BMG.CurrentTitle or self.CurrentTitle
         self.Volume = config.BMG.Volume or self.Volume
@@ -52,6 +54,10 @@ end
 
 function BMG:getFilePath()
     return self.Folder .. "/" .. self.FileName
+end
+
+function BMG:getCustomIdsPath()
+    return self.Folder .. "/" .. self.CustomIdsFile
 end
 
 function BMG:getAllMusicIds()
@@ -114,6 +120,7 @@ function BMG:addCustomMusic(id, title)
     end
     
     table.insert(self.CustomMusicIds, { id = id, title = title })
+    self:saveCustomIds()
     return true, "Added " .. title
 end
 
@@ -136,6 +143,7 @@ function BMG:deleteMusic(id)
                 self.CurrentTitle = self.PresetMusicIds[1].title
                 self:playCurrent()
             end
+            self:saveCustomIds()
             return true, "Deleted music"
         end
     end
@@ -236,6 +244,64 @@ function BMG:togglePlay(state)
     return self.IsPlaying
 end
 
+function BMG:saveCustomIds()
+    self:ensureFolder()
+    
+    local dataToSave = {
+        customMusicIds = self.CustomMusicIds,
+        savedAt = os.time()
+    }
+    
+    local success, encoded = pcall(function()
+        return game:GetService("HttpService"):JSONEncode(dataToSave)
+    end)
+    
+    if not success then
+        return false
+    end
+    
+    local path = self:getCustomIdsPath()
+    local success, err = pcall(function()
+        writefile(path, encoded)
+    end)
+    
+    return success
+end
+
+function BMG:loadCustomIds()
+    self:ensureFolder()
+    local path = self:getCustomIdsPath()
+    
+    if not isfile(path) then
+        return false
+    end
+    
+    local success, data = pcall(function()
+        return readfile(path)
+    end)
+    
+    if not success or not data then
+        return false
+    end
+    
+    local success, decoded = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(data)
+    end)
+    
+    if not success or not decoded then
+        return false
+    end
+    
+    if decoded.customMusicIds then
+        self.CustomMusicIds = decoded.customMusicIds
+        if self._config and self._config.BMG then
+            self._config.BMG.CustomMusicIds = self.CustomMusicIds
+        end
+    end
+    
+    return true
+end
+
 function BMG:save()
     if not self._initialized then
         warn("BMG: Module not initialized! Call :init() first.")
@@ -243,6 +309,7 @@ function BMG:save()
     end
     
     self:ensureFolder()
+    self:saveCustomIds()
     
     local dataToSave = {
         currentMusicId = self.CurrentMusicId,
@@ -250,7 +317,6 @@ function BMG:save()
         volume = self.Volume,
         pitch = self.Pitch,
         isPlaying = self.IsPlaying,
-        customMusicIds = self.CustomMusicIds,
         savedAt = os.time()
     }
     
@@ -277,6 +343,8 @@ function BMG:load()
     end
     
     self:ensureFolder()
+    self:loadCustomIds()
+    
     local path = self:getFilePath()
     
     if not isfile(path) then
@@ -314,9 +382,6 @@ function BMG:load()
         end
         if decoded.isPlaying ~= nil then
             self.IsPlaying = decoded.isPlaying
-        end
-        if decoded.customMusicIds then
-            self.CustomMusicIds = decoded.customMusicIds
         end
         
         if self._config and self._config.BMG then
@@ -340,6 +405,8 @@ function BMG:autoLoad()
     end
     
     self:ensureFolder()
+    self:loadCustomIds()
+    
     local path = self:getFilePath()
     
     if not isfile(path) then
@@ -377,9 +444,6 @@ function BMG:autoLoad()
         end
         if decoded.isPlaying ~= nil then
             self.IsPlaying = decoded.isPlaying
-        end
-        if decoded.customMusicIds then
-            self.CustomMusicIds = decoded.customMusicIds
         end
         
         if self._config and self._config.BMG then
