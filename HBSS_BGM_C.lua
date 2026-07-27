@@ -54,9 +54,6 @@ function BGM:setupSound()
     end
     return self._sound
 end
-function BGM:getSoundId()
-    return "rbxassetid://" .. self.CurrentMusic.currentId
-end
 function BGM:updateSound()
     if not self._sound then
         self:setupSound()
@@ -301,6 +298,14 @@ function BGM:autoLoad()
     if decoded.currentId then self.CurrentMusic.currentId = decoded.currentId end
     if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
     if decoded.customMusic then self.CustomMusic = decoded.customMusic end
+    if self._sound then
+        self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
+        self._sound.Volume = self.CurrentMusic.volume
+        self._sound.PlaybackSpeed = self.CurrentMusic.pitch
+        if self.CurrentMusic.enabled then
+            self:play()
+        end
+    end
     return true
 end
 function BGM:ensureFolder()
@@ -312,34 +317,6 @@ function BGM:ensureFolder()
 end
 function BGM:getFilePath()
     return self.Folder .. "/" .. self.FileName
-end
-function BGM:delete()
-    local path = self:getFilePath()
-    if isfile(path) then
-        pcall(function()
-            delfile(path)
-        end)
-        if self._notifFunc then
-            self._notifFunc({
-                Title = "BGM Deleted",
-                Content = "BGM save file deleted!",
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255),
-                Length = 2
-            })
-        end
-        return true
-    end
-    if self._notifFunc then
-        self._notifFunc({
-            Title = "BGM Delete Error",
-            Content = "No BGM save file found!",
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(255, 0, 0),
-            Length = 2
-        })
-    end
-    return false
 end
 function BGM:reset()
     self.CurrentMusic.enabled = false
