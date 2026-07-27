@@ -20,6 +20,8 @@ local BGM = {
     _sound = nil,
     _isPlaying = false,
     _isPaused = false,
+    _heartbeatConnection = nil,
+    _windowStateCheckConnection = nil,
 }
 function BGM:init(windUI, config)
     if not windUI then
@@ -30,27 +32,41 @@ function BGM:init(windUI, config)
     self._config = config
     self:load()
     self:setupSound()
+    self:setupWindowCheck()
     self._initialized = true
     return true
 end
+function BGM:setupWindowCheck()
+    if self._windowStateCheckConnection then
+        self._windowStateCheckConnection:Disconnect()
+        self._windowStateCheckConnection = nil
+    end
+    self._windowStateCheckConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        if self._initialized and self.CurrentMusic.enabled then
+            self:updateWindowState()
+        end
+    end)
+end
 function BGM:setupSound()
     if self._sound then
-        self._sound:Stop()
-        self._sound:Destroy()
+        pcall(function()
+            self._sound:Stop()
+            self._sound:Destroy()
+        end)
         self._sound = nil
     end
     self._sound = Instance.new("Sound")
+    self._sound.Name = "BGMPlayer"
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
     self._sound.PlayOnRemove = false
     self._sound.Looped = true
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
+    self._sound.Parent = game:GetService("SoundService")
     if self.CurrentMusic.enabled then
         self:play()
     end
     return self._sound
-end
-function BGM:getSoundId()
-    return "rbxassetid://" .. self.CurrentMusic.currentId
 end
 function BGM:updateSound()
     if not self._sound then
@@ -59,6 +75,7 @@ function BGM:updateSound()
     end
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
     if self.CurrentMusic.enabled then
         self:play()
     else
@@ -134,13 +151,15 @@ function BGM:play()
         self:setupSound()
         if not self._sound then return end
     end
-    if self.CurrentMusic.onlyMaximized then
-        if self:isWindowMinimized() then
-            return
-        end
+    if self.CurrentMusic.onlyMaximized and self:isWindowMinimized() then
+        return
     end
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
+    if not self._sound.Parent then
+        self._sound.Parent = game:GetService("SoundService")
+    end
     pcall(function()
         self._sound:Play()
         self._isPlaying = true
@@ -167,33 +186,33 @@ end
 function BGM:resume()
     if self._sound and self._isPaused then
         pcall(function()
-            self._sound:Play()
+            self._sound:Resume()
             self._isPaused = false
+            self._isPlaying = true
         end)
     end
 end
 function BGM:isWindowMinimized()
     if not self._windUI or not self._windUI.UIElements or not self._windUI.UIElements.Main then
-        return true
+        return false
     end
     local sizeY = self._windUI.UIElements.Main.Size.Y.Offset
     return sizeY < 50
 end
 function BGM:updateWindowState()
     if not self.CurrentMusic.enabled then
-        if self._isPlaying then
-            self:stop()
-        end
         return
     end
     if self.CurrentMusic.onlyMaximized then
         if self:isWindowMinimized() then
-            if self._isPlaying then
+            if self._isPlaying and not self._isPaused then
                 self:pause()
             end
         else
-            if self._isPaused or not self._isPlaying then
+            if self._isPaused then
                 self:resume()
+            elseif not self._isPlaying then
+                self:play()
             end
         end
     else
@@ -229,7 +248,9 @@ function BGM:setPitch(pitch)
 end
 function BGM:setOnlyMaximized(onlyMaximized)
     self.CurrentMusic.onlyMaximized = onlyMaximized
-    self:updateWindowState()
+    if self.CurrentMusic.enabled then
+        self:updateWindowState()
+    end
     self:save()
 end
 function BGM:save()
@@ -320,9 +341,17 @@ function BGM:reset()
     return true
 end
 function BGM:cleanup()
+    if self._windowStateCheckConnection then
+        pcall(function()
+            self._windowStateCheckConnection:Disconnect()
+        end)
+        self._windowStateCheckConnection = nil
+    end
     if self._sound then
-        self._sound:Stop()
-        self._sound:Destroy()
+        pcall(function()
+            self._sound:Stop()
+            self._sound:Destroy()
+        end)
         self._sound = nil
     end
     self._isPlaying = false
