@@ -198,86 +198,33 @@ function BGM:save()
         return game:GetService("HttpService"):JSONEncode(dataToSave)
     end)
     if not success then
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Save Error",
-                Content = "Failed to encode BGM data!",
-                Icon = "x",
-                Duration = 2
-            })
-        end
         return false
     end
     local path = self:getFilePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    if success then
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Saved!",
-                Content = "BGM settings saved successfully!",
-                Icon = "check",
-                Duration = 2
-            })
-        end
-        return true
-    else
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Save Error",
-                Content = "Failed to save BGM settings!",
-                Icon = "x",
-                Duration = 2
-            })
-        end
-        return false
-    end
+    return success
 end
 function BGM:load()
     if not self._initialized then
-        warn("BGM: Module not initialized! Call :init() first.")
         return false
     end
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Load Error",
-                Content = "No saved BGM data found!",
-                Icon = "x",
-                Duration = 2
-            })
-        end
         return false
     end
     local success, data = pcall(function()
         return readfile(path)
     end)
     if not success or not data then
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Load Error",
-                Content = "Failed to read BGM data!",
-                Icon = "x",
-                Duration = 2
-            })
-        end
         return false
     end
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
     if not success or not decoded then
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Load Error",
-                Content = "Failed to parse BGM data!",
-                Icon = "x",
-                Duration = 2
-            })
-        end
         return false
     end
     if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
@@ -287,14 +234,6 @@ function BGM:load()
     if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
     if decoded.customMusic then self.CustomMusic = decoded.customMusic end
     self:updateSound()
-    if self._windUI then
-        self._windUI:Notify({
-            Title = "BGM Loaded!",
-            Content = "BGM settings loaded successfully!",
-            Icon = "check",
-            Duration = 2
-        })
-    end
     return true
 end
 function BGM:autoLoad()
@@ -342,23 +281,7 @@ function BGM:delete()
         pcall(function()
             delfile(path)
         end)
-        if self._windUI then
-            self._windUI:Notify({
-                Title = "BGM Deleted",
-                Content = "BGM save file deleted!",
-                Icon = "check",
-                Duration = 2
-            })
-        end
         return true
-    end
-    if self._windUI then
-        self._windUI:Notify({
-            Title = "BGM Delete Error",
-            Content = "No BGM save file found!",
-            Icon = "x",
-            Duration = 2
-        })
     end
     return false
 end
