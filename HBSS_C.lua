@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “shovel upgrade 2+” 
+           “shovel upgrade 2    +” 
                                            
                                - Gpssickle
 ]])
@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 local excusemesir = {
     Players = game:GetService("Players"),
@@ -1298,7 +1298,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 14000+ lines long :(",
+                "Bro ts code is 15000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1718,7 +1718,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*14000+ lines later*",
+                "*15000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -1911,7 +1911,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 14000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 15000+ lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -1931,7 +1931,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 14000 o_o",
+            "da script reached 8000 lines to 15000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2727,6 +2727,133 @@ local function loadSaveData(saveName)
     return success and decoded or nil
 end
 
+local function findPartialSaveMatch(inputName)
+    if not inputName or inputName == "" then
+        return nil, "Please enter a save name"
+    end
+    
+    local saves = getSaveList()
+    if #saves == 0 then
+        return nil, "No saves found"
+    end
+    
+    local inputLower = string.lower(inputName)
+    local matches = {}
+    for _, save in ipairs(saves) do
+        local saveLower = string.lower(save)
+        if string.find(saveLower, inputLower, 1, true) then
+            table.insert(matches, save)
+        end
+    end
+    
+    if #matches == 0 then
+        return nil, "No saves found matching '" .. inputName .. "'"
+    elseif #matches == 1 then
+        return matches[1], nil
+    else
+        local matchList = table.concat(matches, ", ")
+        return nil, "Multiple matches found: " .. matchList .. "\nPlease be more specific"
+    end
+end
+
+local function getGameName()
+    local MarketplaceService = game:GetService("MarketplaceService")
+    local success, info = pcall(function()
+        return MarketplaceService:GetProductInfo(game.PlaceId)
+    end)
+    
+    if success and info and info.Name and info.Name ~= "" then
+        return info.Name
+    end
+    return nil
+end
+
+local function generateGameAbbreviation(gameName)
+    if not gameName or gameName == "" then
+        return nil
+    end
+    
+    local cleanName = gameName:gsub("[^%w%s]", ""):gsub("%s+", " ")
+    local words = {}
+    for word in cleanName:gmatch("%S+") do
+        if #word > 1 then
+            table.insert(words, word)
+        end
+    end
+    
+    if #words == 0 then
+        local letters = gameName:gsub("[^%a]", "")
+        if #letters >= 4 then
+            return string.upper(string.sub(letters, 1, 4))
+        end
+        return nil
+    end
+    
+    local abbr = ""
+    
+    for i = 1, math.min(#words, 4) do
+        local word = words[i]
+        if word and word:match("%a") then
+            abbr = abbr .. string.upper(string.sub(word, 1, 1))
+        end
+    end
+    
+    while #abbr < 4 do
+        local firstWord = words[1] or gameName
+        local letters = firstWord:gsub("[^%a]", "")
+        if #letters > #abbr then
+            local nextLetter = string.upper(string.sub(letters, #abbr + 1, #abbr + 1))
+            if nextLetter ~= "" then
+                abbr = abbr .. nextLetter
+            else
+                break
+            end
+        else
+            break
+        end
+    end
+    
+    if #abbr < 4 then
+        local letters = gameName:gsub("[^%a]", "")
+        abbr = string.upper(string.sub(letters, 1, 4))
+    end
+    
+    return abbr
+end
+
+local function generateUniqueSaveName(baseName)
+    local saves = getSaveList()
+    local uniqueName = baseName
+    
+    local counter = 1
+    local nameExists = false
+    
+    for _, save in ipairs(saves) do
+        if save == uniqueName then
+            nameExists = true
+            break
+        end
+    end
+    
+    while nameExists do
+        uniqueName = baseName .. "_" .. counter
+        nameExists = false
+        
+        for _, save in ipairs(saves) do
+            if save == uniqueName then
+                nameExists = true
+                break
+            end
+        end
+        
+        counter = counter + 1
+        if counter > 100 then break end
+    end
+    
+    return uniqueName
+end
+
+
 local function saveConfig(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
@@ -2736,6 +2863,10 @@ local function saveConfig(saveName)
             Duration = 2
         })
         return false
+    end
+    local exactMatch, _ = findPartialSaveMatch(saveName)
+    if exactMatch then
+        saveName = exactMatch
     end
     
     local configToSave = {
@@ -2978,6 +3109,20 @@ local function deleteSave(saveName)
             Duration = 2
         })
         return false
+    end
+    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    if errorMsg then
+        WindUI:Notify({
+            Title = "Save System",
+            Content = errorMsg,
+            Icon = "x",
+            Duration = 3
+        })
+        return false
+    end
+    
+    if exactMatch then
+        saveName = exactMatch
     end
     
     local path = getSavePath(saveName)
@@ -3441,6 +3586,20 @@ local function loadSave(saveName)
             Duration = 2
         })
         return false
+    end
+    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    if errorMsg then
+        WindUI:Notify({
+            Title = "Save System",
+            Content = errorMsg,
+            Icon = "x",
+            Duration = 3
+        })
+        return false
+    end
+    
+    if exactMatch then
+        saveName = exactMatch
     end
     
     local data = loadSaveData(saveName)
@@ -10413,21 +10572,52 @@ MainTab:Input({
 
 MainTab:Button({
     Title = "New Save",
-    Desc = "Save New/Overwrite [leave blank for lazy text generation]",
+    Desc = "Save New/Overwrite\n[leave blank for auto-generated name]",
     Icon = "save",
     Callback = function()
         local name = saveInputValue or ""
         if name == "" then
-            local timestamp = os.time()
-            local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
-            name = "Config_" .. date
-            WindUI:Notify({
-                Title = "Save System",
-                Content = "Using default name: " .. name,
-                Icon = "info",
-                Duration = 2
-            })
+            local gameName = getGameName()
+            
+            if gameName then
+                local abbr = generateGameAbbreviation(gameName)
+                
+                if abbr then
+                    local configName = generateUniqueSaveName(abbr)
+                    name = configName
+                    
+                    WindUI:Notify({
+                        Title = "Save System",
+                        Content = "Auto-generated name: " .. name .. " (from: " .. gameName .. ")",
+                        Icon = "info",
+                        Duration = 3
+                    })
+                else
+                    local timestamp = os.time()
+                    local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
+                    name = "Config_" .. date
+                    
+                    WindUI:Notify({
+                        Title = "Save System",
+                        Content = "Using timestamp name: " .. name,
+                        Icon = "info",
+                        Duration = 2
+                    })
+                end
+            else
+                local timestamp = os.time()
+                local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
+                name = "Config_" .. date
+                
+                WindUI:Notify({
+                    Title = "Save System",
+                    Content = "Using timestamp name: " .. name,
+                    Icon = "info",
+                    Duration = 2
+                })
+            end
         end
+        
         saveConfig(name)
     end
 })
