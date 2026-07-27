@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 local excusemesir = {
     Players = game:GetService("Players"),
@@ -14904,9 +14904,7 @@ local function cleanup()
             config.desyncRespawnConnection:Disconnect()
             config.desyncRespawnConnection = nil
         end
-        if BMG then
-            BMG:cleanup()
-        end
+        BMG:cleanup()
         config.desyncActive = false
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
@@ -14951,6 +14949,7 @@ local function cleanup()
             lzl.loaded = {}
             lzl.q = {}
         end
+        _G.destroyInitGui()
         for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
         end
@@ -15067,12 +15066,10 @@ Window:OnDestroy(function()
     cleanup()
     print("Gravel.cc closed :(")
 end)
+_G.destroyInitGui()
 task.wait(2.5)
 loadstring(gist(urls.hbsshandlecorpses))()
 loadstring(gist(urls.sa2findtool))()
-if _G.destroyInitGui then
-    _G.destroyInitGui()
-end
 return {
     config = config,
     lzl = lzl,
