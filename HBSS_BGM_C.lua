@@ -18,8 +18,10 @@ local BGM = {
     },
     CustomMusic = {},
     _sound = nil,
+    _soundPart = nil,
     _isPlaying = false,
     _isPaused = false,
+    _heartbeatConnection = nil,
 }
 function BGM:init(windUI, config)
     if not windUI then
@@ -30,20 +32,50 @@ function BGM:init(windUI, config)
     self._config = config
     self:load()
     self:setupSound()
+    self:setupHeartbeat()
     self._initialized = true
     return true
 end
+function BGM:setupHeartbeat()
+    if self._heartbeatConnection then
+        self._heartbeatConnection:Disconnect()
+        self._heartbeatConnection = nil
+    end
+    self._heartbeatConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        if self._initialized then
+            self:updateWindowState()
+        end
+    end)
+end
 function BGM:setupSound()
     if self._sound then
-        self._sound:Stop()
-        self._sound:Destroy()
+        pcall(function()
+            self._sound:Stop()
+            self._sound:Destroy()
+        end)
         self._sound = nil
     end
+    if self._soundPart then
+        pcall(function()
+            self._soundPart:Destroy()
+        end)
+        self._soundPart = nil
+    end
+    self._soundPart = Instance.new("Part")
+    self._soundPart.Name = "BGMSoundPart"
+    self._soundPart.Transparency = 1
+    self._soundPart.CanCollide = false
+    self._soundPart.Anchored = true
+    self._soundPart.Size = Vector3.new(1, 1, 1)
+    self._soundPart.Parent = workspace
     self._sound = Instance.new("Sound")
+    self._sound.Name = "BGMPlayer"
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
     self._sound.PlayOnRemove = false
     self._sound.Looped = true
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
+    self._sound.Parent = self._soundPart
     if self.CurrentMusic.enabled then
         self:play()
     end
@@ -59,6 +91,7 @@ function BGM:updateSound()
     end
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
     if self.CurrentMusic.enabled then
         self:play()
     else
@@ -141,11 +174,27 @@ function BGM:play()
     end
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
-    pcall(function()
+    self._sound.PlaybackSpeed = self.CurrentMusic.pitch
+    if not self._sound.Parent then
+        if not self._soundPart then
+            self:setupSound()
+        end
+        self._sound.Parent = self._soundPart
+    end
+    local success, err = pcall(function()
         self._sound:Play()
+    end)
+    if success then
         self._isPlaying = true
         self._isPaused = false
-    end)
+    else
+        warn("BGM: Failed to play sound: " .. tostring(err))
+        pcall(function()
+            self._sound:Resume()
+            self._isPlaying = true
+            self._isPaused = false
+        end)
+    end
 end
 function BGM:stop()
     if self._sound then
@@ -157,18 +206,23 @@ function BGM:stop()
     end
 end
 function BGM:pause()
-    if self._sound and self._sound.IsPlaying then
+    if self._sound then
         pcall(function()
-            self._sound:Pause()
-            self._isPaused = true
+            if self._sound.IsPlaying then
+                self._sound:Pause()
+                self._isPaused = true
+            end
         end)
     end
 end
 function BGM:resume()
-    if self._sound and self._isPaused then
+    if self._sound then
         pcall(function()
-            self._sound:Play()
-            self._isPaused = false
+            if self._isPaused then
+                self._sound:Resume()
+                self._isPaused = false
+                self._isPlaying = true
+            end
         end)
     end
 end
@@ -192,8 +246,10 @@ function BGM:updateWindowState()
                 self:pause()
             end
         else
-            if self._isPaused or not self._isPlaying then
+            if self._isPaused then
                 self:resume()
+            elseif not self._isPlaying then
+                self:play()
             end
         end
     else
@@ -320,10 +376,24 @@ function BGM:reset()
     return true
 end
 function BGM:cleanup()
+    if self._heartbeatConnection then
+        pcall(function()
+            self._heartbeatConnection:Disconnect()
+        end)
+        self._heartbeatConnection = nil
+    end
     if self._sound then
-        self._sound:Stop()
-        self._sound:Destroy()
+        pcall(function()
+            self._sound:Stop()
+            self._sound:Destroy()
+        end)
         self._sound = nil
+    end
+    if self._soundPart then
+        pcall(function()
+            self._soundPart:Destroy()
+        end)
+        self._soundPart = nil
     end
     self._isPlaying = false
     self._isPaused = false
