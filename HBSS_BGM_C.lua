@@ -10,7 +10,6 @@ local BGM = {
     },
     CurrentMusic = {
         enabled = false,
-        onlyMaximized = true,
         volume = 1,
         pitch = 1,
         currentId = "128586477335903",
@@ -19,9 +18,6 @@ local BGM = {
     CustomMusic = {},
     _sound = nil,
     _isPlaying = false,
-    _isPaused = false,
-    _heartbeatConnection = nil,
-    _windowStateCheckConnection = nil,
 }
 function BGM:init(windUI, config)
     if not windUI then
@@ -30,22 +26,10 @@ function BGM:init(windUI, config)
     end
     self._windUI = windUI
     self._config = config
-    self:load()
+    self:autoLoad()
     self:setupSound()
-    self:setupWindowCheck()
     self._initialized = true
     return true
-end
-function BGM:setupWindowCheck()
-    if self._windowStateCheckConnection then
-        self._windowStateCheckConnection:Disconnect()
-        self._windowStateCheckConnection = nil
-    end
-    self._windowStateCheckConnection = game:GetService("RunService").Heartbeat:Connect(function()
-        if self._initialized and self.CurrentMusic.enabled then
-            self:updateWindowState()
-        end
-    end)
 end
 function BGM:setupSound()
     if self._sound then
@@ -67,6 +51,9 @@ function BGM:setupSound()
         self:play()
     end
     return self._sound
+end
+function BGM:getSoundId()
+    return "rbxassetid://" .. self.CurrentMusic.currentId
 end
 function BGM:updateSound()
     if not self._sound then
@@ -151,9 +138,6 @@ function BGM:play()
         self:setupSound()
         if not self._sound then return end
     end
-    if self.CurrentMusic.onlyMaximized and self:isWindowMinimized() then
-        return
-    end
     self._sound.SoundId = "rbxassetid://" .. self.CurrentMusic.currentId
     self._sound.Volume = self.CurrentMusic.volume
     self._sound.PlaybackSpeed = self.CurrentMusic.pitch
@@ -163,7 +147,6 @@ function BGM:play()
     pcall(function()
         self._sound:Play()
         self._isPlaying = true
-        self._isPaused = false
     end)
 end
 function BGM:stop()
@@ -171,56 +154,7 @@ function BGM:stop()
         pcall(function()
             self._sound:Stop()
             self._isPlaying = false
-            self._isPaused = false
         end)
-    end
-end
-function BGM:pause()
-    if self._sound and self._sound.IsPlaying then
-        pcall(function()
-            self._sound:Pause()
-            self._isPaused = true
-        end)
-    end
-end
-function BGM:resume()
-    if self._sound and self._isPaused then
-        pcall(function()
-            self._sound:Resume()
-            self._isPaused = false
-            self._isPlaying = true
-        end)
-    end
-end
-function BGM:isWindowMinimized()
-    if not self._windUI or not self._windUI.UIElements or not self._windUI.UIElements.Main then
-        return false
-    end
-    local sizeY = self._windUI.UIElements.Main.Size.Y.Offset
-    return sizeY < 50
-end
-function BGM:updateWindowState()
-    if not self.CurrentMusic.enabled then
-        return
-    end
-    if self.CurrentMusic.onlyMaximized then
-        if self:isWindowMinimized() then
-            if self._isPlaying and not self._isPaused then
-                self:pause()
-            end
-        else
-            if self._isPaused then
-                self:resume()
-            elseif not self._isPlaying then
-                self:play()
-            end
-        end
-    else
-        if self._isPaused then
-            self:resume()
-        elseif not self._isPlaying then
-            self:play()
-        end
     end
 end
 function BGM:setEnabled(enabled)
@@ -246,13 +180,6 @@ function BGM:setPitch(pitch)
     end
     self:save()
 end
-function BGM:setOnlyMaximized(onlyMaximized)
-    self.CurrentMusic.onlyMaximized = onlyMaximized
-    if self.CurrentMusic.enabled then
-        self:updateWindowState()
-    end
-    self:save()
-end
 function BGM:save()
     if not self._initialized then
         return false
@@ -260,7 +187,6 @@ function BGM:save()
     self:ensureFolder()
     local dataToSave = {
         enabled = self.CurrentMusic.enabled,
-        onlyMaximized = self.CurrentMusic.onlyMaximized,
         volume = self.CurrentMusic.volume,
         pitch = self.CurrentMusic.pitch,
         currentId = self.CurrentMusic.currentId,
@@ -272,19 +198,112 @@ function BGM:save()
         return game:GetService("HttpService"):JSONEncode(dataToSave)
     end)
     if not success then
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Save Error",
+                Content = "Failed to encode BGM data!",
+                Icon = "x",
+                Duration = 2
+            })
+        end
         return false
     end
     local path = self:getFilePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    return success
+    if success then
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Saved!",
+                Content = "BGM settings saved successfully!",
+                Icon = "check",
+                Duration = 2
+            })
+        end
+        return true
+    else
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Save Error",
+                Content = "Failed to save BGM settings!",
+                Icon = "x",
+                Duration = 2
+            })
+        end
+        return false
+    end
 end
 function BGM:load()
+    if not self._initialized then
+        warn("BGM: Module not initialized! Call :init() first.")
+        return false
+    end
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
-        self:save()
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Load Error",
+                Content = "No saved BGM data found!",
+                Icon = "x",
+                Duration = 2
+            })
+        end
+        return false
+    end
+    local success, data = pcall(function()
+        return readfile(path)
+    end)
+    if not success or not data then
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Load Error",
+                Content = "Failed to read BGM data!",
+                Icon = "x",
+                Duration = 2
+            })
+        end
+        return false
+    end
+    local success, decoded = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(data)
+    end)
+    if not success or not decoded then
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Load Error",
+                Content = "Failed to parse BGM data!",
+                Icon = "x",
+                Duration = 2
+            })
+        end
+        return false
+    end
+    if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
+    if decoded.volume ~= nil then self.CurrentMusic.volume = decoded.volume end
+    if decoded.pitch ~= nil then self.CurrentMusic.pitch = decoded.pitch end
+    if decoded.currentId then self.CurrentMusic.currentId = decoded.currentId end
+    if decoded.currentTitle then self.CurrentMusic.currentTitle = decoded.currentTitle end
+    if decoded.customMusic then self.CustomMusic = decoded.customMusic end
+    self:updateSound()
+    if self._windUI then
+        self._windUI:Notify({
+            Title = "BGM Loaded!",
+            Content = "BGM settings loaded successfully!",
+            Icon = "check",
+            Duration = 2
+        })
+    end
+    return true
+end
+function BGM:autoLoad()
+    if not self._initialized then
+        return false
+    end
+    self:ensureFolder()
+    local path = self:getFilePath()
+    if not isfile(path) then
         return false
     end
     local success, data = pcall(function()
@@ -300,7 +319,6 @@ function BGM:load()
         return false
     end
     if decoded.enabled ~= nil then self.CurrentMusic.enabled = decoded.enabled end
-    if decoded.onlyMaximized ~= nil then self.CurrentMusic.onlyMaximized = decoded.onlyMaximized end
     if decoded.volume ~= nil then self.CurrentMusic.volume = decoded.volume end
     if decoded.pitch ~= nil then self.CurrentMusic.pitch = decoded.pitch end
     if decoded.currentId then self.CurrentMusic.currentId = decoded.currentId end
@@ -324,13 +342,28 @@ function BGM:delete()
         pcall(function()
             delfile(path)
         end)
+        if self._windUI then
+            self._windUI:Notify({
+                Title = "BGM Deleted",
+                Content = "BGM save file deleted!",
+                Icon = "check",
+                Duration = 2
+            })
+        end
         return true
+    end
+    if self._windUI then
+        self._windUI:Notify({
+            Title = "BGM Delete Error",
+            Content = "No BGM save file found!",
+            Icon = "x",
+            Duration = 2
+        })
     end
     return false
 end
 function BGM:reset()
     self.CurrentMusic.enabled = false
-    self.CurrentMusic.onlyMaximized = true
     self.CurrentMusic.volume = 1
     self.CurrentMusic.pitch = 1
     self.CurrentMusic.currentId = self.DefaultMusic[1].id
@@ -341,12 +374,6 @@ function BGM:reset()
     return true
 end
 function BGM:cleanup()
-    if self._windowStateCheckConnection then
-        pcall(function()
-            self._windowStateCheckConnection:Disconnect()
-        end)
-        self._windowStateCheckConnection = nil
-    end
     if self._sound then
         pcall(function()
             self._sound:Stop()
@@ -355,6 +382,5 @@ function BGM:cleanup()
         self._sound = nil
     end
     self._isPlaying = false
-    self._isPaused = false
 end
 return BGM
