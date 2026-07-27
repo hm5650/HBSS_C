@@ -17,7 +17,8 @@ local BMG = {
     _windUI = nil,
     _config = nil,
     _sound = nil,
-    _connections = {}
+    _connections = {},
+    _dropdownRef = nil
 }
 
 function BMG:init(windUI, config)
@@ -42,6 +43,20 @@ function BMG:init(windUI, config)
     
     self._initialized = true
     return true
+end
+
+function BMG:setDropdownRef(dropdown)
+    self._dropdownRef = dropdown
+end
+
+function BMG:refreshDropdown()
+    if self._dropdownRef and self._dropdownRef.Refresh then
+        local values = self:getDropdownValues()
+        self._dropdownRef:Refresh(values)
+        self._dropdownRef:SetValue(self:getSelectedValue())
+        return true
+    end
+    return false
 end
 
 function BMG:ensureFolder()
@@ -121,6 +136,7 @@ function BMG:addCustomMusic(id, title)
     
     table.insert(self.CustomMusicIds, { id = id, title = title })
     self:saveCustomIds()
+    self:refreshDropdown()
     return true, "Added " .. title
 end
 
@@ -144,6 +160,7 @@ function BMG:deleteMusic(id)
                 self:playCurrent()
             end
             self:saveCustomIds()
+            self:refreshDropdown()
             return true, "Deleted music"
         end
     end
@@ -394,6 +411,7 @@ function BMG:load()
         end
         
         self:playCurrent()
+        self:refreshDropdown()
     end)
     
     return true
@@ -456,6 +474,7 @@ function BMG:autoLoad()
         end
         
         self:playCurrent()
+        self:refreshDropdown()
     end)
     
     return true
