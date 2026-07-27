@@ -13,7 +13,6 @@ local BMG = {
 --        { id = "", title = "" },
         { id = "128586477335903", title = "PeanutButter" },
         { id = "93162865190777", title = "KwikFlip" },
-        { id = "123584554132464", title = "Horizons" },
         { id = "136438088630687", title = "MEGALOVANIA" },
         { id = "1848354536", title = "Nostalgic" },
         { id = "120187702909985", title = "Still Alive" },
