@@ -294,9 +294,19 @@ task.spawn(function()
         makefolder("Gravel_Saves")
     end
     
+    if not isfolder("Gravel_Saves/assets") then
+        makefolder("Gravel_Saves/assets")
+    end
+    
     local saveFiles = {}
     local files = listfiles("Gravel_Saves")
     for _, file in ipairs(files) do
+        if string.match(file, "%.json$") then
+            table.insert(saveFiles, file)
+        end
+    end
+    local assetFiles = listfiles("Gravel_Saves/assets")
+    for _, file in ipairs(assetFiles) do
         if string.match(file, "%.json$") then
             table.insert(saveFiles, file)
         end
@@ -320,12 +330,18 @@ task.spawn(function()
             processedFiles = processedFiles + 1
             local fileName = saveFiles[processedFiles]
             fileName = string.match(fileName, "([^/\\]+)%.json$") or "Unknown"
-            filesText.Text = "Files: " .. fileName
+            if string.find(saveFiles[processedFiles], "/assets/") or string.find(saveFiles[processedFiles], "\\assets\\") then
+                filesText.Text = "Files: assets/" .. fileName
+            else
+                filesText.Text = "Files: " .. fileName
+            end
             sound:Play()
         elseif totalFiles > 0 then
             local currentFile = saveFiles[math.min(processedFiles + 1, totalFiles)]
             local displayName = currentFile and string.match(currentFile, "([^/\\]+)%.json$") or ""
-            if processedFiles > 0 then
+            if currentFile and (string.find(currentFile, "/assets/") or string.find(currentFile, "\\assets\\")) then
+                filesText.Text = "Files: assets/" .. displayName
+            elseif currentFile then
                 filesText.Text = "Files: " .. displayName
             end
         end
@@ -353,7 +369,22 @@ task.spawn(function()
     loadingText.Text = "Loaded"
     
     if totalFiles > 0 then
-        filesText.Text = "Files: " .. totalFiles .. " saves loaded"
+        local mainCount = 0
+        local assetCount = 0
+        for _, file in ipairs(saveFiles) do
+            if string.find(file, "/assets/") or string.find(file, "\\assets\\") then
+                assetCount = assetCount + 1
+            else
+                mainCount = mainCount + 1
+            end
+        end
+        if assetCount > 0 and mainCount > 0 then
+            filesText.Text = "Files: " .. mainCount .. " saves + " .. assetCount .. " assets loaded"
+        elseif assetCount > 0 then
+            filesText.Text = "Files: " .. assetCount .. " assets loaded"
+        else
+            filesText.Text = "Files: " .. totalFiles .. " saves loaded"
+        end
     else
         filesText.Text = "No Files: I checked for no reason 💔🥀"
     end
