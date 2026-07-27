@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “shovel upgrade 1+” 
+           “shovel upgrade 2+” 
                                            
                                - Gpssickle
 ]])
@@ -78,6 +78,7 @@ local urls = {
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -738,6 +739,7 @@ end)
 local func = loadstring(gist(urls.sa2func))()
 local WindUI = loadstring(gist(urls.ilikedisui))()
 local SaveUI = loadstring(gist(urls.uithesavory))()
+local BMG = loadstring(gist(urls.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -2242,6 +2244,25 @@ local config = {
                 "randomness",
                 "kiss me misc :3",
                 "extra goodies",
+            },
+            BGM = {
+                "musssiccc :3",
+                "it's super loud here",
+                "make g.cc louder",
+                "[insert noises]",
+                "bgm = background music",
+                "y is there boss music?",
+                "FIRE SONG >:D",
+                "music player technically",
+                "rbxassetid music",
+                "my fav is kwikflip",
+                "angry bird ear meme",
+                "bgmmmm type shi",
+                "I keep saying bmg",
+                "gravel needs music fr",
+                "nice music taste",
+                ">:P",
+                "me wants music :3",
             },
             Info = {
                 "show me da papperz",
@@ -4252,6 +4273,7 @@ local function savePara()
     return saveText
 end
 SaveUI:init(WindUI, config)
+BMG:init(WindUI, config)
 local function loadUISettings()
     return SaveUI:autoLoad()
 end
@@ -4448,88 +4470,89 @@ local function syncSilentAimWithMaster()
 end
 
 local function GetClosestPlayer()
+    if not config.varibz.sa2this then
+        return nil
+    end
     if config.varibz.respawnLock or not plr.Character then
         config.SA2_currentTarget = nil
         return nil
     end
-
     local cam = Camera
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
-    local maxRange = config.SA2_TargetRange or 1000
-    local fovRadius = config.SA2_FovRadius
-    local wallCheckEnabled = config.SA2_Wallcheck
-    local threeSixty = config.SA2_ThreeSixtyMode
     local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
-    local teamTarget = config.SA2_TeamTarget or "Enemies"
     local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
-    local ignoreFF = config.ignoreForcefield
     local localTeam = plr.Team
 
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local maxRangeSq = maxRange * maxRange
+    local maxRangeSq = config.SA2_TargetRange * config.SA2_TargetRange
     
     local bestPart = nil
     local bestPlayer = nil
     local bestScreenDist = math.huge
     local bestWorldDist = math.huge
     local bestHealth = math.huge
-
-    local candidates = nil
-    local candidateCount = 0
-    local isTargetSeen = (targetMode == "TargetSeen")
-    
-    if isTargetSeen then
-        candidates = {}
+    local character = plr.Character
+    local localRoot = character and character:FindFirstChild("HumanoidRootPart")
+    if not localRoot then
+        config.SA2_currentTarget = nil
+        return nil
     end
-
+    
     local function isTargetable(player)
         if player == plr then return false end
-        if teamTarget == "All" then return true end
+        if config.SA2_TeamTarget == "All" then return true end
         local targetTeam = player.Team
         if not localTeam or not targetTeam then
-            return teamTarget == "Enemies"
+            return config.SA2_TeamTarget == "Enemies"
         end
-        if teamTarget == "Enemies" then
+        if config.SA2_TeamTarget == "Enemies" then
             return localTeam ~= targetTeam
         else
             return localTeam == targetTeam
         end
     end
-
-    for _, player in ipairs(excusemesir.Players:GetPlayers()) do
+    local players = excusemesir.Players:GetPlayers()
+    local playerCount = #players
+    if playerCount == 0 then
+        config.SA2_currentTarget = nil
+        return nil
+    end
+    
+    local candidates = {}
+    local candidateCount = 0
+    local checkVisible = not config.SA2_ThreeSixtyMode
+    
+    for i = 1, playerCount do
+        local player = players[i]
         if player ~= plr and isTargetable(player) then
             local char = player.Character
             if not char then continue end
 
-            if ignoreFF and hasForcefield(char) then continue end
+            if config.ignoreForcefield and hasForcefield(char) then continue end
 
             local humanoid = char:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then continue end
-            
-            local head = char:FindFirstChild("Head")
-            local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso")
-            
             local part = nil
             if targetPartName then
                 part = char:FindFirstChild(targetPartName)
             end
             if not part then
-                part = head or root
+                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
             if not part then continue end
             
             local targetPos = part.Position
             
-            local diffX = targetPos.X - camPos.X
-            local diffY = targetPos.Y - camPos.Y
-            local diffZ = targetPos.Z - camPos.Z
-            local worldDistSq = diffX * diffX + diffY * diffY + diffZ * diffZ
+            local dx = targetPos.X - camPos.X
+            local dy = targetPos.Y - camPos.Y
+            local dz = targetPos.Z - camPos.Z
+            local worldDistSq = dx * dx + dy * dy + dz * dz
             
             if worldDistSq > maxRangeSq then continue end
             
-            if wallCheckEnabled then
-                local direction = Vector3.new(diffX, diffY, diffZ)
+            if config.SA2_Wallcheck then
+                local direction = Vector3.new(dx, dy, dz)
                 local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
                 local ignore = {plr.Character, char}
                 local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignore)
@@ -4541,7 +4564,7 @@ local function GetClosestPlayer()
             local worldDist = math.sqrt(worldDistSq)
             local health = humanoid.Health
             
-            if not threeSixty then
+            if checkVisible then
                 local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
                 if not onScreen or screenPos.Z <= 0 then continue end
                 
@@ -4549,65 +4572,42 @@ local function GetClosestPlayer()
                 local distY = screenPos.Y - center.Y
                 local distPx = math.sqrt(distX * distX + distY * distY)
                 
-                if distPx > fovRadius then continue end
+                if distPx > config.SA2_FovRadius then continue end
                 
-                if isTargetSeen then
-                    candidateCount = candidateCount + 1
-                    candidates[candidateCount] = {
-                        player = player,
-                        part = part,
-                        health = health,
-                        screenDist = distPx,
-                        worldDist = worldDist
-                    }
-                elseif targetMode == "Closest" then
-                    if distPx < bestScreenDist then
-                        bestScreenDist = distPx
-                        bestPart = part
-                        bestPlayer = player
-                    end
-                elseif targetMode == "Lowest Health" then
-                    if health < bestHealth then
-                        bestHealth = health
-                        bestPart = part
-                        bestPlayer = player
-                    end
-                end
+                candidateCount = candidateCount + 1
+                candidates[candidateCount] = {
+                    player = player,
+                    part = part,
+                    health = health,
+                    screenDist = distPx,
+                    worldDist = worldDist
+                }
             else
-                if isTargetSeen then
-                    candidateCount = candidateCount + 1
-                    candidates[candidateCount] = {
-                        player = player,
-                        part = part,
-                        health = health,
-                        screenDist = 0,
-                        worldDist = worldDist
-                    }
-                elseif targetMode == "Closest" then
-                    if worldDist < bestWorldDist then
-                        bestWorldDist = worldDist
-                        bestPart = part
-                        bestPlayer = player
-                    end
-                elseif targetMode == "Lowest Health" then
-                    if health < bestHealth then
-                        bestHealth = health
-                        bestPart = part
-                        bestPlayer = player
-                    end
-                end
+                candidateCount = candidateCount + 1
+                candidates[candidateCount] = {
+                    player = player,
+                    part = part,
+                    health = health,
+                    screenDist = 0,
+                    worldDist = worldDist
+                }
             end
         end
     end
-
-    if isTargetSeen and candidateCount > 0 then
+    
+    if candidateCount == 0 then
+        config.SA2_currentTarget = nil
+        return nil
+    end
+    local bestIdx = 1
+    
+    if targetMode == "TargetSeen" then
         local currentTime = tick()
         if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
             config.lastTargetSwitchTime = currentTime
             
             if not config.SA2_currentTarget then
-                bestPlayer = candidates[1].player
-                bestPart = candidates[1].part
+                bestIdx = 1
             else
                 local currentIdx = nil
                 for i = 1, candidateCount do
@@ -4618,42 +4618,49 @@ local function GetClosestPlayer()
                 end
                 
                 if currentIdx then
-                    local nextIdx = (currentIdx % candidateCount) + 1
-                    bestPlayer = candidates[nextIdx].player
-                    bestPart = candidates[nextIdx].part
+                    bestIdx = (currentIdx % candidateCount) + 1
                 else
-                    bestPlayer = candidates[1].player
-                    bestPart = candidates[1].part
+                    bestIdx = 1
                 end
             end
         else
             if config.SA2_currentTarget then
                 for i = 1, candidateCount do
                     if candidates[i].player == config.SA2_currentTarget then
-                        bestPlayer = candidates[i].player
-                        bestPart = candidates[i].part
+                        bestIdx = i
                         break
                     end
                 end
             end
-            if not bestPlayer and candidateCount > 0 then
-                bestPlayer = candidates[1].player
-                bestPart = candidates[1].part
+        end
+    elseif targetMode == "Lowest Health" then
+        local bestHealthVal = math.huge
+        for i = 1, candidateCount do
+            if candidates[i].health < bestHealthVal then
+                bestHealthVal = candidates[i].health
+                bestIdx = i
+            end
+        end
+    else
+        local bestDist = math.huge
+        for i = 1, candidateCount do
+            local dist = candidates[i].screenDist > 0 and candidates[i].screenDist or candidates[i].worldDist
+            if dist < bestDist then
+                bestDist = dist
+                bestIdx = i
             end
         end
     end
-
-    if bestPlayer then
-        if config.SA2_currentTarget ~= bestPlayer then
-            config.SA2_currentTarget = bestPlayer
+    
+    local best = candidates[bestIdx]
+    
+    if best then
+        if config.SA2_currentTarget ~= best.player then
+            config.SA2_currentTarget = best.player
             updateESPColors()
         end
-        return bestPart
+        return best.part
     else
-        if not isTargetSeen then
-            candidates = nil
-            candidateCount = 0
-        end
         config.SA2_currentTarget = nil
         return nil
     end
@@ -9693,7 +9700,8 @@ rng2()
 rng4()
 task.spawn(function()
     task.wait(0.5)
-    SaveUI:autoLoad() 
+    SaveUI:autoLoad()
+    BMG:autoLoad()
 end)
 local MainTab = Window:Tab({
     Title = "Main",
@@ -13352,6 +13360,272 @@ MiscTab:Slider({
 })
 end
 
+-- BGMTab
+local BGMTab = Window:Tab({
+    Title = "BGM",
+    Desc = rng3("BGM"),
+    Icon = "music",
+    IconColor = config.Gradow.uicolor.lightGray
+}) do
+    BGMTab:Paragraph({
+        Title = "Music Player",
+        Desc = "Play background music while using Gravel",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    
+    BGMTab:Toggle({
+        Title = "Play Music",
+        Desc = "Enable/disable background music",
+        Value = BMG.IsPlaying or false,
+        Callback = function(v)
+            BMG:togglePlay(v)
+            local status = v and "Playing" or "Stopped"
+            n({
+                Title = "Background Music",
+                Content = status .. " - " .. BMG.CurrentTitle,
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    
+    BGMTab:Space()
+    
+    BGMTab:Paragraph({
+        Title = "Music Selection",
+        Desc = "Choose or add custom music",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    
+    BGMTab:Input({
+        Title = "New Music ID",
+        Desc = "Enter a Roblox asset ID for new music",
+        Placeholder = "128586477335903",
+        Value = "",
+        ClearTextOnFocus = true,
+        Callback = function(text)
+            newMusicIdInput = text
+        end
+    })
+    
+    BGMTab:Input({
+        Title = "Music Title",
+        Desc = "Set a title for the new music",
+        Placeholder = "My Song",
+        Value = "",
+        ClearTextOnFocus = true,
+        Callback = function(text)
+            newMusicTitleInput = text
+        end
+    })
+    
+    BGMTab:Button({
+        Title = "Add Music",
+        Desc = "Add custom music to the list",
+        Icon = "plus",
+        Callback = function()
+            local id = newMusicIdInput or ""
+            local title = newMusicTitleInput or ""
+            
+            if id == "" or title == "" then
+                n({
+                    Title = "Background Music",
+                    Content = "Please enter both ID and Title",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
+                return
+            end
+            
+            local success, msg = BMG:addCustomMusic(id, title)
+            n({
+                Title = "Background Music",
+                Content = success and "Added: " .. title or "Error: " .. msg,
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = success and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    
+    BGMTab:Space()
+    
+    local dropdownMusic = BGMTab:Dropdown({
+        Title = "Select Music",
+        Desc = "Choose a music track to play",
+        Values = BMG:getDropdownValues(),
+        Value = BMG:getSelectedValue(),
+        Multi = false,
+        Callback = function(selected)
+            if selected and selected ~= "" then
+                local id = selected:match("%((%d+)%)")
+                if id then
+                    local success, msg = BMG:setCurrentMusic(id)
+                    if success then
+                        n({
+                            Title = "Background Music",
+                            Content = "Now playing: " .. BMG.CurrentTitle,
+                            Audio = "rbxassetid://17208361335",
+                            Length = 1,
+                            Image = "rbxassetid://4483362458",
+                            BarColor = Color3.fromRGB(0, 170, 255)
+                        })
+                    end
+                end
+            end
+        end
+    })
+    BMG:setDropdownRef(dropdownMusic)
+    
+    BGMTab:Button({
+        Title = "Delete Selected",
+        Desc = "Delete the selected music (presets cannot be deleted)",
+        Icon = "trash",
+        Callback = function()
+            local selected = dropdownMusic and dropdownMusic.Value or ""
+            if selected == "" then
+                n({
+                    Title = "Background Music",
+                    Content = "Please select a music to delete",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
+                return
+            end
+            
+            local id = selected:match("%((%d+)%)")
+            if not id then
+                n({
+                    Title = "Background Music",
+                    Content = "Invalid selection",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
+                return
+            end
+            
+            local success, msg = BMG:deleteMusic(id)
+            n({
+                Title = "Background Music",
+                Content = success and "Deleted: " .. selected or "Error: " .. msg,
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = success and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    
+    BGMTab:Space()
+    
+    BGMTab:Paragraph({
+        Title = "Audio Settings",
+        Desc = "Adjust music playback settings",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    
+    BGMTab:Slider({
+        Title = "Volume",
+        Desc = "Music volume (0-5)",
+        Step = 0.1,
+        Value = {
+            Min = 0,
+            Max = 5,
+            Default = BMG.Volume or 1
+        },
+        Callback = function(value)
+            BMG:setVolume(value)
+        end
+    })
+    
+    BGMTab:Slider({
+        Title = "Pitch",
+        Desc = "Music playback speed (0.5-2.0)",
+        Step = 0.05,
+        Value = {
+            Min = 0.5,
+            Max = 2,
+            Default = BMG.Pitch or 1
+        },
+        Callback = function(value)
+            BMG:setPitch(value)
+        end
+    })
+    
+    BGMTab:Space()
+    
+    BGMTab:Paragraph({
+        Title = "Save/Load",
+        Desc = "Save and load your music settings",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    
+    BGMTab:Button({
+        Title = "Save BMG",
+        Desc = "Save current music settings",
+        Icon = "save",
+        Callback = function()
+            local success = BMG:save()
+            if success then
+                n({
+                    Title = "Background Music",
+                    Content = "Settings saved!",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(0, 255, 0)
+                })
+            else
+                n({
+                    Title = "Background Music",
+                    Content = "Failed to save settings",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
+            end
+        end
+    })
+    
+    BGMTab:Button({
+        Title = "Reload BMG",
+        Desc = "Reload saved music settings",
+        Icon = "download",
+        Callback = function()
+            local success = BMG:load()
+            if success then
+                n({
+                    Title = "Background Music",
+                    Content = "Settings loaded! Now playing: " .. BMG.CurrentTitle,
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(0, 170, 255)
+                })
+            else
+                n({
+                    Title = "Background Music",
+                    Content = "No saved settings found",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
+            end
+        end
+    })
+end
+
 -- Info Tab
 --               ＼⁠(⁠^⁠o⁠^⁠)⁠／
 local InfoTab = Window:Tab({
@@ -13433,6 +13707,12 @@ local InfoTab = Window:Tab({
     InfoTab:Paragraph({
         Title = "MiscTab",
         Desc = "Basically experiment any features that are or aren't related to combating",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    
+    InfoTab:Paragraph({
+        Title = "BGM Tab",
+        Desc = "Plays music in the background uses 'rbxassetids' technically a music player",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -13668,6 +13948,11 @@ I luv rng's. :3
     InfoTab:Paragraph({
         Title = "Gravel (23/07/2026)",
         Desc = "some QOL bs",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (27/07/2026)",
+        Desc = "an good script would have a music player\nAdded: BGMTab an Background Music Tab :3",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -14349,6 +14634,9 @@ local function cleanup()
         if config.desyncRespawnConnection then
             config.desyncRespawnConnection:Disconnect()
             config.desyncRespawnConnection = nil
+        end
+        if BMG then
+            BMG:cleanup()
         end
         config.desyncActive = false
         config.currentTarget = nil
