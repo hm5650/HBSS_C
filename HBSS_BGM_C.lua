@@ -17,9 +17,11 @@ local BGM = {
     _config = nil,
     _currentDropDownValue = nil,
     _soundConnection = nil,
-    _bgmToggleRef = nil,
-    _bgmDropdownRef = nil,
-    _currentInfoRef = nil
+    _bgmToggle = nil,
+    _bgmDropdown = nil,
+    _volumeSlider = nil,
+    _pitchSlider = nil,
+    _currentInfo = nil
 }
 function BGM:init(windUI, config)
     if not windUI then
@@ -30,7 +32,6 @@ function BGM:init(windUI, config)
     self._config = config
     self._initialized = true
     self:ensureFolder()
-    self:autoLoad()
     return true
 end
 function BGM:ensureFolder()
@@ -52,9 +53,8 @@ function BGM:getAllSounds()
         table.insert(all, { id = custom.id, title = custom.title, isPreset = false })
     end
     return all
-end
+}
 function BGM:getSoundById(id)
-    if not id then return nil end
     for _, preset in ipairs(self.Presets) do
         if preset.id == id then
             return { id = preset.id, title = preset.title, isPreset = true }
@@ -66,7 +66,7 @@ function BGM:getSoundById(id)
         end
     end
     return nil
-end
+}
 function BGM:getDropdownValues()
     local values = {}
     for _, sound in ipairs(self:getAllSounds()) do
@@ -76,13 +76,6 @@ function BGM:getDropdownValues()
         table.insert(values, "None")
     end
     return values
-end
-function BGM:getDropdownValueFromId(id)
-    local sound = self:getSoundById(id)
-    if sound then
-        return sound.title .. " (" .. sound.id .. ")"
-    end
-    return nil
 end
 function BGM:addCustomSound(id, title)
     if not id or id == "" then
@@ -143,6 +136,9 @@ function BGM:play(id, volume, pitch)
         if self.SoundInstance and self.SoundInstance == sound then
             self.SoundInstance = nil
             self.IsPlaying = false
+            if self._bgmToggle then
+                self._bgmToggle:SetValue(false)
+            end
         end
     end)
     self:save()
@@ -187,43 +183,6 @@ function BGM:setPitch(pitch)
     self:save()
     return true
 end
-function BGM:refreshUI()
-    if not self._initialized then return end
-    pcall(function()
-        if self._bgmToggleRef then
-            self._bgmToggleRef:SetValue(self.IsPlaying)
-        end
-        if self._bgmDropdownRef then
-            local values = self:getDropdownValues()
-            self._bgmDropdownRef:SetValues(values)
-            if self.CurrentSoundId then
-                local value = self:getDropdownValueFromId(self.CurrentSoundId)
-                if value then
-                    self._bgmDropdownRef:SetValue(value)
-                else
-                    self._bgmDropdownRef:SetValue(values[1] or "None")
-                end
-            else
-                self._bgmDropdownRef:SetValue(values[1] or "None")
-            end
-        end
-        if self._currentInfoRef then
-            if self.IsPlaying and self.CurrentSoundId then
-                local soundData = self:getSoundById(self.CurrentSoundId)
-                if soundData then
-                    self._currentInfoRef:SetDesc("Title: " .. soundData.title .. "\nID: " .. soundData.id .. "\nVolume: " .. self.CurrentVolume .. "\nPitch: " .. self.CurrentPitch)
-                end
-            else
-                self._currentInfoRef:SetDesc("None")
-            end
-        end
-    end)
-end
-function BGM:setUIReferences(toggleRef, dropdownRef, infoRef)
-    self._bgmToggleRef = toggleRef
-    self._bgmDropdownRef = dropdownRef
-    self._currentInfoRef = infoRef
-end
 function BGM:save()
     self:ensureFolder()
     local dataToSave = {
@@ -245,9 +204,6 @@ function BGM:save()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    if success then
-        self:refreshUI()
-    end
     return success
 end
 function BGM:load()
@@ -277,19 +233,73 @@ function BGM:load()
         self.CurrentVolume = decoded.currentVolume or 1
         self.CurrentPitch = decoded.currentPitch or 1
         self.IsPlaying = decoded.isPlaying or false
-        self:stop()
-        if self.IsPlaying and self.CurrentSoundId then
-            self:play(self.CurrentSoundId, self.CurrentVolume, self.CurrentPitch)
-        end
-        self:refreshUI()
     end)
     return true
 end
 function BGM:autoLoad()
-    return self:load()
-end
-function BGM:reload()
-    return self:load()
+    if not self._initialized then
+        return false
+    end
+    self:ensureFolder()
+    local path = self:getFilePath()
+    if not isfile(path) then
+        return false
+    end
+    local success, data = pcall(function()
+        return readfile(path)
+    end)
+    if not success or not data then
+        return false
+    end
+    local success, decoded = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(data)
+    end)
+    if not success or not decoded then
+        return false
+    end
+    pcall(function()
+        if decoded.customSounds then
+            self.CustomSounds = decoded.customSounds
+        end
+        self.CurrentSoundId = decoded.currentSoundId
+        self.CurrentTitle = decoded.currentTitle or "None"
+        self.CurrentVolume = decoded.currentVolume or 1
+        self.CurrentPitch = decoded.currentPitch or 1
+        self.IsPlaying = decoded.isPlaying or false
+        if self._bgmToggle then
+            self._bgmToggle:SetValue(self.IsPlaying)
+        end
+        if self._volumeSlider then
+            self._volumeSlider:SetValue(self.CurrentVolume)
+        end
+        if self._pitchSlider then
+            self._pitchSlider:SetValue(self.CurrentPitch)
+        end
+        if self._bgmDropdown then
+            local values = self:getDropdownValues()
+            self._bgmDropdown:SetValues(values)
+            if self.CurrentSoundId then
+                local soundData = self:getSoundById(self.CurrentSoundId)
+                if soundData then
+                    self._bgmDropdown:SetValue(soundData.title .. " (" .. soundData.id .. ")")
+                end
+            end
+        end
+        if self._currentInfo then
+            if self.IsPlaying and self.CurrentSoundId then
+                local soundData = self:getSoundById(self.CurrentSoundId)
+                if soundData then
+                    self._currentInfo:SetDesc("Title: " .. soundData.title .. "\nID: " .. soundData.id .. "\nVolume: " .. self.CurrentVolume .. "\nPitch: " .. self.CurrentPitch)
+                end
+            else
+                self._currentInfo:SetDesc("None")
+            end
+        end
+        if self.IsPlaying and self.CurrentSoundId then
+            self:play(self.CurrentSoundId, self.CurrentVolume, self.CurrentPitch)
+        end
+    end)
+    return true
 end
 function BGM:reset()
     self:stop()
@@ -300,7 +310,13 @@ function BGM:reset()
     self.CurrentPitch = 1
     self.IsPlaying = false
     self:save()
-    self:refreshUI()
     return true
+end
+function BGM:setUIReferences(toggle, dropdown, volumeSlider, pitchSlider, currentInfo)
+    self._bgmToggle = toggle
+    self._bgmDropdown = dropdown
+    self._volumeSlider = volumeSlider
+    self._pitchSlider = pitchSlider
+    self._currentInfo = currentInfo
 end
 return BGM
