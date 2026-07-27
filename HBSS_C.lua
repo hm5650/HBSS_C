@@ -13599,7 +13599,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Button({
         Title = "Reload BMG",
-        Desc = "Reload saved music settings",
+        Desc = "Reload da saved music settings (it can also autoload btw)",
         Icon = "download",
         Callback = function()
             local success = BMG:load()
