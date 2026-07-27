@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “shovel upgrade 2    +” 
+           “i didn't know table.clear() is a thing” 
                                            
                                - Gpssickle
 ]])
@@ -60,6 +60,7 @@ for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
 end
 
 -- spaghetti code yummy :>
+-- or is it???
 local player = excusemesir.Players.LocalPlayer
 local localPlayer = excusemesir.Players.LocalPlayer
 local plr = excusemesir.Players.LocalPlayer
@@ -72,6 +73,7 @@ local UICorner = Instance.new("UICorner")
 local urls = {
     --hbss completely random useless & useful modules :]
     hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
     hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
@@ -755,6 +757,8 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local clone_ref = cloneref or function(v) return v end
+local candidates = {}
+local targetsInFOV = {}
 
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
@@ -2736,26 +2740,117 @@ local function findPartialSaveMatch(inputName)
     if #saves == 0 then
         return nil, "No saves found"
     end
-    
     local inputLower = string.lower(inputName)
-    local matches = {}
+    local function getSimilarity(str1, str2)
+        local s1 = string.lower(str1)
+        local s2 = string.lower(str2)
+        if s1 == s2 then
+            return 1.0
+        end
+        if string.find(s2, s1, 1, true) then
+            return 1.0 - (string.len(s2) - string.len(s1)) * 0.01
+        end
+        
+        if string.find(s1, s2, 1, true) then
+            return 1.0 - (string.len(s1) - string.len(s2)) * 0.01
+        end
+        
+        local function levenshtein(a, b)
+            local lenA, lenB = #a, #b
+            local matrix = {}
+            
+            for i = 0, lenA do
+                matrix[i] = {}
+                matrix[i][0] = i
+            end
+            
+            for j = 0, lenB do
+                matrix[0][j] = j
+            end
+            
+            for i = 1, lenA do
+                for j = 1, lenB do
+                    local cost = (a:sub(i, i) == b:sub(j, j)) and 0 or 1
+                    matrix[i][j] = math.min(
+                        matrix[i-1][j] + 1,
+                        matrix[i][j-1] + 1,
+                        matrix[i-1][j-1] + cost
+                    )
+                end
+            end
+            
+            return matrix[lenA][lenB]
+        end
+        
+        local maxLen = math.max(#s1, #s2)
+        if maxLen == 0 then return 0 end
+        local distance = levenshtein(s1, s2)
+        local similarity = 1 - (distance / maxLen)
+        local prefixLen = 0
+        for i = 1, math.min(#s1, #s2) do
+            if s1:sub(i, i) == s2:sub(i, i) then
+                prefixLen = prefixLen + 1
+            else
+                break
+            end
+        end
+        
+        if prefixLen > 0 then
+            local prefixBoost = (prefixLen / math.min(#s1, #s2)) * 0.1
+            similarity = math.min(similarity + prefixBoost, 1.0)
+        end
+        
+        return similarity
+    end
+    local scored = {}
     for _, save in ipairs(saves) do
-        local saveLower = string.lower(save)
-        if string.find(saveLower, inputLower, 1, true) then
-            table.insert(matches, save)
+        local similarity = getSimilarity(inputLower, save)
+        table.insert(scored, {
+            name = save,
+            similarity = similarity
+        })
+    end
+    table.sort(scored, function(a, b)
+        if a.similarity == b.similarity then
+            return #a.name < #b.name
+        end
+        return a.similarity > b.similarity
+    end)
+    local best = scored[1]
+    local threshold = 0.6
+    
+    if best.similarity < threshold then
+        return nil, "No saves found matching '" .. inputName .. "'"
+    end
+    local exactMatch = false
+    local similarMatches = {}
+    
+    for _, item in ipairs(scored) do
+        if item.similarity >= 0.8 then
+            if string.lower(item.name) == inputLower then
+                exactMatch = true
+                table.insert(similarMatches, item.name)
+            else
+                table.insert(similarMatches, item.name)
+            end
         end
     end
+    if exactMatch then
+        return inputName, nil
+    end
     
-    if #matches == 0 then
-        return nil, "No saves found matching '" .. inputName .. "'"
-    elseif #matches == 1 then
-        return matches[1], nil
+    if #similarMatches > 1 then
+        return best.name, nil
+    elseif #similarMatches == 1 then
+        return similarMatches[1], nil
     else
-        local matchList = table.concat(matches, ", ")
-        return nil, "Multiple matches found: " .. matchList .. "\nPlease be more specific"
+        if best.similarity >= 0.7 then
+            return best.name, nil
+        else
+            return nil, "No saves found matching '" .. inputName .. "'"
+        end
     end
 end
-
 local function getGameName()
     local MarketplaceService = game:GetService("MarketplaceService")
     local success, info = pcall(function()
@@ -4642,10 +4737,8 @@ local function GetClosestPlayer()
     local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
     local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
     local localTeam = plr.Team
-
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
     local maxRangeSq = config.SA2_TargetRange * config.SA2_TargetRange
-    
     local bestPart = nil
     local bestPlayer = nil
     local bestScreenDist = math.huge
@@ -4657,7 +4750,6 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    
     local function isTargetable(player)
         if player == plr then return false end
         if config.SA2_TeamTarget == "All" then return true end
@@ -4671,25 +4763,23 @@ local function GetClosestPlayer()
             return localTeam == targetTeam
         end
     end
+    table.clear(candidates)
+    table.clear(targetsInFOV)
     local players = excusemesir.Players:GetPlayers()
     local playerCount = #players
     if playerCount == 0 then
         config.SA2_currentTarget = nil
         return nil
     end
-    
-    local candidates = {}
     local candidateCount = 0
     local checkVisible = not config.SA2_ThreeSixtyMode
-    
+    local ignoreForcefield = config.ignoreForcefield
     for i = 1, playerCount do
         local player = players[i]
         if player ~= plr and isTargetable(player) then
             local char = player.Character
             if not char then continue end
-
-            if config.ignoreForcefield and hasForcefield(char) then continue end
-
+            if ignoreForcefield and hasForcefield(char) then continue end
             local humanoid = char:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then continue end
             local part = nil
@@ -4700,16 +4790,12 @@ local function GetClosestPlayer()
                 part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
             if not part then continue end
-            
             local targetPos = part.Position
-            
             local dx = targetPos.X - camPos.X
             local dy = targetPos.Y - camPos.Y
             local dz = targetPos.Z - camPos.Z
             local worldDistSq = dx * dx + dy * dy + dz * dz
-            
             if worldDistSq > maxRangeSq then continue end
-            
             if config.SA2_Wallcheck then
                 local direction = Vector3.new(dx, dy, dz)
                 local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
@@ -4719,20 +4805,15 @@ local function GetClosestPlayer()
                     continue
                 end
             end
-            
             local worldDist = math.sqrt(worldDistSq)
             local health = humanoid.Health
-            
             if checkVisible then
                 local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
                 if not onScreen or screenPos.Z <= 0 then continue end
-                
                 local distX = screenPos.X - center.X
                 local distY = screenPos.Y - center.Y
                 local distPx = math.sqrt(distX * distX + distY * distY)
-                
                 if distPx > config.SA2_FovRadius then continue end
-                
                 candidateCount = candidateCount + 1
                 candidates[candidateCount] = {
                     player = player,
@@ -4753,18 +4834,16 @@ local function GetClosestPlayer()
             end
         end
     end
-    
     if candidateCount == 0 then
         config.SA2_currentTarget = nil
         return nil
     end
     local bestIdx = 1
-    
     if targetMode == "TargetSeen" then
         local currentTime = tick()
         if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
             config.lastTargetSwitchTime = currentTime
-            
+
             if not config.SA2_currentTarget then
                 bestIdx = 1
             else
@@ -4775,7 +4854,7 @@ local function GetClosestPlayer()
                         break
                     end
                 end
-                
+
                 if currentIdx then
                     bestIdx = (currentIdx % candidateCount) + 1
                 else
@@ -4810,9 +4889,7 @@ local function GetClosestPlayer()
             end
         end
     end
-    
     local best = candidates[bestIdx]
-    
     if best then
         if config.SA2_currentTarget ~= best.player then
             config.SA2_currentTarget = best.player
@@ -4824,6 +4901,7 @@ local function GetClosestPlayer()
         return nil
     end
 end
+
 local ExpectedArguments = {
     FindPartOnRay = {
         ArgCountRequired = 2,
@@ -9566,6 +9644,7 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
+loadstring(gist(urls.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
 
 local function rng4()
@@ -14991,6 +15070,9 @@ end)
 task.wait(2.5)
 loadstring(gist(urls.hbsshandlecorpses))()
 loadstring(gist(urls.sa2findtool))()
+if _G.destroyInitGui then
+    _G.destroyInitGui()
+end
 return {
     config = config,
     lzl = lzl,
