@@ -354,11 +354,6 @@ local config = {
             "🥀💔✌️🫩",
             "brochacho",
         },
---[[
-            {
-                "",
-            },
-]]
         convo = {
             {
                 typesp = "1.5",
