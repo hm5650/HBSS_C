@@ -505,7 +505,31 @@ function InitGui:destroy()
             task.cancel(self.scrollTask)
             self.scrollTask = nil
         end
-
+        local slideOutTask = task.spawn(function()
+            if not self.codeScroller then return end
+            
+            local canvasHeight = self.codeScroller.CanvasSize.Y.Offset
+            local startPos = self.codeScroller.CanvasPosition.Y or 0
+            local speed = 500
+            local slideSpeed = 800 -- Speed of the slide-out animation
+            local targetX = self.codeBackground.AbsoluteSize.X + 100 -- Slide completely off screen
+            
+            while self.codeScroller and self.codeScroller.Parent do
+                startPos = startPos + speed * 0.03
+                if startPos > canvasHeight - self.codeScroller.AbsoluteSize.Y then
+                    startPos = 0
+                end
+                self.codeScroller.CanvasPosition = Vector2.new(0, startPos)
+                local currentPos = self.codeBackground.Position
+                if currentPos.X.Offset < targetX then
+                    local newX = currentPos.X.Offset + slideSpeed * 0.03
+                    self.codeBackground.Position = UDim2.fromOffset(newX, 0)
+                else
+                    break
+                end
+                task.wait(0.03)
+            end
+        end)
         local fadeOut = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
         if self.bg then
             game:GetService("TweenService"):Create(self.bg, fadeOut, {BackgroundTransparency = 1}):Play()
@@ -519,11 +543,10 @@ function InitGui:destroy()
         if self.dots then
             game:GetService("TweenService"):Create(self.dots, fadeOut, {TextTransparency = 1}):Play()
         end
-        if self.codeBackground then
-            game:GetService("TweenService"):Create(self.codeBackground, fadeOut, {BackgroundTransparency = 1}):Play()
-        end
-
         task.wait(0.7)
+        if slideOutTask then
+            task.cancel(slideOutTask)
+        end
         self.gui:Destroy()
         self.gui = nil
         self.bg = nil
@@ -534,7 +557,6 @@ function InitGui:destroy()
         self.codeScroller = nil
     end
 end
-
 local initGui = InitGui.new():create()
 _G.destroyInitGui = function()
     if initGui then
