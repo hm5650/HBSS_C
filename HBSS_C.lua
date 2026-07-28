@@ -8472,7 +8472,7 @@ local function spinbotUpdate()
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
     if not config.varibz.spinbotConnection then
-        config.varibz.spinbotConnection = RunService.RenderStepped:Connect(function()
+        config.varibz.spinbotConnection = excusemesir.RunService.RenderStepped:Connect(function()
             if not config.spinbot.enabled or not localPlayer.Character then
                 return
             end
