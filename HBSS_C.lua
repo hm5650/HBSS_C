@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “i didn't know table.clear() is a thing” 
+           “attempt to index nil with ____ BROOI SHUT UP” 
                                            
                                - Gpssickle
 ]])
@@ -847,6 +847,15 @@ local config = {
     hitboxOriginalSizes = {},
     hitboxLastSize = {},
     hitboxColor = Color3.fromRGB(255, 255, 255),
+    hitboxVisualizer = {
+        enabled = false,
+        shape = "Block",
+        material = "Neon",
+        transparency = 0.5,
+        color = Color3.fromRGB(255, 0, 0),
+        gap = 0.4
+    },
+    proxyHitboxes = {},
     antiAimEnabled = false,
     raycastAntiAim = false,
     antiAimTPDistance = 3,
@@ -1048,6 +1057,21 @@ local config = {
                 "and credit me if u did a snippet :(",
             },
             {
+                "sand.cc is an larper",
+                "it's a actual gravel larper",
+                "sand larps gravel",
+            },
+            {
+                "Guys he's hacking REPORT",
+                "EVERYBODY SPAM REPORT HIM",
+                "HACKER REPORTTT",
+            },
+            {
+                "steam",
+                "stop tryna kill us :(",
+                "hacker lives matter",
+            },
+            {
                 typesp = "2",
                 "I AM A SURGEON",
                 "I AM A SURGEON",
@@ -1072,6 +1096,18 @@ local config = {
                 "Kuru, Kuru, Kuru,\nKurikaesu, Kurikaesu, Kurikaesu",
                 "FuraFura, FuraFura,\nFurakutaru, Furakutaru, Furakutaru, Furakutaru",
                 "looping the rooms\ntype shi 💔",
+            },
+            {
+                "hey use the bgmtab\nif u want music ;3",
+                "it has '6 or 7' presets :7",
+                "676767",
+                "I'm sure u'll like da presets",
+                "I think...",
+            },
+            {
+                "why won't you read me???",
+                "you has reading deficiency\nor smth??",
+                "like vro I also need clout :(",
             },
             {
                 "proto conversion",
@@ -1123,6 +1159,9 @@ local config = {
                 "just pull the pin, pop it in the bowl,\nput the lid down",
                 "and let TOILET GRENADE do the rest!",
                 "BAAAAANNNNGGG!!!!",
+            },
+            {
+                "",
             },
             {
                 typesp = "2",
@@ -1177,6 +1216,20 @@ local config = {
                 "3-4, Buckle some moreeeee",
                 "5-6, Nike-y Kicks",
                 "OH-OH-OhHH THAT IS SO FIRE",
+            },
+            {
+                "''Hey it's me, it's verity''",
+                "''Ask me ANYTHING!''",
+                "I got a question",
+                "''I know about million things''",
+                "Well that's great!",
+                "''I'll do EVERYTHING!",
+                "Alright!",
+                "What's the capital of france?",
+                "''Oh oui oui oui''",
+                "''It is Parii''",
+                "",
+                "Horror Skunx ur\nNOT cooking ts",
             },
             {
                 typesp = "2.3",
@@ -3099,6 +3152,16 @@ local function saveConfig(saveName)
             hitboxEnabled = config.hitboxEnabled,
             hitboxTeamTarget = config.hitboxTeamTarget,
             hitboxSize = config.hitboxSize,
+            hitboxVisualizer_enabled = config.hitboxVisualizer.enabled or false,
+            hitboxVisualizer_shape = config.hitboxVisualizer.shape or "Block",
+            hitboxVisualizer_material = config.hitboxVisualizer.material or "Neon",
+            hitboxVisualizer_transparency = config.hitboxVisualizer.transparency or 0.5,
+            hitboxVisualizer_gap = config.hitboxVisualizer.gap or 0.4,
+            hitboxVisualizer_color = {
+                R = config.hitboxVisualizer.color.R,
+                G = config.hitboxVisualizer.color.G,
+                B = config.hitboxVisualizer.color.B
+            },
             reach_enabled = config.reach.enabled,
             reach_type = config.reach.type,
             reach_distance = config.reach.distance,
@@ -3966,6 +4029,28 @@ local function loadSave(saveName)
     if cfg.hitboxEnabled ~= nil then config.hitboxEnabled = cfg.hitboxEnabled end
     if cfg.hitboxTeamTarget then config.hitboxTeamTarget = cfg.hitboxTeamTarget end
     if cfg.hitboxSize then config.hitboxSize = cfg.hitboxSize end
+    if cfg.hitboxVisualizer_enabled ~= nil then 
+        config.hitboxVisualizer.enabled = cfg.hitboxVisualizer_enabled 
+    end
+    if cfg.hitboxVisualizer_shape then 
+        config.hitboxVisualizer.shape = cfg.hitboxVisualizer_shape 
+    end
+    if cfg.hitboxVisualizer_material then 
+        config.hitboxVisualizer.material = cfg.hitboxVisualizer_material 
+    end
+    if cfg.hitboxVisualizer_transparency then 
+        config.hitboxVisualizer.transparency = cfg.hitboxVisualizer_transparency 
+    end
+    if cfg.hitboxVisualizer_gap then 
+        config.hitboxVisualizer.gap = cfg.hitboxVisualizer_gap 
+    end
+    if cfg.hitboxVisualizer_color then
+        config.hitboxVisualizer.color = Color3.new(
+            cfg.hitboxVisualizer_color.R or 1,
+            cfg.hitboxVisualizer_color.G or 0,
+            cfg.hitboxVisualizer_color.B or 0
+        )
+    end
     if cfg.reach_enabled ~= nil then config.reach.enabled = cfg.reach_enabled end
     if cfg.reach_type then config.reach.type = cfg.reach_type end
     if cfg.reach_distance then config.reach.distance = cfg.reach_distance end
@@ -4133,6 +4218,15 @@ local function loadSave(saveName)
         end
     end)
     pcall(function()
+        if config.hitboxVisualizer.enabled and config.hitboxEnabled then
+            for _, target in ipairs(getAllTargets()) do
+                if targethb(target) then
+                    updateproxyhb(target)
+                end
+            end
+        end
+    end)
+    pcall(function()
         if config.Viewing then
             local tempView = config.Viewing
             config.Viewing = false
@@ -4171,7 +4265,7 @@ local function loadSave(saveName)
                 
                 local function isNPCEnemy(model)
                     if not model or not model:IsA("Model") then return false end
-                    if Players:GetPlayerFromCharacter(model) then return false end
+                    if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
                     local humanoid = model:FindFirstChildOfClass("Humanoid")
                     if not humanoid or humanoid.Health <= 0 then return false end
                     if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
@@ -4180,7 +4274,7 @@ local function loadSave(saveName)
                     elseif config.masterTeamTarget == "Enemies" then
                         local npcTeam = model:FindFirstChild("Team")
                         if npcTeam then
-                            local localTeam = Players.LocalPlayer.Team
+                            local localTeam = excusemesir.Players.LocalPlayer.Team
                             if localTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
                                 return localTeam ~= npcTeam.Value
                             end
@@ -4189,7 +4283,7 @@ local function loadSave(saveName)
                     elseif config.masterTeamTarget == "Teams" then
                         local npcTeam = model:FindFirstChild("Team")
                         if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                            local localTeam = Players.LocalPlayer.Team
+                            local localTeam = excusemesir.Players.LocalPlayer.Team
                             if localTeam then
                                 return localTeam == npcTeam.Value
                             end
@@ -5539,7 +5633,7 @@ end
 
 local function isNPCModel(model)
     if not model or not model:IsA("Model") then return false end
-    if Players:GetPlayerFromCharacter(model) then return false end
+    if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
     local humanoid = model:FindFirstChildOfClass("Humanoid")
     if humanoid and humanoid.Health ~= nil then
         if model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head") then
@@ -5586,7 +5680,7 @@ local function getAllTargets(getTargetSeen)
     if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
         for _, obj in ipairs(Workspace:GetDescendants()) do
             if obj:IsA("Model") and isNPCModel(obj) then
-                if not Players:GetPlayerFromCharacter(obj) then
+                if not excusemesir.Players:GetPlayerFromCharacter(obj) then
                     if getTargetSeen then
                         local head = obj:FindFirstChild("Head")
                         local root = obj:FindFirstChild("HumanoidRootPart")
@@ -7387,6 +7481,132 @@ local function restorePartForPlayer(targetPlayer)
     config.centerLocked[targetPlayer] = nil
 end
 
+local function proxyhb(targetPlayer)
+    if not targetPlayer then return nil end
+    if targetPlayer == localPlayer then return nil end
+    local char = getTargetCharacter(targetPlayer)
+    if not char then return nil end
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+    if not torso then return nil end
+    if config.proxyHitboxes[targetPlayer] then
+        config.proxyHitboxes[targetPlayer]:Destroy()
+        config.proxyHitboxes[targetPlayer] = nil
+    end
+    
+    local proxyPart = Instance.new("Part")
+    proxyPart.Name = "ProxyHitbox_" .. tostring(math.random(10000, 99999))
+    proxyPart.Anchored = false
+    proxyPart.CanCollide = false
+    proxyPart.Massless = true
+    proxyPart.CastShadow = false
+    proxyPart.Transparency = config.hitboxVisualizer.transparency or 0.5
+    proxyPart.Color = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0)
+    local gap = config.hitboxVisualizer.gap or 0.4
+    local baseSize = torso.Size
+    local proxySize = Vector3.new(
+        math.max(baseSize.X - gap, 0.1),
+        math.max(baseSize.Y - gap, 0.1),
+        math.max(baseSize.Z - gap, 0.1)
+    )
+    proxyPart.Size = proxySize
+    
+    proxyPart.Material = config.materials[config.hitboxVisualizer.material] or Enum.Material.Neon
+    if config.hitboxVisualizer.shape == "Sphere" then
+        proxyPart.Shape = Enum.PartType.Ball
+    else
+        proxyPart.Shape = Enum.PartType.Block
+    end
+    
+    proxyPart.Parent = workspace
+    config.proxyHitboxes[targetPlayer] = proxyPart
+    local weld = Instance.new("Weld")
+    weld.Name = "ProxyWeld"
+    weld.Part0 = proxyPart
+    weld.Part1 = torso
+    weld.C0 = CFrame.new(0, 0, 0)
+    weld.Parent = proxyPart
+    
+    return proxyPart
+end
+
+local function updateproxyhb(targetPlayer)
+    if not targetPlayer then return end
+    if not config.hitboxVisualizer.enabled then
+        if config.proxyHitboxes[targetPlayer] then
+            config.proxyHitboxes[targetPlayer]:Destroy()
+            config.proxyHitboxes[targetPlayer] = nil
+        end
+        return
+    end
+    
+    local char = getTargetCharacter(targetPlayer)
+    if not char then return end
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+    if not torso then return end
+    local proxyPart = config.proxyHitboxes[targetPlayer]
+    if not proxyPart or not proxyPart.Parent then
+        proxyPart = proxyhb(targetPlayer)
+        if not proxyPart then return end
+    end
+    
+    local hitboxSize = config.hitboxSize or 10
+    local actualSize = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
+    local gap = config.hitboxVisualizer.gap or 0.4
+    local proxySize = Vector3.new(
+        math.max(actualSize.X - gap, 0.1),
+        math.max(actualSize.Y - gap, 0.1),
+        math.max(actualSize.Z - gap, 0.1)
+    )
+    
+    proxyPart.Size = proxySize
+    proxyPart.Transparency = config.hitboxVisualizer.transparency or 0.5
+    proxyPart.Color = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0)
+    proxyPart.Material = config.materials[config.hitboxVisualizer.material] or Enum.Material.Neon
+    if config.hitboxVisualizer.shape == "Sphere" then
+        proxyPart.Shape = Enum.PartType.Ball
+    else
+        proxyPart.Shape = Enum.PartType.Block
+    end
+--[[
+    pcall(function()
+        torso.Transparency = 1
+        torso.CanCollide = false
+        torso.Massless = true
+    end)
+]]
+end
+
+local function updateeveryproxyeva()
+    if not config.hitboxVisualizer.enabled then
+        for player, proxy in pairs(config.proxyHitboxes) do
+            if proxy and proxy.Parent then
+                proxy:Destroy()
+            end
+        end
+        config.proxyHitboxes = {}
+        return
+    end
+    for _, target in ipairs(getAllTargets()) do
+        if target ~= localPlayer and targethb(target) then
+            updateproxyhb(target)
+        end
+    end
+    local toRemove = {}
+    for player, proxy in pairs(config.proxyHitboxes) do
+        if not targethb(player) or not getTargetCharacter(player) then
+            table.insert(toRemove, player)
+        end
+    end
+    
+    for _, player in ipairs(toRemove) do
+        if config.proxyHitboxes[player] then
+            config.proxyHitboxes[player]:Destroy()
+            config.proxyHitboxes[player] = nil
+        end
+    end
+end
+
+
 local function tnormalsize(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
     if not char then return end  
@@ -7407,6 +7627,10 @@ local function expandhb(targetPlayer, size)
     
     if not config.hitboxEnabled then 
         restoreTorso(targetPlayer)
+        if config.proxyHitboxes[targetPlayer] then
+            config.proxyHitboxes[targetPlayer]:Destroy()
+            config.proxyHitboxes[targetPlayer] = nil
+        end
         return 
     end
 
@@ -7428,17 +7652,26 @@ local function expandhb(targetPlayer, size)
     if config.hitboxEnabled then
         pcall(function()
             torso.Size = expansionSize
-            torso.Transparency = 0.9
+            if config.hitboxVisualizer.enabled then
+                torso.Transparency = 1
+            else
+                torso.Transparency = 1
+            end
             torso.CanCollide = false
-            torso.Massless = false
+            torso.Massless = true
             if config.hitboxColor then
                 torso.Color = config.hitboxColor
             else
                 torso.Color = Color3.fromRGB(255, 255, 255)
             end
         end)
+        if config.hitboxVisualizer.enabled then
+            updateproxyhb(targetPlayer)
+        end
     end
 end
+
+
 local function restoreTorso(targetPlayer)
     if not targetPlayer then return end  
 
@@ -7453,7 +7686,12 @@ local function restoreTorso(targetPlayer)
 
     config.hitboxExpandedParts[targetPlayer] = nil
     config.hitboxOriginalSizes[targetPlayer] = nil
+    if config.proxyHitboxes[targetPlayer] then
+        config.proxyHitboxes[targetPlayer]:Destroy()
+        config.proxyHitboxes[targetPlayer] = nil
+    end
 end
+
 local function updateHitboxes()
     if not config.hitboxEnabled then  
         local targetsToRemove = {}
@@ -7462,6 +7700,15 @@ local function updateHitboxes()
         end
         for _, player in ipairs(targetsToRemove) do
             restoreTorso(player)
+        end
+        
+        if config.hitboxVisualizer.enabled then
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    proxy:Destroy()
+                end
+            end
+            config.proxyHitboxes = {}
         end
         return  
     end
@@ -7479,10 +7726,18 @@ local function updateHitboxes()
                 if torso and data.targetSize then
                     pcall(function()
                         torso.Size = data.targetSize
-                        torso.Transparency = 0.9
+                        if config.hitboxVisualizer.enabled then
+                            torso.Transparency = 1
+                        else
+                            torso.Transparency = 1
+                        end
                         torso.CanCollide = false
                         torso.Massless = true
                     end)
+                    
+                    if config.hitboxVisualizer.enabled then
+                        updateproxyhb(player)
+                    end
                 else
                     table.insert(targetsToRemove, player)
                 end
@@ -7492,6 +7747,10 @@ local function updateHitboxes()
     
     for _, player in ipairs(targetsToRemove) do
         restoreTorso(player)
+        if config.proxyHitboxes[player] then
+            config.proxyHitboxes[player]:Destroy()
+            config.proxyHitboxes[player] = nil
+        end
     end
 end
 
@@ -8564,13 +8823,17 @@ game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
     end
 end)
 end
-
 -- bk
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     aimbotUpdate()
     updateLineESP()
     hb()
     antiAimUpdate()
+--[[
+    if config.hitboxVisualizer.enabled and config.hitboxEnabled then
+        updateeveryproxyeva()()
+    end
+]]
 end)
 
 local function isMobileDevice()
@@ -9901,7 +10164,7 @@ local function rng4()
     end
     return tag
 end
-function rng()
+local function rng()
     local Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
     local YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
     local Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)]
@@ -9918,7 +10181,7 @@ function rng()
         }
     })
 end
-function rng2()
+local function rng2()
     local bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)]
     local bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
     local bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
@@ -9933,8 +10196,6 @@ function rng2()
 end
 task.wait(0.2)
 uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
-rng()
-rng2()
 rng4()
 task.spawn(function()
     task.wait(0.5)
@@ -11218,26 +11479,23 @@ VisualsTab:Paragraph({
 })
 
 VisualsTab:Colorpicker({
-    Title = "Hitbox Color",
-    Desc = "Color for expanded hitboxes",
-    Default = config.hitboxColor or Color3.fromRGB(255, 255, 255),
+    Title = "Visualizer Color",
+    Desc = "Color of the Hitbox",
+    Default = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0),
     Transparency = 0,
     Locked = false,
     LockedTitle = "Locked message",
     Callback = function(color)
-        config.hitboxColor = color
-        if config.hitboxEnabled then
-            for player, data in pairs(config.hitboxExpandedParts) do
-                if data.part and data.part.Parent then
-                    pcall(function()
-                        data.part.Color = color
-                    end)
+        config.hitboxVisualizer.color = color
+        if config.hitboxVisualizer.enabled then
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    proxy.Color = color
                 end
             end
         end
     end
 })
-
 VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "Reach Colors",
@@ -12264,6 +12522,103 @@ local HitboxTab = Window:Tab({
             end
         end
     })
+HitboxTab:Paragraph({
+    Title = "Hitbox Visualizer",
+    Desc = "make za Hitbox visible and eye pleasing type shi",
+    Color = config.Gradow.uicolor.lightGreen
+})
+
+HitboxTab:Toggle({
+    Title = "Enable Visualizer",
+    Desc = "Show hitbox visualizer :7",
+    Value = config.hitboxVisualizer.enabled or false,
+    Callback = function(v)
+        config.hitboxVisualizer.enabled = v
+        if v then
+            for _, target in ipairs(getAllTargets()) do
+                if targethb(target) then
+                    updateproxyhb(target)
+                end
+            end
+            n({
+                Title = "Hitbox Visualizer",
+                Content = v and "Enabled" or "Disabled",
+                Audio = "rbxassetid://17208361335",
+                Length = 1,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        else
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    proxy:Destroy()
+                end
+            end
+            config.proxyHitboxes = {}
+        end
+    end
+})
+
+HitboxTab:Dropdown({
+    Title = "Visualizer Shape",
+    Desc = "Shape of the proxy hitbox\n(who needs ts)",
+    Values = {"Block", "Sphere"},
+    Value = config.hitboxVisualizer.shape or "Block",
+    Multi = false,
+    Callback = function(Option)
+        config.hitboxVisualizer.shape = Option
+        if config.hitboxVisualizer.enabled then
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    if Option == "Sphere" then
+                        proxy.Shape = Enum.PartType.Ball
+                    else
+                        proxy.Shape = Enum.PartType.Block
+                    end
+                end
+            end
+        end
+    end
+})
+
+HitboxTab:Dropdown({
+    Title = "Visualizer Material",
+    Desc = "Material changer bs",
+    Values = {"ForceField", "Plastic", "Glass", "Neon", "SmoothPlastic", "Metal", "DiamondPlate"},
+    Value = config.hitboxVisualizer.material or "Neon",
+    Multi = false,
+    Callback = function(Option)
+        config.hitboxVisualizer.material = Option
+        if config.hitboxVisualizer.enabled then
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    proxy.Material = config.materials[Option] or Enum.Material.Neon
+                end
+            end
+        end
+    end
+})
+
+HitboxTab:Slider({
+    Title = "Visualizer Transparency",
+    Desc = "Hitbox Transparency\n(self-explanatory)",
+    Step = 0.05,
+    Value = {
+        Min = 0,
+        Max = 1,
+        Default = config.hitboxVisualizer.transparency or 0.5
+    },
+    Callback = function(value)
+        config.hitboxVisualizer.transparency = value
+        if config.hitboxVisualizer.enabled then
+            for player, proxy in pairs(config.proxyHitboxes) do
+                if proxy and proxy.Parent then
+                    proxy.Transparency = value
+                end
+            end
+        end
+    end
+})
 end
 
 local ReachTab = Window:Tab({
@@ -13385,7 +13740,7 @@ MiscTab:Toggle({
             elseif config.masterTeamTarget == "Enemies" then
                 local npcTeam = model:FindFirstChild("Team")
                 if npcTeam then
-                    local localTeam = Players.LocalPlayer.Team
+                    local localTeam = excusemesir.Players.LocalPlayer.Team
                     if localTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
                         return localTeam ~= npcTeam.Value
                     end
@@ -13394,7 +13749,7 @@ MiscTab:Toggle({
             elseif config.masterTeamTarget == "Teams" then
                 local npcTeam = model:FindFirstChild("Team")
                 if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                    local localTeam = Players.LocalPlayer.Team
+                    local localTeam = excusemesir.Players.LocalPlayer.Team
                     if localTeam then
                         return localTeam == npcTeam.Value
                     end
@@ -13638,7 +13993,7 @@ local BGMTab = Window:Tab({
 }) do
     BGMTab:Paragraph({
         Title = "Music Player",
-        Desc = "Play background music while using Gravel",
+        Desc = "Play background music while using Gravel! >;D",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -13839,8 +14194,8 @@ local BGMTab = Window:Tab({
     })
     
     BGMTab:Button({
-        Title = "Save BMG",
-        Desc = "Save current music settings",
+        Title = "Save BGM",
+        Desc = "Save current music settings :7",
         Icon = "save",
         Callback = function()
             local success = BMG:save()
@@ -13867,8 +14222,8 @@ local BGMTab = Window:Tab({
     })
     
     BGMTab:Button({
-        Title = "Reload BMG",
-        Desc = "Reload da saved music settings (it can also autoload btw)",
+        Title = "Reload BGM",
+        Desc = "Reload da saved music settings\n(it can also autoload btw)",
         Icon = "download",
         Callback = function()
             local success = BMG:load()
@@ -14904,7 +15259,9 @@ local function cleanup()
             config.desyncRespawnConnection:Disconnect()
             config.desyncRespawnConnection = nil
         end
-        BMG:cleanup()
+        for i = 1, 5 do
+            BMG:cleanup()
+        end
         config.desyncActive = false
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
@@ -14949,6 +15306,12 @@ local function cleanup()
             lzl.loaded = {}
             lzl.q = {}
         end
+        for player, proxy in pairs(config.proxyHitboxes) do
+            if proxy and proxy.Parent then
+                proxy:Destroy()
+            end
+        end
+        config.proxyHitboxes = {}
         _G.destroyInitGui()
         for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
@@ -14977,7 +15340,7 @@ task.spawn(function()
     end
 end)
 
-local LowRender = function()
+local function LowRender()
     if config and config.LowRender then
         pcall(function()
             pc2()
@@ -15067,6 +15430,8 @@ Window:OnDestroy(function()
     print("Gravel.cc closed :(")
 end)
 _G.destroyInitGui()
+rng()
+rng2()
 task.wait(2.5)
 loadstring(gist(urls.hbsshandlecorpses))()
 loadstring(gist(urls.sa2findtool))()
