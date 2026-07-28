@@ -1945,11 +1945,11 @@ function InitGui:destroy()
         self.codeScroller = nil
     end
 end
-
 local initGui = InitGui.new():create()
-_G.destroyInitGui = function()
+getgenv().destroyInitGui = function()
     if initGui then
         initGui:destroy()
         initGui = nil
     end
 end
+getgenv().InitGui_ = initGui
