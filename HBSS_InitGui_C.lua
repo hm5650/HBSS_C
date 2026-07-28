@@ -56,6 +56,7 @@ function InitGui.new()
     self.isTypingComplete = false
     self.codeLines = {}
     self.textLabels = {}
+    self.progressValue = 0
     return self
 end
 
@@ -470,6 +471,7 @@ function InitGui:startTypewriter()
     self.currentLine = 1
     self.typedLines = {}
     self.isTypingComplete = false
+    self.progressValue = 0
     
     -- Clear existing labels
     for _, label in ipairs(self.textLabels) do
@@ -481,6 +483,9 @@ function InitGui:startTypewriter()
     
     local lineHeight = 20
     local startY = 10
+    
+    -- SUPER ULTRA FAST TYPING SPEED (2500x)
+    local baseDelay = 0.000004  -- 2500x faster than normal (0.01 / 2500)
     
     self.typewriterTask = task.spawn(function()
         while self.gui and self.gui.Parent and self.currentLine <= #self.codeLines do
@@ -501,7 +506,7 @@ function InitGui:startTypewriter()
             label.Parent = self.codeScroller
             table.insert(self.textLabels, label)
             
-            -- Type out the line character by character
+            -- Type out the line character by character - SUPER FAST
             local typed = ""
             local lineLength = #lineText
             
@@ -513,39 +518,29 @@ function InitGui:startTypewriter()
                 typed = typed .. lineText:sub(i, i)
                 label.Text = typed
                 
-                -- Random typing speed for realism
-                local delay
+                -- Ultra fast typing with slight variation
                 local char = lineText:sub(i, i)
-                if char == " " then
-                    delay = 0.03 + math.random() * 0.02
-                elseif char == "," or char == "{" or char == "}" or char == "=" then
-                    delay = 0.04 + math.random() * 0.03
-                elseif char == "\"" or char == "(" or char == ")" then
-                    delay = 0.02 + math.random() * 0.02
-                else
-                    delay = 0.01 + math.random() * 0.04
-                end
+                local delay = baseDelay
                 
-                -- Occasionally pause for dramatic effect
-                if math.random() < 0.008 then
-                    delay = delay + 0.05
+                -- Small variations for visual interest even at high speed
+                if char == "," or char == "{" or char == "}" or char == "=" then
+                    delay = baseDelay * 2
+                elseif char == "\"" or char == "(" or char == ")" then
+                    delay = baseDelay * 1.5
                 end
                 
                 task.wait(delay)
                 
                 -- Update progress
                 local totalLines = #self.codeLines
-                local progress = ((self.currentLine - 1) + (i / lineLength)) / totalLines
+                self.progressValue = ((self.currentLine - 1) + (i / lineLength)) / totalLines
                 if self.progressFill then
-                    self.progressFill.Size = UDim2.fromScale(math.min(progress, 1), 1)
+                    self.progressFill.Size = UDim2.fromScale(math.min(self.progressValue, 1), 1)
                 end
             end
             
-            -- Fade in the line
-            local tween = game:GetService("TweenService"):Create(label, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                TextTransparency = 0
-            })
-            tween:Play()
+            -- Fade in the line instantly at this speed
+            label.TextTransparency = 0
             
             -- Scroll down as we type
             local canvasPos = self.codeScroller.CanvasPosition
@@ -556,23 +551,27 @@ function InitGui:startTypewriter()
             
             self.currentLine = self.currentLine + 1
             
-            -- Small pause between lines
+            -- Minimal pause between lines
             if self.currentLine <= #self.codeLines then
-                task.wait(0.02 + math.random() * 0.03)
+                task.wait(baseDelay * 50)
             end
         end
         
         self.isTypingComplete = true
+        self.progressValue = 1
+        if self.progressFill then
+            self.progressFill.Size = UDim2.fromScale(1, 1)
+        end
         
-        -- Final animation: flash the closing brace
+        -- Quick flash animation on completion
         if #self.textLabels > 0 then
             local lastLabel = self.textLabels[#self.textLabels]
             if lastLabel then
-                for i = 1, 3 do
+                for i = 1, 2 do
                     lastLabel.TextColor3 = Color3.fromRGB(255, 255, 100)
-                    task.wait(0.1)
+                    task.wait(0.05)
                     lastLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-                    task.wait(0.1)
+                    task.wait(0.05)
                 end
             end
         end
@@ -591,13 +590,12 @@ function InitGui:startScrollLoop()
         if not self.codeScroller then return end
         local canvasHeight = self.codeScroller.CanvasSize.Y.Offset
         local startPos = 0
-        local speed = 80 -- Much slower for a relaxed feel
+        local speed = 80
         
         while self.gui and self.gui.Parent do
             startPos = startPos + speed * 0.03
             if startPos > canvasHeight - self.codeScroller.AbsoluteSize.Y + 20 then
                 startPos = 0
-                -- Pause at bottom before restarting
                 task.wait(1.5)
             end
             self.codeScroller.CanvasPosition = Vector2.new(0, startPos)
@@ -608,6 +606,12 @@ end
 
 function InitGui:destroy()
     if self.gui and self.gui.Parent then
+        -- Set progress to 100% immediately
+        if self.progressFill then
+            self.progressFill.Size = UDim2.fromScale(1, 1)
+        end
+        self.progressValue = 1
+        
         if self.dotTask then
             task.cancel(self.dotTask)
             self.dotTask = nil
