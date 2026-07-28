@@ -1874,7 +1874,7 @@ function InitGui:startAnimations()
         if not self.codeScroller then return end
         local canvasHeight = self.codeScroller.CanvasSize.Y.Offset
         local startPos = 0
-        local speed = 30
+        local speed = 250
         
         while self.gui and self.gui.Parent do
             startPos = startPos + speed * 0.03
