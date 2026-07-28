@@ -10783,7 +10783,7 @@ local Config = {
     MEMORY_CLEANUP_THRESHOLD = 500,
 }
 
-local Optiz = loadstring(gist('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
+local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
                     setclipboard(code)
                     WindUI:Notify({
                         Title = "Optimization",
