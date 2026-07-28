@@ -39,114 +39,8 @@ function InitGui.new()
         "al dente and tangled...",
         "bon appetit..."
     }
-    self.dotCount = 0
-    self.dotTask = nil
-    self.statusTask = nil
-    self.scrollTask = nil
-    self.gui = nil
-    self.bg = nil
-    self.title = nil
-    self.status = nil
-    self.dots = nil
-    self.codeBg = nil
-    self.codeLabel = nil
-    self.lineCount = 0
-    self.currentLine = 0
-    self.scrollSpeed = 1
-    self.codeLines = {}
-    return self
-end
 
-function InitGui:create()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "InitializingGui"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    gui.Parent = game:GetService("CoreGui")
-    self.gui = gui
-
-    local bg = Instance.new("Frame")
-    bg.Size = UDim2.fromScale(1, 1)
-    bg.BackgroundColor3 = Color3.new(0, 0, 0)
-    bg.BackgroundTransparency = 0.85
-    bg.Parent = gui
-    self.bg = bg
-
-    local codeBg = Instance.new("Frame")
-    codeBg.Size = UDim2.fromScale(0.5, 1)
-    codeBg.Position = UDim2.fromScale(0, 0)
-    codeBg.BackgroundTransparency = 1
-    codeBg.ClipsDescendants = true
-    codeBg.Parent = bg
-    self.codeBg = codeBg
-    local codeLabel = Instance.new("TextLabel")
-    codeLabel.Size = UDim2.fromScale(1, 1)
-    codeLabel.Position = UDim2.fromScale(0, 0)
-    codeLabel.BackgroundTransparency = 1
-    codeLabel.Text = ""
-    codeLabel.Font = Enum.Font.Code
-    codeLabel.TextSize = 11
-    codeLabel.TextColor3 = Color3.fromRGB(80, 80, 80)
-    codeLabel.TextTransparency = 0.6
-    codeLabel.TextXAlignment = Enum.TextXAlignment.Left
-    codeLabel.TextYAlignment = Enum.TextYAlignment.Top
-    codeLabel.Parent = codeBg
-    self.codeLabel = codeLabel
-
-    local center = Instance.new("Frame")
-    center.Size = UDim2.fromScale(0.3, 0.25)
-    center.Position = UDim2.fromScale(0.5, 0.5)
-    center.AnchorPoint = Vector2.new(0.5, 0.5)
-    center.BackgroundTransparency = 1
-    center.Parent = bg
-
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.fromScale(1, 0.35)
-    title.Position = UDim2.fromScale(0.5, 0.2)
-    title.AnchorPoint = Vector2.new(0.5, 0.5)
-    title.Text = "initializing"
-    title.Font = Enum.Font.Code
-    title.TextSize = 24
-    title.TextColor3 = Color3.fromRGB(200, 200, 200)
-    title.TextTransparency = 0
-    title.BackgroundTransparency = 1
-    title.Parent = center
-    self.title = title
-
-    local status = Instance.new("TextLabel")
-    status.Size = UDim2.fromScale(1, 0.3)
-    status.Position = UDim2.fromScale(0.5, 0.55)
-    status.AnchorPoint = Vector2.new(0.5, 0.5)
-    status.Text = "fetching random asset files..."
-    status.Font = Enum.Font.Code
-    status.TextSize = 14
-    status.TextColor3 = Color3.fromRGB(150, 150, 150)
-    status.TextTransparency = 0
-    status.BackgroundTransparency = 1
-    status.Parent = center
-    self.status = status
-
-    local dots = Instance.new("TextLabel")
-    dots.Size = UDim2.fromScale(1, 0.3)
-    dots.Position = UDim2.fromScale(0.5, 0.8)
-    dots.AnchorPoint = Vector2.new(0.5, 0.5)
-    dots.Text = ""
-    dots.Font = Enum.Font.Code
-    dots.TextSize = 18
-    dots.TextColor3 = Color3.fromRGB(200, 200, 200)
-    dots.TextTransparency = 0
-    dots.BackgroundTransparency = 1
-    dots.Parent = center
-    self.dots = dots
-
-    self:setupCodeLines()
-    self:startAnimations()
-    return self
-end
-
-function InitGui:setupCodeLines()
-    local configCode = [[
+    self.codeSnippet = [[
 local config = {
     confIg = "Gravel",
     startsa = false,
@@ -1813,14 +1707,121 @@ local config = {
 }
 ]]
 
-    self.codeLines = {}
-    for line in configCode:gmatch("[^\n]*\n?") do
-        if line:match("%S") then
-            table.insert(self.codeLines, line)
-        end
+    self.dotCount = 0
+    self.dotTask = nil
+    self.statusTask = nil
+    self.codeScrollTask = nil
+    self.gui = nil
+    self.bg = nil
+    self.title = nil
+    self.status = nil
+    self.dots = nil
+    self.codeFrame = nil
+    self.codeLabel = nil
+    return self
+end
+
+function InitGui:create()
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "InitializingGui"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = game:GetService("CoreGui")
+    self.gui = gui
+
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.fromScale(1, 1)
+    bg.BackgroundColor3 = Color3.new(0, 0, 0)
+    bg.BackgroundTransparency = 0.7
+    bg.Parent = gui
+    self.bg = bg
+
+    local codeFrame = Instance.new("ScrollingFrame")
+    codeFrame.Size = UDim2.new(0.35, 0, 1, 0)
+    codeFrame.Position = UDim2.new(0, 10, 0, 10)
+    codeFrame.BackgroundTransparency = 1
+    codeFrame.BorderSizePixel = 0
+    codeFrame.ClipsDescendants = true
+    codeFrame.ScrollBarThickness = 0
+    codeFrame.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Left
+    codeFrame.ZIndex = 1
+    codeFrame.Parent = bg
+    self.codeFrame = codeFrame
+
+    local codeLabel = Instance.new("TextLabel")
+    codeLabel.Size = UDim2.new(1, 0, 0, 0)
+    codeLabel.BackgroundTransparency = 1
+    codeLabel.Text = self.codeSnippet
+    codeLabel.Font = Enum.Font.Code
+    codeLabel.TextSize = 11
+    codeLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    codeLabel.TextTransparency = 0.65
+    codeLabel.TextXAlignment = Enum.TextXAlignment.Left
+    codeLabel.TextYAlignment = Enum.TextYAlignment.Top
+    codeLabel.TextWrapped = false
+    codeLabel.Parent = codeFrame
+    self.codeLabel = codeLabel
+
+    local lines = {}
+    for line in string.gmatch(self.codeSnippet, "[^\n]*") do
+        table.insert(lines, line)
     end
-    self.lineCount = #self.codeLines
-    self.currentLine = 0
+    local lineHeight = 18
+    local totalHeight = #lines * lineHeight
+    codeLabel.Size = UDim2.new(1, 0, 0, totalHeight)
+    codeFrame.CanvasSize = UDim2.new(0, 0, totalHeight, 0)
+
+    local center = Instance.new("Frame")
+    center.Size = UDim2.fromScale(0.3, 0.25)
+    center.Position = UDim2.fromScale(0.5, 0.5)
+    center.AnchorPoint = Vector2.new(0.5, 0.5)
+    center.BackgroundTransparency = 1
+    center.ZIndex = 2
+    center.Parent = bg
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.fromScale(1, 0.35)
+    title.Position = UDim2.fromScale(0.5, 0.2)
+    title.AnchorPoint = Vector2.new(0.5, 0.5)
+    title.Text = "initializing"
+    title.Font = Enum.Font.Code
+    title.TextSize = 24
+    title.TextColor3 = Color3.fromRGB(200, 200, 200)
+    title.TextTransparency = 0
+    title.BackgroundTransparency = 1
+    title.Parent = center
+    self.title = title
+
+    local status = Instance.new("TextLabel")
+    status.Size = UDim2.fromScale(1, 0.3)
+    status.Position = UDim2.fromScale(0.5, 0.55)
+    status.AnchorPoint = Vector2.new(0.5, 0.5)
+    status.Text = "fetching random asset files..."
+    status.Font = Enum.Font.Code
+    status.TextSize = 14
+    status.TextColor3 = Color3.fromRGB(150, 150, 150)
+    status.TextTransparency = 0
+    status.BackgroundTransparency = 1
+    status.Parent = center
+    self.status = status
+
+    local dots = Instance.new("TextLabel")
+    dots.Size = UDim2.fromScale(1, 0.3)
+    dots.Position = UDim2.fromScale(0.5, 0.8)
+    dots.AnchorPoint = Vector2.new(0.5, 0.5)
+    dots.Text = ""
+    dots.Font = Enum.Font.Code
+    dots.TextSize = 18
+    dots.TextColor3 = Color3.fromRGB(200, 200, 200)
+    dots.TextTransparency = 0
+    dots.BackgroundTransparency = 1
+    dots.Parent = center
+    self.dots = dots
+
+    self:startAnimations()
+    self:startCodeScroll()
+    return self
 end
 
 function InitGui:startAnimations()
@@ -1853,37 +1854,27 @@ function InitGui:startAnimations()
             task.wait(0.1)
         end
     end)
+end
 
-    self.scrollTask = task.spawn(function()
+function InitGui:startCodeScroll()
+    if not self.codeFrame or not self.codeLabel then return end
+
+    local frameHeight = self.codeFrame.AbsoluteSize.Y or 400
+    local totalHeight = self.codeLabel.AbsoluteSize.Y or 2000
+    if totalHeight <= frameHeight then return end
+
+    local maxScroll = totalHeight - frameHeight
+
+    self.codeScrollTask = task.spawn(function()
         while self.gui and self.gui.Parent do
-            if self.lineCount > 0 then
-                local linesToShow = {}
-                local totalVisibleLines = 30
-                local startLine = math.max(1, self.currentLine - totalVisibleLines + 1)
-                local endLine = math.min(self.lineCount, self.currentLine)
-                
-                for i = startLine, endLine do
-                    table.insert(linesToShow, self.codeLines[i])
-                end
-                
-                local displayText = table.concat(linesToShow, "\n")
-                self.codeLabel.Text = displayText
-                
-                local totalHeight = self.lineCount * 14
-                local visibleHeight = totalVisibleLines * 14
-                local maxOffset = math.max(0, totalHeight - visibleHeight)
-                local progress = self.currentLine / self.lineCount
-                local offset = -maxOffset * progress
-                
-                self.codeLabel.Position = UDim2.fromScale(0, offset / (visibleHeight + 50))
-                
-                self.currentLine = self.currentLine + self.scrollSpeed
-                if self.currentLine > self.lineCount + totalVisibleLines then
-                    self.currentLine = 0
-                    task.wait(1)
-                end
-            end
-            task.wait(0.05)
+            local tween = game:GetService("TweenService"):Create(self.codeFrame, TweenInfo.new(30, Enum.EasingStyle.Linear), {
+                CanvasPosition = Vector2.new(0, maxScroll)
+            })
+            tween:Play()
+            tween.Completed:Wait()
+
+            self.codeFrame.CanvasPosition = Vector2.new(0, 0)
+            task.wait(1)
         end
     end)
 end
@@ -1898,11 +1889,11 @@ function InitGui:destroy()
             task.cancel(self.statusTask)
             self.statusTask = nil
         end
-        if self.scrollTask then
-            task.cancel(self.scrollTask)
-            self.scrollTask = nil
+        if self.codeScrollTask then
+            task.cancel(self.codeScrollTask)
+            self.codeScrollTask = nil
         end
-        
+
         local fadeOut = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
         if self.bg then
             game:GetService("TweenService"):Create(self.bg, fadeOut, {BackgroundTransparency = 1}):Play()
@@ -1919,6 +1910,7 @@ function InitGui:destroy()
         if self.codeLabel then
             game:GetService("TweenService"):Create(self.codeLabel, fadeOut, {TextTransparency = 1}):Play()
         end
+
         task.wait(0.7)
         self.gui:Destroy()
         self.gui = nil
@@ -1926,7 +1918,7 @@ function InitGui:destroy()
         self.title = nil
         self.status = nil
         self.dots = nil
-        self.codeBg = nil
+        self.codeFrame = nil
         self.codeLabel = nil
     end
 end
@@ -1938,3 +1930,5 @@ _G.destroyInitGui = function()
         initGui = nil
     end
 end
+
+return InitGuiModule
