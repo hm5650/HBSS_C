@@ -22,11 +22,11 @@ print([[
 ]])
 
 -- Gravel.cc (or HBSS :v)
-if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
+if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ then
     return
 end
-getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = true
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 
 local excusemesir = {
@@ -76,17 +76,17 @@ local CircleFrame = Instance.new("Frame")
 local UIStroke = Instance.new("UIStroke")
 local UICorner = Instance.new("UICorner")
 --                        ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
-local urls = {
+getgenv().HttpUrlz_ = {
     --hbss completely random useless & useful modules :]
-    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
-    hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh .. ".lua",
+    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -96,7 +96,7 @@ local urls = {
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
-function gist(url, how, sigma)
+function getgist_(url, how, sigma)
     how = how or 10
     sigma = sigma or 1
     local attempts = 0
@@ -123,7 +123,7 @@ function gist(url, how, sigma)
     error("can't get url :( after " .. how .. " attempts: " .. tostring(dat1error))
 end
 
-local lp_info = loadstring(gist(urls.showmyipadress_jk))()
+local lp_info = loadstring(getgist_(getgenv().HttpUrlz_.showmyipadress_jk))()
 print(lp_info.lp_username)
 print(lp_info.lp_displayname)
 print(lp_info.lp_id)
@@ -134,7 +134,7 @@ settings().Rendering.MeshPartDetailLevel = 1
 settings().Rendering.EagerBulkExecution = true
 
 -- unprofessionalism professionist 🥀
-local lzl = loadstring(gist(urls.lzlzlzlzlzl))()
+local lzl = loadstring(getgist_(getgenv().HttpUrlz_.lzlzlzlzlzl))()
 local fCfg = {
     core = {
         dep = {},
@@ -611,8 +611,8 @@ end
 
 lzl:setConfig(fCfg)
 lzl:loadEss()
-loadstring(gist(urls.hbssloader))()
-local Alurt = loadstring(gist(urls.imalurtingyou))()
+loadstring(getgist_(getgenv().HttpUrlz_.hbssloader))()
+local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
@@ -633,7 +633,7 @@ n({
 
 task.wait(2.30)
 pcall(function()
-loadstring(gist(urls.adonisabuse))()
+loadstring(getgist_(getgenv().HttpUrlz_.adonisabuse))()
 local getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, lower, gsub, match = getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, string.lower, string.gsub, string.match
 if getgenv().ED_AntiKick then
     return
@@ -732,10 +732,10 @@ n({
 })
 end)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
-local func = loadstring(gist(urls.sa2func))()
-local WindUI = loadstring(gist(urls.ilikedisui))()
-local SaveUI = loadstring(gist(urls.uithesavory))()
-local BMG = loadstring(gist(urls.hbssbmg))()
+local func = loadstring(getgist_(getgenv().HttpUrlz_.sa2func))()
+local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
+local SaveUI = loadstring(getgist_(getgenv().HttpUrlz_.uithesavory))()
+local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
@@ -756,7 +756,7 @@ local targetsInFOV = {}
 
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
-getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel = {
+getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
     Folder = "Gravel_Saves",
     Extension = ".json",
     CurrentSave = nil
@@ -2537,7 +2537,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
+function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -2734,17 +2734,17 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
 end
 
 local function getSavePath(saveName)
-    return getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder .. "/" .. saveName .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Extension
+    return getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder .. "/" .. saveName .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Extension
 end
 
 local function getSaveList()
     local saves = {}
-    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) then
+    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder) then
         return saves
     end
     
-    for _, file in ipairs(listfiles(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder)) do
-        local fileName = file:match("([^/]+)" .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Extension .. "$")
+    for _, file in ipairs(listfiles(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder)) do
+        local fileName = file:match("([^/]+)" .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Extension .. "$")
         if fileName then
             table.insert(saves, fileName)
         end
@@ -3217,8 +3217,8 @@ local function saveConfig(saveName)
         return false
     end
     
-    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) then
-        pcall(function() makefolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.Folder) end)
+    if not isfolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder) then
+        pcall(function() makefolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder) end)
     end
     
     local path = getSavePath(saveName)
@@ -3407,7 +3407,7 @@ local function deleteAllSaves()
                                     Duration = 4
                                 })
                             end
-                            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave = nil
+                            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
                             confirmCount = 0
                             if config.varibz.savesParagraph then
                                 local newDesc = savePara() .. "\nit refreshes now!"
@@ -4096,7 +4096,7 @@ local function loadSave(saveName)
     if cfg.varibz_lowpatcherwait then config.varibz.lowpatcherwait = cfg.varibz_lowpatcherwait end
     if cfg.varibz_patcher ~= nil then config.varibz.patcher = cfg.varibz_patcher end
     if cfg.varibz_lowpatcher ~= nil then config.varibz.lowpatcher = cfg.varibz_lowpatcher end
-    getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave = saveName
+    getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = saveName
     pcall(function()
         updateTeamTargetModes()
         syncSilentAimWithMaster()
@@ -4606,7 +4606,7 @@ local function savePara()
         saveText = saveText .. "  There isn't any saves 💔🥀"
     else
         for i, save in ipairs(saves) do
-            local isCurrent = (save == getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaavel.CurrentSave)
+            local isCurrent = (save == getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave)
             saveText = saveText .. "  " .. (isCurrent and "✓ " or "> ") .. save .. (isCurrent and "!" or "") .. "\n"
         end
     end
@@ -9947,7 +9947,7 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
-loadstring(gist(urls.ineedbloxycola))()
+loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
 
 local function rng4()
@@ -10235,7 +10235,7 @@ local function rng2()
     })
 end
 task.wait(0.2)
-uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
+uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
 rng4()
 task.spawn(function()
     task.wait(0.5)
@@ -13566,7 +13566,7 @@ MiscTab:Input({
         Title = "badapple (pls ignore)",
         Desc = "alt+f4",
         Callback = function()
-              loadstring(gist(urls.ewitsabadapple))()
+              loadstring(getgist_(getgenv().HttpUrlz_.ewitsabadapple))()
         end
     })
 
@@ -13574,7 +13574,7 @@ MiscTab:Input({
         Title = "bringparts (pls ignore)",
         Desc = "WHO FLUNGED ME1!!11!1 D:",
         Callback = function()
-              loadstring(gist(urls.tpuabasically))()
+              loadstring(getgist_(getgenv().HttpUrlz_.tpuabasically))()
         end
     })
 
@@ -13582,7 +13582,7 @@ MiscTab:Input({
         Title = "Brick.cc (pls ignore)",
         Desc = "I has da powa of unanchored (yes brick is back again :D!!1!1)",
         Callback = function()
-              loadstring(gist(urls.imbricked))()
+              loadstring(getgist_(getgenv().HttpUrlz_.imbricked))()
         end
     })
 
@@ -13628,7 +13628,7 @@ MiscTab:Input({
         Title = "iwanttobanishthisspecificplayer (pls ignore)",
         Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
         Callback = function()
-           loadstring(gist(urls.wflingguiname))()
+           loadstring(getgist_(getgenv().HttpUrlz_.wflingguiname))()
             WindUI:Notify({
                 Title = "insane gui name",
                 Content = "right???",
@@ -15339,7 +15339,7 @@ local function cleanup()
             end
         end
         config.proxyHitboxes = {}
-        _G.destroyInitGui()
+        getgenv().destroyInitGui()
         for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
         end
@@ -15348,7 +15348,7 @@ local function cleanup()
         end
         config.varibz.lowpatcher = false
         config.varibz.patcher = false
-        getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = false
+        getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
     end)
 end
 local function clearTargetCache()
@@ -15456,12 +15456,12 @@ Window:OnDestroy(function()
     cleanup()
     print("Gravel.cc closed :(")
 end)
-_G.destroyInitGui()
+getgenv().destroyInitGui()
 rng()
 rng2()
 task.wait(2.5)
-loadstring(gist(urls.hbsshandlecorpses))()
-loadstring(gist(urls.sa2findtool))()
+loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
+loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 return {
     config = config,
     lzl = lzl,
@@ -15476,7 +15476,7 @@ if not success then
     for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
         v:Enable()
     end
-    getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = false
+    getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
     warn("Gpssickle what kind of error is ts 🥀💔:" .. tostring(err))
     error(err)
 end
