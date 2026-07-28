@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “attempt to index nil with ____ BROOI SHUT UP” 
+           “dont craft hoes in Minecraft craft shovels” 
                                            
                                - Gpssickle
 ]])
@@ -26,8 +26,9 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh = "" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
+
 local excusemesir = {
     Players = game:GetService("Players"),
     RunService = game:GetService("RunService"),
@@ -44,6 +45,11 @@ local excusemesir = {
     CoreGui = game:GetService("CoreGui"),
     Teams = game:GetService("Teams"),
     StarterGui = game:GetService("StarterGui"),
+    MarketplaceService = game:GetService("MarketplaceService"),
+    ReplicatedStorage = game:GetService("ReplicatedStorage"),
+    ReplicatedFirst = game:GetService("ReplicatedFirst"),
+    ServerStorage = game:GetService("ServerStorage"),
+    TeleportService = game:GetService("TeleportService"),
 }
 
 
@@ -90,7 +96,7 @@ local urls = {
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
-local function gist(url, how, sigma)
+function gist(url, how, sigma)
     how = how or 10
     sigma = sigma or 1
     local attempts = 0
@@ -307,7 +313,7 @@ local fCfg = {
         load = function()
             if not config.camYOffsetEnabled then return false end
             if not config.camYOffsetConnection then
-                config.camYOffsetConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
                     if config.camYOffsetEnabled then
                         local cam = workspace.CurrentCamera
                         if cam then
@@ -341,7 +347,7 @@ local fCfg = {
         dep = {"core"},
         load = function()
             if not config.trussEnabled then return false end
-            local player = game.Players.LocalPlayer
+            local player = excusemesir.Players.LocalPlayer
             local character = player.Character
             if character then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
@@ -360,7 +366,7 @@ local fCfg = {
                     config.trussPart.Parent = workspace
                     config.trussPart.CanCollide = true
                     config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
-                    config.trussConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                    config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
                         if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
                             config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
                         else
@@ -392,7 +398,7 @@ local fCfg = {
         dep = {"core"},
         load = function()
             if not config.airwalkEnabled then return false end
-            local character = game.Players.LocalPlayer.Character
+            local character = excusemesir.Players.LocalPlayer.Character
             if character then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 if rootPart then
@@ -407,7 +413,7 @@ local fCfg = {
                         config.airwalkConnection:Disconnect()
                         config.airwalkConnection = nil
                     end
-                    config.airwalkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                    config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
                         if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
                             config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
                         else
@@ -441,7 +447,7 @@ local fCfg = {
             if not config.autorespawnEnabled then return false end
             config.autorespawnConnections = config.autorespawnConnections or {}
             config.autorespawnDeathPosition = nil
-            local player = game.Players.LocalPlayer
+            local player = excusemesir.Players.LocalPlayer
             local function setupRespawn(character)
                 local humanoid = character:WaitForChild("Humanoid")
                 local rootPart = character:WaitForChild("HumanoidRootPart")
@@ -496,7 +502,7 @@ local fCfg = {
         dep = {"core"},
         load = function()
             if not config.fbenabled then return false end
-            local lighting = game:GetService("Lighting")
+            local lighting = excusemesir.Lighting
             fullBrightSettings = {
                 Ambient = lighting.Ambient,
                 Brightness = lighting.Brightness,
@@ -515,7 +521,7 @@ local fCfg = {
         end,
         unload = function()
             if fullBrightSettings then
-                local lighting = game:GetService("Lighting")
+                local lighting = excusemesir.Lighting
                 for property, value in pairs(fullBrightSettings) do
                     lighting[property] = value
                 end
@@ -562,17 +568,6 @@ local fCfg = {
             return true
         end,
         unload = function() config.antiafk = false end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    fastspawn = {
-        dep = {"core"},
-        load = function()
-            if not config.fastspawn then return false end
-            return true
-        end,
-        unload = function() config.fastspawn = false end,
         prio = 4,
         ess = false,
         reqGame = true
@@ -653,7 +648,6 @@ local clonefunction = clonefunction or function(...)
 end
 
 local Players, LocalPlayer, StarterGui = cloneref(game:GetService("Players")), cloneref(game:GetService("Players").LocalPlayer), cloneref(game:GetService("StarterGui"))
-
 local SetCore = clonefunction(StarterGui.SetCore)
 local FindFirstChild = clonefunction(game.FindFirstChild)
 
@@ -935,7 +929,6 @@ local config = {
     SSEnabled = false,
     SpawnLocation = nil,
     SSConnection = nil,
-    fastspawn = false,
     antiafk = false,
     Viewing = false,
     camYOffsetEnabled = false,
@@ -2607,11 +2600,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
     
     config.Gradow.uianimate.windowStroke.Thickness = config.Gradow.uianimate.openStroke.Thickness
     config.Gradow.uianimate.windowStroke.Transparency = config.Gradow.uianimate.openStroke.Transparency
-    
-    local TweenService = game:GetService("TweenService")
-    local RunService = game:GetService("RunService")
-    local Players = game:GetService("Players")
-    local lp = Players.LocalPlayer
+    local lp = excusemesir.Players.LocalPlayer
     local character = lp.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
     local buttonFrame = config.Gradow.uianimate.openButton
@@ -2653,7 +2642,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate()
         config.Gradow.uianimate.connection:Disconnect()
     end
     
-    config.Gradow.uianimate.connection = RunService.Heartbeat:Connect(function(deltaTime)
+    config.Gradow.uianimate.connection = excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
         if not config.Gradow.uianimate.openStroke or not config.Gradow.uianimate.openStroke.Parent then
             if config.Gradow.uianimate.connection then config.Gradow.uianimate.connection:Disconnect() end
             return
@@ -2905,9 +2894,8 @@ local function findPartialSaveMatch(inputName)
     end
 end
 local function getGameName()
-    local MarketplaceService = game:GetService("MarketplaceService")
     local success, info = pcall(function()
-        return MarketplaceService:GetProductInfo(game.PlaceId)
+        return excusemesir.MarketplaceService:GetProductInfo(game.PlaceId)
     end)
     
     if success and info and info.Name and info.Name ~= "" then
@@ -3181,7 +3169,6 @@ local function saveConfig(saveName)
             trussEnabled = config.trussEnabled,
             airwalkEnabled = config.airwalkEnabled,
             autorespawnEnabled = config.autorespawnEnabled,
-            fastspawn = config.fastspawn,
             tbot_enabled = config.tbot.enabled,
             tbot_targetPart = config.tbot.targetPart,
             tbot_fovRadius = config.tbot.fovRadius,
@@ -3533,7 +3520,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
             config.camYOffsetEnabled = state
             if state then
                 if not config.camYOffsetConnection then
-                    config.camYOffsetConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                    config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
                         if config.camYOffsetEnabled then
                             local cam = workspace.CurrentCamera
                             if cam then
@@ -3560,7 +3547,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
         elseif featureName == "truss" then
             config.trussEnabled = state
             if state then
-                local player = game.Players.LocalPlayer
+                local player = excusemesir.Players.LocalPlayer
                 local character = player.Character
                 if character then
                     local rootPart = character:FindFirstChild("HumanoidRootPart")
@@ -3579,7 +3566,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                         config.trussPart.Parent = workspace
                         config.trussPart.CanCollide = true
                         config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
-                        config.trussConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                        config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
                             if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
                                 config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
                             else
@@ -3604,7 +3591,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
         elseif featureName == "airwalk" then
             config.airwalkEnabled = state
             if state then
-                local character = game.Players.LocalPlayer.Character
+                local character = excusemesir.Players.LocalPlayer.Character
                 if character then
                     local rootPart = character:FindFirstChild("HumanoidRootPart")
                     if rootPart then
@@ -3619,7 +3606,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                             config.airwalkConnection:Disconnect()
                             config.airwalkConnection = nil
                         end
-                        config.airwalkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                        config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
                             if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
                                 config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
                             else
@@ -3646,7 +3633,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
             if state then
                 config.autorespawnConnections = config.autorespawnConnections or {}
                 config.autorespawnDeathPosition = nil
-                local player = game.Players.LocalPlayer
+                local player = excusemesir.Players.LocalPlayer
                 local function setupRespawn(character)
                     local humanoid = character:WaitForChild("Humanoid")
                     local rootPart = character:WaitForChild("HumanoidRootPart")
@@ -3694,7 +3681,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
         elseif featureName == "fullbright" then
             config.fbenabled = state
             if state then
-                local lighting = game:GetService("Lighting")
+                local lighting = excusemesir.Lighting
                 fullBrightSettings = {
                     Ambient = lighting.Ambient,
                     Brightness = lighting.Brightness,
@@ -3711,7 +3698,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                 lighting.ClockTime = 14
             else
                 if fullBrightSettings then
-                    local lighting = game:GetService("Lighting")
+                    local lighting = excusemesir.Lighting
                     for property, value in pairs(fullBrightSettings) do
                         lighting[property] = value
                     end
@@ -3893,7 +3880,7 @@ local function loadSave(saveName)
         config.camYOffsetOriginalCFrame = nil
         config.fbenabled = false
         if fullBrightSettings then
-            local lighting = game:GetService("Lighting")
+            local lighting = excusemesir.Lighting
             for property, value in pairs(fullBrightSettings) do
                 lighting[property] = value
             end
@@ -4070,7 +4057,6 @@ local function loadSave(saveName)
     if cfg.trussEnabled ~= nil then config.trussEnabled = cfg.trussEnabled end
     if cfg.airwalkEnabled ~= nil then config.airwalkEnabled = cfg.airwalkEnabled end
     if cfg.autorespawnEnabled ~= nil then config.autorespawnEnabled = cfg.autorespawnEnabled end
-    if cfg.fastspawn ~= nil then config.fastspawn = cfg.fastspawn end
     if cfg.tbot_enabled ~= nil then config.tbot.enabled = cfg.tbot_enabled end
     if cfg.tbot_targetPart then config.tbot.targetPart = cfg.tbot_targetPart end
     if cfg.tbot_fovRadius then config.tbot.fovRadius = cfg.tbot_fovRadius end
@@ -4228,184 +4214,197 @@ local function loadSave(saveName)
     end)
     pcall(function()
         if config.Viewing then
-            local tempView = config.Viewing
-            config.Viewing = false
-            task.wait(0.05)
-            config.Viewing = tempView
-            local function startViewing()
-                local Players = game:GetService("Players")
-                local RunService = game:GetService("RunService")
-                local Camera = workspace.CurrentCamera
-                
-                if config.varibz.ViewConnection then
-                    config.varibz.ViewConnection:Disconnect()
-                    config.varibz.ViewConnection = nil
-                end
-                
-                local function isEnemy(player)
-                    if not player or player == Players.LocalPlayer then return false end
-                    local localTeam = Players.LocalPlayer.Team
-                    local targetTeam = player.Team
-                    
-                    if config.masterTeamTarget == "All" then
-                        return true
-                    elseif config.masterTeamTarget == "Enemies" then
-                        if localTeam and targetTeam then
-                            return localTeam ~= targetTeam
-                        end
-                        return true
-                    elseif config.masterTeamTarget == "Teams" then
-                        if localTeam and targetTeam then
-                            return localTeam == targetTeam
-                        end
-                        return false
+            local Players = excusemesir.Players
+            local RunService = excusemesir.RunService
+            local Camera = workspace.CurrentCamera
+            if config.varibz.ViewConnection then
+                config.varibz.ViewConnection:Disconnect()
+                config.varibz.ViewConnection = nil
+            end
+            local function isEnemy(player)
+                if not player or player == Players.LocalPlayer then return false end
+                local localTeam = Players.LocalPlayer.Team
+                local targetTeam = player.Team
+                if config.masterTeamTarget == "All" then
+                    return true
+                elseif config.masterTeamTarget == "Enemies" then
+                    if localTeam and targetTeam then
+                        return localTeam ~= targetTeam
                     end
                     return true
-                end
-                
-                local function isNPCEnemy(model)
-                    if not model or not model:IsA("Model") then return false end
-                    if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
-                    local humanoid = model:FindFirstChildOfClass("Humanoid")
-                    if not humanoid or humanoid.Health <= 0 then return false end
-                    if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
-                    if config.masterTeamTarget == "All" then
-                        return true
-                    elseif config.masterTeamTarget == "Enemies" then
-                        local npcTeam = model:FindFirstChild("Team")
-                        if npcTeam then
-                            local localTeam = excusemesir.Players.LocalPlayer.Team
-                            if localTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                                return localTeam ~= npcTeam.Value
-                            end
-                        end
-                        return true
-                    elseif config.masterTeamTarget == "Teams" then
-                        local npcTeam = model:FindFirstChild("Team")
-                        if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                            local localTeam = excusemesir.Players.LocalPlayer.Team
-                            if localTeam then
-                                return localTeam == npcTeam.Value
-                            end
-                        end
-                        return false
+                elseif config.masterTeamTarget == "Teams" then
+                    if localTeam and targetTeam then
+                        return localTeam == targetTeam
                     end
+                    return false
+                end
+                return true
+            end
+            local function isNPCEnemy(model)
+                if not model or not model:IsA("Model") then return false end
+                if Players:GetPlayerFromCharacter(model) then return false end
+                local humanoid = model:FindFirstChildOfClass("Humanoid")
+                if not humanoid or humanoid.Health <= 0 then return false end
+                if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
+                if config.masterTeamTarget == "All" then
                     return true
+                elseif config.masterTeamTarget == "Enemies" then
+                    return true
+                elseif config.masterTeamTarget == "Teams" then
+                    return false
                 end
-                
-                local function GetRandomTarget()
-                    local Valid = {}
-                    local masterTarget = config.masterTarget or "Players"
-                    if masterTarget == "Players" or masterTarget == "Both" then
-                        for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
-                            if plr ~= Players.LocalPlayer
-                                and plr.Character
-                                and plr.Character:FindFirstChild("HumanoidRootPart")
-                                and isEnemy(plr)
-                            then
-                                local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-                                if humanoid and humanoid.Health > 0 then
-                                    if not config.ignoreForcefield or not hasForcefield(plr.Character) then
-                                        table.insert(Valid, {
-                                            type = "player",
-                                            instance = plr,
-                                            character = plr.Character
-                                        })
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    if masterTarget == "NPCs" or masterTarget == "Both" then
-                        for _, obj in ipairs(workspace:GetDescendants()) do
-                            if obj:IsA("Model") and isNPCEnemy(obj) then
-                                local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
-                                if rootPart then
-                                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
-                                    if humanoid and humanoid.Health > 0 then
-                                        if not config.ignoreForcefield or not hasForcefield(obj) then
-                                            table.insert(Valid, {
-                                                type = "npc",
-                                                instance = obj,
-                                                character = obj,
-                                                rootPart = rootPart
-                                            })
+                return true
+            end
+            local function GetNearestTarget()
+                local localPlayer = Players.LocalPlayer
+                local localChar = localPlayer.Character
+                if not localChar then return nil end
+                local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
+                if not localRoot then return nil end
+                local nearestTarget = nil
+                local nearestDistance = math.huge
+                local masterTarget = config.masterTarget or "Players"
+                if masterTarget == "Players" or masterTarget == "Both" then
+                    for _, plr in ipairs(Players:GetPlayers()) do
+                        if plr ~= localPlayer
+                            and plr.Character
+                            and plr.Character:FindFirstChild("HumanoidRootPart")
+                            and isEnemy(plr)
+                        then
+                            local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+                            if humanoid and humanoid.Health > 0 then
+                                if not config.ignoreForcefield or not hasForcefield(plr.Character) then
+                                    local targetRoot = plr.Character:FindFirstChild("HumanoidRootPart")
+                                    if targetRoot then
+                                        local distance = (localRoot.Position - targetRoot.Position).Magnitude
+                                        if distance < nearestDistance then
+                                            nearestDistance = distance
+                                            nearestTarget = {
+                                                type = "player",
+                                                instance = plr,
+                                                character = plr.Character
+                                            }
                                         end
                                     end
                                 end
                             end
                         end
                     end
-                    return #Valid > 0 and Valid[math.random(1, #Valid)] or nil
                 end
-                
-                local Target = GetRandomTarget()
-                if not Target then
-                    config.Viewing = false
+                if masterTarget == "NPCs" or masterTarget == "Both" then
+                    for _, obj in ipairs(workspace:GetDescendants()) do
+                        if obj:IsA("Model") and isNPCEnemy(obj) then
+                            local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
+                            if rootPart then
+                                local humanoid = obj:FindFirstChildOfClass("Humanoid")
+                                if humanoid and humanoid.Health > 0 then
+                                    if not config.ignoreForcefield or not hasForcefield(obj) then
+                                        local distance = (localRoot.Position - rootPart.Position).Magnitude
+                                        if distance < nearestDistance then
+                                            nearestDistance = distance
+                                            nearestTarget = {
+                                                type = "npc",
+                                                instance = obj,
+                                                character = obj,
+                                                rootPart = rootPart
+                                            }
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                return nearestTarget
+            end
+            local function FindTargetWithLoop(maxAttempts)
+                local attempts = 0
+                local target = nil
+                while attempts < (maxAttempts or 50) do
+                    target = GetNearestTarget()
+                    if target then
+                        return target
+                    end
+                    attempts = attempts + 1
+                    task.wait(0.1)
+                end
+                return nil
+            end
+            local Target = FindTargetWithLoop(30)
+            if not Target then
+                config.Viewing = false
+                WindUI:Notify({
+                    Title = "Cframe View",
+                    Content = "where da people",
+                    Icon = "x",
+                    Duration = 2
+                })
+                return
+            end
+            Camera.CameraType = Enum.CameraType.Scriptable
+            local retryCounter = 0
+            config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
+                if not config.Viewing then
                     return
                 end
-                
-                Camera.CameraType = Enum.CameraType.Scriptable
-                
-                config.varibz.ViewConnection = RunService.Renderstepped:Connect(function()
-                    if not config.Viewing then
+                local isValid = false
+                if Target.type == "player" then
+                    isValid = Target.instance
+                        and Target.instance.Character
+                        and Target.instance.Character:FindFirstChild("HumanoidRootPart")
+                        and isEnemy(Target.instance)
+                        and Target.instance.Character:FindFirstChildOfClass("Humanoid")
+                        and Target.instance.Character:FindFirstChildOfClass("Humanoid").Health > 0
+                elseif Target.type == "npc" then
+                    isValid = Target.instance
+                        and Target.instance.Parent
+                        and Target.instance:FindFirstChild("HumanoidRootPart")
+                        and isNPCEnemy(Target.instance)
+                        and Target.instance:FindFirstChildOfClass("Humanoid")
+                        and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
+                end
+                if not isValid then
+                    retryCounter = retryCounter + 1
+                    local newTarget = FindTargetWithLoop(20)
+                    if newTarget then
+                        Target = newTarget
+                        retryCounter = 0
                         return
                     end
-                    local isValid = false
-                    if Target.type == "player" then
-                        isValid = Target.instance 
-                            and Target.instance.Character 
-                            and Target.instance.Character:FindFirstChild("HumanoidRootPart")
-                            and isEnemy(Target.instance)
-                            and Target.instance.Character:FindFirstChildOfClass("Humanoid") 
-                            and Target.instance.Character:FindFirstChildOfClass("Humanoid").Health > 0
-                    elseif Target.type == "npc" then
-                        isValid = Target.instance 
-                            and Target.instance.Parent 
-                            and Target.instance:FindFirstChild("HumanoidRootPart")
-                            and isNPCEnemy(Target.instance)
-                            and Target.instance:FindFirstChildOfClass("Humanoid") 
-                            and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
-                    end
-                    
-                    if not isValid then
-                        Target = GetRandomTarget()
-                        if not Target then
-                            config.Viewing = false
-                            Camera.CameraType = Enum.CameraType.Custom
-                            return
-                        end
+                    if retryCounter > 100000 then
+                        config.Viewing = false
+                        Camera.CameraType = Enum.CameraType.Custom
                         return
                     end
-                    
-                    local HRP = nil
-                    if Target.type == "player" then
-                        HRP = Target.instance.Character.HumanoidRootPart
-                    elseif Target.type == "npc" then
-                        HRP = Target.instance.HumanoidRootPart
-                    end
-                    
-                    if not HRP then
-                        Target = GetRandomTarget()
-                        if not Target then
-                            config.Viewing = false
-                            Camera.CameraType = Enum.CameraType.Custom
-                            return
-                        end
-                        return
-                    end
-                    
-                    local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
-                    Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
-                end)
-            end
-            startViewing()
+                    task.wait(0.1)
+                    return
+                else
+                    retryCounter = 0
+                end
+                local HRP = nil
+                if Target.type == "player" then
+                    HRP = Target.instance.Character.HumanoidRootPart
+                elseif Target.type == "npc" then
+                    HRP = Target.instance.HumanoidRootPart
+                end
+                if not HRP then
+                    return
+                end
+                local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
+                Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
+            end)
+            WindUI:Notify({
+                Title = "Cframe View",
+                Content = "Viewing " .. (Target.type == "player" and Target.instance.Name or "NPC"),
+                Icon = "eye",
+                Duration = 2
+            })
         end
     end)
     pcall(function()
         if config.camYOffsetEnabled then
             if not config.camYOffsetConnection then
-                config.camYOffsetConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
                     if config.camYOffsetEnabled then
                         local cam = workspace.CurrentCamera
                         if cam then
@@ -4426,7 +4425,6 @@ local function loadSave(saveName)
     end)
     pcall(function()
         if config.trussEnabled then
-            local player = game.Players.LocalPlayer
             local character = player.Character
             if character then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
@@ -4445,7 +4443,7 @@ local function loadSave(saveName)
                     config.trussPart.Parent = workspace
                     config.trussPart.CanCollide = true
                     config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
-                    config.trussConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                    config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
                         if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
                             config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
                         else
@@ -4461,7 +4459,7 @@ local function loadSave(saveName)
     end)
     pcall(function()
         if config.airwalkEnabled then
-            local character = game.Players.LocalPlayer.Character
+            local character = excusemesir.Players.LocalPlayer.Character
             if character then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 if rootPart then
@@ -4476,7 +4474,7 @@ local function loadSave(saveName)
                         config.airwalkConnection:Disconnect()
                         config.airwalkConnection = nil
                     end
-                    config.airwalkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                    config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
                         if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
                             config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
                         else
@@ -4494,7 +4492,7 @@ local function loadSave(saveName)
         if config.autorespawnEnabled then
             config.autorespawnConnections = config.autorespawnConnections or {}
             config.autorespawnDeathPosition = nil
-            local player = game.Players.LocalPlayer
+            local player = excusemesir.Players.LocalPlayer
             local function setupRespawn(character)
                 local humanoid = character:WaitForChild("Humanoid")
                 local rootPart = character:WaitForChild("HumanoidRootPart")
@@ -4532,7 +4530,7 @@ local function loadSave(saveName)
     end)
     pcall(function()
         if config.fbenabled then
-            local lighting = game:GetService("Lighting")
+            local lighting = excusemesir.Lighting
             fullBrightSettings = {
                 Ambient = lighting.Ambient,
                 Brightness = lighting.Brightness,
@@ -4562,11 +4560,6 @@ local function loadSave(saveName)
     pcall(function()
         if config.antiafk then
             config.antiafk = true
-        end
-    end)
-    pcall(function()
-        if config.fastspawn then
-            config.fastspawn = true
         end
     end)
     pcall(function()
@@ -4628,46 +4621,70 @@ end
 local function saveUISettings(theme, transparency)
     return SaveUI:save(theme, transparency)
 end
-function respawn(plr)
-    if not config or not config.fastspawn then 
-        return 
-    end
 
-    local char = plr.Character
-    if not char then return end
-    
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    local ogpos = hrp.CFrame
-    local ogpos2 = workspace.CurrentCamera.CFrame
-    local rejectDeletions = gethiddenproperty(workspace, "RejectCharacterDeletions") ~= Enum.RejectCharacterDeletions.Disabled
-
-    if rejectDeletions and replicatesignal then
-        replicatesignal(plr.ConnectDiedSignalBackend)
-        task.wait(game:GetService("Players").RespawnTime - 0.01)
-        replicatesignal(plr.Kill)
-    else
-        local hum = char:FindFirstChildWhichIsA("Humanoid")
-        if hum then hum:ChangeState(Enum.HumanoidStateType.Dead) end
-        char:ClearAllChildren()
-
-        local newgen = Instance.new("Model")
-        newgen.Parent = workspace
-        plr.Character = newgen
-        task.wait()
-        plr.Character = char
-        newgen:Destroy()
-    end
-
-    task.spawn(function()
-        local newChar = plr.CharacterAdded:Wait()
-        local newHrp = newChar:WaitForChild("HumanoidRootPart", 5)
-        if newHrp then
-            newHrp.CFrame = ogpos
-            workspace.CurrentCamera.CFrame = ogpos2
+local function ignorethisandthat(additionalIgnore)
+    local ignoreList = {}
+    if localPlayer and localPlayer.Character then
+        table.insert(ignoreList, localPlayer.Character)
+        for _, part in ipairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                table.insert(ignoreList, part)
+            end
         end
-    end)
+    end
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+        if otherPlayer.Character then
+            table.insert(ignoreList, otherPlayer.Character)
+            for _, part in ipairs(otherPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
+                        table.insert(ignoreList, part)
+                    end
+                end
+            end
+        end
+    end
+    for _, proxyPart in pairs(config.proxyHitboxes) do
+        if proxyPart and proxyPart.Parent then
+            table.insert(ignoreList, proxyPart)
+        end
+    end
+    for player, data in pairs(config.hitboxExpandedParts) do
+        if data and data.part and data.part.Parent then
+            table.insert(ignoreList, data.part)
+        end
+    end
+    if additionalIgnore then
+        if type(additionalIgnore) == "table" then
+            for _, item in ipairs(additionalIgnore) do
+                if item then
+                    table.insert(ignoreList, item)
+                    if item:IsA("Model") or item:IsA("Character") then
+                        for _, part in ipairs(item:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
+                                    table.insert(ignoreList, part)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            table.insert(ignoreList, additionalIgnore)
+            if additionalIgnore:IsA("Model") or additionalIgnore:IsA("Character") then
+                for _, part in ipairs(additionalIgnore:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
+                            table.insert(ignoreList, part)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    return ignoreList
 end
 
 local function hasForcefield(character)
@@ -4751,13 +4768,24 @@ local function ShouldTargetPlayer(targetPlayer)
     if config.ignoreForcefield and targetPlayer.Character and hasForcefield(targetPlayer.Character) then
         return false
     end
-    
-    if config.SA2_TeamTarget == "All" then
-        return true
-    elseif config.SA2_TeamTarget == "Enemies" then
-        return not ArePlayersSameTeam(plr, targetPlayer)
-    elseif config.SA2_TeamTarget == "Teams" then
-        return ArePlayersSameTeam(plr, targetPlayer)
+    if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Player") then
+        if config.SA2_TeamTarget == "All" then
+            return true
+        elseif config.SA2_TeamTarget == "Enemies" then
+            return not ArePlayersSameTeam(plr, targetPlayer)
+        elseif config.SA2_TeamTarget == "Teams" then
+            return ArePlayersSameTeam(plr, targetPlayer)
+        end
+        return false
+    end
+    if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Model") then
+        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+            if config.SA2_TeamTarget == "All" then return true end
+            if config.SA2_TeamTarget == "Enemies" then return true end
+            if config.SA2_TeamTarget == "Teams" then return false end
+            return true
+        end
+        return false
     end
     
     return false
@@ -4844,94 +4872,152 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
+    
     local function isTargetable(player)
         if player == plr then return false end
-        if config.SA2_TeamTarget == "All" then return true end
-        local targetTeam = player.Team
-        if not localTeam or not targetTeam then
-            return config.SA2_TeamTarget == "Enemies"
+        if typeof(player) == "Instance" and player:IsA("Player") then
+            if config.SA2_TeamTarget == "All" then return true end
+            local targetTeam = player.Team
+            if not localTeam or not targetTeam then
+                return config.SA2_TeamTarget == "Enemies"
+            end
+            if config.SA2_TeamTarget == "Enemies" then
+                return localTeam ~= targetTeam
+            else
+                return localTeam == targetTeam
+            end
         end
-        if config.SA2_TeamTarget == "Enemies" then
-            return localTeam ~= targetTeam
-        else
-            return localTeam == targetTeam
+        if typeof(player) == "Instance" and player:IsA("Model") then
+            if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+                if config.SA2_TeamTarget == "All" then return true end
+                if config.SA2_TeamTarget == "Enemies" then return true end
+                if config.SA2_TeamTarget == "Teams" then return false end
+                return true
+            end
+            return false
         end
+        return false
     end
+    
+    local function getNPCs()
+        local npcs = {}
+        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("Model") and obj ~= character then
+                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head") then
+                            table.insert(npcs, obj)
+                        end
+                    end
+                end
+            end
+        end
+        return npcs
+    end
+    
     table.clear(candidates)
     table.clear(targetsInFOV)
     local players = excusemesir.Players:GetPlayers()
-    local playerCount = #players
-    if playerCount == 0 then
-        config.SA2_currentTarget = nil
-        return nil
+    local allTargets = {}
+    
+    for _, p in ipairs(players) do
+        if p ~= plr and isTargetable(p) then
+            table.insert(allTargets, p)
+        end
     end
-    local candidateCount = 0
-    local checkVisible = not config.SA2_ThreeSixtyMode
-    local ignoreForcefield = config.ignoreForcefield
-    for i = 1, playerCount do
-        local player = players[i]
-        if player ~= plr and isTargetable(player) then
-            local char = player.Character
-            if not char then continue end
-            if ignoreForcefield and hasForcefield(char) then continue end
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            if not humanoid or humanoid.Health <= 0 then continue end
-            local part = nil
-            if targetPartName then
-                part = char:FindFirstChild(targetPartName)
-            end
-            if not part then
-                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            end
-            if not part then continue end
-            local targetPos = part.Position
-            local dx = targetPos.X - camPos.X
-            local dy = targetPos.Y - camPos.Y
-            local dz = targetPos.Z - camPos.Z
-            local worldDistSq = dx * dx + dy * dy + dz * dz
-            if worldDistSq > maxRangeSq then continue end
-            if config.SA2_Wallcheck then
-                local direction = Vector3.new(dx, dy, dz)
-                local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
-                local ignore = {plr.Character, char}
-                local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignore)
-                if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
-                    continue
-                end
-            end
-            local worldDist = math.sqrt(worldDistSq)
-            local health = humanoid.Health
-            if checkVisible then
-                local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
-                if not onScreen or screenPos.Z <= 0 then continue end
-                local distX = screenPos.X - center.X
-                local distY = screenPos.Y - center.Y
-                local distPx = math.sqrt(distX * distX + distY * distY)
-                if distPx > config.SA2_FovRadius then continue end
-                candidateCount = candidateCount + 1
-                candidates[candidateCount] = {
-                    player = player,
-                    part = part,
-                    health = health,
-                    screenDist = distPx,
-                    worldDist = worldDist
-                }
-            else
-                candidateCount = candidateCount + 1
-                candidates[candidateCount] = {
-                    player = player,
-                    part = part,
-                    health = health,
-                    screenDist = 0,
-                    worldDist = worldDist
-                }
+    
+    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+        local npcs = getNPCs()
+        for _, npc in ipairs(npcs) do
+            if isTargetable(npc) then
+                table.insert(allTargets, npc)
             end
         end
     end
+    
+    local candidateCount = 0
+    local checkVisible = not config.SA2_ThreeSixtyMode
+    local ignoreForcefield = config.ignoreForcefield
+    
+    for _, target in ipairs(allTargets) do
+        local char = nil
+        local isPlayer = false
+        
+        if typeof(target) == "Instance" and target:IsA("Player") then
+            char = target.Character
+            isPlayer = true
+        elseif typeof(target) == "Instance" and target:IsA("Model") then
+            char = target
+            isPlayer = false
+        end
+        
+        if not char then continue end
+        if ignoreForcefield and hasForcefield(char) then continue end
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then continue end
+        
+        local part = nil
+        if targetPartName then
+            part = char:FindFirstChild(targetPartName)
+        end
+        if not part then
+            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+        end
+        if not part then continue end
+        
+        local targetPos = part.Position
+        local dx = targetPos.X - camPos.X
+        local dy = targetPos.Y - camPos.Y
+        local dz = targetPos.Z - camPos.Z
+        local worldDistSq = dx * dx + dy * dy + dz * dz
+        
+        if worldDistSq > maxRangeSq then continue end
+        if config.SA2_Wallcheck then
+            local direction = Vector3.new(dx, dy, dz)
+            local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
+            local ignoreList = ignorethisandthat({plr.Character, char})
+            local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+            if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
+                continue
+            end
+        end
+        local worldDist = math.sqrt(worldDistSq)
+        local health = humanoid.Health
+        if checkVisible then
+            local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
+            if not onScreen or screenPos.Z <= 0 then continue end
+            local distX = screenPos.X - center.X
+            local distY = screenPos.Y - center.Y
+            local distPx = math.sqrt(distX * distX + distY * distY)
+            if distPx > config.SA2_FovRadius then continue end
+            candidateCount = candidateCount + 1
+            candidates[candidateCount] = {
+                target = target,
+                part = part,
+                health = health,
+                screenDist = distPx,
+                worldDist = worldDist,
+                isPlayer = isPlayer
+            }
+        else
+            candidateCount = candidateCount + 1
+            candidates[candidateCount] = {
+                target = target,
+                part = part,
+                health = health,
+                screenDist = 0,
+                worldDist = worldDist,
+                isPlayer = isPlayer
+            }
+        end
+    end
+    
     if candidateCount == 0 then
         config.SA2_currentTarget = nil
         return nil
     end
+    
     local bestIdx = 1
     if targetMode == "TargetSeen" then
         local currentTime = tick()
@@ -4943,7 +5029,7 @@ local function GetClosestPlayer()
             else
                 local currentIdx = nil
                 for i = 1, candidateCount do
-                    if candidates[i].player == config.SA2_currentTarget then
+                    if candidates[i].target == config.SA2_currentTarget then
                         currentIdx = i
                         break
                     end
@@ -4958,7 +5044,7 @@ local function GetClosestPlayer()
         else
             if config.SA2_currentTarget then
                 for i = 1, candidateCount do
-                    if candidates[i].player == config.SA2_currentTarget then
+                    if candidates[i].target == config.SA2_currentTarget then
                         bestIdx = i
                         break
                     end
@@ -4983,10 +5069,11 @@ local function GetClosestPlayer()
             end
         end
     end
+    
     local best = candidates[bestIdx]
     if best then
-        if config.SA2_currentTarget ~= best.player then
-            config.SA2_currentTarget = best.player
+        if config.SA2_currentTarget ~= best.target then
+            config.SA2_currentTarget = best.target
             updateESPColors()
         end
         return best.part
@@ -5201,7 +5288,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
 end))
 
 ScreenGui.Name = "FOVSys"
-ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
 CircleFrame.Name = "FOVCircle"
 CircleFrame.Parent = ScreenGui
@@ -5250,7 +5337,7 @@ local function setSpawnLocation(positionCFrame)
         config.SSConnection:Disconnect()
     end
     
-    config.SSConnection = game.Players.LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    config.SSConnection = excusemesir.Players.LocalPlayer.CharacterAdded:Connect(function(newCharacter)
         if config.SSEnabled and config.SpawnLocation then
             local newRoot = newCharacter:WaitForChild("HumanoidRootPart", 5)
             if newRoot then
@@ -5604,7 +5691,7 @@ excusemesir.RunService.Heartbeat:Connect(function()
 end)
 
 local function pc()
-    local plr = game.Players.LocalPlayer
+    local plr = excusemesir.Players.LocalPlayer
     task.spawn(function()
         while true do
             pcall(function()
@@ -5618,7 +5705,7 @@ local function pc()
 end
 
 local function pc2()
-    local plr = game.Players.LocalPlayer
+    local plr = excusemesir.Players.LocalPlayer
     task.spawn(function()
         while true do
             pcall(function()
@@ -5828,17 +5915,10 @@ local function canSeeTarget(target)
     
     local sourcePos = localRoot.Position
     local targetPos = targetRoot.Position
-    local distance = (sourcePos - targetPos).Magnitude
     local rayDirection = (targetPos - sourcePos)
     local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    
-    local ignoreList = {localPlayer.Character}
-    for _, player in ipairs(excusemesir.Players:GetPlayers()) do
-        if player.Character then
-            table.insert(ignoreList, player.Character)
-        end
-    end
-    
+    local ignoreList = ignorethisandthat({targetChar})
+
     local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
     
     if hit then
@@ -5857,7 +5937,6 @@ local function canSeeTarget(target)
     
     return true
 end
-
 local function getValidAutoFarmTargets()
     local validTargets = {}
     local localRoot = localPlayer.Character and (localPlayer.Character:FindFirstChild("HumanoidRootPart") or localPlayer.Character:FindFirstChild("Head"))
@@ -6550,17 +6629,7 @@ local function wallCheck(targetPos, sourcePos)
 
     local rayDirection = (targetPos - sourcePos)
     local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    local ignoreList = {}
-
-    if localPlayer and localPlayer.Character then
-        table.insert(ignoreList, localPlayer.Character)
-    end
-
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-        if otherPlayer.Character then
-            table.insert(ignoreList, otherPlayer.Character)
-        end
-    end
+    local ignoreList = ignorethisandthat()
 
     local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
     if hit and position then
@@ -7567,13 +7636,6 @@ local function updateproxyhb(targetPlayer)
     else
         proxyPart.Shape = Enum.PartType.Block
     end
---[[
-    pcall(function()
-        torso.Transparency = 1
-        torso.CanCollide = false
-        torso.Massless = true
-    end)
-]]
 end
 
 local function updateeveryproxyeva()
@@ -7605,7 +7667,6 @@ local function updateeveryproxyeva()
         end
     end
 end
-
 
 local function tnormalsize(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
@@ -7910,17 +7971,7 @@ local function aimbotWallCheck(targetPos, sourcePos)
 
     local rayDirection = (targetPos - sourcePos)
     local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    local ignoreList = {}
-
-    if localPlayer and localPlayer.Character then
-        table.insert(ignoreList, localPlayer.Character)
-    end
-
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-        if otherPlayer.Character then
-            table.insert(ignoreList, otherPlayer.Character)
-        end
-    end
+    local ignoreList = ignorethisandthat()
 
     local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
     if hit and position then
@@ -7931,7 +7982,6 @@ local function aimbotWallCheck(targetPos, sourcePos)
 
     return true
 end
-
 local function getAimbotTargetPart(target)
     if not target then return nil end
     local partName = config.aimbotTargetPart or "Head"
@@ -8282,7 +8332,7 @@ local function triggerBotUpdate()
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local fovRadius = config.tbot.fovRadius
     if config.tbot.holdToShoot then
-        local uis = game:GetService("UserInputService")
+        local uis = excusemesir.UserInputService
         local key = Enum.KeyCode[config.tbot.holdKey] or Enum.KeyCode.MouseButton1
         if not uis:IsKeyDown(key) then
             return
@@ -8335,12 +8385,7 @@ local function triggerBotUpdate()
             if distPx <= fovRadius then
                 if config.tbot.wallCheck then
                     local ray = Ray.new(camera.CFrame.Position, (targetPart.Position - camera.CFrame.Position).Unit * (targetPart.Position - camera.CFrame.Position).Magnitude)
-                    local ignoreList = {localPlayer.Character}
-                    for _, p in ipairs(excusemesir.Players:GetPlayers()) do
-                        if p.Character then
-                            table.insert(ignoreList, p.Character)
-                        end
-                    end
+                    local ignoreList = ignorethisandthat({char})
                     local hit, pos = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
                     if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
                         continue
@@ -8375,8 +8420,8 @@ local function triggerBotUpdate()
                         tool:Activate()
                     end)
                 else
-                    local uis = game:GetService("UserInputService")
-                    local VirtualInputManager = game:GetService("VirtualInputManager")
+                    local uis = excusemesir.UserInputService
+                    local VirtualInputManager = excusemesir.VirtualInputManager
                     pcall(function()
                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                         task.wait(config.tbot.delay or 0.1)
@@ -8710,7 +8755,7 @@ local handle
 local weld
 local animstate
 function setDisplayDistance(distance)
-    for _, player in pairs(game.excusemesir.Players:GetPlayers()) do
+    for _, player in pairs(excusemesir.Players:GetPlayers()) do
         if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
             player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance
             player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance
@@ -8720,9 +8765,9 @@ end
 function invis()
     if not invisible then
         invisible = true
-        animstate = game.Players.LocalPlayer.Character.Animate.Enabled
-        game.Players.LocalPlayer.Character.Animate.Enabled = false
-        for _, track in pairs(game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
+        animstate = excusemesir.Players.LocalPlayer.Character.Animate.Enabled
+        excusemesir.Players.LocalPlayer.Character.Animate.Enabled = false
+        for _, track in pairs(excusemesir.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
             track:Stop()
         end
         if handle then handle:Destroy() end
@@ -8734,14 +8779,14 @@ function invis()
         handle.Size = Vector3.new(2, 1, 1)
         weld = Instance.new("Weld", handle)
         weld.Part0 = handle
-        weld.Part1 = game.Players.LocalPlayer.Character.HumanoidRootPart
+        weld.Part1 = excusemesir.Players.LocalPlayer.Character.HumanoidRootPart
         weld.C0 = CFrame.new(0, offset - 1.5, 0)
         setDisplayDistance(offset + 100)
         workspace.CurrentCamera.CameraSubject = handle
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, offset, 0)
-        game.Players.LocalPlayer.Character.Humanoid.HipHeight = offset
-        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-        for _, child in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        excusemesir.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = excusemesir.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, offset, 0)
+        excusemesir.Players.LocalPlayer.Character.Humanoid.HipHeight = offset
+        excusemesir.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+        for _, child in pairs(excusemesir.Players.LocalPlayer.Backpack:GetChildren()) do
             if child:IsA("Tool") then
                 grips[child] = child.Grip
             end
@@ -8753,10 +8798,10 @@ function vis()
         invisible = false
         if handle then handle:Destroy() end
         if weld then weld:Destroy() end
-        game.Players.LocalPlayer.Character.Animate.Enabled = animstate or true
-        for _, child in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        excusemesir.Players.LocalPlayer.Character.Animate.Enabled = animstate or true
+        for _, child in pairs(excusemesir.Players.LocalPlayer.Character:GetChildren()) do
             if child:IsA("Tool") then
-                child.Parent = game.Players.LocalPlayer.Backpack
+                child.Parent = excusemesir.Players.LocalPlayer.Backpack
             end
         end
         for tool, grip in pairs(grips) do
@@ -8766,13 +8811,13 @@ function vis()
         end
         heldTool = nil
         setDisplayDistance(100)
-        workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -offset, 0)
-        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
-        game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        workspace.CurrentCamera.CameraSubject = excusemesir.Players.LocalPlayer.Character.Humanoid
+        excusemesir.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = excusemesir.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -offset, 0)
+        excusemesir.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
+        excusemesir.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end
-local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+local tool = Instance.new("Tool", excusemesir.Players.LocalPlayer.Backpack)
 tool.Name = "go invis"
 tool.RequiresHandle = false
 tool.CanBeDropped = false
@@ -8785,9 +8830,9 @@ tool.Equipped:Connect(function()
         vis()
         tool.Name = ":3"
     end
-    tool.Parent = game.Players.LocalPlayer.Backpack
+    tool.Parent = excusemesir.Players.LocalPlayer.Backpack
 end)
-game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
+excusemesir.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
     wait()
     if invisible and child:IsA("Tool") and child ~= heldTool and child ~= tool then
         heldTool = child
@@ -8795,14 +8840,14 @@ game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
         if not grips[heldTool] then
             grips[heldTool] = lastGrip
         end
-        game.Players.LocalPlayer.Character.Animate.Enabled = false
-        for _, track in pairs(game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
+        excusemesir.Players.LocalPlayer.Character.Animate.Enabled = false
+        for _, track in pairs(excusemesir.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
             track:Stop()
         end
         
         heldTool.Grip = heldTool.Grip * (CFrame.new(0, offset - 1.5, 1.5) * CFrame.Angles(math.rad(-90), 0, 0))
-        heldTool.Parent = game.Players.LocalPlayer.Backpack
-        heldTool.Parent = game.Players.LocalPlayer.Character
+        heldTool.Parent = excusemesir.Players.LocalPlayer.Backpack
+        heldTool.Parent = excusemesir.Players.LocalPlayer.Character
         
         if gripChanged then
             gripChanged:Disconnect()
@@ -8816,8 +8861,8 @@ game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
             if heldTool.Grip ~= lastGrip then
                 lastGrip = heldTool.Grip * (CFrame.new(0, offset - 1.5, 1.5) * CFrame.Angles(math.rad(-90), 0, 0))
                 heldTool.Grip = lastGrip
-                heldTool.Parent = game.Players.LocalPlayer.Backpack
-                heldTool.Parent = game.Players.LocalPlayer.Character
+                heldTool.Parent = excusemesir.Players.LocalPlayer.Backpack
+                heldTool.Parent = excusemesir.Players.LocalPlayer.Character
             end
         end)
     end
@@ -8829,11 +8874,6 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     updateLineESP()
     hb()
     antiAimUpdate()
---[[
-    if config.hitboxVisualizer.enabled and config.hitboxEnabled then
-        updateeveryproxyeva()()
-    end
-]]
 end)
 
 local function isMobileDevice()
@@ -10221,7 +10261,7 @@ local MainTab = Window:Tab({
     })
     
     MainTab:Dropdown({
-        Title = "Team Target",
+        Title = "TeamTarget",
         Desc = "Select Target Team",
         Values = {"Enemies", "Teams", "All"},
         Value = config.masterTeamTarget or "Enemies",
@@ -10249,7 +10289,7 @@ local MainTab = Window:Tab({
     
     MainTab:Dropdown({
         Title = "TargetType",
-        Desc = "Select target type",
+        Desc = "Select target type\n(NPCs are quite unstable)",
         Values = {"Players", "NPCs", "Both"},
         Value = config.masterTarget or "Players",
         Multi = false,
@@ -12765,8 +12805,8 @@ local ReachTab = Window:Tab({
                 end
                 
                 autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                    if config.reach.autoSwing.enabled and game.Players.LocalPlayer.Character then
-                        local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
+                        local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
                         if tool then
                             pcall(function()
                                 tool:Activate()
@@ -12798,8 +12838,8 @@ local ReachTab = Window:Tab({
             if autoSwingConnection then
                 autoSwingConnection:Disconnect()
                 autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                    if config.reach.autoSwing.enabled and game.Players.LocalPlayer.Character then
-                        local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
+                        local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
                         if tool then
                             pcall(function()
                                 tool:Activate()
@@ -12819,7 +12859,7 @@ local ReachTab = Window:Tab({
         if not hitCharacter then return end
         
         local victim = hitCharacter:FindFirstChildOfClass("Humanoid") 
-        if victim and victim.Parent ~= game.Players.LocalPlayer then
+        if victim and victim.Parent ~= excusemesir.Players.LocalPlayer then
             pcall(function()
                 firetouchinterest(hit, handle, 0) 
                 firetouchinterest(hit, handle, 1)
@@ -12829,7 +12869,7 @@ local ReachTab = Window:Tab({
     
     local function getTargetsInRange()
         local targets = {}
-        local character = game.Players.LocalPlayer.Character
+        local character = excusemesir.Players.LocalPlayer.Character
         if not character then return targets end
         
         local tool = character:FindFirstChildOfClass("Tool") 
@@ -12839,7 +12879,7 @@ local ReachTab = Window:Tab({
         if not handle then return targets end
         
         for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= game.Players.LocalPlayer and player.Character then
+            if player ~= excusemesir.Players.LocalPlayer and player.Character then
                 local hrp = player.Character:FindFirstChild("HumanoidRootPart")
                 if hrp then
                     local distance = (hrp.Position - handle.Position).Magnitude
@@ -12863,7 +12903,7 @@ local ReachTab = Window:Tab({
             return 
         end
         
-        local character = game.Players.LocalPlayer.Character
+        local character = excusemesir.Players.LocalPlayer.Character
         if not character then 
             visualizer.Parent = nil
             return 
@@ -12935,7 +12975,7 @@ local ReachTab = Window:Tab({
         Desc = "Scan for nearby weapons/tools",
         Callback = function()
             local weapons = {}
-            local character = game.Players.LocalPlayer.Character
+            local character = excusemesir.Players.LocalPlayer.Character
             
             if character then
                 for _, child in ipairs(character:GetChildren()) do
@@ -12944,7 +12984,7 @@ local ReachTab = Window:Tab({
                     end
                 end
                 
-                for _, child in ipairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                for _, child in ipairs(excusemesir.Players.LocalPlayer.Backpack:GetChildren()) do
                     if child:IsA("Tool") then
                         table.insert(weapons, child.Name)
                     end
@@ -13136,7 +13176,7 @@ local ClientTab = Window:Tab({
         Callback = function(v)
             config.trussEnabled = v
             if v then
-                local player = game.Players.LocalPlayer
+                local player = excusemesir.Players.LocalPlayer
                 local character = player.Character
                 if not character then
                     n({
@@ -13229,7 +13269,7 @@ local ClientTab = Window:Tab({
         Callback = function(v)
             config.airwalkEnabled = v
             if v then
-                local character = game.Players.LocalPlayer.Character
+                local character = excusemesir.Players.LocalPlayer.Character
                 if not character then
                     n({
                         Title = "Airwalk",
@@ -13320,7 +13360,7 @@ local ClientTab = Window:Tab({
                 config.autorespawnConnections = config.autorespawnConnections or {}
                 config.autorespawnDeathPosition = nil
                 
-                local player = game.Players.LocalPlayer
+                local player = excusemesir.Players.LocalPlayer
                 local function setupRespawn(character)
                     local humanoid = character:WaitForChild("Humanoid")
                     local rootPart = character:WaitForChild("HumanoidRootPart")
@@ -13396,23 +13436,6 @@ local ClientTab = Window:Tab({
                     BarColor = Color3.fromRGB(255, 0, 0)
                 })
             end
-        end
-    })
-    
-    ClientTab:Toggle({
-        Title = "FastSpawn",
-        Desc = "Auto Respawn faster (Might cause deathloops)",
-        Value = config.fastspawn or false,
-        Callback = function(v)
-            config.fastspawn = v
-            n({
-                Title = "FastSpawn",
-                Content = "FastSpawn " .. (v and "Enabled" or "Disabled"),
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            })
         end
     })
 end
@@ -14579,6 +14602,11 @@ I luv rng's. :3
         Desc = "an good script would have a music player\nAdded: BGMTab an Background Music Tab :3",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (29/07/2026)",
+        Desc = "better at targeting stuff idk",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -15289,7 +15317,6 @@ local function cleanup()
         config.airwalkEnabled = false
         config.autorespawnEnabled = false
         config.antiafk = false
-        config.fastspawn = false
         config.SSEnabled = false
         config.autoFarmCompleted = {}
         config.autoFarmOriginalPositions = {}
@@ -15367,7 +15394,7 @@ end
 task.spawn(function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
-        local localPlayer = game.Players.LocalPlayer
+        local localPlayer = excusemesir.Players.LocalPlayer
         local character = localPlayer.Character
         local isRespawning = false
         if character and character:FindFirstChild("Humanoid") then
@@ -15388,7 +15415,7 @@ task.spawn(function()
             aimbotfov()
             updateAimbotFOVRing()
             LowRender()
-            
+            updateeveryproxyeva()
             local toRemove = {}
             for player, data in pairs(config.hitboxExpandedParts) do
                 if not player or not getTargetCharacter(player) or not plralive(player) then
