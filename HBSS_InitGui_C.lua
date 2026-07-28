@@ -43,6 +43,7 @@ function InitGui.new()
     self.dotTask = nil
     self.statusTask = nil
     self.scrollTask = nil
+    self.wobbleTask = nil
     self.gui = nil
     self.bg = nil
     self.title = nil
@@ -50,6 +51,8 @@ function InitGui.new()
     self.dots = nil
     self.codeBackground = nil
     self.codeScroller = nil
+    self.codeContainer = nil
+    self.wobbleAngle = 0
     return self
 end
 
@@ -68,18 +71,34 @@ function InitGui:create()
     bg.BackgroundTransparency = 0.7
     bg.Parent = gui
     self.bg = bg
+    
+    -- Container for the angled code with wobble
+    local codeContainer = Instance.new("Frame")
+    codeContainer.Size = UDim2.fromScale(0.5, 0.8)
+    codeContainer.Position = UDim2.fromScale(0.25, 0.1)
+    codeContainer.BackgroundTransparency = 1
+    codeContainer.ClipsDescendants = true
+    codeContainer.Parent = bg
+    self.codeContainer = codeContainer
 
-    -- Code Background Scroller
+    -- Main code frame that will be rotated
     local codeBg = Instance.new("Frame")
-    codeBg.Size = UDim2.fromScale(0.45, 1)
+    codeBg.Size = UDim2.fromScale(1, 1)
     codeBg.Position = UDim2.fromScale(0, 0)
-    codeBg.BackgroundTransparency = 1
+    codeBg.BackgroundTransparency = 0.9
+    codeBg.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    codeBg.BorderSizePixel = 1
+    codeBg.BorderColor3 = Color3.fromRGB(100, 255, 150)
     codeBg.ClipsDescendants = true
-    codeBg.Parent = bg
+    codeBg.Parent = codeContainer
     self.codeBackground = codeBg
 
+    -- Apply initial 45° rotation
+    codeBg.Rotation = 45
+
     local codeScroller = Instance.new("ScrollingFrame")
-    codeScroller.Size = UDim2.fromScale(1, 1)
+    codeScroller.Size = UDim2.fromScale(1.5, 1.5) -- Larger to compensate for rotation
+    codeScroller.Position = UDim2.fromScale(-0.25, -0.25) -- Centered
     codeScroller.BackgroundTransparency = 1
     codeScroller.BorderSizePixel = 0
     codeScroller.ScrollBarThickness = 0
@@ -88,8 +107,7 @@ function InitGui:create()
     codeScroller.CanvasSize = UDim2.fromOffset(0, 0)
     codeScroller.Parent = codeBg
     self.codeScroller = codeScroller
-
-    -- The config code snippet (only the config table)
+    
     local configCode = [[
 local config = {
     confIg = "Gravel",
@@ -1752,7 +1770,6 @@ local config = {
 }
 ]]
 
-    -- Split the code into lines and create text labels
     local lines = {}
     for line in configCode:gmatch("[^\n]*\n?") do
         if line ~= "" then
@@ -1760,7 +1777,6 @@ local config = {
         end
     end
 
-    -- Create text labels for each line
     local lineHeight = 18
     local totalHeight = #lines * lineHeight
     codeScroller.CanvasSize = UDim2.fromOffset(0, totalHeight + 100)
@@ -1770,7 +1786,7 @@ local config = {
         local textLabel = Instance.new("TextLabel")
         textLabel.Size = UDim2.fromScale(1, 0)
         textLabel.Position = UDim2.fromOffset(10, yPos)
-        textLabel.Size = UDim2.fromOffset(self.codeBackground.AbsoluteSize.X - 20, lineHeight)
+        textLabel.Size = UDim2.fromOffset(800, lineHeight)
         textLabel.Text = line
         textLabel.Font = Enum.Font.Code
         textLabel.TextSize = 11
@@ -1783,7 +1799,6 @@ local config = {
         yPos = yPos + lineHeight
     end
 
-    -- Center UI elements (on top of code background)
     local center = Instance.new("Frame")
     center.Size = UDim2.fromScale(0.3, 0.25)
     center.Position = UDim2.fromScale(0.5, 0.5)
@@ -1869,12 +1884,11 @@ function InitGui:startAnimations()
         end
     end)
 
-    -- Scroll the code background
     self.scrollTask = task.spawn(function()
         if not self.codeScroller then return end
         local canvasHeight = self.codeScroller.CanvasSize.Y.Offset
         local startPos = 0
-        local speed = 250
+        local speed = 500
         
         while self.gui and self.gui.Parent do
             startPos = startPos + speed * 0.03
@@ -1882,6 +1896,25 @@ function InitGui:startAnimations()
                 startPos = 0
             end
             self.codeScroller.CanvasPosition = Vector2.new(0, startPos)
+            task.wait(0.03)
+        end
+    end)
+
+    -- Natural wobble effect
+    self.wobbleTask = task.spawn(function()
+        local baseAngle = 45
+        local wobbleSpeed = 0.8
+        local wobbleAmplitude = 1.5
+        
+        while self.gui and self.gui.Parent do
+            self.wobbleAngle = self.wobbleAngle + wobbleSpeed * 0.03
+            if self.codeBackground then
+                -- Natural wobble using sine and cosine for organic movement
+                local wobbleOffset = math.sin(self.wobbleAngle) * wobbleAmplitude
+                local wobbleOffset2 = math.cos(self.wobbleAngle * 0.7) * wobbleAmplitude * 0.3
+                local currentAngle = baseAngle + wobbleOffset + wobbleOffset2
+                self.codeBackground.Rotation = currentAngle
+            end
             task.wait(0.03)
         end
     end)
@@ -1900,6 +1933,10 @@ function InitGui:destroy()
         if self.scrollTask then
             task.cancel(self.scrollTask)
             self.scrollTask = nil
+        end
+        if self.wobbleTask then
+            task.cancel(self.wobbleTask)
+            self.wobbleTask = nil
         end
 
         local fadeOut = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
@@ -1928,6 +1965,7 @@ function InitGui:destroy()
         self.dots = nil
         self.codeBackground = nil
         self.codeScroller = nil
+        self.codeContainer = nil
     end
 end
 
