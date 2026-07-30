@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “dont craft hoes in Minecraft craft shovels” 
+           “wow so kay jay :p” 
                                            
                                - Gpssickle
 ]])
@@ -132,6 +132,7 @@ print(lp_info.lp_retroslopscore)
 print(lp_info.lp_isitretroslop)
 settings().Rendering.MeshPartDetailLevel = 1
 settings().Rendering.EagerBulkExecution = true
+settings().Rendering.EnableFRM = true
 
 -- unprofessionalism professionist 🥀
 local lzl = loadstring(getgist_(getgenv().HttpUrlz_.lzlzlzlzlzl))()
@@ -739,7 +740,7 @@ local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
-local ValidTargetParts = {"Head", "HumanoidRootPart", "Torso", "UpperTorso", "LowerTorso", "RightUpperArm", "LeftUpperArm", "RightLowerArm", "LeftLowerArm", "RightHand", "LeftHand", "RightUpperLeg", "LeftUpperLeg", "RightLowerLeg", "LeftLowerLeg", "RightFoot", "LeftFoot"}
+local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
@@ -1103,8 +1104,20 @@ local config = {
                 "like vro I also need clout :(",
             },
             {
+                "lua",
+                "luajit",
+                "glua",
+                "elua",
+                "nlua",
+                "gopherlua",
+                "luadardo",
+                "luau",
+                "why r there so many Lua variants :s",
+            },
+            {
                 "proto conversion",
-                "tbh idk wat I'm saying",
+                "yea proto conversion is a\ncoolio executor",
+                "I think... it's a pretty old 1 tho",
             },
             {
                 "alt+f4 = free robux",
@@ -2406,6 +2419,30 @@ local config = {
         Rng5stuff = nil,
         Rng3dis = {},
         orgfov = nil,
+        autoloadParagraph = nil,
+        autoloadMemoryFile = "Gravel_Saves/assets/memory.json",
+        rng4 = {
+            cursorVisible = true,
+            currentText = "",
+            usedConversations = {},
+            availableIndices = {},
+            tag = nil,
+            isWindowMinimized = function()
+                if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
+                local sizeY = Window.UIElements.Main.Size.Y.Offset
+                if sizeY < 50 then return true end
+                return false
+            end,
+            conversationMessages = {},
+            activeConversation = nil,
+            typingSpeed = 1,
+            isTyping = false,
+            shouldContinue = true,
+            cursorBlinkRate = 0.45,
+            eraseSpeed = 1,
+            messageDelay = 1,
+            convoDelay = 2,
+        },
     },
     Gradow = {
         textcursor = "_",
@@ -3410,7 +3447,7 @@ local function deleteAllSaves()
                             getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
                             confirmCount = 0
                             if config.varibz.savesParagraph then
-                                local newDesc = savePara() .. "\nit refreshes now!"
+                                local newDesc = savePara() .. "\nBLLEHH >:P"
                                 pcall(function()
                                     config.varibz.savesParagraph:SetDesc(newDesc)
                                 end)
@@ -4613,6 +4650,207 @@ local function savePara()
     
     return saveText
 end
+
+function ineedassetfolderrr_()
+    if not isfolder("Gravel_Saves/assets") then
+        pcall(function() makefolder("Gravel_Saves/assets") end)
+    end
+end
+function raedmahbrain_()
+    ineedassetfolderrr_()
+    if not isfile(config.varibz.autoloadMemoryFile) then
+        return {}
+    end
+    
+    local success, data = pcall(function()
+        return readfile(config.varibz.autoloadMemoryFile)
+    end)
+    
+    if not success or not data then
+        return {}
+    end
+    
+    local success, decoded = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(data)
+    end)
+    
+    return success and decoded or {}
+end
+function writehaxsandstuff_(memoryData)
+    ineedassetfolderrr_()
+    local success, encoded = pcall(function()
+        return game:GetService("HttpService"):JSONEncode(memoryData)
+    end)
+    
+    if not success then
+        return false
+    end
+    
+    local success, err = pcall(function()
+        writefile(config.varibz.autoloadMemoryFile, encoded)
+    end)
+    
+    return success
+end
+function getdagaem_()
+    return game.PlaceId
+end
+function ineedgaemforaotu_()
+    local success, info = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+    end)
+    
+    if success and info and info.Name and info.Name ~= "" then
+        return info.Name
+    end
+    return "Unknown Game"
+end
+function SETDAAUTOLAOD_(saveName)
+    if not saveName or saveName == "" then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Please enter a save name!",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+    
+    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    if errorMsg then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Save not found: " .. errorMsg,
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+    
+    saveName = exactMatch or saveName
+    local gameId = tostring(getdagaem_())
+    local gameName = ineedgaemforaotu_()
+    
+    local memory = raedmahbrain_()
+    memory[gameId] = {
+        saveName = saveName,
+        gameName = gameName,
+        updatedAt = os.time()
+    }
+    
+    if writehaxsandstuff_(memory) then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Autoload set for '" .. saveName .. "' on " .. gameName,
+            Icon = "check",
+            Duration = 3
+        })
+        if config.varibz.autoloadParagraph then
+            autolaodpara()
+        end
+        return true
+    else
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Failed to save autoload settings!",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+end
+function nullifymahfilez_()
+    local gameId = tostring(getdagaem_())
+    local gameName = ineedgaemforaotu_()
+    
+    local memory = raedmahbrain_()
+    
+    if not memory[gameId] then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "No autoload set for this game!",
+            Icon = "info",
+            Duration = 2
+        })
+        return false
+    end
+    
+    memory[gameId] = nil
+    
+    if writehaxsandstuff_(memory) then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Removed autoload for " .. gameName,
+            Icon = "check",
+            Duration = 3
+        })
+        if config.varibz.autoloadParagraph then
+            autolaodpara()
+        end
+        return true
+    else
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Failed to remove autoload settings!",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+end
+function autolaodpara()
+    local memory = raedmahbrain_()
+    local text = "Autoload Settings:\n"
+    local hasEntries = false
+    
+    for gameId, data in pairs(memory) do
+        hasEntries = true
+        local gameName = data.gameName or "Unknown Game"
+        local saveName = data.saveName or "Unknown Save"
+        local isCurrentGame = (gameId == tostring(getdagaem_()))
+        text = text .. (isCurrentGame and "✓ " or "> ") .. gameName .. " → " .. saveName .. (isCurrentGame and "!" or "") .. "\n"
+    end
+    if not hasEntries then
+        text = text .. "  No autoloads set. Use 'Autoload on Game' to add one."
+    end
+    text = text .. "\nhelo :3"
+    if config.varibz.autoloadParagraph then
+        pcall(function()
+            config.varibz.autoloadParagraph:SetDesc(text)
+        end)
+    end
+end
+function startdaautlado_()
+    local gameId = tostring(getdagaem_())
+    local memory = raedmahbrain_()
+    
+    if memory[gameId] then
+        local saveName = memory[gameId].saveName
+        local gameName = memory[gameId].gameName or "Unknown Game"
+        
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Auto-loading '" .. saveName .. "' for " .. gameName,
+            Icon = "info",
+            Duration = 3
+        })
+        
+        task.wait(1)
+        
+        local success = loadSave(saveName)
+        if success then
+            WindUI:Notify({
+                Title = "Autoload System",
+                Content = "Successfully auto-loaded '" .. saveName .. "'",
+                Icon = "check",
+                Duration = 2
+            })
+        end
+        return success
+    end
+    
+    return false
+end
 SaveUI:init(WindUI, config)
 BMG:init(WindUI, config)
 local function loadUISettings()
@@ -4790,35 +5028,41 @@ local function ShouldTargetPlayer(targetPlayer)
     
     return false
 end
-local IsPlayerVisible = function(Player)
+local IsPlayerVisibleAlt = function(Player)
     local PlayerCharacter = Player.Character
     local LocalPlayerCharacter = plr.Character
     if not (PlayerCharacter and LocalPlayerCharacter) then return false end
     
-    local actualTargetPart = GetActualTargetPart()
-    local PlayerRoot = FindFirstChild(PlayerCharacter, actualTargetPart) or FindFirstChild(PlayerCharacter, "HumanoidRootPart")
+    local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
     if not PlayerRoot then return false end
-    local LocalRoot = FindFirstChild(LocalPlayerCharacter, "Head") or FindFirstChild(LocalPlayerCharacter, "HumanoidRootPart")
+    
+    local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
     if not LocalRoot then return false end
+    
     local origin = LocalRoot.Position
     local targetPos = PlayerRoot.Position
-    local direction = (targetPos - origin).Unit
-    local distance = (targetPos - origin).Magnitude
-    local params = RaycastParams.new()
-    params.FilterType = Enum.RaycastFilterType.Blacklist
-    params.FilterDescendantsInstances = {LocalPlayerCharacter, PlayerCharacter}
-    local result = workspace:Raycast(origin, direction * distance, params)
-    if not result then
+    local direction = (targetPos - origin)
+    local distance = direction.Magnitude
+    
+    if distance < 0.5 then return true end
+    
+    local ignoreList = {LocalPlayerCharacter, PlayerCharacter}
+    local hit, position = workspace:FindPartOnRayWithIgnoreList(
+        Ray.new(origin, direction.Unit * distance),
+        ignoreList
+    )
+    
+    if not hit then
         return true
     end
-    local hitParent = result.Instance.Parent
+    
+    local hitParent = hit.Parent
     if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
         return true
     end
     
     return false
 end
-
 local function syncSilentAimWithMaster()
     if config.masterTeamTarget == "All" then
         config.SA2_TeamTarget = "All"
@@ -4853,6 +5097,9 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
+    local targetType = config.masterTarget or "Players"
+    if targetType == "Players" then end
+    
     local cam = Camera
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
@@ -4874,8 +5121,8 @@ local function GetClosestPlayer()
     end
     
     local function isTargetable(player)
-        if player == plr then return false end
         if typeof(player) == "Instance" and player:IsA("Player") then
+            if player == plr then return false end
             if config.SA2_TeamTarget == "All" then return true end
             local targetTeam = player.Team
             if not localTeam or not targetTeam then
@@ -4899,15 +5146,35 @@ local function GetClosestPlayer()
         return false
     end
     
+    local function isNPCValid(model)
+        if not model or not model:IsA("Model") then return false end
+        if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
+        local humanoid = model:FindFirstChildOfClass("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then return false end
+        if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
+        return true
+    end
+    
     local function getNPCs()
         local npcs = {}
         if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
             for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("Model") and obj ~= character then
+                if obj:IsA("Model") and obj ~= character and isNPCValid(obj) then
                     local humanoid = obj:FindFirstChildOfClass("Humanoid")
                     if humanoid and humanoid.Health > 0 then
                         if obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head") then
-                            table.insert(npcs, obj)
+                            if config.SA2_TeamTarget == "All" then
+                                table.insert(npcs, obj)
+                            elseif config.SA2_TeamTarget == "Enemies" then
+                                table.insert(npcs, obj)
+                            elseif config.SA2_TeamTarget == "Teams" then
+                                local npcTeam = obj:FindFirstChild("Team")
+                                if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                                    if localTeam and npcTeam.Value == localTeam then
+                                        table.insert(npcs, obj)
+                                    end
+                                end
+                            end
                         end
                     end
                 end
@@ -4915,18 +5182,18 @@ local function GetClosestPlayer()
         end
         return npcs
     end
-    
     table.clear(candidates)
     table.clear(targetsInFOV)
+    
     local players = excusemesir.Players:GetPlayers()
     local allTargets = {}
-    
-    for _, p in ipairs(players) do
-        if p ~= plr and isTargetable(p) then
-            table.insert(allTargets, p)
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        for _, p in ipairs(players) do
+            if p ~= plr and isTargetable(p) then
+                table.insert(allTargets, p)
+            end
         end
     end
-    
     if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
         local npcs = getNPCs()
         for _, npc in ipairs(npcs) do
@@ -4934,6 +5201,10 @@ local function GetClosestPlayer()
                 table.insert(allTargets, npc)
             end
         end
+    end
+    if #allTargets == 0 then
+        config.SA2_currentTarget = nil
+        return nil
     end
     
     local candidateCount = 0
@@ -4998,7 +5269,8 @@ local function GetClosestPlayer()
                 health = health,
                 screenDist = distPx,
                 worldDist = worldDist,
-                isPlayer = isPlayer
+                isPlayer = isPlayer,
+                char = char
             }
         else
             candidateCount = candidateCount + 1
@@ -5008,7 +5280,8 @@ local function GetClosestPlayer()
                 health = health,
                 screenDist = 0,
                 worldDist = worldDist,
-                isPlayer = isPlayer
+                isPlayer = isPlayer,
+                char = char
             }
         end
     end
@@ -5082,7 +5355,6 @@ local function GetClosestPlayer()
         return nil
     end
 end
-
 local ExpectedArguments = {
     FindPartOnRay = {
         ArgCountRequired = 2,
@@ -5123,7 +5395,6 @@ if OldIndex then
     hookmetamethod(game, "__index", OldIndex)
     OldIndex = nil
 end
-
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     config.varibz.sa2thing += deltaTime
     
@@ -9949,24 +10220,61 @@ local Window = WindUI:CreateWindow({
 })
 loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
-
 local function rng4()
-    local usedConversations = {}
-    local availableIndices = {}
+    if not config.varibz.rng4 then
+        config.varibz.rng4 = {
+            cursorVisible = true,
+            currentText = "",
+            usedConversations = {},
+            availableIndices = {},
+            tag = nil,
+            isWindowMinimized = function()
+                if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
+                local sizeY = Window.UIElements.Main.Size.Y.Offset
+                if sizeY < 50 then return true end
+                return false
+            end,
+            conversationMessages = {},
+            activeConversation = nil,
+            typingSpeed = 1,
+            isTyping = false,
+            shouldContinue = true,
+            cursorBlinkRate = 0.45,
+            eraseSpeed = 1,
+            messageDelay = 1,
+            convoDelay = 2,
+            processedText = "",
+            typed = "",
+            charIndex = 1,
+            speedMultiplier = 1,
+            textProcessed = "",
+            currentMessage = "",
+            messageIndex = 1,
+            isErasing = false,
+        }
+    end
+    
+    local rng4 = config.varibz.rng4
+    local availableIndices = rng4.availableIndices
+    
     for i = 1, #config.varibz.convo do
         table.insert(availableIndices, i)
     end
-    local tag = Window:Tag({
+    
+    rng4.tag = Window:Tag({
         Title = "",
         Icon = "github",
         Color = Color3.fromHex("#1c1c1c"),
         Border = true
     })
-    if not tag then
+    
+    if not rng4.tag then
         return
     end
-    local currentText = ""
-    local cursorVisible = true
+    
+    rng4.currentText = ""
+    rng4.cursorVisible = true
+    
     local function getPlayerInfo()
         local info = {}
         if lp_info then
@@ -9993,11 +10301,11 @@ local function rng4()
     end
     
     task.spawn(function()
-        while tag do
+        while rng4.tag do
             if not isWindowMinimized() then
-                cursorVisible = not cursorVisible
-                if tag.SetTitle then
-                    tag:SetTitle(currentText .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
+                rng4.cursorVisible = not rng4.cursorVisible
+                if rng4.tag.SetTitle then
+                    rng4.tag:SetTitle(rng4.currentText .. (rng4.cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
                 end
             end
             task.wait(0.45)
@@ -10005,11 +10313,12 @@ local function rng4()
     end)
     
     local function setText(text)
-        currentText = text
-        if tag.SetTitle then
-            tag:SetTitle(text .. (cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
+        rng4.currentText = text
+        if rng4.tag.SetTitle then
+            rng4.tag:SetTitle(text .. (rng4.cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
         end
     end
+    
     local function processText(text)
         local info = getPlayerInfo()
         local processed = text
@@ -10056,70 +10365,75 @@ local function rng4()
     
     local function typeText(text, speedMultiplier)
         local processedText = processText(text)
-        local typed = ""
-        local i = 1
+        rng4.processedText = processedText
+        rng4.typed = ""
+        rng4.charIndex = 1
+        rng4.speedMultiplier = speedMultiplier
+        rng4.isTyping = true
         
-        while i <= #processedText do
+        while rng4.charIndex <= #processedText do
             while isWindowMinimized() do
                 task.wait(0.1)
             end
             
-            local char = processedText:sub(i, i)
+            local char = processedText:sub(rng4.charIndex, rng4.charIndex)
             if char == "\n" then
-                typed ..= char
-                setText(typed)
-                i = i + 1
-                continue
-            end
-            local runLength = getRepeatedRunLength(processedText, i)
-            if runLength > 2 then
-                local repeatedChar = processedText:sub(i, i)
-                local totalCharsInRun = runLength
-                local charsTyped = 0
-                typed ..= repeatedChar
-                setText(typed)
-                local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
-                task.wait(delay)
-                charsTyped = charsTyped + 1
-                i = i + 1
-                local baseDelay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
-                while charsTyped < totalCharsInRun and i <= #processedText and processedText:sub(i, i) == repeatedChar do
-                    typed ..= repeatedChar
-                    setText(typed)
-                    local holdDelay
-                    if charsTyped <= 2 then
-                        holdDelay = baseDelay * (math.random(15, 25) / 10)
-                    else
-                        holdDelay = baseDelay * (math.random(2, 5) / 10)
-                    end
-                    holdDelay = holdDelay * (math.random(8, 12) / 10)
-                    
-                    task.wait(holdDelay)
-                    charsTyped = charsTyped + 1
-                    i = i + 1
-                end
-                task.wait(baseDelay * math.random(1, 3))
+                rng4.typed = rng4.typed .. char
+                setText(rng4.typed)
+                rng4.charIndex = rng4.charIndex + 1
             else
-                typed ..= char
-                setText(typed)
-                
-                local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
-                if char == " " then
-                    delay = delay + (math.random(config.varibz.defaults.spaceExtraMin, config.varibz.defaults.spaceExtraMax) / 1000) * speedMultiplier
-                elseif char:match("[%.%!%?,:]") then
-                    delay = delay + (math.random(config.varibz.defaults.punctExtraMin, config.varibz.defaults.punctExtraMax) / 1000) * speedMultiplier
+                local runLength = getRepeatedRunLength(processedText, rng4.charIndex)
+                if runLength > 2 then
+                    local repeatedChar = processedText:sub(rng4.charIndex, rng4.charIndex)
+                    local totalCharsInRun = runLength
+                    local charsTyped = 0
+                    rng4.typed = rng4.typed .. repeatedChar
+                    setText(rng4.typed)
+                    local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                    task.wait(delay)
+                    charsTyped = charsTyped + 1
+                    rng4.charIndex = rng4.charIndex + 1
+                    local baseDelay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                    while charsTyped < totalCharsInRun and rng4.charIndex <= #processedText and processedText:sub(rng4.charIndex, rng4.charIndex) == repeatedChar do
+                        rng4.typed = rng4.typed .. repeatedChar
+                        setText(rng4.typed)
+                        local holdDelay
+                        if charsTyped <= 2 then
+                            holdDelay = baseDelay * (math.random(15, 25) / 10)
+                        else
+                            holdDelay = baseDelay * (math.random(2, 5) / 10)
+                        end
+                        holdDelay = holdDelay * (math.random(8, 12) / 10)
+                        
+                        task.wait(holdDelay)
+                        charsTyped = charsTyped + 1
+                        rng4.charIndex = rng4.charIndex + 1
+                    end
+                    task.wait(baseDelay * math.random(1, 3))
+                else
+                    rng4.typed = rng4.typed .. char
+                    setText(rng4.typed)
+                    
+                    local delay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+                    if char == " " then
+                        delay = delay + (math.random(config.varibz.defaults.spaceExtraMin, config.varibz.defaults.spaceExtraMax) / 1000) * speedMultiplier
+                    elseif char:match("[%.%!%?,:]") then
+                        delay = delay + (math.random(config.varibz.defaults.punctExtraMin, config.varibz.defaults.punctExtraMax) / 1000) * speedMultiplier
+                    end
+                    if math.random() < config.varibz.defaults.breakChance then
+                        delay = delay + (math.random(config.varibz.defaults.breakExtraMin, config.varibz.defaults.breakExtraMax) / 1000) * speedMultiplier
+                    end
+                    task.wait(delay)
+                    rng4.charIndex = rng4.charIndex + 1
                 end
-                if math.random() < config.varibz.defaults.breakChance then
-                    delay = delay + (math.random(config.varibz.defaults.breakExtraMin, config.varibz.defaults.breakExtraMax) / 1000) * speedMultiplier
-                end
-                task.wait(delay)
-                i = i + 1
             end
         end
+        rng4.isTyping = false
     end
     
     local function eraseText(speedMultiplier)
-        local text = currentText
+        rng4.isErasing = true
+        local text = rng4.currentText
         for i = #text, 0, -1 do
             while isWindowMinimized() do
                 task.wait(0.1)
@@ -10127,10 +10441,11 @@ local function rng4()
             setText(text:sub(1, i))
             task.wait((math.random(config.varibz.defaults.eraseDelayMin, config.varibz.defaults.eraseDelayMax) / 1000) * speedMultiplier)
         end
+        rng4.isErasing = false
     end
     
     task.spawn(function()
-        while tag do
+        while rng4.tag do
             while isWindowMinimized() do
                 task.wait(0.5)
             end
@@ -10202,7 +10517,7 @@ local function rng4()
             end
         end)
     end
-    return tag
+    return rng4.tag
 end
 local function rng()
     local Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
@@ -10935,7 +11250,7 @@ MainTab:Toggle({
 
 MainTab:Paragraph({
     Title = "Save/Load",
-    Desc = "Save and load your configuration settings\n\n[sum features won't be saved mb :< ]",
+    Desc = "Save and load your configuration settings\n\n[some features won't be saved mb :< ]",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -11049,18 +11364,77 @@ MainTab:Button({
     end
 })
 
+MainTab:Button({
+    Title = "Autoload on Game",
+    Desc = "Set selected save to autoload on this game",
+    Icon = "play",
+    Callback = function()
+        local name = saveInputValue or ""
+        if name == "" then
+            WindUI:Notify({
+                Title = "Autoload System",
+                Content = "Please enter a save name! D:",
+                Icon = "x",
+                Duration = 2
+            })
+            return
+        end
+        SETDAAUTOLAOD_(name)
+    end
+})
+
+MainTab:Button({
+    Title = "Remove Autoload",
+    Desc = "Remove autoload for this game",
+    Icon = "x",
+    Callback = function()
+        nullifymahfilez_()
+    end
+})
+
 config.varibz.savesParagraph = MainTab:Paragraph({
     Title = "Saves List",
-    Desc = savePara() .. "\nit refreshes now!",
+    Desc = savePara() .. "\nBLLEHH >:P",
     Color = config.Gradow.uicolor.darkGray
 })
 task.spawn(function()
     while true do
         task.wait(1)
+        if Window and Window.UIElements and Window.UIElements.Main then
+            local sizeY = Window.UIElements.Main.Size.Y.Offset
+            if sizeY < 50 then
+                task.wait(0.5)
+                continue
+            end
+        end
+        
         if config.varibz.savesParagraph then
-            local newDesc = savePara() .. "\nit refreshes now!"
+            local newDesc = savePara() .. "\nBLLEHH >:P"
             pcall(function()
                 config.varibz.savesParagraph:SetDesc(newDesc)
+            end)
+        end
+    end
+end)
+config.varibz.autoloadParagraph = MainTab:Paragraph({
+    Title = "Autoload List",
+    Desc = "Loading...",
+    Color = config.Gradow.uicolor.darkGray
+})
+task.spawn(function()
+    while true do
+        task.wait(2)
+        if Window and Window.UIElements and Window.UIElements.Main then
+            local sizeY = Window.UIElements.Main.Size.Y.Offset
+            if sizeY < 50 then
+                task.wait(0.5)
+                continue
+            end
+        end
+        
+        if config.varibz.autoloadParagraph then
+            pcall(function()
+                autolaodpara()
             end)
         end
     end
@@ -12421,7 +12795,7 @@ SilentAimTab2:Toggle({
     })
 
 SilentAimTab2:Slider({
-    Title = "Target Processing Delay",
+    Title = "Responsiveness",
     Desc = "Higher = More Performance  Lower = More Responsiveness",
     Step = 0.01,
     Suffix = "s",
@@ -14287,8 +14661,13 @@ local InfoTab = Window:Tab({
         Color = config.Gradow.uicolor.Red
     })
     InfoTab:Paragraph({
-        Title = "Gravel; SRC",
+        Title = "Gravel: SRC",
         Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source... if ur using a snippet that came from gravel.... credit me or I cry :(",
+        Color = config.Gradow.uicolor.Black
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel: About",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..",
         Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
@@ -14387,11 +14766,17 @@ InfoTab:Paragraph({
 
 2. Click "New Save" to save your current settings
 
-3. Type a saved name from "Save Name" inputbox and click "Load Save" to load it
+3. Type a saved name from "Save Name" inputbox and click "Load Save" to load an specific save!
 
 4. Use "Delete Save" to remove a specific save (type in, Save Name from the inputbox)
 
 5. Use "Delete All Saves" to remove ALL saves (requires 3 yessirski's)
+
+6. "Autoload on Game" Sets the currently entered save name to automatically load whenever you join this specific game
+
+7. "Remove Autoload" Removes the autoload setting for the current game
+
+8. Autoload settings are saved per-game, so you can have different configs autoload for different games! ;D
 
 Note: sum features might not get saved properly D:
 ]],
@@ -15459,8 +15844,12 @@ end)
 getgenv().destroyInitGui()
 rng()
 rng2()
+local autoloadSuccess = startdaautlado_()
+if autoloadSuccess then
+    print("autoloaded on dis gaem :3")
+end
 task.wait(2.5)
-loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
+loadstring(getgist_(genv().HttpUrlz_.hbsshandlecorpses))()
 loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 return {
     config = config,
