@@ -53,7 +53,7 @@ local excusemesir = {
 }
 
 
-local success, err = pcall(function()
+local success, err2 = pcall(function()
 
 repeat wait() until game:IsLoaded()
 
@@ -224,18 +224,6 @@ local fCfg = {
         end,
         unload = function() stopAutoFarm() end,
         prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    client = {
-        dep = {"core"},
-        load = function()
-            if not config.clientMasterEnabled then return false end
-            applyClientMaster(true)
-            return true
-        end,
-        unload = function() applyClientMaster(false) end,
-        prio = 2,
         ess = false,
         reqGame = true
     },
@@ -895,19 +883,6 @@ local config = {
     aimbot360BehindRange = 180,
     aimbot360WasEnabled = false,
     masterTarget = "Players",
-    clientMasterEnabled = false,
-    clientWalkSpeed = 16,
-    clientJumpPower = 50,
-    clientNoclip = false,
-    clientCFrameWalkEnabled = false,
-    clientCFrameSpeed = 1,
-    clientConnections = {},
-    clientOriginals = {},
-    _tpwalking = false,
-    clientWalkEnabled = false,
-    clientJumpEnabled = false,
-    clientNoclipEnabled = false,
-    clientCFrameWalkToggle = false,
     masterGetTarget = "Closest",
     aimbotGetTarget = "Closest",
     silentGetTarget = "Closest",
@@ -917,6 +892,21 @@ local config = {
     ignoreForcefield = true,
     QuickToggles = false,
     QTDrag = true,
+    clientModEnabled = false,
+    walkspeedEnabled = false,
+    walkspeedValue = 16,
+    tpwalkEnabled = false,
+    tpwalkSpeed = 1,
+    tpwalkConnection = nil,
+    gravityEnabled = false,
+    gravityValue = 196.2,
+    originalGravity = nil,
+    jumppowerEnabled = false,
+    jumppowerValue = 50,
+    hipHeightEnabled = false,
+    hipHeightValue = 0,
+    clientModConnections = {},
+    clientModOriginalValues = {},
     trussEnabled = false,
     trussPart = nil,
     trussConnection = nil,
@@ -1361,7 +1351,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 15000+ lines long :(",
+                "Bro ts code is 16000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1781,7 +1771,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*15000+ lines later*",
+                "*16000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -1974,7 +1964,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 15000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 16000+ lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -1994,7 +1984,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 15000 o_o",
+            "da script reached 8000 lines to 16000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2405,6 +2395,12 @@ local config = {
         sa2thing = 0,
         sa2stuff = 0.5,
         sa2this = false,
+        sa2alot = 0,
+        sa2dump = {
+            data = {},
+            lastClear = 0,
+            maxAge = 0.1,
+        },
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -2770,6 +2766,110 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     end
 end
 
+local function cmods()
+    local player = excusemesir.Players.LocalPlayer
+    local character = player.Character
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    if not config.clientModOriginalValues.walkspeed then
+        config.clientModOriginalValues.walkspeed = humanoid.WalkSpeed
+    end
+    if not config.clientModOriginalValues.jumppower then
+        config.clientModOriginalValues.jumppower = humanoid.JumpPower
+    end
+    if not config.clientModOriginalValues.hipHeight then
+        config.clientModOriginalValues.hipHeight = humanoid.HipHeight
+    end
+    if config.originalGravity == nil then
+        config.originalGravity = workspace.Gravity
+    end
+    if config.walkspeedEnabled then
+        humanoid.WalkSpeed = config.walkspeedValue or 16
+    else
+        humanoid.WalkSpeed = config.clientModOriginalValues.walkspeed
+    end
+    if config.jumppowerEnabled then
+        humanoid.JumpPower = config.jumppowerValue or 50
+    else
+        humanoid.JumpPower = config.clientModOriginalValues.jumppower
+    end
+    if config.hipHeightEnabled then
+        humanoid.HipHeight = config.hipHeightValue or 0
+    else
+        humanoid.HipHeight = config.clientModOriginalValues.hipHeight
+    end
+    if config.gravityEnabled then
+        workspace.Gravity = config.gravityValue or 196.2
+    else
+        if config.originalGravity ~= nil then
+            workspace.Gravity = config.originalGravity
+        end
+    end
+    if config.tpwalkEnabled and config.clientModEnabled then
+        if not config.tpwalkConnection then
+            config.tpwalkConnection = excusemesir.RunService.Heartbeat:Connect(function(dt)
+                if not config.tpwalkEnabled or not config.clientModEnabled then return end
+                
+                local char = excusemesir.Players.LocalPlayer.Character
+                if not char then return end
+                
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                local root = char:FindFirstChild("HumanoidRootPart")
+                if not hum or not root or hum.Health <= 0 then return end
+                
+                if hum.MoveDirection.Magnitude > 0 then
+                    local moveDirection = hum.MoveDirection.Unit
+                    local velocity = moveDirection * config.tpwalkSpeed * 50
+                    root.CFrame = root.CFrame + velocity * dt
+                end
+            end)
+        end
+    elseif config.tpwalkConnection then
+        config.tpwalkConnection:Disconnect()
+        config.tpwalkConnection = nil
+    end
+end
+local function resetcmods()
+    local player = excusemesir.Players.LocalPlayer
+    local character = player.Character
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    if config.clientModOriginalValues.walkspeed then
+        humanoid.WalkSpeed = config.clientModOriginalValues.walkspeed
+    end
+    if config.clientModOriginalValues.jumppower then
+        humanoid.JumpPower = config.clientModOriginalValues.jumppower
+    end
+    if config.clientModOriginalValues.hipHeight then
+        humanoid.HipHeight = config.clientModOriginalValues.hipHeight
+    end
+    if config.originalGravity ~= nil then
+        workspace.Gravity = config.originalGravity
+    end
+    if config.tpwalkConnection then
+        config.tpwalkConnection:Disconnect()
+        config.tpwalkConnection = nil
+    end
+    config.clientModOriginalValues = {}
+end
+
+local function recmods()
+    local player = excusemesir.Players.LocalPlayer
+    
+    if config.clientModConnections.characterAdded then
+        config.clientModConnections.characterAdded:Disconnect()
+    end
+    
+    config.clientModConnections.characterAdded = player.CharacterAdded:Connect(function(character)
+        task.wait(0.5)
+        if config.clientModEnabled then
+            cmods()
+        end
+    end)
+end
+
 local function getSavePath(saveName)
     return getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder .. "/" .. saveName .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Extension
 end
@@ -2810,7 +2910,7 @@ local function loadSaveData(saveName)
     return success and decoded or nil
 end
 
-local function findPartialSaveMatch(inputName)
+local function fuzzymatch(inputName)
     if not inputName or inputName == "" then
         return nil, "Please enter a save name"
     end
@@ -2930,7 +3030,7 @@ local function findPartialSaveMatch(inputName)
         end
     end
 end
-local function getGameName()
+local function givegaemname()
     local success, info = pcall(function()
         return excusemesir.MarketplaceService:GetProductInfo(game.PlaceId)
     end)
@@ -2940,8 +3040,7 @@ local function getGameName()
     end
     return nil
 end
-
-local function generateGameAbbreviation(gameName)
+local function gengameabbr(gameName)
     if not gameName or gameName == "" then
         return nil
     end
@@ -2994,38 +3093,237 @@ local function generateGameAbbreviation(gameName)
     return abbr
 end
 
-local function generateUniqueSaveName(baseName)
+local function makeitunqiue(gameName)
+    if not gameName or gameName == "" then
+        return {}
+    end
+    local cleanName = gameName:gsub("[^%w%s]", ""):gsub("%s+", " ")
+    local words = {}
+    for word in cleanName:gmatch("%S+") do
+        if #word > 1 then
+            table.insert(words, word)
+        end
+    end
+    
+    if #words == 0 then
+        local letters = gameName:gsub("[^%a]", "")
+        if #letters >= 3 then
+            words = {string.sub(letters, 1, 3)}
+        else
+            return {}
+        end
+    end
+    
+    local variations = {}
+    local firstLetter = string.upper(string.sub(words[1] or gameName, 1, 1))
+    if #words >= 1 then
+        local mainWord = words[1]
+        local cleanMain = mainWord:gsub("[^%a]", "")
+        
+        if #cleanMain >= 4 then
+            table.insert(variations, string.upper(string.sub(cleanMain, 1, 4)))
+            table.insert(variations, string.upper(string.sub(cleanMain, 1, 3) .. string.sub(cleanMain, -1)))
+            if #cleanMain >= 4 then
+                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanMain, 3, 4)))
+            end
+        end
+        if #words >= 2 then
+            local word2 = words[2]
+            local cleanWord2 = word2:gsub("[^%a]", "")
+            
+            if #cleanMain >= 2 and #cleanWord2 >= 2 then
+                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanWord2, 1, 2)))
+            end
+            
+            if #cleanMain >= 2 and #cleanWord2 >= 1 then
+                table.insert(variations, string.upper(string.sub(cleanMain, 1, 3) .. string.sub(cleanWord2, 1, 1)))
+                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanWord2, 1, 2)))
+            end
+        end
+        if #words >= 3 then
+            local word2 = words[2]
+            local word3 = words[3]
+            local cleanWord2 = word2:gsub("[^%a]", "")
+            local cleanWord3 = word3:gsub("[^%a]", "")
+            
+            if #cleanMain >= 2 and #cleanWord2 >= 1 and #cleanWord3 >= 1 then
+                table.insert(variations, string.upper(string.sub(cleanMain, 1, 1) .. string.sub(cleanWord2, 1, 1) .. string.sub(cleanWord3, 1, 1) .. string.sub(cleanMain, 2, 2)))
+            end
+        end
+        local consonants = ""
+        for _, word in ipairs(words) do
+            for char in word:gmatch(".") do
+                if char:match("[BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz]") then
+                    consonants = consonants .. string.upper(char)
+                end
+            end
+        end
+        
+        if #consonants >= 4 then
+            table.insert(variations, string.sub(consonants, 1, 4))
+        elseif #consonants >= 3 then
+            local padded = string.sub(consonants, 1, 3) .. firstLetter
+            table.insert(variations, padded)
+        end
+        if #cleanMain >= 4 then
+            local base = string.upper(cleanMain)
+            local first = string.sub(base, 1, 1)
+            local rest = string.sub(base, 2, 4)
+            for i = 1, #rest do
+                local arrangement = first
+                for j = 1, #rest do
+                    local pos = ((i + j - 2) % #rest) + 1
+                    arrangement = arrangement .. string.sub(rest, pos, pos)
+                end
+                if arrangement ~= base and arrangement ~= string.upper(string.sub(cleanMain, 1, 4)) then
+                    table.insert(variations, arrangement)
+                end
+            end
+        end
+    end
+    local seen = {}
+    local unique = {}
+    for _, v in ipairs(variations) do
+        if not seen[v] and v ~= "" then
+            seen[v] = true
+            table.insert(unique, v)
+        end
+    end
+    
+    return unique
+end
+
+local function uniquesavename(baseName)
     local saves = getSaveList()
-    local uniqueName = baseName
-    
-    local counter = 1
+    local gameName = givegaemname()
+    local variations = {}
     local nameExists = false
-    
     for _, save in ipairs(saves) do
-        if save == uniqueName then
+        if save == baseName then
             nameExists = true
             break
         end
     end
     
-    while nameExists do
-        uniqueName = baseName .. "_" .. counter
-        nameExists = false
+    if not nameExists then
+        return baseName
+    end
+    if gameName and gameName ~= "" then
+        variations = makeitunqiue(gameName)
+    end
+    if #variations == 0 then
+        local cleanName = gameName and gameName:gsub("[^%a]", "") or ""
+        if #cleanName >= 4 then
+            table.insert(variations, string.upper(string.sub(cleanName, 1, 4)))
+        end
         
+        if #cleanName >= 3 then
+            local first = string.upper(string.sub(cleanName, 1, 1))
+            local rest = string.upper(string.sub(cleanName, 2, 4))
+            if #rest >= 3 then
+                for i = 1, #rest do
+                    local arrangement = first
+                    for j = 1, 3 do
+                        local pos = ((i + j - 2) % #rest) + 1
+                        arrangement = arrangement .. string.sub(rest, pos, pos)
+                    end
+                    if arrangement ~= string.upper(string.sub(cleanName, 1, 4)) then
+                        table.insert(variations, arrangement)
+                    end
+                end
+            end
+        end
+        if #variations == 0 then
+            table.insert(variations, "GAME")
+        end
+    end
+    for _, variation in ipairs(variations) do
+        local name = variation
+        if #name < 4 then
+            local pad = string.upper((gameName or ""):gsub("[^%a]", ""))
+            if #pad < 4 then
+                pad = pad .. string.rep("X", 4 - #pad)
+            end
+            name = string.upper(string.sub(pad, 1, 4))
+        else
+            name = string.upper(string.sub(name, 1, 4))
+        end
+        local isUnique = true
         for _, save in ipairs(saves) do
-            if save == uniqueName then
-                nameExists = true
+            if save == name then
+                isUnique = false
                 break
             end
         end
         
-        counter = counter + 1
-        if counter > 100 then break end
+        if isUnique then
+            return name
+        end
+    end
+    local baseLetters = string.upper((gameName or "GAME"):gsub("[^%a]", ""))
+    if #baseLetters < 4 then
+        baseLetters = baseLetters .. string.rep("X", 4 - #baseLetters)
+    end
+    baseLetters = string.sub(baseLetters, 1, 4)
+    
+    local attempts = 0
+    while attempts < 1000 do
+        local chars = {}
+        for i = 1, #baseLetters do
+            chars[i] = string.sub(baseLetters, i, i)
+        end
+        for i = #chars, 2, -1 do
+            local j = math.random(1, i)
+            chars[i], chars[j] = chars[j], chars[i]
+        end
+        
+        local newName = table.concat(chars)
+        local isUnique = true
+        for _, save in ipairs(saves) do
+            if save == newName then
+                isUnique = false
+                break
+            end
+        end
+        
+        if isUnique then
+            return newName
+        end
+        
+        attempts = attempts + 1
+    end
+    local clean = (gameName or "GAME"):gsub("[^%a]", "")
+    if #clean < 4 then
+        clean = clean .. string.rep("X", 4 - #clean)
     end
     
-    return uniqueName
+    local chars = {}
+    for i = 1, #clean do
+        chars[i] = string.upper(string.sub(clean, i, i))
+    end
+    
+    for i = 1, 1000 do
+        local name = ""
+        for j = 1, 4 do
+            local idx = ((i * j + j * i) % #chars) + 1
+            name = name .. chars[idx]
+        end
+        
+        local isUnique = true
+        for _, save in ipairs(saves) do
+            if save == name then
+                isUnique = false
+                break
+            end
+        end
+        
+        if isUnique then
+            return name
+        end
+    end
+    local timestamp = os.time()
+    return "S" .. tostring(timestamp % 10000)
 end
-
 
 local function saveConfig(saveName)
     if not saveName or saveName == "" then
@@ -3037,11 +3335,104 @@ local function saveConfig(saveName)
         })
         return false
     end
-    local exactMatch, _ = findPartialSaveMatch(saveName)
-    if exactMatch then
-        saveName = exactMatch
+    local saves = getSaveList()
+    local exactMatch = nil
+    for _, save in ipairs(saves) do
+        if save == saveName then
+            exactMatch = save
+            break
+        end
     end
     
+    local finalName = saveName
+    if exactMatch then
+        local gameName = givegaemname()
+        
+        if gameName and gameName ~= "" then
+            local variations = makeitunqiue(gameName)
+            for _, variation in ipairs(variations) do
+                local name = string.upper(string.sub(variation, 1, 4))
+                if #name < 4 then
+                    local pad = string.upper(gameName:gsub("[^%a]", ""))
+                    if #pad < 4 then
+                        pad = pad .. string.rep("X", 4 - #pad)
+                    end
+                    name = string.upper(string.sub(pad, 1, 4))
+                end
+                
+                local isUnique = true
+                for _, save in ipairs(saves) do
+                    if save == name then
+                        isUnique = false
+                        break
+                    end
+                end
+                
+                if isUnique then
+                    finalName = name
+                    WindUI:Notify({
+                        Title = "Save System",
+                        Content = "Save '" .. saveName .. "' exists. Using: " .. finalName,
+                        Icon = "info",
+                        Duration = 3
+                    })
+                    break
+                end
+            end
+            if finalName == saveName then
+                local baseLetters = string.upper(gameName:gsub("[^%a]", ""))
+                if #baseLetters < 4 then
+                    baseLetters = baseLetters .. string.rep("X", 4 - #baseLetters)
+                end
+                baseLetters = string.sub(baseLetters, 1, 4)
+                
+                local attempts = 0
+                while attempts < 1000 do
+                    local chars = {}
+                    for i = 1, #baseLetters do
+                        chars[i] = string.sub(baseLetters, i, i)
+                    end
+                    for i = #chars, 2, -1 do
+                        local j = math.random(1, i)
+                        chars[i], chars[j] = chars[j], chars[i]
+                    end
+                    
+                    local newName = table.concat(chars)
+                    
+                    local isUnique = true
+                    for _, save in ipairs(saves) do
+                        if save == newName then
+                            isUnique = false
+                            break
+                        end
+                    end
+                    
+                    if isUnique then
+                        finalName = newName
+                        WindUI:Notify({
+                            Title = "Save System",
+                            Content = "Save '" .. saveName .. "' exists. Using: " .. finalName,
+                            Icon = "info",
+                            Duration = 3
+                        })
+                        break
+                    end
+                    
+                    attempts = attempts + 1
+                end
+            end
+        end
+        if finalName == saveName then
+            local timestamp = os.time()
+            finalName = "S" .. tostring(timestamp % 10000)
+            WindUI:Notify({
+                Title = "Save System",
+                Content = "Using: " .. finalName,
+                Icon = "info",
+                Duration = 2
+            })
+        end
+    end
     local configToSave = {
         version = "2.0",
         timestamp = os.time(),
@@ -3195,17 +3586,20 @@ local function saveConfig(saveName)
             visualizer_transparency = config.visualizer.transparency,
             reach_autoSwing = config.reach.autoSwing.enabled,
             reach_autoSwing_delay = config.reach.autoSwing.delay,
-            clientMasterEnabled = config.clientMasterEnabled,
-            clientNoclipEnabled = config.clientNoclipEnabled,
-            clientWalkEnabled = config.clientWalkEnabled,
-            clientJumpEnabled = config.clientJumpEnabled,
-            clientCFrameWalkToggle = config.clientCFrameWalkToggle,
-            clientWalkSpeed = config.clientWalkSpeed,
-            clientJumpPower = config.clientJumpPower,
-            clientCFrameSpeed = config.clientCFrameSpeed,
             trussEnabled = config.trussEnabled,
             airwalkEnabled = config.airwalkEnabled,
             autorespawnEnabled = config.autorespawnEnabled,
+            clientModEnabled = config.clientModEnabled,
+            walkspeedEnabled = config.walkspeedEnabled,
+            walkspeedValue = config.walkspeedValue,
+            gravityEnabled = config.gravityEnabled,
+            gravityValue = config.gravityValue,
+            tpwalkEnabled = config.tpwalkEnabled,
+            tpwalkSpeed = config.tpwalkSpeed,
+            jumppowerEnabled = config.jumppowerEnabled,
+            jumppowerValue = config.jumppowerValue,
+            hipHeightEnabled = config.hipHeightEnabled,
+            hipHeightValue = config.hipHeightValue,
             tbot_enabled = config.tbot.enabled,
             tbot_targetPart = config.tbot.targetPart,
             tbot_fovRadius = config.tbot.fovRadius,
@@ -3258,15 +3652,16 @@ local function saveConfig(saveName)
         pcall(function() makefolder(getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder) end)
     end
     
-    local path = getSavePath(saveName)
+    local path = getSavePath(finalName)
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
     
     if success then
+        getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = finalName
         WindUI:Notify({
             Title = "Save System",
-            Content = "Saved '" .. saveName .. "' successfully!",
+            Content = "Saved '" .. finalName .. "' successfully!",
             Icon = "check",
             Duration = 2
         })
@@ -3281,7 +3676,6 @@ local function saveConfig(saveName)
         return false
     end
 end
-
 local function deleteSave(saveName)
     if not saveName or saveName == "" then
         WindUI:Notify({
@@ -3292,7 +3686,7 @@ local function deleteSave(saveName)
         })
         return false
     end
-    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
         WindUI:Notify({
             Title = "Save System",
@@ -3317,7 +3711,6 @@ local function deleteSave(saveName)
         })
         return false
     end
-    
     local success, err = pcall(function()
         delfile(path)
     end)
@@ -3329,6 +3722,36 @@ local function deleteSave(saveName)
             Icon = "check",
             Duration = 2
         })
+        
+        local memory = raedmahbrain_()
+        local removedCount = 0
+        for gameId, data in pairs(memory) do
+            if data.saveName == saveName then
+                memory[gameId] = nil
+                removedCount = removedCount + 1
+            end
+        end
+        if removedCount > 0 then
+            writehaxsandstuff_(memory)
+            WindUI:Notify({
+                Title = "Autoload System",
+                Content = "Removed " .. removedCount .. " autoload entry(ies) for '" .. saveName .. "'",
+                Icon = "info",
+                Duration = 3
+            })
+            autolaodpara()
+        end
+        if getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave == saveName then
+            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
+        end
+        
+        if config.varibz.savesParagraph then
+            local newDesc = savePara() .. "\nBLLEHH >:P"
+            pcall(function()
+                config.varibz.savesParagraph:SetDesc(newDesc)
+            end)
+        end
+        
         return true
     else
         WindUI:Notify({
@@ -3340,7 +3763,6 @@ local function deleteSave(saveName)
         return false
     end
 end
-
 local function deleteAllSaves()
     local saves = getSaveList()
     if #saves == 0 then
@@ -3382,6 +3804,11 @@ local function deleteAllSaves()
     local function getRandomNo()
         return noVariants[math.random(1, #noVariants)]
     end
+    local savesToDelete = {}
+    for _, save in ipairs(saves) do
+        table.insert(savesToDelete, save)
+    end
+    
     local function showConfirmation()
         local currentTitle = getRandomMemeTitle()
         local currentYes = getRandomYes()
@@ -3407,7 +3834,8 @@ local function deleteAllSaves()
                         if confirmCount >= maxConfirmations then
                             local deletedCount = 0
                             local failedSaves = {}
-                            for _, save in ipairs(saves) do
+                            local deletedSaveNames = {}
+                            for _, save in ipairs(savesToDelete) do
                                 local path = getSavePath(save)
                                 local success, err = pcall(function()
                                     if isfile(path) then
@@ -3417,13 +3845,38 @@ local function deleteAllSaves()
                                         return false, "file not found"
                                     end
                                 end)
-
+                                
                                 if success and success ~= false then
                                     deletedCount = deletedCount + 1
+                                    table.insert(deletedSaveNames, save)
                                 else
                                     table.insert(failedSaves, save .. " (" .. tostring(err) .. ")")
                                 end
                             end
+                            if #deletedSaveNames > 0 then
+                                local memory = raedmahbrain_()
+                                local removedCount = 0
+                                for gameId, data in pairs(memory) do
+                                    for _, deletedSave in ipairs(deletedSaveNames) do
+                                        if data.saveName == deletedSave then
+                                            memory[gameId] = nil
+                                            removedCount = removedCount + 1
+                                            break
+                                        end
+                                    end
+                                end
+                                if removedCount > 0 then
+                                    writehaxsandstuff_(memory)
+                                    WindUI:Notify({
+                                        Title = "Autoload System",
+                                        Content = "Removed " .. removedCount .. " autoload entry(ies) for deleted saves",
+                                        Icon = "info",
+                                        Duration = 3
+                                    })
+                                end
+                            end
+                            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
+                            
                             if deletedCount > 0 then
                                 WindUI:Notify({
                                     Title = "Save System",
@@ -3444,8 +3897,9 @@ local function deleteAllSaves()
                                     Duration = 4
                                 })
                             end
-                            getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
+                            
                             confirmCount = 0
+                            autolaodpara()
                             if config.varibz.savesParagraph then
                                 local newDesc = savePara() .. "\nBLLEHH >:P"
                                 pcall(function()
@@ -3478,7 +3932,6 @@ local function deleteAllSaves()
     showConfirmation()
     return true
 end
-
 local function applyFeatureAfterLoad(featureName, state, ...)
     local args = {...}
     pcall(function()
@@ -3511,8 +3964,6 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                     restorePartForPlayer(pl)
                 end
             end
-        elseif featureName == "clientMaster" then
-            applyClientMaster(state)
         elseif featureName == "antiAim" then
             config.antiAimEnabled = state
             if not state then
@@ -3552,6 +4003,16 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                     local cb = MiscTab and MiscTab.Callbacks and MiscTab.Callbacks.viewing
                     if cb then cb(state) end
                 end)
+            end
+        elseif featureName == "tpwalk" then
+            config.tpwalkEnabled = state
+            if config.clientModEnabled then
+                cmods()
+            end
+        elseif featureName == "gravity" then
+            config.gravityEnabled = state
+            if config.clientModEnabled then
+                cmods()
             end
         elseif featureName == "camYOffset" then
             config.camYOffsetEnabled = state
@@ -3769,7 +4230,7 @@ local function loadSave(saveName)
         })
         return false
     end
-    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
         WindUI:Notify({
             Title = "Save System",
@@ -3861,21 +4322,6 @@ local function loadSave(saveName)
         end
         config.hitboxExpandedParts = {}
         config.hitboxOriginalSizes = {}
-        if config.clientMasterEnabled then
-            restoreClientValues()
-        end
-        config.clientMasterEnabled = false
-        config.clientNoclipEnabled = false
-        config.clientWalkEnabled = false
-        config.clientJumpEnabled = false
-        config.clientCFrameWalkToggle = false
-        if _noclipConn then
-            _noclipConn:Disconnect()
-            _noclipConn = nil
-        end
-        if config._tpwalking then
-            TpWalkStop()
-        end
         config.trussEnabled = false
         if config.trussPart then
             config.trussPart:Destroy()
@@ -4083,17 +4529,20 @@ local function loadSave(saveName)
     if cfg.visualizer_transparency then config.visualizer.transparency = cfg.visualizer_transparency end
     if cfg.reach_autoSwing ~= nil then config.reach.autoSwing.enabled = cfg.reach_autoSwing end
     if cfg.reach_autoSwing_delay then config.reach.autoSwing.delay = cfg.reach_autoSwing_delay end
-    if cfg.clientMasterEnabled ~= nil then config.clientMasterEnabled = cfg.clientMasterEnabled end
-    if cfg.clientNoclipEnabled ~= nil then config.clientNoclipEnabled = cfg.clientNoclipEnabled end
-    if cfg.clientWalkEnabled ~= nil then config.clientWalkEnabled = cfg.clientWalkEnabled end
-    if cfg.clientJumpEnabled ~= nil then config.clientJumpEnabled = cfg.clientJumpEnabled end
-    if cfg.clientCFrameWalkToggle ~= nil then config.clientCFrameWalkToggle = cfg.clientCFrameWalkToggle end
-    if cfg.clientWalkSpeed then config.clientWalkSpeed = cfg.clientWalkSpeed end
-    if cfg.clientJumpPower then config.clientJumpPower = cfg.clientJumpPower end
-    if cfg.clientCFrameSpeed then config.clientCFrameSpeed = cfg.clientCFrameSpeed end
     if cfg.trussEnabled ~= nil then config.trussEnabled = cfg.trussEnabled end
     if cfg.airwalkEnabled ~= nil then config.airwalkEnabled = cfg.airwalkEnabled end
     if cfg.autorespawnEnabled ~= nil then config.autorespawnEnabled = cfg.autorespawnEnabled end
+    if cfg.clientModEnabled ~= nil then config.clientModEnabled = cfg.clientModEnabled end
+    if cfg.walkspeedEnabled ~= nil then config.walkspeedEnabled = cfg.walkspeedEnabled end
+    if cfg.walkspeedValue then config.walkspeedValue = cfg.walkspeedValue end
+    if cfg.gravityEnabled ~= nil then config.gravityEnabled = cfg.gravityEnabled end
+    if cfg.gravityValue then config.gravityValue = cfg.gravityValue end
+    if cfg.tpwalkEnabled ~= nil then config.tpwalkEnabled = cfg.tpwalkEnabled end
+    if cfg.tpwalkSpeed then config.tpwalkSpeed = cfg.tpwalkSpeed end
+    if cfg.jumppowerEnabled ~= nil then config.jumppowerEnabled = cfg.jumppowerEnabled end
+    if cfg.jumppowerValue then config.jumppowerValue = cfg.jumppowerValue end
+    if cfg.hipHeightEnabled ~= nil then config.hipHeightEnabled = cfg.hipHeightEnabled end
+    if cfg.hipHeightValue then config.hipHeightValue = cfg.hipHeightValue end
     if cfg.tbot_enabled ~= nil then config.tbot.enabled = cfg.tbot_enabled end
     if cfg.tbot_targetPart then config.tbot.targetPart = cfg.tbot_targetPart end
     if cfg.tbot_fovRadius then config.tbot.fovRadius = cfg.tbot_fovRadius end
@@ -4203,11 +4652,6 @@ local function loadSave(saveName)
         end
     end)
     pcall(function()
-        if config.clientMasterEnabled then
-            applyClientMaster(true)
-        end
-    end)
-    pcall(function()
         if config.antiAimEnabled then
             if config.antiAimAbovePlayer then
                 config.antiAimAbovePlayer = true
@@ -4238,6 +4682,11 @@ local function loadSave(saveName)
     pcall(function()
         if config.SA2_Enabled then
             config.SA2_Enabled = true
+        end
+    end)
+    pcall(function()
+        if config.clientModEnabled then
+            cmods()
         end
     end)
     pcall(function()
@@ -4715,8 +5164,7 @@ function SETDAAUTOLAOD_(saveName)
         })
         return false
     end
-    
-    local exactMatch, errorMsg = findPartialSaveMatch(saveName)
+    local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
         WindUI:Notify({
             Title = "Autoload System",
@@ -4728,10 +5176,30 @@ function SETDAAUTOLAOD_(saveName)
     end
     
     saveName = exactMatch or saveName
+    local path = getSavePath(saveName)
+    if not isfile(path) then
+        WindUI:Notify({
+            Title = "Autoload System",
+            Content = "Save '" .. saveName .. "' does not exist!",
+            Icon = "x",
+            Duration = 2
+        })
+        return false
+    end
+    
     local gameId = tostring(getdagaem_())
     local gameName = ineedgaemforaotu_()
     
     local memory = raedmahbrain_()
+    for id, data in pairs(memory) do
+        if data.saveName then
+            local checkPath = getSavePath(data.saveName)
+            if not isfile(checkPath) then
+                memory[id] = nil
+            end
+        end
+    end
+    
     memory[gameId] = {
         saveName = saveName,
         gameName = gameName,
@@ -4798,6 +5266,34 @@ function nullifymahfilez_()
         return false
     end
 end
+
+function autolaodbssthing_()
+    local memory = raedmahbrain_()
+    local modified = false
+    local removedCount = 0
+    
+    for gameId, data in pairs(memory) do
+        if data.saveName then
+            local path = getSavePath(data.saveName)
+            if not isfile(path) then
+                memory[gameId] = nil
+                modified = true
+                removedCount = removedCount + 1
+            end
+        end
+    end
+    
+    if modified then
+        writehaxsandstuff_(memory)
+        if removedCount > 0 then
+            print("Removed " .. removedCount .. " invalid autoload entries (saves no longer exist)")
+            autolaodpara()
+        end
+    end
+    
+    return removedCount
+end
+
 function autolaodpara()
     local memory = raedmahbrain_()
     local text = "Autoload Settings:\n"
@@ -4823,10 +5319,25 @@ end
 function startdaautlado_()
     local gameId = tostring(getdagaem_())
     local memory = raedmahbrain_()
+    autolaodbssthing_()
     
     if memory[gameId] then
         local saveName = memory[gameId].saveName
         local gameName = memory[gameId].gameName or "Unknown Game"
+        local path = getSavePath(saveName)
+        if not isfile(path) then
+            memory[gameId] = nil
+            writehaxsandstuff_(memory)
+            autolaodpara()
+            
+            WindUI:Notify({
+                Title = "Autoload System",
+                Content = "Save '" .. saveName .. "' no longer exists! Autoload removed.",
+                Icon = "x",
+                Duration = 3
+            })
+            return false
+        end
         
         WindUI:Notify({
             Title = "Autoload System",
@@ -5028,41 +5539,6 @@ local function ShouldTargetPlayer(targetPlayer)
     
     return false
 end
-local IsPlayerVisibleAlt = function(Player)
-    local PlayerCharacter = Player.Character
-    local LocalPlayerCharacter = plr.Character
-    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
-    
-    local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
-    if not PlayerRoot then return false end
-    
-    local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
-    if not LocalRoot then return false end
-    
-    local origin = LocalRoot.Position
-    local targetPos = PlayerRoot.Position
-    local direction = (targetPos - origin)
-    local distance = direction.Magnitude
-    
-    if distance < 0.5 then return true end
-    
-    local ignoreList = {LocalPlayerCharacter, PlayerCharacter}
-    local hit, position = workspace:FindPartOnRayWithIgnoreList(
-        Ray.new(origin, direction.Unit * distance),
-        ignoreList
-    )
-    
-    if not hit then
-        return true
-    end
-    
-    local hitParent = hit.Parent
-    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
-        return true
-    end
-    
-    return false
-end
 local function syncSilentAimWithMaster()
     if config.masterTeamTarget == "All" then
         config.SA2_TeamTarget = "All"
@@ -5089,6 +5565,69 @@ local function syncSilentAimWithMaster()
     end
 end
 
+local function IsPlayerVisible(player, maxDistance)
+    local PlayerCharacter = player.Character
+    local LocalPlayerCharacter = plr.Character
+    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
+    local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
+    if not PlayerRoot then return false end
+    local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
+    if not LocalRoot then return false end
+    local origin = LocalRoot.Position
+    local targetPos = PlayerRoot.Position
+    local direction = (targetPos - origin)
+    local distance = direction.Magnitude
+    if maxDistance and distance > maxDistance then
+        return false
+    end
+    if distance < 0.01 then return true end
+    local params = RaycastParams.new()
+    params.FilterType = Enum.RaycastFilterType.Blacklist
+    params.FilterDescendantsInstances = {LocalPlayerCharacter, PlayerCharacter}
+    params.IgnoreWater = true
+    local result = workspace:Raycast(origin, direction.Unit * distance, params)
+    if not result then
+        return true
+    end
+    local hitParent = result.Instance.Parent
+    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
+        return true
+    end
+    
+    return false
+end
+
+local function getVisibilityCacheKey(target, maxDistance)
+    local targetId = ""
+    if typeof(target) == "Instance" then
+        if target:IsA("Player") then
+            targetId = "player_" .. tostring(target.UserId)
+        elseif target:IsA("Model") then
+            targetId = "npc_" .. tostring(target)
+        end
+    end
+    return targetId .. "_" .. tostring(maxDistance)
+end
+
+local function isTargetVisible(target, maxDistance)
+    local now = tick()
+    if now - config.varibz.sa2dump.lastClear > 5 then
+        config.varibz.sa2dump.data = {}
+        config.varibz.sa2dump.lastClear = now
+    end
+    local cacheKey = getVisibilityCacheKey(target, maxDistance)
+    local cached = config.varibz.sa2dump.data[cacheKey]
+    if cached and (now - cached.time) < config.varibz.sa2dump.maxAge then
+        return cached.visible
+    end
+    local visible = IsPlayerVisible(target, maxDistance)
+    config.varibz.sa2dump.data[cacheKey] = {
+        visible = visible,
+        time = now
+    }
+    return visible
+end
+
 local function GetClosestPlayer()
     if not config.varibz.sa2this then
         return nil
@@ -5097,8 +5636,6 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    local targetType = config.masterTarget or "Players"
-    if targetType == "Players" then end
     
     local cam = Camera
     local viewport = cam.ViewportSize
@@ -5107,71 +5644,118 @@ local function GetClosestPlayer()
     local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local maxRangeSq = config.SA2_TargetRange * config.SA2_TargetRange
-    local bestPart = nil
-    local bestPlayer = nil
-    local bestScreenDist = math.huge
-    local bestWorldDist = math.huge
-    local bestHealth = math.huge
+    local maxRange = config.SA2_TargetRange or 1000
+    local maxRangeSq = maxRange * maxRange
     local character = plr.Character
     local localRoot = character and character:FindFirstChild("HumanoidRootPart")
     if not localRoot then
         config.SA2_currentTarget = nil
         return nil
     end
+    local Players = excusemesir.Players
+    local Workspace = excusemesir.Workspace
+    local camera = cam
+    local plr_local = plr
+    local config_local = config
+    local checkWall = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
+    local playerCount = #Players:GetPlayers()
+    if playerCount <= 1 and config.masterTarget ~= "NPCs" and config.masterTarget ~= "Both" then
+        config.SA2_currentTarget = nil
+        return nil
+    end
     
     local function isTargetable(player)
         if typeof(player) == "Instance" and player:IsA("Player") then
-            if player == plr then return false end
-            if config.SA2_TeamTarget == "All" then return true end
+            if player == plr_local then return false end
+            if config_local.SA2_TeamTarget == "All" then return true end
             local targetTeam = player.Team
             if not localTeam or not targetTeam then
-                return config.SA2_TeamTarget == "Enemies"
+                return config_local.SA2_TeamTarget == "Enemies"
             end
-            if config.SA2_TeamTarget == "Enemies" then
+            if config_local.SA2_TeamTarget == "Enemies" then
                 return localTeam ~= targetTeam
             else
                 return localTeam == targetTeam
             end
         end
         if typeof(player) == "Instance" and player:IsA("Model") then
-            if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-                if config.SA2_TeamTarget == "All" then return true end
-                if config.SA2_TeamTarget == "Enemies" then return true end
-                if config.SA2_TeamTarget == "Teams" then return false end
+            if config_local.masterTarget == "NPCs" or config_local.masterTarget == "Both" then
+                if config_local.SA2_TeamTarget == "All" then return true end
+                if config_local.SA2_TeamTarget == "Enemies" then return true end
+                if config_local.SA2_TeamTarget == "Teams" then return false end
                 return true
             end
             return false
         end
         return false
     end
-    
-    local function isNPCValid(model)
-        if not model or not model:IsA("Model") then return false end
-        if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
-        local humanoid = model:FindFirstChildOfClass("Humanoid")
-        if not humanoid or humanoid.Health <= 0 then return false end
-        if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
-        return true
-    end
-    
-    local function getNPCs()
-        local npcs = {}
-        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("Model") and obj ~= character and isNPCValid(obj) then
-                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
+    local candidates = {}
+    local candidateCount = 0
+    local checkVisible = not config_local.SA2_ThreeSixtyMode
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        local players = Players:GetPlayers()
+        for i = 1, #players do
+            local p = players[i]
+            if p ~= plr_local and isTargetable(p) then
+                local char = p.Character
+                if char then
+                    local humanoid = char:FindFirstChildOfClass("Humanoid")
                     if humanoid and humanoid.Health > 0 then
-                        if obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head") then
-                            if config.SA2_TeamTarget == "All" then
-                                table.insert(npcs, obj)
-                            elseif config.SA2_TeamTarget == "Enemies" then
-                                table.insert(npcs, obj)
-                            elseif config.SA2_TeamTarget == "Teams" then
-                                local npcTeam = obj:FindFirstChild("Team")
-                                if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                                    if localTeam and npcTeam.Value == localTeam then
-                                        table.insert(npcs, obj)
+                        if not config_local.ignoreForcefield or not hasForcefield(char) then
+                            local part = nil
+                            if targetPartName then
+                                part = char:FindFirstChild(targetPartName)
+                            end
+                            if not part then
+                                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                            end
+                            if part then
+                                local dx = part.Position.X - localRoot.Position.X
+                                local dy = part.Position.Y - localRoot.Position.Y
+                                local dz = part.Position.Z - localRoot.Position.Z
+                                local distSq = dx * dx + dy * dy + dz * dz
+                                if distSq <= maxRangeSq then
+                                    if checkVisible then
+                                        if not isTargetVisible(p, maxRange) then
+                                            continue
+                                        end
+                                    end
+                                    
+                                    local worldDist = math.sqrt(distSq)
+                                    
+                                    if checkVisible then
+                                        local targetPos = part.Position
+                                        local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                        if not onScreen or screenPos.Z <= 0 then
+                                            continue
+                                        end
+                                        local distX = screenPos.X - center.X
+                                        local distY = screenPos.Y - center.Y
+                                        local distPx = math.sqrt(distX * distX + distY * distY)
+                                        if distPx > config_local.SA2_FovRadius then
+                                            continue
+                                        end
+                                        candidateCount = candidateCount + 1
+                                        candidates[candidateCount] = {
+                                            target = p,
+                                            part = part,
+                                            health = humanoid.Health,
+                                            screenDist = distPx,
+                                            worldDist = worldDist,
+                                            isPlayer = true,
+                                            char = char
+                                        }
+                                    else
+                                        candidateCount = candidateCount + 1
+                                        candidates[candidateCount] = {
+                                            target = p,
+                                            part = part,
+                                            health = humanoid.Health,
+                                            screenDist = 0,
+                                            worldDist = worldDist,
+                                            isPlayer = true,
+                                            char = char
+                                        }
                                     end
                                 end
                             end
@@ -5180,109 +5764,112 @@ local function GetClosestPlayer()
                 end
             end
         end
-        return npcs
-    end
-    table.clear(candidates)
-    table.clear(targetsInFOV)
-    
-    local players = excusemesir.Players:GetPlayers()
-    local allTargets = {}
-    if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, p in ipairs(players) do
-            if p ~= plr and isTargetable(p) then
-                table.insert(allTargets, p)
-            end
-        end
     end
     if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-        local npcs = getNPCs()
-        for _, npc in ipairs(npcs) do
-            if isTargetable(npc) then
-                table.insert(allTargets, npc)
+        local npcCache = config._npcCache or {}
+        local currentTime = tick()
+        if not config._npcCacheTime or currentTime - config._npcCacheTime > 0.5 then
+            config._npcCacheTime = currentTime
+            local newCache = {}
+            local descendants = Workspace:GetDescendants()
+            for i = 1, #descendants do
+                local obj = descendants[i]
+                if obj:IsA("Model") and obj ~= character then
+                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        local part = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
+                        if part then
+                            local dx = part.Position.X - localRoot.Position.X
+                            local dy = part.Position.Y - localRoot.Position.Y
+                            local dz = part.Position.Z - localRoot.Position.Z
+                            local distSq = dx * dx + dy * dy + dz * dz
+                            
+                            if distSq <= maxRangeSq then
+                                local isValid = false
+                                if config_local.SA2_TeamTarget == "All" then
+                                    isValid = true
+                                elseif config_local.SA2_TeamTarget == "Enemies" then
+                                    isValid = true
+                                elseif config_local.SA2_TeamTarget == "Teams" then
+                                    local npcTeam = obj:FindFirstChild("Team")
+                                    if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                                        if localTeam and npcTeam.Value == localTeam then
+                                            isValid = true
+                                        end
+                                    end
+                                end
+                                if isValid then
+                                    table.insert(newCache, obj)
+                                end
+                            end
+                        end
+                    end
+                end
             end
+            config._npcCache = newCache
         end
-    end
-    if #allTargets == 0 then
-        config.SA2_currentTarget = nil
-        return nil
-    end
-    
-    local candidateCount = 0
-    local checkVisible = not config.SA2_ThreeSixtyMode
-    local ignoreForcefield = config.ignoreForcefield
-    
-    for _, target in ipairs(allTargets) do
-        local char = nil
-        local isPlayer = false
-        
-        if typeof(target) == "Instance" and target:IsA("Player") then
-            char = target.Character
-            isPlayer = true
-        elseif typeof(target) == "Instance" and target:IsA("Model") then
-            char = target
-            isPlayer = false
-        end
-        
-        if not char then continue end
-        if ignoreForcefield and hasForcefield(char) then continue end
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if not humanoid or humanoid.Health <= 0 then continue end
-        
-        local part = nil
-        if targetPartName then
-            part = char:FindFirstChild(targetPartName)
-        end
-        if not part then
-            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-        end
-        if not part then continue end
-        
-        local targetPos = part.Position
-        local dx = targetPos.X - camPos.X
-        local dy = targetPos.Y - camPos.Y
-        local dz = targetPos.Z - camPos.Z
-        local worldDistSq = dx * dx + dy * dy + dz * dz
-        
-        if worldDistSq > maxRangeSq then continue end
-        if config.SA2_Wallcheck then
-            local direction = Vector3.new(dx, dy, dz)
-            local ray = Ray.new(camPos, direction.Unit * direction.Magnitude)
-            local ignoreList = ignorethisandthat({plr.Character, char})
-            local hit = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-            if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
-                continue
+        local npcs = config._npcCache or {}
+        for i = 1, #npcs do
+            local npc = npcs[i]
+            if npc.Parent then
+                local part = npc:FindFirstChild("Head") or npc:FindFirstChild("HumanoidRootPart")
+                if part then
+                    local humanoid = npc:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if not config_local.ignoreForcefield or not hasForcefield(npc) then
+                            local dx = part.Position.X - localRoot.Position.X
+                            local dy = part.Position.Y - localRoot.Position.Y
+                            local dz = part.Position.Z - localRoot.Position.Z
+                            local distSq = dx * dx + dy * dy + dz * dz
+                            
+                            if distSq <= maxRangeSq then
+                                if checkVisible then
+                                    if not isTargetVisible(npc, maxRange) then
+                                        continue
+                                    end
+                                end
+                                
+                                local worldDist = math.sqrt(distSq)
+                                
+                                if checkVisible then
+                                    local targetPos = part.Position
+                                    local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                    if not onScreen or screenPos.Z <= 0 then
+                                        continue
+                                    end
+                                    local distX = screenPos.X - center.X
+                                    local distY = screenPos.Y - center.Y
+                                    local distPx = math.sqrt(distX * distX + distY * distY)
+                                    if distPx > config_local.SA2_FovRadius then
+                                        continue
+                                    end
+                                    candidateCount = candidateCount + 1
+                                    candidates[candidateCount] = {
+                                        target = npc,
+                                        part = part,
+                                        health = humanoid.Health,
+                                        screenDist = distPx,
+                                        worldDist = worldDist,
+                                        isPlayer = false,
+                                        char = npc
+                                    }
+                                else
+                                    candidateCount = candidateCount + 1
+                                    candidates[candidateCount] = {
+                                        target = npc,
+                                        part = part,
+                                        health = humanoid.Health,
+                                        screenDist = 0,
+                                        worldDist = worldDist,
+                                        isPlayer = false,
+                                        char = npc
+                                    }
+                                end
+                            end
+                        end
+                    end
+                end
             end
-        end
-        local worldDist = math.sqrt(worldDistSq)
-        local health = humanoid.Health
-        if checkVisible then
-            local screenPos, onScreen = cam:WorldToViewportPoint(targetPos)
-            if not onScreen or screenPos.Z <= 0 then continue end
-            local distX = screenPos.X - center.X
-            local distY = screenPos.Y - center.Y
-            local distPx = math.sqrt(distX * distX + distY * distY)
-            if distPx > config.SA2_FovRadius then continue end
-            candidateCount = candidateCount + 1
-            candidates[candidateCount] = {
-                target = target,
-                part = part,
-                health = health,
-                screenDist = distPx,
-                worldDist = worldDist,
-                isPlayer = isPlayer,
-                char = char
-            }
-        else
-            candidateCount = candidateCount + 1
-            candidates[candidateCount] = {
-                target = target,
-                part = part,
-                health = health,
-                screenDist = 0,
-                worldDist = worldDist,
-                isPlayer = isPlayer,
-                char = char
-            }
         end
     end
     
@@ -5290,13 +5877,11 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    
     local bestIdx = 1
     if targetMode == "TargetSeen" then
         local currentTime = tick()
         if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
             config.lastTargetSwitchTime = currentTime
-
             if not config.SA2_currentTarget then
                 bestIdx = 1
             else
@@ -5307,7 +5892,6 @@ local function GetClosestPlayer()
                         break
                     end
                 end
-
                 if currentIdx then
                     bestIdx = (currentIdx % candidateCount) + 1
                 else
@@ -5395,10 +5979,11 @@ if OldIndex then
     hookmetamethod(game, "__index", OldIndex)
     OldIndex = nil
 end
+
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     config.varibz.sa2thing += deltaTime
-    
-    if config.varibz.sa2thing >= config.varibz.sa2stuff then
+    config.varibz.sa2alot = config.varibz.sa2alot + 1
+    if config.varibz.sa2thing >= config.varibz.sa2stuff and config.varibz.sa2alot % 2 == 0 then
         config.varibz.sa2thing = 0
         if config.SA2_Enabled then
             config.varibz.sa2this = true
@@ -9141,10 +9726,18 @@ end)
 end
 -- bk
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
-    aimbotUpdate()
-    updateLineESP()
-    hb()
-    antiAimUpdate()
+    if config.aimbotEnabled then
+        aimbotUpdate()
+    end
+    if config.espMasterEnabled and config.lineESPEnabled then
+        updateLineESP()
+    end
+    if config.hitboxEnabled then
+        hb()
+    end
+    if config.antiAimEnabled then
+        antiAimUpdate()
+    end
 end)
 
 local function isMobileDevice()
@@ -9262,10 +9855,10 @@ local function CreateQT()
                 elseif name == "Anti Aim" then
                 elseif name == "Hit box" then
                     applyhb()
-                elseif name == "Client Config" then
-                    applyClientMaster(true)
                 elseif name == "ESP" then
                     applyESPMaster(true)
+                elseif name == "Client Mod" then
+                    cmods()
                 end
             else
                 toggleOff()
@@ -9288,16 +9881,15 @@ local function CreateQT()
                     for _, pl in ipairs(targetsToRemove) do
                         restoreTorso(pl)
                     end
-                elseif name == "Client Config" then
-                    applyClientMaster(false)
                 elseif name == "ESP" then
                     applyESPMaster(false)
+                elseif name == "Client Mod" then
+                    resetcmods()
                 end
             end
             
             label.Text = getter() and name .. "<" or name
         end
-
         local inputStartTime = 0
         local minPressTime = 0.05
         local inputStartPosition = nil
@@ -9412,15 +10004,20 @@ local function CreateQT()
         function() return config.aimbotEnabled end,
         function(v) handleAimbotToggle(v) end)
     
-    buttons.ClientConfig = QuickToggle("Client Config", startX + (toggleWidth + horizontalSpacing) * 4, topRowY,
-        function() return config.clientMasterEnabled end,
-        function(v) applyClientMaster(v) end)
-    
     local espX = startX + (toggleWidth + horizontalSpacing) * 0
     buttons.ESP = QuickToggle("ESP", espX, bottomRowY,
         function() return config.espMasterEnabled end,
         function(v) applyESPMaster(v) end)
-
+    buttons.ClientMod = QuickToggle("Client Mod", startX + (toggleWidth + horizontalSpacing) * 4, topRowY,
+        function() return config.clientModEnabled end,
+        function(v) 
+            config.clientModEnabled = v
+            if v then
+                cmods()
+            else
+                resetcmods()
+            end
+        end)
     local silentAimHKX = startX + (toggleWidth + horizontalSpacing) * 1
     buttons.SilentAimHK = QuickToggle("SilentAim (HK)", silentAimHKX, bottomRowY,
         function() return config.SA2_Enabled end,
@@ -9484,7 +10081,6 @@ local function UpdateQT()
             AutoFarm = config.autoFarmEnabled,
             AntiAim = config.antiAimEnabled,
             Hitbox = config.hitboxEnabled,
-            ClientConfig = config.clientMasterEnabled,
             ESP = config.espMasterEnabled,
             SilentAimHK = config.SA2_Enabled
         }
@@ -10016,154 +10612,6 @@ local function safeGetCharacter()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     return character, humanoid, rootPart
-end
-
-local function TpWalkStart()
-    if config._tpwalking then return end
-    config._tpwalking = true
-
-    task.spawn(function()
-        while config._tpwalking and localPlayer and localPlayer.Character and localPlayer.Character.Parent do
-            local character, humanoid, rootPart = safeGetCharacter()
-            if not humanoid or humanoid.Health <= 0 or not rootPart then
-                task.wait(0.1)
-            else
-                local delta = excusemesir.RunService.Heartbeat:Wait()
-                if humanoid.MoveDirection.Magnitude > 0 then
-                    local moveDirection = humanoid.MoveDirection.Unit
-                    local velocity = moveDirection * (config.clientCFrameSpeed or 1) * 50
-                    pcall(function()
-                        rootPart.CFrame = rootPart.CFrame + velocity * delta
-                    end)
-                end
-            end
-            task.wait()
-        end
-        config._tpwalking = false
-    end)
-end
-
-local function TpWalkStop()
-    config._tpwalking = false
-end
-
-local _noclipConn
-local function startNoclip()
-    if _noclipConn then return end
-    _noclipConn = RunService.Stepped:Connect(function()
-        local char = localPlayer.Character
-        if not char then return end
-        for _, part in ipairs(char:GetDescendants()) do
-            if part:IsA("BasePart") then
-                pcall(function() part.CanCollide = false end)
-            end
-        end
-    end)
-    config.clientConnections.noclip = _noclipConn
-end
-
-local function stopNoclip()
-    if _noclipConn then
-        pcall(function() _noclipConn:Disconnect() end)
-        _noclipConn = nil
-        config.clientConnections.noclip = nil
-    end
-end
-
-local function applyClientWalkSpeed(val)
-    local character, humanoid = safeGetCharacter()
-    if humanoid then
-        if config.clientOriginals.WalkSpeed == nil then
-            config.clientOriginals.WalkSpeed = humanoid.WalkSpeed
-        end
-        pcall(function() humanoid.WalkSpeed = val end)
-    end
-end
-
-local function applyClientJumpPower(val)
-    local character, humanoid = safeGetCharacter()
-    if humanoid then
-        if config.clientOriginals.JumpPower == nil then
-            config.clientOriginals.JumpPower = humanoid.JumpPower or humanoid.JumpHeight or 0
-        end
-        pcall(function()
-            if humanoid.JumpPower ~= nil then
-                humanoid.JumpPower = val
-            else
-                humanoid.JumpHeight = val
-            end
-        end)
-    end
-end
-
-local function restoreClientValues()
-    local character, humanoid = safeGetCharacter()
-    if humanoid then
-        if config.clientOriginals.WalkSpeed then
-            pcall(function() humanoid.WalkSpeed = config.clientOriginals.WalkSpeed end)
-            config.clientOriginals.WalkSpeed = nil
-        end
-        if config.clientOriginals.JumpPower then
-            pcall(function()
-                if humanoid.JumpPower ~= nil then
-                    humanoid.JumpPower = config.clientOriginals.JumpPower
-                else
-                    humanoid.JumpHeight = config.clientOriginals.JumpPower
-                end
-            end)
-            config.clientOriginals.JumpPower = nil
-        end
-    end
-    if config.clientCFrameWalkEnabled then
-        TpWalkStop()
-        config.clientCFrameWalkEnabled = false
-    end
-    if config.clientNoclip then
-        stopNoclip()
-        config.clientNoclip = false
-    end
-end
-
-local function applyClientMaster(state)
-    if config.clientMasterEnabled == state then
-        return
-    end
-    config.clientMasterEnabled = state
-
-    if state then
-        if config.clientNoclipEnabled then
-            startNoclip()
-            config.clientNoclip = true
-        end
-        if config.clientCFrameWalkToggle then
-            TpWalkStart()
-            config.clientCFrameWalkEnabled = true
-        end
-        if config.clientWalkEnabled and config.clientWalkSpeed and config.clientWalkSpeed > 0 then
-            applyClientWalkSpeed(config.clientWalkSpeed)
-        end
-        if config.clientJumpEnabled and config.clientJumpPower and config.clientJumpPower > 0 then
-            applyClientJumpPower(config.clientJumpPower)
-        end
-        n({
-            Title = "Client Master",
-            Content = "Client features enabled",
-            Audio = "rbxassetid://17208361335",
-            Length = 1,
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(0, 170, 255)
-        })
-    else
-        restoreClientValues()
-        n({
-            Title = "Client Master",
-            Content = "Client features disabled",
-            Audio = "rbxassetid://17208361335",
-            Length = 1,
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(255, 0, 0)
-        })
-    end
 end
 
 --[[
@@ -10869,7 +11317,7 @@ MainTab:Keybind({
             if v then
                 n({
                     Title = "Autofarm Wall Check",
-                    Content = "Enabled - Targets behind walls will be ignored",
+                    Content = "Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -10878,7 +11326,7 @@ MainTab:Keybind({
             else
                 n({
                     Title = "Autofarm Wall Check",
-                    Content = "Disabled - Will teleport targets even behind walls",
+                    Content = "Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -11272,29 +11720,24 @@ MainTab:Button({
     Callback = function()
         local name = saveInputValue or ""
         if name == "" then
-            local gameName = getGameName()
-            
+            local gameName = givegaemname()
             if gameName then
-                local abbr = generateGameAbbreviation(gameName)
-                
+                local abbr = gengameabbr(gameName)
                 if abbr then
-                    local configName = generateUniqueSaveName(abbr)
-                    name = configName
-                    
+                    name = abbr
                     WindUI:Notify({
                         Title = "Save System",
-                        Content = "Auto-generated name: " .. name .. " (from: " .. gameName .. ")",
+                        Content = "Auto-named: " .. name,
                         Icon = "info",
-                        Duration = 3
+                        Duration = 2
                     })
                 else
                     local timestamp = os.time()
                     local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
                     name = "Config_" .. date
-                    
                     WindUI:Notify({
                         Title = "Save System",
-                        Content = "Using timestamp name: " .. name,
+                        Content = "Auto-named: " .. name,
                         Icon = "info",
                         Duration = 2
                     })
@@ -11303,20 +11746,17 @@ MainTab:Button({
                 local timestamp = os.time()
                 local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
                 name = "Config_" .. date
-                
                 WindUI:Notify({
                     Title = "Save System",
-                    Content = "Using timestamp name: " .. name,
+                    Content = "Auto-named: " .. name,
                     Icon = "info",
                     Duration = 2
                 })
             end
         end
-        
         saveConfig(name)
     end
 })
-
 MainTab:Button({
     Title = "Load Save",
     Desc = "Load selected save",
@@ -13393,156 +13833,213 @@ local ClientTab = Window:Tab({
     Icon = "user",
     IconColor = config.Gradow.uicolor.lightGray
 }) do
+
     ClientTab:Paragraph({
-        Title = "Client Master",
-        Desc = "Master control for client features",
+        Title = "Client Modification",
+        Desc = "Modify client-side movement properties",
         Color = config.Gradow.uicolor.lightGreen
     })
-    
     ClientTab:Toggle({
-        Title = "Enable Client Values ('N')",
-        Desc = "Enable/disable all client features",
-        Value = config.clientMasterEnabled or false,
+        Title = "Toggle Client Modification ('N')",
+        Desc = "Enable/disable all client modifications",
+        Value = config.clientModEnabled or false,
         Callback = function(v)
-            applyClientMaster(v)
-        end
-    })
-    
-    ClientTab:Paragraph({
-        Title = "Client Features",
-        Desc = "Individual client feature toggles",
-        Color = config.Gradow.uicolor.lightGreen
-    })
-    
-    ClientTab:Toggle({
-        Title = "Noclip",
-        Desc = "Walk through walls",
-        Value = config.clientNoclipEnabled or false,
-        Callback = function(v)
-            config.clientNoclipEnabled = v
-            if config.clientMasterEnabled then
-                if v then
-                    startNoclip()
-                    config.clientNoclip = true
-                else
-                    stopNoclip()
-                    config.clientNoclip = false
-                end
+            config.clientModEnabled = v
+            if v then
+                cmods()
+                n({
+                    Title = "Client Mod",
+                    Content = "Enabled",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(0, 255, 0)
+                })
             else
-                stopNoclip()
-                config.clientNoclip = false
+                resetcmods()
+                n({
+                    Title = "Client Mod",
+                    Content = "Disabled",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 1,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
+                })
             end
         end
     })
-    
-    ClientTab:Toggle({
-        Title = "Enable WalkSpeed",
-        Desc = "Custom walk speed",
-        Value = config.clientWalkEnabled or false,
-        Callback = function(v)
-            config.clientWalkEnabled = v
-            if config.clientMasterEnabled and v then
-                applyClientWalkSpeed(config.clientWalkSpeed or 16)
-            end
-        end
-    })
-    
-    ClientTab:Toggle({
-        Title = "Enable JumpPower",
-        Desc = "Custom jump power",
-        Value = config.clientJumpEnabled or false,
-        Callback = function(v)
-            config.clientJumpEnabled = v
-            if config.clientMasterEnabled and v then
-                applyClientJumpPower(config.clientJumpPower or 50)
-            end
-        end
-    })
-    
-    ClientTab:Toggle({
-        Title = "CFrame Walk",
-        Desc = "Smooth CFrame movement",
-        Value = config.clientCFrameWalkToggle or false,
-        Callback = function(v)
-            config.clientCFrameWalkToggle = v
-            if config.clientMasterEnabled then
-                if v then
-                    TpWalkStart()
-                    config.clientCFrameWalkEnabled = true
-                else
-                    TpWalkStop()
-                    config.clientCFrameWalkEnabled = false
-                end
-            else
-                TpWalkStop()
-                config.clientCFrameWalkEnabled = false
-            end
-        end
-    })
-    
     ClientTab:Paragraph({
-        Title = "Client Values",
-        Desc = "Numerical values for client features",
+        Title = "Client Modifiers",
+        Desc = "Modify da modifiers",
         Color = config.Gradow.uicolor.lightGreen
     })
-    
-    ClientTab:Slider({
-        Title = "WalkSpeed Value",
-        Desc = "Custom walk speed value",
-        IsTextbox = true,
-        Step = 5,
-        Value = {
-            Min = 0,
-            Max = 500,
-            Default = config.clientWalkSpeed or 16
-        },
-        Callback = function(value)
-            config.clientWalkSpeed = value
-            if config.clientMasterEnabled and config.clientWalkEnabled then
-                applyClientWalkSpeed(value)
+
+    ClientTab:Toggle({
+        Title = "Enable Walkspeed",
+        Desc = "Override walkspeed",
+        Value = config.walkspeedEnabled or false,
+        Callback = function(v)
+            config.walkspeedEnabled = v
+            if config.clientModEnabled then
+                cmods()
             end
         end
     })
-    
+
     ClientTab:Slider({
-        Title = "JumpPower Value",
-        Desc = "Custom jump power value",
+        Title = "Walkspeed",
+        Desc = "Set walkspeed value",
         IsTextbox = true,
-        Step = 5,
+        Step = 1,
+        Suffix = "studs/s",
         Value = {
-            Min = 0,
+            Min = 1,
             Max = 500,
-            Default = config.clientJumpPower or 50
+            Default = config.walkspeedValue or 16
         },
         Callback = function(value)
-            config.clientJumpPower = value
-            if config.clientMasterEnabled and config.clientJumpEnabled then
-                applyClientJumpPower(value)
+            config.walkspeedValue = value
+            if config.clientModEnabled and config.walkspeedEnabled then
+                cmods()
             end
         end
     })
-    
-    ClientTab:Slider({
-        Title = "CFrame Walk Speed",
-        Desc = "CFrame movement speed",
-        IsTextbox = true,
-        Step = 0,
-        Value = {
-            Min = 0,
-            Max = 500,
-            Default = config.clientCFrameSpeed or 1
-        },
-        Callback = function(value)
-            config.clientCFrameSpeed = value
+
+ClientTab:Toggle({
+    Title = "Enable TPWalk",
+    Desc = "Toggle CFrame-based movement",
+    Value = config.tpwalkEnabled or false,
+    Callback = function(v)
+        config.tpwalkEnabled = v
+        if config.clientModEnabled then
+            cmods()
+        end
+    end
+})
+
+ClientTab:Slider({
+    Title = "TPWalk Speed",
+    Desc = "Movement speed for TPWalk",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "studs/s",
+    Value = {
+        Min = 1,
+        Max = 100,
+        Default = config.tpwalkSpeed or 1
+    },
+    Callback = function(value)
+        config.tpwalkSpeed = value
+    end
+})
+
+    ClientTab:Toggle({
+        Title = "Enable Jumppower",
+        Desc = "Override jump power",
+        Value = config.jumppowerEnabled or false,
+        Callback = function(v)
+            config.jumppowerEnabled = v
+            if config.clientModEnabled then
+                cmods()
+            end
         end
     })
-    
+
+    ClientTab:Slider({
+        Title = "Jumppower",
+        Desc = "Set jump power value",
+        IsTextbox = true,
+        Step = 1,
+        Suffix = "studs",
+        Value = {
+            Min = 10,
+            Max = 500,
+            Default = config.jumppowerValue or 50
+        },
+        Callback = function(value)
+            config.jumppowerValue = value
+            if config.clientModEnabled and config.jumppowerEnabled then
+                cmods()
+            end
+        end
+    })
+
+ClientTab:Toggle({
+    Title = "Enable Gravity",
+    Desc = "Override gravity value",
+    Value = config.gravityEnabled or false,
+    Callback = function(v)
+        config.gravityEnabled = v
+        if config.clientModEnabled then
+            cmods()
+        end
+        WindUI:Notify({
+            Title = "Gravity",
+            Content = v and "Enabled" or "Disabled",
+            Icon = v and "check" or "x",
+            Duration = 1
+        })
+    end
+})
+
+ClientTab:Slider({
+    Title = "Gravity Value",
+    Desc = "Set gravity value (higher = more gravity)",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "studs/s²",
+    Value = {
+        Min = -500,
+        Max = 500,
+        Default = config.gravityValue or 196.2
+    },
+    Callback = function(value)
+        config.gravityValue = value
+        if config.clientModEnabled and config.gravityEnabled then
+            cmods()
+        end
+    end
+})
+
+    ClientTab:Toggle({
+        Title = "Enable HipHeight",
+        Desc = "Override hip height",
+        Value = config.hipHeightEnabled or false,
+        Callback = function(v)
+            config.hipHeightEnabled = v
+            if config.clientModEnabled then
+                cmods()
+            end
+        end
+    })
+
+    ClientTab:Slider({
+        Title = "HipHeight",
+        Desc = "Set hip height value",
+        IsTextbox = true,
+        Step = 0.5,
+        Suffix = "studs",
+        Value = {
+            Min = -10,
+            Max = 50,
+            Default = config.hipHeightValue or 0
+        },
+        Callback = function(value)
+            config.hipHeightValue = value
+            if config.clientModEnabled and config.hipHeightEnabled then
+                cmods()
+            end
+        end
+    })
+
+    ClientTab:Space()
+
     ClientTab:Paragraph({
-        Title = "Client Stuff",
-        Desc = "Additional client utilities",
+        Title = "Other client stuff",
+        Desc = "otherz",
         Color = config.Gradow.uicolor.lightGreen
     })
-    
+
     ClientTab:Toggle({
         Title = "Truss",
         Desc = "Creates a claimable part to fly (Less detectable)",
@@ -13607,7 +14104,7 @@ local ClientTab = Window:Tab({
                 
                 n({
                     Title = "Truss",
-                    Content = "Enabled - Created climb part",
+                    Content = "Enabled Created climb part",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13626,7 +14123,7 @@ local ClientTab = Window:Tab({
                 
                 n({
                     Title = "Truss",
-                    Content = "Disabled - Removed climb part",
+                    Content = "Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13695,7 +14192,7 @@ local ClientTab = Window:Tab({
                 
                 n({
                     Title = "Airwalk",
-                    Content = "Enabled - Created air platform",
+                    Content = "Enabled Created air platform",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13714,7 +14211,7 @@ local ClientTab = Window:Tab({
                 
                 n({
                     Title = "Airwalk",
-                    Content = "Disabled - Removed air platform",
+                    Content = "Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13784,7 +14281,7 @@ local ClientTab = Window:Tab({
                 
                 n({
                     Title = "AutoRespawn",
-                    Content = "Enabled - Will respawn at death location",
+                    Content = "Enabled Will respawn at death location",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14992,6 +15489,11 @@ I luv rng's. :3
         Desc = "better at targeting stuff idk",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (31/07/2026)",
+        Desc = "Fixed: ClientTab\n\ni didn't know client tab was broken btw🥀💔",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -15250,6 +15752,21 @@ local function initKeybinds()
                     Duration = 1
                 })
             end
+        elseif input.KeyCode == Enum.KeyCode[config.Keybinds.client] then
+            if shouldTriggerKeybind(config.Keybinds.client) then
+                config.clientModEnabled = not config.clientModEnabled
+                if config.clientModEnabled then
+                    cmods()
+                else
+                    resetcmods()
+                end
+                WindUI:Notify({
+                    Title = "Client Mod",
+                    Content = config.clientModEnabled and "Enabled" or "Disabled",
+                    Icon = config.clientModEnabled and "check" or "x",
+                    Duration = 1
+                })
+            end
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.hitbox] then
             if shouldTriggerKeybind(config.Keybinds.hitbox) then
                 config.hitboxEnabled = not config.hitboxEnabled
@@ -15276,17 +15793,6 @@ local function initKeybinds()
                     Title = "ESP",
                     Content = config.espMasterEnabled and "Enabled" or "Disabled",
                     Icon = config.espMasterEnabled and "check" or "x",
-                    Duration = 1
-                })
-            end
-            
-        elseif input.KeyCode == Enum.KeyCode[config.Keybinds.client] then
-            if shouldTriggerKeybind(config.Keybinds.client) then
-                applyClientMaster(not config.clientMasterEnabled)
-                WindUI:Notify({
-                    Title = "Client Features",
-                    Content = config.clientMasterEnabled and "Enabled" or "Disabled",
-                    Icon = config.clientMasterEnabled and "check" or "x",
                     Duration = 1
                 })
             end
@@ -15338,7 +15844,9 @@ local function init()
     SetupRespawnHandler()
     syncSilentAimWithMaster()
     nextgenrepre()
+    recmods()
     initKeybinds()
+    autolaodbssthing_()
     for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
@@ -15542,17 +16050,6 @@ local function cleanup()
             config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
             config.varibz.bhopQuickToggleUI = nil
         end
-        if config.clientMasterEnabled then
-            applyClientMaster(false)
-        end
-        if _noclipConn then
-            _noclipConn:Disconnect()
-            _noclipConn = nil
-        end
-        if config._tpwalking then
-            TpWalkStop()
-        end
-        restoreClientValues()
         config.trussEnabled = false
         if config.trussPart then
             config.trussPart:Destroy()
@@ -15690,7 +16187,6 @@ local function cleanup()
         config.hitboxEnabled = false
         config.antiAimEnabled = false
         config.autoFarmEnabled = false
-        config.clientMasterEnabled = false
         config.tbot.enabled = false
         config.bhop.enabled = false
         config.spinbot.enabled = false
@@ -15701,6 +16197,27 @@ local function cleanup()
         config.trussEnabled = false
         config.airwalkEnabled = false
         config.autorespawnEnabled = false
+        if config.clientModEnabled then
+            resetcmods()
+        end
+        config.clientModEnabled = false
+        config.walkspeedEnabled = false
+        config.jumppowerEnabled = false
+        config.hipHeightEnabled = false
+        config.clientModOriginalValues = {}
+        if config.clientModConnections then
+            for _, connection in pairs(config.clientModConnections) do
+                if connection then
+                    connection:Disconnect()
+                end
+            end
+            config.clientModConnections = {}
+        end
+        if config.tpwalkConnection then
+            config.tpwalkConnection:Disconnect()
+            config.tpwalkConnection = nil
+        end
+        config.tpwalkEnabled = false
         config.antiafk = false
         config.SSEnabled = false
         config.autoFarmCompleted = {}
@@ -15867,7 +16384,7 @@ if not success then
     end
     getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
     warn("Gpssickle what kind of error is ts 🥀💔:" .. tostring(err))
-    error(err)
+    error(err2)
 end
 -- fin
 --[[
