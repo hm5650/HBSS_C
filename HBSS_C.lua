@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 
 local excusemesir = {
@@ -14667,7 +14667,7 @@ local InfoTab = Window:Tab({
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also shadow updates\nalot so if you see something new you'll know why :7",
         Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
