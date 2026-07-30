@@ -12796,7 +12796,7 @@ SilentAimTab2:Toggle({
 
 SilentAimTab2:Slider({
     Title = "Responsiveness",
-    Desc = "Higher = More Performance  Lower = More Responsiveness",
+    Desc = "Higher = More Performance\nLower = More Responsiveness",
     Step = 0.01,
     Suffix = "s",
     Value = {
