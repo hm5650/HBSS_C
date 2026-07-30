@@ -7834,7 +7834,7 @@ local function proxyhb(targetPlayer)
     end
     
     local proxyPart = Instance.new("Part")
-    proxyPart.Name = "ProxyHitbox_" .. tostring(math.random(10000, 99999))
+    proxyPart.Name = "idk" .. tostring(math.random(10000, 99999))
     proxyPart.Anchored = false
     proxyPart.CanCollide = false
     proxyPart.Massless = true
