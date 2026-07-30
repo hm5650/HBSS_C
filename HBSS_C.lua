@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 
 local excusemesir = {
