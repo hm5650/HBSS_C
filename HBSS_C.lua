@@ -26,7 +26,7 @@ if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ then
     return
 end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = true
-getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" -- type '_C' for da testing version of gravel.cc :3
+getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
 
 local excusemesir = {
@@ -1118,7 +1118,7 @@ local config = {
         silentaimwallcheck = "B",
         aimbotwallcheck = "H",
         silentaimhk = "R",
-        silentaimhkwallcheck = "T",
+        silentaimhkwallcheck = "U",
         triggerbot = "X",
         bhop = "V",
         tbotwallcheck = "Y",
@@ -9751,7 +9751,7 @@ local function updateBHopQuickToggle()
     end
 end
 
-local ineedinvistool = function()
+local function ineedinvistool()
 local offset = 1100
 local invisible = false
 local grips = {}
@@ -11403,7 +11403,7 @@ MainTab:Keybind({
 MainTab:Keybind({
     Title = "Silent Aim HK Wall Check",
     Desc = "Toggle wall check for Silent Aim (HK)",
-    Value = config.Keybinds.silentaimhkwallcheck or "T",
+    Value = config.Keybinds.silentaimhkwallcheck or "U",
     Callback = function(key)
         config.Keybinds.silentaimhkwallcheck = key
     end
@@ -14674,26 +14674,11 @@ MiscTab:Input({
         end
     })
 MiscTab:Toggle({
-    Title = "Enable BHop",
+    Title = "BHop ('V')",
     Desc = "Toggle bunny hop on/off",
     Value = config.bhop.enabled or false,
     Callback = function(v)
         toggleBHop(v)
-    end
-})
-
-MiscTab:Slider({
-    Title = "Bhop Jump Delay",
-    Desc = "Delay between jumps (seconds)",
-    Step = 0.01,
-    Suffix = "s",
-    Value = {
-        Min = 0.01,
-        Max = 0.5,
-        Default = config.bhop.jumpDelay or 0.05
-    },
-    Callback = function(value)
-        config.bhop.jumpDelay = value
     end
 })
 
@@ -15777,7 +15762,6 @@ if LocalPlayer.Character then
 end
 
 local function initKeybinds()
-    local UserInputService = game:GetService("UserInputService")
     local holdingModifier = false
     local function shouldTriggerKeybind(keyCode)
         if not config.KeybindsEnabled then
@@ -15790,7 +15774,7 @@ local function initKeybinds()
         
         return true
     end
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    excusemesir.UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if gameProcessed then return end
         if input.KeyCode == Enum.KeyCode[config.Keybinds.HoldKeybind] then
             holdingModifier = true
@@ -15984,7 +15968,7 @@ local function initKeybinds()
         end
     end)
     
-    UserInputService.InputEnded:Connect(function(input, gameProcessed)
+    excusemesir.UserInputService.InputEnded:Connect(function(input, gameProcessed)
         if gameProcessed then return end
         if input.KeyCode == Enum.KeyCode[config.Keybinds.HoldKeybind] then
             holdingModifier = false
