@@ -9890,43 +9890,6 @@ local function burgerking(deltaTime)
     if config.antiAimEnabled then
         antiAimUpdate()
     end
-    if config.hitboxEnabled and config.hitboxVisualizer.enabled then
-        local currentTargets = {}
-        for _, target in ipairs(getAllTargets()) do
-            if targethb(target) and plralive(target) then
-                currentTargets[target] = true
-            end
-        end
-        local toRemove = {}
-        for player, proxy in pairs(config.proxyHitboxes) do
-            if not currentTargets[player] or not proxy or not proxy.Parent then
-                table.insert(toRemove, player)
-            end
-        end
-        for _, player in ipairs(toRemove) do
-            if config.proxyHitboxes[player] then
-                config.proxyHitboxes[player]:Destroy()
-                config.proxyHitboxes[player] = nil
-            end
-        end
-        for target, _ in pairs(currentTargets) do
-            if not config.proxyHitboxes[target] or not config.proxyHitboxes[target].Parent then
-                proxyhb(target)
-            end
-        end
-        for player, proxy in pairs(config.proxyHitboxes) do
-            if proxy and proxy.Parent and currentTargets[player] then
-                updateproxyhb(player)
-            end
-        end
-    elseif config.hitboxVisualizer.enabled == false then
-        for player, proxy in pairs(config.proxyHitboxes) do
-            if proxy and proxy.Parent then
-                proxy:Destroy()
-            end
-        end
-        config.proxyHitboxes = {}
-    end
 end
 local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
 local function isMobileDevice()
