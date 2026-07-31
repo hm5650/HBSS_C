@@ -3755,8 +3755,6 @@ local function saveConfig(saveName)
             varibz_CameraDistance = config.varibz.CameraDistance,
             customFOVEnabled = config.customFOVEnabled,
             customFOVValue = config.customFOVValue,
-            Gradow_textcursor = config.Gradow.textcursor,
-            Gradow_textcursor2 = config.Gradow.textcursor2,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -4702,12 +4700,6 @@ local function loadSave(saveName)
     if cfg.varibz_CameraDistance then config.varibz.CameraDistance = cfg.varibz_CameraDistance end
     if cfg.customFOVEnabled ~= nil then config.customFOVEnabled = cfg.customFOVEnabled end
     if cfg.customFOVValue then config.customFOVValue = cfg.customFOVValue end
-    if cfg.Gradow_textcursor then 
-        config.Gradow.textcursor = cfg.Gradow_textcursor 
-    end
-    if cfg.Gradow_textcursor2 then 
-        config.Gradow.textcursor2 = cfg.Gradow_textcursor2 
-    end
     if cfg.varibz_patcherwait then config.varibz.patcherwait = cfg.varibz_patcherwait end
     if cfg.varibz_lowpatcherwait then config.varibz.lowpatcherwait = cfg.varibz_lowpatcherwait end
     if cfg.varibz_patcher ~= nil then config.varibz.patcher = cfg.varibz_patcher end
@@ -12309,27 +12301,6 @@ VisualsTab:Slider({
     end
 })
 
-VisualsTab:Input({
-    Title = "Tag's TextCursor",
-    Desc = "bro... who even needs ts 💔",
-    Placeholder = "_",
-    Value = "_",
-    ClearTextOnFocus = true,
-    Callback = function(hahahaaha)
-        config.Gradow.textcursor = hahahaaha
-    end
-})
-VisualsTab:Input({
-    Title = "Tag's TextCursor2",
-    Desc = "alr vro ??",
-    Placeholder = "  ",
-    Value = "  ",
-    ClearTextOnFocus = true,
-    Callback = function(lollllll)
-        config.Gradow.textcursor2 = lollllll
-    end
-})
-
 VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "ESP Colors",
@@ -12577,6 +12548,30 @@ VisualsTab:Slider({
         if WindUI.Transparent then
             WindUI.Window:ToggleTransparency(true)
         end
+    end
+})
+
+VisualsTab:Input({
+    Title = "Tag's TextCursor",
+    Desc = "bro... who even needs ts 💔",
+    Placeholder = "_",
+    Value = "_",
+    ClearTextOnFocus = true,
+    Callback = function(hahahaaha)
+        config.Gradow.textcursor = hahahaaha
+        SaveUI:setTextCursor1(hahahaaha)
+    end
+})
+
+VisualsTab:Input({
+    Title = "Tag's TextCursor2",
+    Desc = "alr vro ??",
+    Placeholder = "  ",
+    Value = "  ",
+    ClearTextOnFocus = true,
+    Callback = function(lollllll)
+        config.Gradow.textcursor2 = lollllll
+        SaveUI:setTextCursor2(lollllll)
     end
 })
 
