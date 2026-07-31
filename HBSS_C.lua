@@ -12577,7 +12577,7 @@ VisualsTab:Input({
 
 VisualsTab:Button({
     Title = "Save UI Settings",
-    Desc = "Save current theme & trans",
+    Desc = "Save current theme, trans & textcursor :]",
     Icon = "save",
     Callback = function()
         local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
@@ -12588,7 +12588,7 @@ VisualsTab:Button({
 
 VisualsTab:Button({
     Title = "Reload UI Settings",
-    Desc = "Reload da UI settings (btw the savedui file can autoload)",
+    Desc = "Reload da UI settings\n(btw the savedui file can autoload)",
     Icon = "download",
     Callback = function()
         local success = SaveUI:load()
