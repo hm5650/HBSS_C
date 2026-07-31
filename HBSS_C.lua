@@ -2529,7 +2529,7 @@ local config = {
         sa2dump = {
             data = {},
             lastClear = 0,
-            maxAge = 0.1,
+            maxAge = 0.05,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -5702,6 +5702,58 @@ local function IsPlayerVisible(player, maxDistance)
     if maxDistance and distance > maxDistance then
         return false
     end
+    if distance < 0.1 then return true end
+    local filterList = {LocalPlayerCharacter, PlayerCharacter}
+    for playerKey, proxyPart in pairs(config.proxyHitboxes) do
+        if proxyPart and proxyPart.Parent then
+            table.insert(filterList, proxyPart)
+        end
+    end
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+        if otherPlayer.Character then
+            local torso = otherPlayer.Character:FindFirstChild("Torso") or 
+                          otherPlayer.Character:FindFirstChild("UpperTorso") or 
+                          otherPlayer.Character:FindFirstChild("LowerTorso")
+            if torso then
+                table.insert(filterList, torso)
+            end
+        end
+    end
+    for playerKey, data in pairs(config.hitboxExpandedParts) do
+        if data and data.part and data.part.Parent then
+            table.insert(filterList, data.part)
+        end
+    end
+    local params = RaycastParams.new()
+    params.FilterType = Enum.RaycastFilterType.Blacklist
+    params.FilterDescendantsInstances = filterList
+    params.IgnoreWater = true
+    local result = workspace:Raycast(origin, direction.Unit * distance, params)
+    if not result then
+        return true
+    end
+    local hitParent = result.Instance.Parent
+    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
+        return true
+    end
+    
+    return false
+end
+local function IsPlayerVisible(player, maxDistance)
+    local PlayerCharacter = player.Character
+    local LocalPlayerCharacter = plr.Character
+    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
+    local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
+    if not PlayerRoot then return false end
+    local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
+    if not LocalRoot then return false end
+    local origin = LocalRoot.Position
+    local targetPos = PlayerRoot.Position
+    local direction = (targetPos - origin)
+    local distance = direction.Magnitude
+    if maxDistance and distance > maxDistance then
+        return false
+    end
     if distance < 0.01 then return true end
     local filterList = {LocalPlayerCharacter, PlayerCharacter}
     for playerKey, proxyPart in pairs(config.proxyHitboxes) do
@@ -5744,13 +5796,10 @@ local function getVis(target, maxDistance)
     if typeof(target) == "Instance" then
         if target:IsA("Player") then
             targetId = "player_" .. tostring(target.UserId)
-        elseif target:IsA("Model") then
-            targetId = "npc_" .. tostring(target)
         end
     end
     return targetId .. "_" .. tostring(maxDistance)
 end
-
 local function isTargetVisible(target, maxDistance)
     local now = tick()
     if now - config.varibz.sa2dump.lastClear > 5 then
@@ -5769,7 +5818,6 @@ local function isTargetVisible(target, maxDistance)
     }
     return visible
 end
-
 local function GetClosestPlayer()
     if not config.varibz.sa2this then
         return nil
@@ -5801,7 +5849,7 @@ local function GetClosestPlayer()
     local config_local = config
     local checkWall = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
     local playerCount = #Players:GetPlayers()
-    if playerCount <= 1 and config.masterTarget ~= "NPCs" and config.masterTarget ~= "Both" then
+    if playerCount <= 1 then
         config.SA2_currentTarget = nil
         return nil
     end
@@ -5820,160 +5868,44 @@ local function GetClosestPlayer()
                 return localTeam == targetTeam
             end
         end
-        if typeof(player) == "Instance" and player:IsA("Model") then
-            if config_local.masterTarget == "NPCs" or config_local.masterTarget == "Both" then
-                if config_local.SA2_TeamTarget == "All" then return true end
-                if config_local.SA2_TeamTarget == "Enemies" then return true end
-                if config_local.SA2_TeamTarget == "Teams" then return false end
-                return true
-            end
-            return false
-        end
         return false
     end
     local candidates = {}
     local candidateCount = 0
-    local checkVisible = not config_local.SA2_ThreeSixtyMode
-    if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        local players = Players:GetPlayers()
-        for i = 1, #players do
-            local p = players[i]
-            if p ~= plr_local and isTargetable(p) then
-                local char = p.Character
-                if char then
-                    local humanoid = char:FindFirstChildOfClass("Humanoid")
-                    if humanoid and humanoid.Health > 0 then
-                        if not config_local.ignoreForcefield or not hasForcefield(char) then
-                            local part = nil
-                            if targetPartName then
-                                part = char:FindFirstChild(targetPartName)
-                            end
-                            if not part then
-                                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-                            end
-                            if part then
-                                local dx = part.Position.X - localRoot.Position.X
-                                local dy = part.Position.Y - localRoot.Position.Y
-                                local dz = part.Position.Z - localRoot.Position.Z
-                                local distSq = dx * dx + dy * dy + dz * dz
-                                if distSq <= maxRangeSq then
-                                    if checkVisible then
-                                        if not isTargetVisible(p, maxRange) then
-                                            continue
-                                        end
-                                    end
-                                    
-                                    local worldDist = math.sqrt(distSq)
-                                    
-                                    if checkVisible then
-                                        local targetPos = part.Position
-                                        local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                                        if not onScreen or screenPos.Z <= 0 then
-                                            continue
-                                        end
-                                        local distX = screenPos.X - center.X
-                                        local distY = screenPos.Y - center.Y
-                                        local distPx = math.sqrt(distX * distX + distY * distY)
-                                        if distPx > config_local.SA2_FovRadius then
-                                            continue
-                                        end
-                                        candidateCount = candidateCount + 1
-                                        candidates[candidateCount] = {
-                                            target = p,
-                                            part = part,
-                                            health = humanoid.Health,
-                                            screenDist = distPx,
-                                            worldDist = worldDist,
-                                            isPlayer = true,
-                                            char = char
-                                        }
-                                    else
-                                        candidateCount = candidateCount + 1
-                                        candidates[candidateCount] = {
-                                            target = p,
-                                            part = part,
-                                            health = humanoid.Health,
-                                            screenDist = 0,
-                                            worldDist = worldDist,
-                                            isPlayer = true,
-                                            char = char
-                                        }
-                                    end
-                                end
-                            end
+    local checkVisible = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
+    local useFOV = not config_local.SA2_ThreeSixtyMode
+    
+    local players = Players:GetPlayers()
+    for i = 1, #players do
+        local p = players[i]
+        if p ~= plr_local and isTargetable(p) then
+            local char = p.Character
+            if char then
+                local humanoid = char:FindFirstChildOfClass("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    if not config_local.ignoreForcefield or not hasForcefield(char) then
+                        local part = nil
+                        if targetPartName then
+                            part = char:FindFirstChild(targetPartName)
                         end
-                    end
-                end
-            end
-        end
-    end
-    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-        local npcCache = config._npcCache or {}
-        local currentTime = tick()
-        if not config._npcCacheTime or currentTime - config._npcCacheTime > 0.5 then
-            config._npcCacheTime = currentTime
-            local newCache = {}
-            local descendants = Workspace:GetDescendants()
-            for i = 1, #descendants do
-                local obj = descendants[i]
-                if obj:IsA("Model") and obj ~= character then
-                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
-                    if humanoid and humanoid.Health > 0 then
-                        local part = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
+                        if not part then
+                            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                        end
                         if part then
                             local dx = part.Position.X - localRoot.Position.X
                             local dy = part.Position.Y - localRoot.Position.Y
                             local dz = part.Position.Z - localRoot.Position.Z
                             local distSq = dx * dx + dy * dy + dz * dz
-                            
-                            if distSq <= maxRangeSq then
-                                local isValid = false
-                                if config_local.SA2_TeamTarget == "All" then
-                                    isValid = true
-                                elseif config_local.SA2_TeamTarget == "Enemies" then
-                                    isValid = true
-                                elseif config_local.SA2_TeamTarget == "Teams" then
-                                    local npcTeam = obj:FindFirstChild("Team")
-                                    if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                                        if localTeam and npcTeam.Value == localTeam then
-                                            isValid = true
-                                        end
-                                    end
-                                end
-                                if isValid then
-                                    table.insert(newCache, obj)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            config._npcCache = newCache
-        end
-        local npcs = config._npcCache or {}
-        for i = 1, #npcs do
-            local npc = npcs[i]
-            if npc.Parent then
-                local part = npc:FindFirstChild("Head") or npc:FindFirstChild("HumanoidRootPart")
-                if part then
-                    local humanoid = npc:FindFirstChildOfClass("Humanoid")
-                    if humanoid and humanoid.Health > 0 then
-                        if not config_local.ignoreForcefield or not hasForcefield(npc) then
-                            local dx = part.Position.X - localRoot.Position.X
-                            local dy = part.Position.Y - localRoot.Position.Y
-                            local dz = part.Position.Z - localRoot.Position.Z
-                            local distSq = dx * dx + dy * dy + dz * dz
-                            
                             if distSq <= maxRangeSq then
                                 if checkVisible then
-                                    if not isTargetVisible(npc, maxRange) then
+                                    if not isTargetVisible(p, maxRange) then
                                         continue
                                     end
                                 end
                                 
                                 local worldDist = math.sqrt(distSq)
                                 
-                                if checkVisible then
+                                if useFOV then
                                     local targetPos = part.Position
                                     local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
                                     if not onScreen or screenPos.Z <= 0 then
@@ -5987,24 +5919,26 @@ local function GetClosestPlayer()
                                     end
                                     candidateCount = candidateCount + 1
                                     candidates[candidateCount] = {
-                                        target = npc,
+                                        target = p,
                                         part = part,
                                         health = humanoid.Health,
                                         screenDist = distPx,
                                         worldDist = worldDist,
-                                        isPlayer = false,
-                                        char = npc
+                                        isPlayer = true,
+                                        char = char,
+                                        screenPos3 = screenPos
                                     }
                                 else
                                     candidateCount = candidateCount + 1
                                     candidates[candidateCount] = {
-                                        target = npc,
+                                        target = p,
                                         part = part,
                                         health = humanoid.Health,
                                         screenDist = 0,
                                         worldDist = worldDist,
-                                        isPlayer = false,
-                                        char = npc
+                                        isPlayer = true,
+                                        char = char,
+                                        screenPos3 = nil
                                     }
                                 end
                             end
@@ -7622,21 +7556,60 @@ local function wallCheck(targetPos, sourcePos)
     if not config.wallc then
         return true
     end
-
     if (targetPos - sourcePos).Magnitude <= 0 then return true end
-
-    local rayDirection = (targetPos - sourcePos)
-    local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    local ignoreList = ignorethisandthat()
-
-    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-    if hit and position then
-        local distanceToTarget = (targetPos - sourcePos).Magnitude
-        local distanceToHit = (position - sourcePos).Magnitude
-        return distanceToHit >= (distanceToTarget - 2)
+    if not config._wallCheckParams then
+        config._wallCheckParams = RaycastParams.new()
+        config._wallCheckParams.FilterType = Enum.RaycastFilterType.Blacklist
+        config._wallCheckParams.IgnoreWater = true
+    end
+    local ignoreList = {}
+    if localPlayer and localPlayer.Character then
+        table.insert(ignoreList, localPlayer.Character)
+    end
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+        if otherPlayer.Character then
+            table.insert(ignoreList, otherPlayer.Character)
+        end
+    end
+    for _, proxyPart in pairs(config.proxyHitboxes) do
+        if proxyPart and proxyPart.Parent then
+            table.insert(ignoreList, proxyPart)
+        end
+    end
+    
+    for player, data in pairs(config.hitboxExpandedParts) do
+        if data and data.part and data.part.Parent then
+            table.insert(ignoreList, data.part)
+        end
     end
 
-    return true
+    config._wallCheckParams.FilterDescendantsInstances = ignoreList
+
+    local rayDirection = (targetPos - sourcePos)
+    local distance = rayDirection.Magnitude
+    
+    if distance < 0.1 then return true end
+    
+    local result = workspace:Raycast(sourcePos, rayDirection.Unit * distance, config._wallCheckParams)
+    
+    if not result then
+        return true
+    end
+    
+    local hitInstance = result.Instance
+    local hitParent = hitInstance and hitInstance.Parent
+    if hitParent then
+        for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+            if otherPlayer ~= localPlayer then
+                local char = otherPlayer.Character
+                if char and (char == hitParent or char:IsAncestorOf(hitInstance)) then
+                    return true
+                end
+            end
+        end
+    end
+    
+    return false
 end
 
 local function high(targetPlayer)
@@ -8484,7 +8457,6 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
             end
         end
     end
-
     local useExpanded = true
     local chance = math.clamp(tonumber(config.hitchance) or 100, 0, 100)
     if chance <= 0 then
@@ -8511,8 +8483,18 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     end
 
     config.activeApplied[targetPlayer] = true
+    local targetSize = config.targethbSizes[targetPlayer]
+    if targetSize and part and part.Parent then
+        pcall(function()
+            part.Size = targetSize
+            part.Transparency = config.hbtrans or 0.5
+            part.CanCollide = false
+            if part.Name == "Head" then
+                part.Massless = true
+            end
+        end)
+    end
 end
-
 local function restorePartForPlayer(targetPlayer)
     if not targetPlayer or targetPlayer == localPlayer then return end
 
@@ -8547,7 +8529,6 @@ local function restorePartForPlayer(targetPlayer)
     config.targethbSizes[targetPlayer] = nil
     config.centerLocked[targetPlayer] = nil
 end
-
 local function proxyhb(targetPlayer)
     if not targetPlayer then return nil end
     if targetPlayer == localPlayer then return nil end
@@ -9872,6 +9853,7 @@ local function burgerking(deltaTime)
         return
     end
     table.clear(candidates)
+    table.clear(targetsInFOV)
     if config.aimbotEnabled then
         aimbotUpdate()
     end
@@ -10246,6 +10228,7 @@ local function UpdateQT()
         end
     end
 end
+
 local function onRenderStep()
     if not camera or not camera.Parent then
         camera = workspace.CurrentCamera
@@ -10469,11 +10452,9 @@ local function onRenderStep()
         
         local diameter = calculateDiameter(best.worldDist, radiusPx, camera)
         diameter = math.max(0.01, diameter)
-
         local localChar = localPlayer.Character
         local targetChar = getTargetCharacter(best.player)
         local distance = math.huge
-
         if localChar and targetChar then
             local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
             local targetRoot = targetChar:FindFirstChild("HumanoidRootPart") or targetChar:FindFirstChild("Head")
@@ -10513,7 +10494,6 @@ local function onRenderStep()
 
                 return maxPixel
             end)
-
             if ok and pixelRadius and pixelRadius > 0 then
                 local scale = best.screenDist / pixelRadius
                 scale = math.clamp(scale, 1 / config.maxExpansion, config.maxExpansion)
@@ -10522,7 +10502,6 @@ local function onRenderStep()
         end
 
         diameter = math.max(0.01, diameter)
-        
         if best.screenDist <= 1 then
             if not config.centerLocked[best.player] then
                 config.centerLocked[best.player] = true
@@ -13063,7 +13042,7 @@ local SilentAimTab = Window:Tab({
 }) do
     SilentAimTab:Paragraph({
         Title = "Gravel",
-        Desc = "[ Hitbox Based ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]",
+        Desc = "[ Hitbox Based ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]\n[ May Lag ]",
         Color = config.Gradow.uicolor.darkGray
     })
 
@@ -15624,6 +15603,11 @@ I luv rng's. :3
     InfoTab:Paragraph({
         Title = "Gravel (31/07/2026)",
         Desc = "Fixed: ClientTab\n\ni didn't know client tab was broken btw🥀💔",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (31/07/2026)",
+        Desc = "sum bug fixes",
         Color = config.Gradow.uicolor.darkGray
     })
 end
