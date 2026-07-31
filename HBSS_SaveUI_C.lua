@@ -3,7 +3,7 @@ local SaveUI = {
     FileName = "SavedUI.json",
     CurrentTheme = "Dark",
     CurrentTransparency = 0.15,
-    TextCursor = "_",
+    TextCursor1 = "_",
     TextCursor2 = "  ",
     _initialized = false,
     _windUI = nil,
@@ -18,16 +18,16 @@ function SaveUI:init(windUI, config)
     self._windUI = windUI
     self._config = config
     
-    if config then
-        if config.Gradow and config.Gradow.uiThemeSave then
-            self.Folder = config.Gradow.uiThemeSave.Folder or self.Folder
-            self.FileName = config.Gradow.uiThemeSave.FileName or self.FileName
-            self.CurrentTheme = config.Gradow.uiThemeSave.CurrentTheme or self.CurrentTheme
-            self.CurrentTransparency = config.Gradow.uiThemeSave.CurrentTransparency or self.CurrentTransparency
+    if config and config.Gradow then
+        self.Folder = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.Folder or self.Folder
+        self.FileName = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.FileName or self.FileName
+        self.CurrentTheme = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.CurrentTheme or self.CurrentTheme
+        self.CurrentTransparency = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.CurrentTransparency or self.CurrentTransparency
+        if config.Gradow.textcursor then
+            self.TextCursor1 = config.Gradow.textcursor
         end
-        if config.Gradow then
-            self.TextCursor = config.Gradow.textcursor or self.TextCursor
-            self.TextCursor2 = config.Gradow.textcursor2 or self.TextCursor2
+        if config.Gradow.textcursor2 then
+            self.TextCursor2 = config.Gradow.textcursor2
         end
     end
     
@@ -58,8 +58,8 @@ function SaveUI:save(theme, transparency)
     local dataToSave = {
         theme = theme or self.CurrentTheme,
         transparency = transparency or self.CurrentTransparency,
-        textCursor = self.TextCursor,
-        textCursor2 = self.TextCursor2,
+        textcursor = self:getTextCursor1(),
+        textcursor2 = self:getTextCursor2(),
         savedAt = os.time()
     }
     
@@ -115,7 +115,6 @@ function SaveUI:load()
     
     self:ensureFolder()
     local path = self:getFilePath()
-    
     if not isfile(path) then
         return false
     end
@@ -123,7 +122,6 @@ function SaveUI:load()
     local success, data = pcall(function()
         return readfile(path)
     end)
-    
     if not success or not data then
         return false
     end
@@ -131,7 +129,6 @@ function SaveUI:load()
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
-    
     if not success or not decoded then
         return false
     end
@@ -141,6 +138,7 @@ function SaveUI:load()
             self.CurrentTheme = decoded.theme
             self._windUI:SetTheme(decoded.theme)
         end
+        
         if decoded.transparency ~= nil then
             self.CurrentTransparency = decoded.transparency
             self._windUI.TransparencyValue = decoded.transparency
@@ -148,20 +146,21 @@ function SaveUI:load()
                 self._windUI.Window:ToggleTransparency(true)
             end
         end
-        if decoded.textCursor ~= nil then
-            self.TextCursor = decoded.textCursor
-            if self._config and self._config.Gradow then
-                self._config.Gradow.textcursor = decoded.textCursor
-            end
+        
+        if decoded.textcursor ~= nil then
+            self.TextCursor1 = decoded.textcursor
+            self:setTextCursor1(decoded.textcursor)
         end
         
-        if decoded.textCursor2 ~= nil then
-            self.TextCursor2 = decoded.textCursor2
-            if self._config and self._config.Gradow then
-                self._config.Gradow.textcursor2 = decoded.textCursor2
-            end
+        if decoded.textcursor2 ~= nil then
+            self.TextCursor2 = decoded.textcursor2
+            self:setTextCursor2(decoded.textcursor2)
         end
-        if self._config and self._config.Gradow and self._config.Gradow.uiThemeSave then
+        
+        if self._config and self._config.Gradow then
+            if not self._config.Gradow.uiThemeSave then
+                self._config.Gradow.uiThemeSave = {}
+            end
             self._config.Gradow.uiThemeSave.CurrentTheme = self.CurrentTheme
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
@@ -177,7 +176,6 @@ function SaveUI:autoLoad()
     
     self:ensureFolder()
     local path = self:getFilePath()
-    
     if not isfile(path) then
         return false
     end
@@ -185,7 +183,6 @@ function SaveUI:autoLoad()
     local success, data = pcall(function()
         return readfile(path)
     end)
-    
     if not success or not data then
         return false
     end
@@ -193,7 +190,6 @@ function SaveUI:autoLoad()
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
-    
     if not success or not decoded then
         return false
     end
@@ -203,6 +199,7 @@ function SaveUI:autoLoad()
             self.CurrentTheme = decoded.theme
             self._windUI:SetTheme(decoded.theme)
         end
+        
         if decoded.transparency ~= nil then
             self.CurrentTransparency = decoded.transparency
             self._windUI.TransparencyValue = decoded.transparency
@@ -210,20 +207,21 @@ function SaveUI:autoLoad()
                 self._windUI.Window:ToggleTransparency(true)
             end
         end
-        if decoded.textCursor ~= nil then
-            self.TextCursor = decoded.textCursor
-            if self._config and self._config.Gradow then
-                self._config.Gradow.textcursor = decoded.textCursor
-            end
+        
+        if decoded.textcursor ~= nil then
+            self.TextCursor1 = decoded.textcursor
+            self:setTextCursor1(decoded.textcursor)
         end
         
-        if decoded.textCursor2 ~= nil then
-            self.TextCursor2 = decoded.textCursor2
-            if self._config and self._config.Gradow then
-                self._config.Gradow.textcursor2 = decoded.textCursor2
-            end
+        if decoded.textcursor2 ~= nil then
+            self.TextCursor2 = decoded.textcursor2
+            self:setTextCursor2(decoded.textcursor2)
         end
-        if self._config and self._config.Gradow and self._config.Gradow.uiThemeSave then
+        
+        if self._config and self._config.Gradow then
+            if not self._config.Gradow.uiThemeSave then
+                self._config.Gradow.uiThemeSave = {}
+            end
             self._config.Gradow.uiThemeSave.CurrentTheme = self.CurrentTheme
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
@@ -231,21 +229,59 @@ function SaveUI:autoLoad()
     
     return true
 end
+function SaveUI:getTextCursor1()
+    if self._config and self._config.Gradow and self._config.Gradow.textcursor then
+        return self._config.Gradow.textcursor
+    end
+    return self.TextCursor1 or "_"
+end
 
+function SaveUI:getTextCursor2()
+    if self._config and self._config.Gradow and self._config.Gradow.textcursor2 then
+        return self._config.Gradow.textcursor2
+    end
+    return self.TextCursor2 or "  "
+end
+
+function SaveUI:setTextCursor1(value)
+    self.TextCursor1 = value or "_"
+    if self._config and self._config.Gradow then
+        self._config.Gradow.textcursor = value or "_"
+    end
+    pcall(function()
+        if self._config and self._config.varibz and self._config.varibz.rng4 and self._config.varibz.rng4.tag then
+            local tag = self._config.varibz.rng4.tag
+            if tag.SetTitle then
+                local currentText = self._config.varibz.rng4.currentText or ""
+                local cursor = self._config.varibz.rng4.cursorVisible and value or "  "
+                tag:SetTitle(currentText .. cursor)
+            end
+        end
+    end)
+end
+
+function SaveUI:setTextCursor2(value)
+    self.TextCursor2 = value or "  "
+    if self._config and self._config.Gradow then
+        self._config.Gradow.textcursor2 = value or "  "
+    end
+    pcall(function()
+        if self._config and self._config.varibz and self._config.varibz.rng4 and self._config.varibz.rng4.tag then
+            local tag = self._config.varibz.rng4.tag
+            if tag.SetTitle then
+                local currentText = self._config.varibz.rng4.currentText or ""
+                local cursor = self._config.varibz.rng4.cursorVisible and self.TextCursor1 or value
+                tag:SetTitle(currentText .. cursor)
+            end
+        end
+    end)
+end
 function SaveUI:getTheme()
     return self.CurrentTheme
 end
 
 function SaveUI:getTransparency()
     return self.CurrentTransparency
-end
-
-function SaveUI:getTextCursor()
-    return self.TextCursor
-end
-
-function SaveUI:getTextCursor2()
-    return self.TextCursor2
 end
 
 function SaveUI:setTheme(theme)
@@ -264,36 +300,20 @@ function SaveUI:setTransparency(transparency)
     return true
 end
 
-function SaveUI:setTextCursor(cursor)
-    self.TextCursor = cursor
-    if self._config and self._config.Gradow then
-        self._config.Gradow.textcursor = cursor
-    end
-    return true
-end
-
-function SaveUI:setTextCursor2(cursor2)
-    self.TextCursor2 = cursor2
-    if self._config and self._config.Gradow then
-        self._config.Gradow.textcursor2 = cursor2
-    end
-    return true
-end
-
 function SaveUI:reset()
     self.CurrentTheme = "Dark"
     self.CurrentTransparency = 0.15
-    self.TextCursor = "_"
+    self.TextCursor1 = "_"
     self.TextCursor2 = "  "
     
-    if self._config and self._config.Gradow and self._config.Gradow.uiThemeSave then
+    if self._config and self._config.Gradow then
+        if not self._config.Gradow.uiThemeSave then
+            self._config.Gradow.uiThemeSave = {}
+        end
         self._config.Gradow.uiThemeSave.CurrentTheme = self.CurrentTheme
         self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
-    end
-    
-    if self._config and self._config.Gradow then
-        self._config.Gradow.textcursor = self.TextCursor
-        self._config.Gradow.textcursor2 = self.TextCursor2
+        self._config.Gradow.textcursor = "_"
+        self._config.Gradow.textcursor2 = "  "
     end
     
     if self._windUI then
@@ -303,6 +323,17 @@ function SaveUI:reset()
             self._windUI.Window:ToggleTransparency(true)
         end
     end
+    pcall(function()
+        if self._config and self._config.varibz and self._config.varibz.rng4 and self._config.varibz.rng4.tag then
+            local tag = self._config.varibz.rng4.tag
+            if tag.SetTitle then
+                tag:SetTitle("TextCursor Reset")
+                task.wait(0.5)
+                local currentText = self._config.varibz.rng4.currentText or ""
+                tag:SetTitle(currentText .. "_")
+            end
+        end
+    end)
     
     return true
 end
