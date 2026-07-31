@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “wow so kay jay :p” 
+           “me like table.clear() :3” 
                                            
                                - Gpssickle
 ]])
@@ -130,17 +130,21 @@ print(lp_info.lp_id)
 print(lp_info.lp_accountage)
 print(lp_info.lp_retroslopscore)
 print(lp_info.lp_isitretroslop)
-settings().Rendering.MeshPartDetailLevel = 1
-settings().Rendering.EagerBulkExecution = true
-settings().Rendering.EnableFRM = true
-
 -- unprofessionalism professionist 🥀
 local lzl = loadstring(getgist_(getgenv().HttpUrlz_.lzlzlzlzlzl))()
 local fCfg = {
     core = {
         dep = {},
-        load = function() return true end,
-        unload = function() end,
+        load = function() 
+            local success, err = pcall(function()
+                return true 
+            end)
+            if not success then warn("core load error: " .. tostring(err)) end
+            return success
+        end,
+        unload = function() 
+            pcall(function() end)
+        end,
         prio = 1,
         ess = true,
         reqGame = false
@@ -148,14 +152,20 @@ local fCfg = {
     esp = {
         dep = {"core"},
         load = function()
-            if not config.espMasterEnabled then return false end
-            applyESPMaster(true)
-            return true
+            local success, err = pcall(function()
+                if not config.espMasterEnabled then return false end
+                applyESPMaster(true)
+                return true
+            end)
+            if not success then warn("esp load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            for target in pairs(config.espData) do removeESPLabel(target) end
-            for target in pairs(config.highlightData) do removeHighlightESP(target) end
-            for target in pairs(config.lineESPData) do removeLineESP(target) end
+            pcall(function()
+                for target in pairs(config.espData) do removeESPLabel(target) end
+                for target in pairs(config.highlightData) do removeHighlightESP(target) end
+                for target in pairs(config.lineESPData) do removeLineESP(target) end
+            end)
         end,
         prio = 2,
         ess = false,
@@ -164,13 +174,19 @@ local fCfg = {
     silentAim = {
         dep = {"core"},
         load = function()
-            if not config.startsa then return false end
-            if gui.RingHolder then gui.RingHolder.Visible = true end
-            return true
+            local success, err = pcall(function()
+                if not config.startsa then return false end
+                if gui.RingHolder then gui.RingHolder.Visible = true end
+                return true
+            end)
+            if not success then warn("silentAim load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if gui.RingHolder then gui.RingHolder.Visible = false end
-            for pl in pairs(config.activeApplied) do restorePartForPlayer(pl) end
+            pcall(function()
+                if gui.RingHolder then gui.RingHolder.Visible = false end
+                for pl in pairs(config.activeApplied) do restorePartForPlayer(pl) end
+            end)
         end,
         prio = 2,
         ess = false,
@@ -179,12 +195,18 @@ local fCfg = {
     aimbot = {
         dep = {"core"},
         load = function()
-            if not config.aimbotEnabled then return false end
-            handleAimbotToggle(true)
-            aimbotfov()
-            return true
+            local success, err = pcall(function()
+                if not config.aimbotEnabled then return false end
+                handleAimbotToggle(true)
+                aimbotfov()
+                return true
+            end)
+            if not success then warn("aimbot load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() handleAimbotToggle(false) end,
+        unload = function() 
+            pcall(function() handleAimbotToggle(false) end)
+        end,
         prio = 2,
         ess = false,
         reqGame = true
@@ -192,13 +214,19 @@ local fCfg = {
     hitbox = {
         dep = {"core"},
         load = function()
-            if not config.hitboxEnabled then return false end
-            applyhb()
-            return true
+            local success, err = pcall(function()
+                if not config.hitboxEnabled then return false end
+                applyhb()
+                return true
+            end)
+            if not success then warn("hitbox load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            for player in pairs(config.hitboxExpandedParts) do restoreTorso(player) end
-            config.hitboxExpandedParts = {}
+            pcall(function()
+                for player in pairs(config.hitboxExpandedParts) do restoreTorso(player) end
+                config.hitboxExpandedParts = {}
+            end)
         end,
         prio = 3,
         ess = false,
@@ -207,10 +235,16 @@ local fCfg = {
     antiAim = {
         dep = {"core"},
         load = function()
-            if not config.antiAimEnabled then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.antiAimEnabled then return false end
+                return true
+            end)
+            if not success then warn("antiAim load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() returnToOriginalPosition() end,
+        unload = function() 
+            pcall(function() returnToOriginalPosition() end)
+        end,
         prio = 3,
         ess = false,
         reqGame = true
@@ -218,11 +252,17 @@ local fCfg = {
     autoFarm = {
         dep = {"core"},
         load = function()
-            if not config.autoFarmEnabled then return false end
-            autoFarmProcess()
-            return true
+            local success, err = pcall(function()
+                if not config.autoFarmEnabled then return false end
+                autoFarmProcess()
+                return true
+            end)
+            if not success then warn("autoFarm load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() stopAutoFarm() end,
+        unload = function() 
+            pcall(function() stopAutoFarm() end)
+        end,
         prio = 3,
         ess = false,
         reqGame = true
@@ -230,11 +270,17 @@ local fCfg = {
     triggerBot = {
         dep = {"core"},
         load = function()
-            if not config.tbot.enabled then return false end
-            toggleTriggerBot(true)
-            return true
+            local success, err = pcall(function()
+                if not config.tbot.enabled then return false end
+                toggleTriggerBot(true)
+                return true
+            end)
+            if not success then warn("triggerBot load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() toggleTriggerBot(false) end,
+        unload = function() 
+            pcall(function() toggleTriggerBot(false) end)
+        end,
         prio = 3,
         ess = false,
         reqGame = true
@@ -242,11 +288,17 @@ local fCfg = {
     bhop = {
         dep = {"core"},
         load = function()
-            if not config.bhop.enabled then return false end
-            toggleBHop(true)
-            return true
+            local success, err = pcall(function()
+                if not config.bhop.enabled then return false end
+                toggleBHop(true)
+                return true
+            end)
+            if not success then warn("bhop load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() toggleBHop(false) end,
+        unload = function() 
+            pcall(function() toggleBHop(false) end)
+        end,
         prio = 3,
         ess = false,
         reqGame = true
@@ -254,15 +306,21 @@ local fCfg = {
     spinbot = {
         dep = {"core"},
         load = function()
-            if not config.spinbot.enabled then return false end
-            spinbotUpdate()
-            return true
+            local success, err = pcall(function()
+                if not config.spinbot.enabled then return false end
+                spinbotUpdate()
+                return true
+            end)
+            if not success then warn("spinbot load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if config.varibz.spinbotConnection then
-                config.varibz.spinbotConnection:Disconnect()
-                config.varibz.spinbotConnection = nil
-            end
+            pcall(function()
+                if config.varibz.spinbotConnection then
+                    config.varibz.spinbotConnection:Disconnect()
+                    config.varibz.spinbotConnection = nil
+                end
+            end)
         end,
         prio = 3,
         ess = false,
@@ -271,10 +329,16 @@ local fCfg = {
     silentAimHK = {
         dep = {"core"},
         load = function()
-            if not config.SA2_Enabled then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.SA2_Enabled then return false end
+                return true
+            end)
+            if not success then warn("silentAimHK load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() config.SA2_Enabled = false end,
+        unload = function() 
+            pcall(function() config.SA2_Enabled = false end)
+        end,
         prio = 2,
         ess = false,
         reqGame = true
@@ -282,16 +346,22 @@ local fCfg = {
     viewing = {
         dep = {"core"},
         load = function()
-            if not config.Viewing then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.Viewing then return false end
+                return true
+            end)
+            if not success then warn("viewing load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            config.Viewing = false
-            if config.varibz.ViewConnection then
-                config.varibz.ViewConnection:Disconnect()
-                config.varibz.ViewConnection = nil
-            end
-            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+            pcall(function()
+                config.Viewing = false
+                if config.varibz.ViewConnection then
+                    config.varibz.ViewConnection:Disconnect()
+                    config.varibz.ViewConnection = nil
+                end
+                workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+            end)
         end,
         prio = 4,
         ess = false,
@@ -300,33 +370,39 @@ local fCfg = {
     camYOffset = {
         dep = {"core"},
         load = function()
-            if not config.camYOffsetEnabled then return false end
-            if not config.camYOffsetConnection then
-                config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
-                    if config.camYOffsetEnabled then
-                        local cam = workspace.CurrentCamera
-                        if cam then
-                            if not config.camYOffsetOriginalCFrame then
-                                config.camYOffsetOriginalCFrame = cam.CFrame
+            local success, err = pcall(function()
+                if not config.camYOffsetEnabled then return false end
+                if not config.camYOffsetConnection then
+                    config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
+                        if config.camYOffsetEnabled then
+                            local cam = workspace.CurrentCamera
+                            if cam then
+                                if not config.camYOffsetOriginalCFrame then
+                                    config.camYOffsetOriginalCFrame = cam.CFrame
+                                end
+                                local offset = Vector3.new(0, config.camYOffsetValue, 0)
+                                local newCFrame = CFrame.new(
+                                    cam.CFrame.Position + offset,
+                                    cam.CFrame.Position + offset + cam.CFrame.LookVector
+                                )
+                                cam.CFrame = newCFrame
                             end
-                            local offset = Vector3.new(0, config.camYOffsetValue, 0)
-                            local newCFrame = CFrame.new(
-                                cam.CFrame.Position + offset,
-                                cam.CFrame.Position + offset + cam.CFrame.LookVector
-                            )
-                            cam.CFrame = newCFrame
                         end
-                    end
-                end)
-            end
-            return true
+                    end)
+                end
+                return true
+            end)
+            if not success then warn("camYOffset load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if config.camYOffsetConnection then
-                config.camYOffsetConnection:Disconnect()
-                config.camYOffsetConnection = nil
-            end
-            config.camYOffsetOriginalCFrame = nil
+            pcall(function()
+                if config.camYOffsetConnection then
+                    config.camYOffsetConnection:Disconnect()
+                    config.camYOffsetConnection = nil
+                end
+                config.camYOffsetOriginalCFrame = nil
+            end)
         end,
         prio = 4,
         ess = false,
@@ -335,49 +411,55 @@ local fCfg = {
     truss = {
         dep = {"core"},
         load = function()
-            if not config.trussEnabled then return false end
-            local player = excusemesir.Players.LocalPlayer
-            local character = player.Character
-            if character then
-                local rootPart = character:FindFirstChild("HumanoidRootPart")
-                if rootPart then
-                    if config.trussPart then
-                        config.trussPart:Destroy()
-                        config.trussPart = nil
-                    end
-                    if config.trussConnection then
-                        config.trussConnection:Disconnect()
-                        config.trussConnection = nil
-                    end
-                    config.trussPart = Instance.new("TrussPart")
-                    config.trussPart.Transparency = 1
-                    config.trussPart.Size = Vector3.new(2, 10, 2)
-                    config.trussPart.Parent = workspace
-                    config.trussPart.CanCollide = true
-                    config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
-                    config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                        if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
-                            config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
-                        else
-                            if config.trussConnection then
-                                config.trussConnection:Disconnect()
-                                config.trussConnection = nil
-                            end
+            local success, err = pcall(function()
+                if not config.trussEnabled then return false end
+                local player = excusemesir.Players.LocalPlayer
+                local character = player.Character
+                if character then
+                    local rootPart = character:FindFirstChild("HumanoidRootPart")
+                    if rootPart then
+                        if config.trussPart then
+                            config.trussPart:Destroy()
+                            config.trussPart = nil
                         end
-                    end)
+                        if config.trussConnection then
+                            config.trussConnection:Disconnect()
+                            config.trussConnection = nil
+                        end
+                        config.trussPart = Instance.new("TrussPart")
+                        config.trussPart.Transparency = 1
+                        config.trussPart.Size = Vector3.new(2, 10, 2)
+                        config.trussPart.Parent = workspace
+                        config.trussPart.CanCollide = true
+                        config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
+                        config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
+                            if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
+                                config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
+                            else
+                                if config.trussConnection then
+                                    config.trussConnection:Disconnect()
+                                    config.trussConnection = nil
+                                end
+                            end
+                        end)
+                    end
                 end
-            end
-            return true
+                return true
+            end)
+            if not success then warn("truss load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if config.trussPart then
-                config.trussPart:Destroy()
-                config.trussPart = nil
-            end
-            if config.trussConnection then
-                config.trussConnection:Disconnect()
-                config.trussConnection = nil
-            end
+            pcall(function()
+                if config.trussPart then
+                    config.trussPart:Destroy()
+                    config.trussPart = nil
+                end
+                if config.trussConnection then
+                    config.trussConnection:Disconnect()
+                    config.trussConnection = nil
+                end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -386,45 +468,51 @@ local fCfg = {
     airwalk = {
         dep = {"core"},
         load = function()
-            if not config.airwalkEnabled then return false end
-            local character = excusemesir.Players.LocalPlayer.Character
-            if character then
-                local rootPart = character:FindFirstChild("HumanoidRootPart")
-                if rootPart then
-                    config.airwalkPart = Instance.new("Part")
-                    config.airwalkPart.Transparency = 1
-                    config.airwalkPart.Size = Vector3.new(7, 2, 3)
-                    config.airwalkPart.Parent = workspace
-                    config.airwalkPart.CanCollide = true
-                    config.airwalkPart.Anchored = true
-                    config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
-                    if config.airwalkConnection then
-                        config.airwalkConnection:Disconnect()
-                        config.airwalkConnection = nil
-                    end
-                    config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                        if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
-                            config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
-                        else
-                            if config.airwalkConnection then
-                                config.airwalkConnection:Disconnect()
-                                config.airwalkConnection = nil
-                            end
+            local success, err = pcall(function()
+                if not config.airwalkEnabled then return false end
+                local character = excusemesir.Players.LocalPlayer.Character
+                if character then
+                    local rootPart = character:FindFirstChild("HumanoidRootPart")
+                    if rootPart then
+                        config.airwalkPart = Instance.new("Part")
+                        config.airwalkPart.Transparency = 1
+                        config.airwalkPart.Size = Vector3.new(7, 2, 3)
+                        config.airwalkPart.Parent = workspace
+                        config.airwalkPart.CanCollide = true
+                        config.airwalkPart.Anchored = true
+                        config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
+                        if config.airwalkConnection then
+                            config.airwalkConnection:Disconnect()
+                            config.airwalkConnection = nil
                         end
-                    end)
+                        config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
+                            if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
+                                config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
+                            else
+                                if config.airwalkConnection then
+                                    config.airwalkConnection:Disconnect()
+                                    config.airwalkConnection = nil
+                                end
+                            end
+                        end)
+                    end
                 end
-            end
-            return true
+                return true
+            end)
+            if not success then warn("airwalk load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if config.airwalkPart then
-                config.airwalkPart:Destroy()
-                config.airwalkPart = nil
-            end
-            if config.airwalkConnection then
-                config.airwalkConnection:Disconnect()
-                config.airwalkConnection = nil
-            end
+            pcall(function()
+                if config.airwalkPart then
+                    config.airwalkPart:Destroy()
+                    config.airwalkPart = nil
+                end
+                if config.airwalkConnection then
+                    config.airwalkConnection:Disconnect()
+                    config.airwalkConnection = nil
+                end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -433,55 +521,61 @@ local fCfg = {
     autorespawn = {
         dep = {"core"},
         load = function()
-            if not config.autorespawnEnabled then return false end
-            config.autorespawnConnections = config.autorespawnConnections or {}
-            config.autorespawnDeathPosition = nil
-            local player = excusemesir.Players.LocalPlayer
-            local function setupRespawn(character)
-                local humanoid = character:WaitForChild("Humanoid")
-                local rootPart = character:WaitForChild("HumanoidRootPart")
-                if config.autorespawnConnections.died then
-                    config.autorespawnConnections.died:Disconnect()
+            local success, err = pcall(function()
+                if not config.autorespawnEnabled then return false end
+                config.autorespawnConnections = config.autorespawnConnections or {}
+                config.autorespawnDeathPosition = nil
+                local player = excusemesir.Players.LocalPlayer
+                local function setupRespawn(character)
+                    local humanoid = character:WaitForChild("Humanoid")
+                    local rootPart = character:WaitForChild("HumanoidRootPart")
+                    if config.autorespawnConnections.died then
+                        config.autorespawnConnections.died:Disconnect()
+                    end
+                    config.autorespawnConnections.died = humanoid.Died:Connect(function()
+                        if config.autorespawnEnabled then
+                            config.autorespawnDeathPosition = rootPart.CFrame
+                        end
+                    end)
                 end
-                config.autorespawnConnections.died = humanoid.Died:Connect(function()
+                local function teleportToDeathPosition(newCharacter)
+                    if config.autorespawnEnabled and config.autorespawnDeathPosition then
+                        local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
+                        newRoot.CFrame = config.autorespawnDeathPosition
+                        config.autorespawnDeathPosition = nil
+                    end
+                end
+                if player.Character then
+                    setupRespawn(player.Character)
+                end
+                if config.autorespawnConnections.characterAdded then
+                    config.autorespawnConnections.characterAdded:Disconnect()
+                end
+                config.autorespawnConnections.characterAdded = player.CharacterAdded:Connect(function(character)
                     if config.autorespawnEnabled then
-                        config.autorespawnDeathPosition = rootPart.CFrame
+                        character:WaitForChild("Humanoid")
+                        character:WaitForChild("HumanoidRootPart")
+                        teleportToDeathPosition(character)
+                        setupRespawn(character)
                     end
                 end)
-            end
-            local function teleportToDeathPosition(newCharacter)
-                if config.autorespawnEnabled and config.autorespawnDeathPosition then
-                    local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
-                    newRoot.CFrame = config.autorespawnDeathPosition
-                    config.autorespawnDeathPosition = nil
-                end
-            end
-            if player.Character then
-                setupRespawn(player.Character)
-            end
-            if config.autorespawnConnections.characterAdded then
-                config.autorespawnConnections.characterAdded:Disconnect()
-            end
-            config.autorespawnConnections.characterAdded = player.CharacterAdded:Connect(function(character)
-                if config.autorespawnEnabled then
-                    character:WaitForChild("Humanoid")
-                    character:WaitForChild("HumanoidRootPart")
-                    teleportToDeathPosition(character)
-                    setupRespawn(character)
-                end
+                return true
             end)
-            return true
+            if not success then warn("autorespawn load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            config.autorespawnDeathPosition = nil
-            if config.autorespawnConnections then
-                for _, connection in pairs(config.autorespawnConnections) do
-                    if connection then
-                        connection:Disconnect()
+            pcall(function()
+                config.autorespawnDeathPosition = nil
+                if config.autorespawnConnections then
+                    for _, connection in pairs(config.autorespawnConnections) do
+                        if connection then
+                            connection:Disconnect()
+                        end
                     end
+                    config.autorespawnConnections = {}
                 end
-                config.autorespawnConnections = {}
-            end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -490,32 +584,38 @@ local fCfg = {
     fullbright = {
         dep = {"core"},
         load = function()
-            if not config.fbenabled then return false end
-            local lighting = excusemesir.Lighting
-            fullBrightSettings = {
-                Ambient = lighting.Ambient,
-                Brightness = lighting.Brightness,
-                ClockTime = lighting.ClockTime,
-                FogEnd = lighting.FogEnd,
-                GlobalShadows = lighting.GlobalShadows,
-                OutdoorAmbient = lighting.OutdoorAmbient
-            }
-            lighting.Ambient = Color3.fromRGB(255, 255, 255)
-            lighting.Brightness = 2
-            lighting.FogEnd = 100000
-            lighting.GlobalShadows = false
-            lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-            lighting.ClockTime = 14
-            return true
+            local success, err = pcall(function()
+                if not config.fbenabled then return false end
+                local lighting = excusemesir.Lighting
+                fullBrightSettings = {
+                    Ambient = lighting.Ambient,
+                    Brightness = lighting.Brightness,
+                    ClockTime = lighting.ClockTime,
+                    FogEnd = lighting.FogEnd,
+                    GlobalShadows = lighting.GlobalShadows,
+                    OutdoorAmbient = lighting.OutdoorAmbient
+                }
+                lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                lighting.Brightness = 2
+                lighting.FogEnd = 100000
+                lighting.GlobalShadows = false
+                lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+                lighting.ClockTime = 14
+                return true
+            end)
+            if not success then warn("fullbright load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if fullBrightSettings then
-                local lighting = excusemesir.Lighting
-                for property, value in pairs(fullBrightSettings) do
-                    lighting[property] = value
+            pcall(function()
+                if fullBrightSettings then
+                    local lighting = excusemesir.Lighting
+                    for property, value in pairs(fullBrightSettings) do
+                        lighting[property] = value
+                    end
+                    fullBrightSettings = nil
                 end
-                fullBrightSettings = nil
-            end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -524,11 +624,17 @@ local fCfg = {
     quickToggles = {
         dep = {"core"},
         load = function()
-            if not config.QuickToggles then return false end
-            CreateQT()
-            return true
+            local success, err = pcall(function()
+                if not config.QuickToggles then return false end
+                CreateQT()
+                return true
+            end)
+            if not success then warn("quickToggles load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() KillQT() end,
+        unload = function() 
+            pcall(function() KillQT() end)
+        end,
         prio = 4,
         ess = false,
         reqGame = true
@@ -536,15 +642,21 @@ local fCfg = {
     bhopQuickToggle = {
         dep = {"core"},
         load = function()
-            if not config.bhop.quickToggleEnabled then return false end
-            updateBHopQuickToggle()
-            return true
+            local success, err = pcall(function()
+                if not config.bhop.quickToggleEnabled then return false end
+                updateBHopQuickToggle()
+                return true
+            end)
+            if not success then warn("bhopQuickToggle load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-                config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-                config.varibz.bhopQuickToggleUI = nil
-            end
+            pcall(function()
+                if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
+                    config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
+                    config.varibz.bhopQuickToggleUI = nil
+                end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -553,10 +665,16 @@ local fCfg = {
     antiafk = {
         dep = {"core"},
         load = function()
-            if not config.antiafk then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.antiafk then return false end
+                return true
+            end)
+            if not success then warn("antiafk load error: " .. tostring(err)) end
+            return success and true or false
         end,
-        unload = function() config.antiafk = false end,
+        unload = function() 
+            pcall(function() config.antiafk = false end)
+        end,
         prio = 4,
         ess = false,
         reqGame = true
@@ -564,16 +682,22 @@ local fCfg = {
     reach = {
         dep = {"core"},
         load = function()
-            if not config.reach.enabled then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.reach.enabled then return false end
+                return true
+            end)
+            if not success then warn("reach load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            config.reach.enabled = false
-            if visualizer then visualizer.Parent = nil end
-            if autoSwingConnection then
-                autoSwingConnection:Disconnect()
-                autoSwingConnection = nil
-            end
+            pcall(function()
+                config.reach.enabled = false
+                if visualizer then visualizer.Parent = nil end
+                if autoSwingConnection then
+                    autoSwingConnection:Disconnect()
+                    autoSwingConnection = nil
+                end
+            end)
         end,
         prio = 3,
         ess = false,
@@ -582,12 +706,18 @@ local fCfg = {
     visualizer = {
         dep = {"core", "reach"},
         load = function()
-            if not config.visualizer.enabled then return false end
-            return true
+            local success, err = pcall(function()
+                if not config.visualizer.enabled then return false end
+                return true
+            end)
+            if not success then warn("visualizer load error: " .. tostring(err)) end
+            return success and true or false
         end,
         unload = function()
-            config.visualizer.enabled = false
-            if visualizer then visualizer.Parent = nil end
+            pcall(function()
+                config.visualizer.enabled = false
+                if visualizer then visualizer.Parent = nil end
+            end)
         end,
         prio = 4,
         ess = false,
@@ -5617,11 +5747,13 @@ local function IsPlayerVisible(player, maxDistance)
     
     return false
 end
-local function GetVis(target, maxDistance)
+local function getVis(target, maxDistance)
     local targetId = ""
     if typeof(target) == "Instance" then
         if target:IsA("Player") then
             targetId = "player_" .. tostring(target.UserId)
+        elseif target:IsA("Model") then
+            targetId = "npc_" .. tostring(target)
         end
     end
     return targetId .. "_" .. tostring(maxDistance)
@@ -5633,7 +5765,7 @@ local function isTargetVisible(target, maxDistance)
         config.varibz.sa2dump.data = {}
         config.varibz.sa2dump.lastClear = now
     end
-    local cacheKey = GetVis(target, maxDistance)
+    local cacheKey = getVis(target, maxDistance)
     local cached = config.varibz.sa2dump.data[cacheKey]
     if cached and (now - cached.time) < config.varibz.sa2dump.maxAge then
         return cached.visible
@@ -5677,7 +5809,7 @@ local function GetClosestPlayer()
     local config_local = config
     local checkWall = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
     local playerCount = #Players:GetPlayers()
-    if playerCount <= 1 then
+    if playerCount <= 1 and config.masterTarget ~= "NPCs" and config.masterTarget ~= "Both" then
         config.SA2_currentTarget = nil
         return nil
     end
@@ -5696,36 +5828,153 @@ local function GetClosestPlayer()
                 return localTeam == targetTeam
             end
         end
+        if typeof(player) == "Instance" and player:IsA("Model") then
+            if config_local.masterTarget == "NPCs" or config_local.masterTarget == "Both" then
+                if config_local.SA2_TeamTarget == "All" then return true end
+                if config_local.SA2_TeamTarget == "Enemies" then return true end
+                if config_local.SA2_TeamTarget == "Teams" then return false end
+                return true
+            end
+            return false
+        end
         return false
     end
     local candidates = {}
     local candidateCount = 0
     local checkVisible = not config_local.SA2_ThreeSixtyMode
-    
-    local players = Players:GetPlayers()
-    for i = 1, #players do
-        local p = players[i]
-        if p ~= plr_local and isTargetable(p) then
-            local char = p.Character
-            if char then
-                local humanoid = char:FindFirstChildOfClass("Humanoid")
-                if humanoid and humanoid.Health > 0 then
-                    if not config_local.ignoreForcefield or not hasForcefield(char) then
-                        local part = nil
-                        if targetPartName then
-                            part = char:FindFirstChild(targetPartName)
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        local players = Players:GetPlayers()
+        for i = 1, #players do
+            local p = players[i]
+            if p ~= plr_local and isTargetable(p) then
+                local char = p.Character
+                if char then
+                    local humanoid = char:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if not config_local.ignoreForcefield or not hasForcefield(char) then
+                            local part = nil
+                            if targetPartName then
+                                part = char:FindFirstChild(targetPartName)
+                            end
+                            if not part then
+                                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                            end
+                            if part then
+                                local dx = part.Position.X - localRoot.Position.X
+                                local dy = part.Position.Y - localRoot.Position.Y
+                                local dz = part.Position.Z - localRoot.Position.Z
+                                local distSq = dx * dx + dy * dy + dz * dz
+                                if distSq <= maxRangeSq then
+                                    if checkVisible then
+                                        if not isTargetVisible(p, maxRange) then
+                                            continue
+                                        end
+                                    end
+                                    
+                                    local worldDist = math.sqrt(distSq)
+                                    
+                                    if checkVisible then
+                                        local targetPos = part.Position
+                                        local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                        if not onScreen or screenPos.Z <= 0 then
+                                            continue
+                                        end
+                                        local distX = screenPos.X - center.X
+                                        local distY = screenPos.Y - center.Y
+                                        local distPx = math.sqrt(distX * distX + distY * distY)
+                                        if distPx > config_local.SA2_FovRadius then
+                                            continue
+                                        end
+                                        candidateCount = candidateCount + 1
+                                        candidates[candidateCount] = {
+                                            target = p,
+                                            part = part,
+                                            health = humanoid.Health,
+                                            screenDist = distPx,
+                                            worldDist = worldDist,
+                                            isPlayer = true,
+                                            char = char
+                                        }
+                                    else
+                                        candidateCount = candidateCount + 1
+                                        candidates[candidateCount] = {
+                                            target = p,
+                                            part = part,
+                                            health = humanoid.Health,
+                                            screenDist = 0,
+                                            worldDist = worldDist,
+                                            isPlayer = true,
+                                            char = char
+                                        }
+                                    end
+                                end
+                            end
                         end
-                        if not part then
-                            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-                        end
+                    end
+                end
+            end
+        end
+    end
+    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+        local npcCache = config._npcCache or {}
+        local currentTime = tick()
+        if not config._npcCacheTime or currentTime - config._npcCacheTime > 0.5 then
+            config._npcCacheTime = currentTime
+            local newCache = {}
+            local descendants = Workspace:GetDescendants()
+            for i = 1, #descendants do
+                local obj = descendants[i]
+                if obj:IsA("Model") and obj ~= character then
+                    local humanoid = obj:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        local part = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
                         if part then
                             local dx = part.Position.X - localRoot.Position.X
                             local dy = part.Position.Y - localRoot.Position.Y
                             local dz = part.Position.Z - localRoot.Position.Z
                             local distSq = dx * dx + dy * dy + dz * dz
+                            
+                            if distSq <= maxRangeSq then
+                                local isValid = false
+                                if config_local.SA2_TeamTarget == "All" then
+                                    isValid = true
+                                elseif config_local.SA2_TeamTarget == "Enemies" then
+                                    isValid = true
+                                elseif config_local.SA2_TeamTarget == "Teams" then
+                                    local npcTeam = obj:FindFirstChild("Team")
+                                    if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                                        if localTeam and npcTeam.Value == localTeam then
+                                            isValid = true
+                                        end
+                                    end
+                                end
+                                if isValid then
+                                    table.insert(newCache, obj)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            config._npcCache = newCache
+        end
+        local npcs = config._npcCache or {}
+        for i = 1, #npcs do
+            local npc = npcs[i]
+            if npc.Parent then
+                local part = npc:FindFirstChild("Head") or npc:FindFirstChild("HumanoidRootPart")
+                if part then
+                    local humanoid = npc:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if not config_local.ignoreForcefield or not hasForcefield(npc) then
+                            local dx = part.Position.X - localRoot.Position.X
+                            local dy = part.Position.Y - localRoot.Position.Y
+                            local dz = part.Position.Z - localRoot.Position.Z
+                            local distSq = dx * dx + dy * dy + dz * dz
+                            
                             if distSq <= maxRangeSq then
                                 if checkVisible then
-                                    if not isTargetVisible(p, maxRange) then
+                                    if not isTargetVisible(npc, maxRange) then
                                         continue
                                     end
                                 end
@@ -5746,24 +5995,24 @@ local function GetClosestPlayer()
                                     end
                                     candidateCount = candidateCount + 1
                                     candidates[candidateCount] = {
-                                        target = p,
+                                        target = npc,
                                         part = part,
                                         health = humanoid.Health,
                                         screenDist = distPx,
                                         worldDist = worldDist,
-                                        isPlayer = true,
-                                        char = char
+                                        isPlayer = false,
+                                        char = npc
                                     }
                                 else
                                     candidateCount = candidateCount + 1
                                     candidates[candidateCount] = {
-                                        target = p,
+                                        target = npc,
                                         part = part,
                                         health = humanoid.Health,
                                         screenDist = 0,
                                         worldDist = worldDist,
-                                        isPlayer = true,
-                                        char = char
+                                        isPlayer = false,
+                                        char = npc
                                     }
                                 end
                             end
@@ -9630,7 +9879,7 @@ local function burgerking(deltaTime)
     if not config.varibz.patcher then
         return
     end
-    
+    table.clear(candidates)
     if config.aimbotEnabled then
         aimbotUpdate()
     end
@@ -15104,7 +15353,7 @@ local InfoTab = Window:Tab({
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also shadow updates\nalot so if you see something new you'll know why :7",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7",
         Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
@@ -15887,6 +16136,109 @@ local function init()
     print("01000111 01110000 01110011 73 69 63 6B 6C 65")
 end
 
+local function clearTargetCache()
+    config.SA2_currentTarget = nil
+    config.currentTarget = nil
+    config.aimbotCurrentTarget = nil
+    config.SA2_FovIsTargeted = false
+    config.targetSeenTargets = {}
+    config.autoFarmTargets = {}
+    config.autoFarmCompleted = {}
+end
+task.spawn(function()
+    while config.varibz.lowpatcher do
+        clearTargetCache()
+        task.wait(config.varibz.lowpatcherwait)
+    end
+end)
+
+local function LowRender()
+    if config and config.LowRender then
+        pcall(function()
+            pc2()
+            settings().Physics.AllowSleep = true
+            settings().Rendering.QualityLevel = 1
+            settings().Rendering.EagerBulkExecution = true
+            settings().Rendering.EnableFRM = true
+            settings().Rendering.MeshPartDetailLevel = 1
+            game:GetService("Lighting").GlobalShadows = false
+            game:GetService("Lighting").Technology = Enum.Technology.Legacy
+            for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
+                    v.Enabled = false
+                end
+            end
+        end)
+    else
+        pcall(function()
+           
+        end)
+    end
+end
+
+task.spawn(function()
+    local lastRespawnTime = os.clock()
+    while config.varibz.patcher do
+        local localPlayer = excusemesir.Players.LocalPlayer
+        local character = localPlayer.Character
+        local isRespawning = false
+        if character and character:FindFirstChild("Humanoid") then
+            local humanoid = character.Humanoid
+            if humanoid.Health > 0 then
+                local currentTime = os.clock()
+                if currentTime - lastRespawnTime >= 0.1 then
+                    lastRespawnTime = currentTime
+                    isRespawning = true
+                end
+            end
+        end
+        if isRespawning then
+            table.clear(targetsInFOV)
+            table.clear(candidates)
+            UpdateQT()
+            d()
+            espRefresher()
+            applyhb()
+            aimbotfov()
+            updateAimbotFOVRing()
+            LowRender()
+            updateeveryproxyeva()
+            local toRemove = {}
+            for player, data in pairs(config.hitboxExpandedParts) do
+                if not player or not getTargetCharacter(player) or not plralive(player) then
+                    table.insert(toRemove, player)
+                elseif not targethb(player) then
+                    table.insert(toRemove, player)
+                end
+            end
+            
+            for _, player in ipairs(toRemove) do
+                restoreTorso(player)
+            end
+            
+            local lineToRemove = {}
+            for player, _ in pairs(config.lineESPData) do
+                local found = false
+                for _, target in ipairs(getAllTargets()) do
+                    if target == player then
+                        found = true
+                        break
+                    end
+                end
+                if not found then
+                    table.insert(lineToRemove, player)
+                end
+            end
+            
+            for _, player in ipairs(lineToRemove) do
+                removeLineESP(player)
+            end
+        end
+        
+        task.wait(config.varibz.patcherwait)
+    end
+end)
+init()
 local function cleanup()
     pcall(function()
         local owo = config.varibz.uwu[math.random(1, #config.varibz.uwu)]
@@ -15922,7 +16274,6 @@ local function cleanup()
         explosionSound.Volume = 2
         explosionSound.Parent = explosionGui
         explosionSound:Play()
-        
         local flashTween = excusemesir.TweenService:Create(flash, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             BackgroundTransparency = 1
         })
@@ -16073,7 +16424,6 @@ local function cleanup()
             config.aimbotFOVRing.ScreenGui:Destroy()
         end
         config.aimbotFOVRing = nil
-        
         if gui.mobileGui and gui.mobileGui.ScreenGui then
             gui.mobileGui.ScreenGui:Destroy()
         end
@@ -16085,7 +16435,6 @@ local function cleanup()
             config.playerConnections[pl] = nil
         end
         config.playerConnections = {}
-        
         for pl, conn in pairs(config.characterConnections) do
             pcall(function() conn:Disconnect() end)
         end
@@ -16109,10 +16458,55 @@ local function cleanup()
             config.desyncRespawnConnection:Disconnect()
             config.desyncRespawnConnection = nil
         end
+        if config.desyncCleanupLoop then
+            config.desyncCleanupLoop = nil
+        end
+        if config.desyncSeat then
+            config.desyncSeat:Destroy()
+            config.desyncSeat = nil
+        end
+        config.desyncActive = false
         for i = 1, 5 do
             BMG:cleanup()
         end
-        config.desyncActive = false
+        for player, proxy in pairs(config.proxyHitboxes) do
+            if proxy and proxy.Parent then
+                proxy:Destroy()
+            end
+        end
+        config.proxyHitboxes = {}
+        if visualizer and visualizer.Parent then
+            visualizer:Destroy()
+        end
+        if autoSwingConnection then
+            autoSwingConnection:Disconnect()
+            autoSwingConnection = nil
+        end
+        if config.SSEnabled then
+            unsetSpawnLocation()
+        end
+        if config.clientModEnabled then
+            resetcmods()
+        end
+        config.clientModEnabled = false
+        config.walkspeedEnabled = false
+        config.jumppowerEnabled = false
+        config.hipHeightEnabled = false
+        config.gravityEnabled = false
+        config.tpwalkEnabled = false
+        config.clientModOriginalValues = {}
+        if config.clientModConnections then
+            for _, connection in pairs(config.clientModConnections) do
+                if connection then
+                    connection:Disconnect()
+                end
+            end
+            config.clientModConnections = {}
+        end
+        if config.tpwalkConnection then
+            config.tpwalkConnection:Disconnect()
+            config.tpwalkConnection = nil
+        end
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
         config.SA2_currentTarget = nil
@@ -16137,27 +16531,6 @@ local function cleanup()
         config.trussEnabled = false
         config.airwalkEnabled = false
         config.autorespawnEnabled = false
-        if config.clientModEnabled then
-            resetcmods()
-        end
-        config.clientModEnabled = false
-        config.walkspeedEnabled = false
-        config.jumppowerEnabled = false
-        config.hipHeightEnabled = false
-        config.clientModOriginalValues = {}
-        if config.clientModConnections then
-            for _, connection in pairs(config.clientModConnections) do
-                if connection then
-                    connection:Disconnect()
-                end
-            end
-            config.clientModConnections = {}
-        end
-        if config.tpwalkConnection then
-            config.tpwalkConnection:Disconnect()
-            config.tpwalkConnection = nil
-        end
-        config.tpwalkEnabled = false
         config.antiafk = false
         config.SSEnabled = false
         config.autoFarmCompleted = {}
@@ -16175,13 +16548,22 @@ local function cleanup()
             lzl.loaded = {}
             lzl.q = {}
         end
-        for player, proxy in pairs(config.proxyHitboxes) do
-            if proxy and proxy.Parent then
-                proxy:Destroy()
-            end
+        if heartbeatConnection then
+            heartbeatConnection:Disconnect()
+            heartbeatConnection = nil
         end
-        config.proxyHitboxes = {}
-        getgenv().destroyInitGui()
+        if OldNamecall then
+            hookmetamethod(game, "__namecall", OldNamecall)
+            OldNamecall = nil
+        end
+        if OldIndex then
+            hookmetamethod(game, "__index", OldIndex)
+            OldIndex = nil
+        end
+        if OldFunction then
+            hookfunction(LocalPlayer.Kick, OldFunction)
+            OldFunction = nil
+        end
         for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
         end
@@ -16190,110 +16572,40 @@ local function cleanup()
         end
         config.varibz.lowpatcher = false
         config.varibz.patcher = false
+        config.varibz.errors = false
+        if getgenv().destroyInitGui then
+            getgenv().destroyInitGui()
+        end
+        for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
+            if gui:IsA("ScreenGui") and (gui.Name == "FOVSys" or gui.Name == "AimbotFOVRing" or gui.Name == "GravelQT" or gui.Name == "TriggerBotFOV" or gui.Name == "BHopQuickToggle" or gui.Name == "FOVToggleGui_Modern" or gui.Name == "ESP_" or string.find(gui.Name, "ESP_") or string.find(gui.Name, "FOVToggleGui")) then
+                gui:Destroy()
+            end
+        end
+        for _, part in ipairs(excusemesir.Workspace:GetChildren()) do
+            if part:IsA("BasePart") and (string.find(part.Name, "TrussPart_") or string.find(part.Name, "AirwalkPlatform_") or string.find(part.Name, "idk") or string.find(part.Name, "DesyncSeat_") or string.find(part.Name, "ProxyHitbox_")) then
+                part:Destroy()
+            end
+        end
+        config.Gradow.uianimate.connection = nil
+        config.Gradow.uianimate.openButton = nil
+        config.Gradow.uianimate.windowFrame = nil
+        config.Gradow.uianimate.openStroke = nil
+        config.Gradow.uianimate.openGradient = nil
+        config.Gradow.uianimate.windowStroke = nil
+        config.Gradow.uianimate.windowGradient = nil
+        if config.varibz.rng4 and config.varibz.rng4.tag then
+            pcall(function()
+                config.varibz.rng4.tag:Destroy()
+            end)
+            config.varibz.rng4.tag = nil
+        end
+        table.clear(candidates)
+        table.clear(targetsInFOV)
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
+        table.clear(getgenv().HttpUrlz_)
+        getgenv().HttpUrlz_ = nil
     end)
 end
-local function clearTargetCache()
-    config.SA2_currentTarget = nil
-    config.currentTarget = nil
-    config.aimbotCurrentTarget = nil
-    config.SA2_FovIsTargeted = false
-    config.targetSeenTargets = {}
-    config.autoFarmTargets = {}
-    config.autoFarmCompleted = {}
-end
-task.spawn(function()
-    while config.varibz.lowpatcher do
-        clearTargetCache()
-        task.wait(config.varibz.lowpatcherwait)
-    end
-end)
-
-local function LowRender()
-    if config and config.LowRender then
-        pcall(function()
-            pc2()
-            settings().Physics.AllowSleep = true
-            settings().Rendering.QualityLevel = 1
-            settings().Rendering.EagerBulkExecution = true
-            settings().Rendering.EnableFRM = true
-            settings().Rendering.MeshPartDetailLevel = 1
-            game:GetService("Lighting").GlobalShadows = false
-            game:GetService("Lighting").Technology = Enum.Technology.Legacy
-            for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
-                if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
-                    v.Enabled = false
-                end
-            end
-        end)
-    else
-        pcall(function()
-           
-        end)
-    end
-end
-
-task.spawn(function()
-    local lastRespawnTime = os.clock()
-    while config.varibz.patcher do
-        local localPlayer = excusemesir.Players.LocalPlayer
-        local character = localPlayer.Character
-        local isRespawning = false
-        if character and character:FindFirstChild("Humanoid") then
-            local humanoid = character.Humanoid
-            if humanoid.Health > 0 then
-                local currentTime = os.clock()
-                if currentTime - lastRespawnTime >= 0.1 then
-                    lastRespawnTime = currentTime
-                    isRespawning = true
-                end
-            end
-        end
-        if isRespawning then
-            UpdateQT()
-            d()
-            espRefresher()
-            applyhb()
-            aimbotfov()
-            updateAimbotFOVRing()
-            LowRender()
-            updateeveryproxyeva()
-            local toRemove = {}
-            for player, data in pairs(config.hitboxExpandedParts) do
-                if not player or not getTargetCharacter(player) or not plralive(player) then
-                    table.insert(toRemove, player)
-                elseif not targethb(player) then
-                    table.insert(toRemove, player)
-                end
-            end
-            
-            for _, player in ipairs(toRemove) do
-                restoreTorso(player)
-            end
-            
-            local lineToRemove = {}
-            for player, _ in pairs(config.lineESPData) do
-                local found = false
-                for _, target in ipairs(getAllTargets()) do
-                    if target == player then
-                        found = true
-                        break
-                    end
-                end
-                if not found then
-                    table.insert(lineToRemove, player)
-                end
-            end
-            
-            for _, player in ipairs(lineToRemove) do
-                removeLineESP(player)
-            end
-        end
-        
-        task.wait(config.varibz.patcherwait)
-    end
-end)
-init()
 Window:OnDestroy(function()
     cleanup()
     print("Gravel.cc closed :(")
@@ -16306,7 +16618,7 @@ if autoloadSuccess then
     print("autoloaded on dis gaem :3")
 end
 task.wait(2.5)
-loadstring(getgist_(genv().HttpUrlz_.hbsshandlecorpses))()
+loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 return {
     config = config,
@@ -16330,6 +16642,6 @@ end
 --[[
                      _.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._
 CAN YOU GUYS STAWP ASKINF ME "it doesn't work on [insert game name]"
-DIS IS A UNIVERSAL SCRIPT VROROO
+DIS IS A SEMI-UNIVERSAL SCRIPT VROROO
 IT DONT WORK ON ALL GAMES IN DA UNIVERSE
 ]]
