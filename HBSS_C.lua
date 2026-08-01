@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “me like table.clear() :3” 
+           “bribe me an burger so I'll continue scripting” 
                                            
                                - Gpssickle
 ]])
@@ -28,7 +28,6 @@ end
 getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = true
 getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" -- type '_C' for da testing version of gravel.cc :3
 -- excusemesir. dere was somebody u known b4
-
 local excusemesir = {
     Players = game:GetService("Players"),
     RunService = game:GetService("RunService"),
@@ -84,7 +83,6 @@ getgenv().HttpUrlz_ = {
     sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    lzlzlzlzlzl = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_LazyLoader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     --other
@@ -131,605 +129,6 @@ print(lp_info.lp_accountage)
 print(lp_info.lp_retroslopscore)
 print(lp_info.lp_isitretroslop)
 -- unprofessionalism professionist 🥀
-local lzl = loadstring(getgist_(getgenv().HttpUrlz_.lzlzlzlzlzl))()
-local fCfg = {
-    core = {
-        dep = {},
-        load = function() 
-            local success, err = pcall(function()
-                return true 
-            end)
-            if not success then warn("core load error: " .. tostring(err)) end
-            return success
-        end,
-        unload = function() 
-            pcall(function() end)
-        end,
-        prio = 1,
-        ess = true,
-        reqGame = false
-    },
-    esp = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.espMasterEnabled then return false end
-                applyESPMaster(true)
-                return true
-            end)
-            if not success then warn("esp load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                for target in pairs(config.espData) do removeESPLabel(target) end
-                for target in pairs(config.highlightData) do removeHighlightESP(target) end
-                for target in pairs(config.lineESPData) do removeLineESP(target) end
-            end)
-        end,
-        prio = 2,
-        ess = false,
-        reqGame = true
-    },
-    silentAim = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.startsa then return false end
-                if gui.RingHolder then gui.RingHolder.Visible = true end
-                return true
-            end)
-            if not success then warn("silentAim load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if gui.RingHolder then gui.RingHolder.Visible = false end
-                for pl in pairs(config.activeApplied) do restorePartForPlayer(pl) end
-            end)
-        end,
-        prio = 2,
-        ess = false,
-        reqGame = true
-    },
-    aimbot = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.aimbotEnabled then return false end
-                handleAimbotToggle(true)
-                aimbotfov()
-                return true
-            end)
-            if not success then warn("aimbot load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() handleAimbotToggle(false) end)
-        end,
-        prio = 2,
-        ess = false,
-        reqGame = true
-    },
-    hitbox = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.hitboxEnabled then return false end
-                applyhb()
-                return true
-            end)
-            if not success then warn("hitbox load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                for player in pairs(config.hitboxExpandedParts) do restoreTorso(player) end
-                config.hitboxExpandedParts = {}
-            end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    antiAim = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.antiAimEnabled then return false end
-                return true
-            end)
-            if not success then warn("antiAim load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() returnToOriginalPosition() end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    autoFarm = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.autoFarmEnabled then return false end
-                autoFarmProcess()
-                return true
-            end)
-            if not success then warn("autoFarm load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() stopAutoFarm() end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    triggerBot = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.tbot.enabled then return false end
-                toggleTriggerBot(true)
-                return true
-            end)
-            if not success then warn("triggerBot load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() toggleTriggerBot(false) end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    bhop = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.bhop.enabled then return false end
-                toggleBHop(true)
-                return true
-            end)
-            if not success then warn("bhop load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() toggleBHop(false) end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    spinbot = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.spinbot.enabled then return false end
-                spinbotUpdate()
-                return true
-            end)
-            if not success then warn("spinbot load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if config.varibz.spinbotConnection then
-                    config.varibz.spinbotConnection:Disconnect()
-                    config.varibz.spinbotConnection = nil
-                end
-            end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    silentAimHK = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.SA2_Enabled then return false end
-                return true
-            end)
-            if not success then warn("silentAimHK load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() config.SA2_Enabled = false end)
-        end,
-        prio = 2,
-        ess = false,
-        reqGame = true
-    },
-    viewing = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.Viewing then return false end
-                return true
-            end)
-            if not success then warn("viewing load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                config.Viewing = false
-                if config.varibz.ViewConnection then
-                    config.varibz.ViewConnection:Disconnect()
-                    config.varibz.ViewConnection = nil
-                end
-                workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    camYOffset = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.camYOffsetEnabled then return false end
-                if not config.camYOffsetConnection then
-                    config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
-                        if config.camYOffsetEnabled then
-                            local cam = workspace.CurrentCamera
-                            if cam then
-                                if not config.camYOffsetOriginalCFrame then
-                                    config.camYOffsetOriginalCFrame = cam.CFrame
-                                end
-                                local offset = Vector3.new(0, config.camYOffsetValue, 0)
-                                local newCFrame = CFrame.new(
-                                    cam.CFrame.Position + offset,
-                                    cam.CFrame.Position + offset + cam.CFrame.LookVector
-                                )
-                                cam.CFrame = newCFrame
-                            end
-                        end
-                    end)
-                end
-                return true
-            end)
-            if not success then warn("camYOffset load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if config.camYOffsetConnection then
-                    config.camYOffsetConnection:Disconnect()
-                    config.camYOffsetConnection = nil
-                end
-                config.camYOffsetOriginalCFrame = nil
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    truss = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.trussEnabled then return false end
-                local player = excusemesir.Players.LocalPlayer
-                local character = player.Character
-                if character then
-                    local rootPart = character:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        if config.trussPart then
-                            config.trussPart:Destroy()
-                            config.trussPart = nil
-                        end
-                        if config.trussConnection then
-                            config.trussConnection:Disconnect()
-                            config.trussConnection = nil
-                        end
-                        config.trussPart = Instance.new("TrussPart")
-                        config.trussPart.Transparency = 1
-                        config.trussPart.Size = Vector3.new(2, 10, 2)
-                        config.trussPart.Parent = workspace
-                        config.trussPart.CanCollide = true
-                        config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
-                        config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                            if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
-                                config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
-                            else
-                                if config.trussConnection then
-                                    config.trussConnection:Disconnect()
-                                    config.trussConnection = nil
-                                end
-                            end
-                        end)
-                    end
-                end
-                return true
-            end)
-            if not success then warn("truss load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if config.trussPart then
-                    config.trussPart:Destroy()
-                    config.trussPart = nil
-                end
-                if config.trussConnection then
-                    config.trussConnection:Disconnect()
-                    config.trussConnection = nil
-                end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    airwalk = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.airwalkEnabled then return false end
-                local character = excusemesir.Players.LocalPlayer.Character
-                if character then
-                    local rootPart = character:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        config.airwalkPart = Instance.new("Part")
-                        config.airwalkPart.Transparency = 1
-                        config.airwalkPart.Size = Vector3.new(7, 2, 3)
-                        config.airwalkPart.Parent = workspace
-                        config.airwalkPart.CanCollide = true
-                        config.airwalkPart.Anchored = true
-                        config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
-                        if config.airwalkConnection then
-                            config.airwalkConnection:Disconnect()
-                            config.airwalkConnection = nil
-                        end
-                        config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                            if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
-                                config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
-                            else
-                                if config.airwalkConnection then
-                                    config.airwalkConnection:Disconnect()
-                                    config.airwalkConnection = nil
-                                end
-                            end
-                        end)
-                    end
-                end
-                return true
-            end)
-            if not success then warn("airwalk load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if config.airwalkPart then
-                    config.airwalkPart:Destroy()
-                    config.airwalkPart = nil
-                end
-                if config.airwalkConnection then
-                    config.airwalkConnection:Disconnect()
-                    config.airwalkConnection = nil
-                end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    autorespawn = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.autorespawnEnabled then return false end
-                config.autorespawnConnections = config.autorespawnConnections or {}
-                config.autorespawnDeathPosition = nil
-                local player = excusemesir.Players.LocalPlayer
-                local function setupRespawn(character)
-                    local humanoid = character:WaitForChild("Humanoid")
-                    local rootPart = character:WaitForChild("HumanoidRootPart")
-                    if config.autorespawnConnections.died then
-                        config.autorespawnConnections.died:Disconnect()
-                    end
-                    config.autorespawnConnections.died = humanoid.Died:Connect(function()
-                        if config.autorespawnEnabled then
-                            config.autorespawnDeathPosition = rootPart.CFrame
-                        end
-                    end)
-                end
-                local function teleportToDeathPosition(newCharacter)
-                    if config.autorespawnEnabled and config.autorespawnDeathPosition then
-                        local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
-                        newRoot.CFrame = config.autorespawnDeathPosition
-                        config.autorespawnDeathPosition = nil
-                    end
-                end
-                if player.Character then
-                    setupRespawn(player.Character)
-                end
-                if config.autorespawnConnections.characterAdded then
-                    config.autorespawnConnections.characterAdded:Disconnect()
-                end
-                config.autorespawnConnections.characterAdded = player.CharacterAdded:Connect(function(character)
-                    if config.autorespawnEnabled then
-                        character:WaitForChild("Humanoid")
-                        character:WaitForChild("HumanoidRootPart")
-                        teleportToDeathPosition(character)
-                        setupRespawn(character)
-                    end
-                end)
-                return true
-            end)
-            if not success then warn("autorespawn load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                config.autorespawnDeathPosition = nil
-                if config.autorespawnConnections then
-                    for _, connection in pairs(config.autorespawnConnections) do
-                        if connection then
-                            connection:Disconnect()
-                        end
-                    end
-                    config.autorespawnConnections = {}
-                end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    fullbright = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.fbenabled then return false end
-                local lighting = excusemesir.Lighting
-                fullBrightSettings = {
-                    Ambient = lighting.Ambient,
-                    Brightness = lighting.Brightness,
-                    ClockTime = lighting.ClockTime,
-                    FogEnd = lighting.FogEnd,
-                    GlobalShadows = lighting.GlobalShadows,
-                    OutdoorAmbient = lighting.OutdoorAmbient
-                }
-                lighting.Ambient = Color3.fromRGB(255, 255, 255)
-                lighting.Brightness = 2
-                lighting.FogEnd = 100000
-                lighting.GlobalShadows = false
-                lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-                lighting.ClockTime = 14
-                return true
-            end)
-            if not success then warn("fullbright load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if fullBrightSettings then
-                    local lighting = excusemesir.Lighting
-                    for property, value in pairs(fullBrightSettings) do
-                        lighting[property] = value
-                    end
-                    fullBrightSettings = nil
-                end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    quickToggles = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.QuickToggles then return false end
-                CreateQT()
-                return true
-            end)
-            if not success then warn("quickToggles load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() KillQT() end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    bhopQuickToggle = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.bhop.quickToggleEnabled then return false end
-                updateBHopQuickToggle()
-                return true
-            end)
-            if not success then warn("bhopQuickToggle load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-                    config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-                    config.varibz.bhopQuickToggleUI = nil
-                end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    antiafk = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.antiafk then return false end
-                return true
-            end)
-            if not success then warn("antiafk load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function() 
-            pcall(function() config.antiafk = false end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    },
-    reach = {
-        dep = {"core"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.reach.enabled then return false end
-                return true
-            end)
-            if not success then warn("reach load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                config.reach.enabled = false
-                if visualizer then visualizer.Parent = nil end
-                if autoSwingConnection then
-                    autoSwingConnection:Disconnect()
-                    autoSwingConnection = nil
-                end
-            end)
-        end,
-        prio = 3,
-        ess = false,
-        reqGame = true
-    },
-    visualizer = {
-        dep = {"core", "reach"},
-        load = function()
-            local success, err = pcall(function()
-                if not config.visualizer.enabled then return false end
-                return true
-            end)
-            if not success then warn("visualizer load error: " .. tostring(err)) end
-            return success and true or false
-        end,
-        unload = function()
-            pcall(function()
-                config.visualizer.enabled = false
-                if visualizer then visualizer.Parent = nil end
-            end)
-        end,
-        prio = 4,
-        ess = false,
-        reqGame = true
-    }
-}
-for name, cfg in pairs(fCfg) do
-    lzl:registerFeature(name, cfg)
-end
-
-lzl:setConfig(fCfg)
-lzl:loadEss()
 loadstring(getgist_(getgenv().HttpUrlz_.hbssloader))()
 local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
 
@@ -790,7 +189,7 @@ getgenv().ED_AntiKick = {
     CheckCaller = true
 }
 
-local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local self, message = ...
     local method = getnamecallmethod()
     local isCallerValid = true
@@ -815,7 +214,7 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
 
     return OldNamecall(...)
 end))
-local OldFunction; OldFunction = hookfunction(LocalPlayer.Kick, function(...)
+OldFunction = hookfunction(LocalPlayer.Kick, function(...)
     local self, Message = ...
 
     local isCallerValid = true
@@ -1171,6 +570,10 @@ local config = {
                 "and credit me if u did a snippet :(",
             },
             {
+                "I don't do tutorials\ni suck at teaching others :/",
+                "if u want an tutorial\nwatch 100 seconds of lua or smth",
+            },
+            {
                 "sand.cc is an larper",
                 "it's a actual gravel larper",
                 "sand larps gravel",
@@ -1210,6 +613,31 @@ local config = {
                 "Kuru, Kuru, Kuru,\nKurikaesu, Kurikaesu, Kurikaesu",
                 "FuraFura, FuraFura,\nFurakutaru, Furakutaru, Furakutaru, Furakutaru",
                 "looping the rooms\ntype shi 💔",
+            },
+            {
+                typesp = "2.5",
+                "Here lies Charlie",
+                "You can tell it's him 'cause we put\nhis name on the stone",
+                "He kept he's showers ice cold, used\neco-friendly light bulbs",
+                "Rode his bicycle to work when the\n gasoline price rose",
+                "He'd judge with no pretense,\nfish on the weekends",
+                "Each morning, get up, do the\nPledge of Allegiance",
+                "Never swim in the ocean,\nfor fear of shark attacks",
+                "Bi-monthly get his wife a rose\nwith a card attached",
+                "Avoiding all the little things\nthat we're hard to ask",
+                "Had a car crash, cardiac arrest,\ndied of a heart attack",
+                "Up the golden escalator,\nall he's friends and neighbors",
+                "Huddled there in prayer\naround the respirator",
+                "''Catch you later,\ni'm off to see the man upstairs",
+                "They all look like ants from\nhere, stars and crystal chandeliers",
+                "There was an angel at the entrance\nchecking off the guest list",
+                "Charlie wasn't on it and was\nushered to the exit",
+                "He's heart sank,\nhe was breathless..",
+                "",
+                "''Excuse me, sir, there must be\nsomeone you've confused me for''",
+                "''If i could see someone who\nknew me or someone in uniform''",
+                "''I go to church on Sunday, truly,\nusually more!''",
+                "Screaming at the angels while\nthey pushed him through the door.",
             },
             {
                 "hey use the bgmtab\nif u want music ;3",
@@ -1287,7 +715,23 @@ local config = {
                 "BAAAAANNNNGGG!!!!",
             },
             {
-                "",
+                "67",
+                "61",
+                "69",
+                "55",
+                "420",
+                "1337",
+                "41",
+                "21",
+                "31",
+                "429",
+                "301",
+                "711",
+                "911",
+                "80085",
+                "666",
+                "90",
+                "I'm not a numberphile",
             },
             {
                 typesp = "2",
@@ -2495,6 +1939,43 @@ local config = {
             "Gravel.lua", -- ts one makes sense
             "GRAVEL GRAVEL.CC",
         },
+        festiveTitles = {
+            --don't be a spolier plz :c
+            ["01 01"] = {
+                "New Gravel.cc :>",
+                "Happy new year!1!1!11",
+                "A new year, a same Gravel.cc",
+                "welcome 2 a new year buddy",
+                "I haven't showered since last year- ok this one is overrated",
+                "year of da shovel",
+            },
+            ["02 14"] = {
+                "Gravel.<3",
+                "will u be my gravel",
+                "gravel iz love",
+                "be my gravel",
+            },
+            ["03 17"] = {
+                "Gravel.luck",
+                "lucky gravel",
+                "good luck or smth",
+                "lucky shovel",
+            },
+            ["10 31"] = {
+                "Gravel.cc :Q",
+                "Gravel.cc :F",
+                "gravel go boo",
+                "BOO (I definitely scared u)",
+                "trick or gravel",
+                "da haunted gravel",
+            },
+            ["12 25"] = {
+                "merry gravelmas",
+                "gravel gifts for all",
+                "Gravel.Feliz Navidad!",
+                "gravel under da tree",
+            },
+        },
         aprilFools = { 
             -- BRO WHAT ARE U LOOKING AT DONT SPOIL THE APRIL FOOLS JOKE D:<
             "Sand.cc",
@@ -2609,47 +2090,20 @@ local config = {
         }
     }
 }
-local lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)]
+
+local rng_s = {
+    lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)],
+    Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)],
+    YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)],
+    Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)],
+    bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)],
+    bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)],
+    bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
+}
+
 local function rng5()
     if config.varibz.Rng5stuff then return config.varibz.Rng5stuff end
     local currentDate = os.date("%m %d")
-    local currentYear = tonumber(os.date("%Y"))
-    local festiveTitles = {
-        ["01 01"] = {
-            "New Gravel.cc :>",
-            "Happy new year!1!1!11",
-            "A new year, a same Gravel.cc",
-            "welcome 2 a new year buddy",
-            "I haven't showered since last year- ok this one is overrated",
-            "year of da shovel",
-        },
-        ["02 14"] = {
-            "Gravel.<3",
-            "will u be my gravel",
-            "gravel iz love",
-            "be my gravel",
-        },
-        ["03 17"] = {
-            "Gravel.luck",
-            "lucky gravel",
-            "good luck or smth",
-            "lucky shovel",
-        },
-        ["10 31"] = {
-            "Gravel.cc :Q",
-            "Gravel.cc :F",
-            "gravel go boo",
-            "BOO (I definitely scared u)",
-            "trick or gravel",
-            "da haunted gravel",
-        },
-        ["12 25"] = {
-            "merry gravelmas",
-            "gravel gifts for all",
-            "Gravel.Feliz Navidad!",
-            "gravel under da tree",
-        },
-    }
     local function getEasterDate(year)
         local A = math.floor(year/100)
         local B = math.floor((13+8*A)/25)
@@ -2671,12 +2125,12 @@ local function rng5()
         config.varibz.Rng5stuff = ("03 %02d"):format(G)
         return config.varibz.Rng5stuff
     end
-    local easterDate = getEasterDate(currentYear)
+    local easterDate = getEasterDate(tonumber(os.date("%Y")))
     if currentDate == easterDate then
         config.varibz.Rng5stuff = config.varibz.easterTitles[math.random(1, #config.varibz.easterTitles)]
         return config.varibz.Rng5stuff
     end
-    for datePattern, titles in pairs(festiveTitles) do
+    for datePattern, titles in pairs(config.varibz.festiveTitles) do
         if currentDate == datePattern then
             config.varibz.Rng5stuff = titles[math.random(1, #titles)]
             return config.varibz.Rng5stuff
@@ -5408,7 +4862,6 @@ function autolaodbssthing_()
     if modified then
         writehaxsandstuff_(memory)
         if removedCount > 0 then
-            print("Removed " .. removedCount .. " invalid autoload entries (saves no longer exist)")
             autolaodpara()
         end
     end
@@ -8514,7 +7967,11 @@ local function restorePartForPlayer(targetPlayer)
     if part and original.size then
         pcall(function()
             part.Size = original.size
-            part.Transparency = 1
+            if part.Name == "HumanoidRootPart" then
+                part.Transparency = 1
+            else
+                part.Transparency = 0
+            end
             part.CanCollide = false
             part.Massless = false
             if part:IsA("BasePart") then
@@ -8819,33 +8276,71 @@ local function targethb(player)
 
     return false
 end
-
-local function applyhb()
-    if not config.hitboxEnabled then 
-        local targetsToRemove = {}
-        for player, _ in pairs(config.hitboxExpandedParts) do
-            table.insert(targetsToRemove, player)
+local function disconnectHB(player)
+    local conns = config.varibz.hbConnections[player]
+    if conns then
+        for _, c in ipairs(conns) do
+            c:Disconnect()
         end
-        for _, player in ipairs(targetsToRemove) do
-            restoreTorso(player)
-        end
-        return 
-    end
-
-    for _, target in ipairs(getAllTargets()) do  
-        if targethb(target) then
-            local size = config.hitboxSize
-            local existing = config.hitboxExpandedParts[target]
-            if not existing or existing.targetSize.X ~= size then
-                config.hitboxLastSize[target] = size
-                expandhb(target, size)
-            end
-        else
-            restoreTorso(target)
-        end
+        config.varibz.hbConnections[player] = nil
     end
 end
 
+local function hookPlayer(player)
+    if player == localPlayer then
+        return
+    end
+
+    disconnectHB(player)
+
+    config.varibz.hbConnections[player] = {}
+
+    local function setupCharacter(character)
+        task.defer(function()
+            updateHitbox(player)
+
+            local hum = character:FindFirstChildOfClass("Humanoid")
+            if hum then
+                table.insert(config.varibz.hbConnections[player],
+                    hum.Died:Connect(function()
+                        restoreTorso(player)
+                    end)
+                )
+            end
+        end)
+    end
+
+    table.insert(config.varibz.hbConnections[player],
+        player.CharacterAdded:Connect(setupCharacter)
+    )
+
+    table.insert(config.varibz.hbConnections[player],
+        player:GetPropertyChangedSignal("Team"):Connect(function()
+            updateHitbox(player)
+        end)
+    )
+
+    if player.Character then
+        setupCharacter(player.Character)
+    end
+end
+
+local function applyhb()
+    if not config.hitboxEnabled then
+        for player in pairs(config.hitboxExpandedParts) do
+            restoreTorso(player)
+        end
+        return
+    end
+
+    for _, player in ipairs(getAllTargets()) do
+        if not config.varibz.hbConnections[player] then
+            hookPlayer(player)
+        end
+
+        updateHitbox(player)
+    end
+end
 
 local function hb()
     local targetsToRemove = {}
@@ -10774,7 +10269,7 @@ local Window = WindUI:CreateWindow({
     Size = size,
     HideSearchBar = false,
     OpenButton = {
-        Title = lezzzgoo,
+        Title = rng_s.lezzzgoo,
         Enabled = true,
         Draggable = true,
         Color = ColorSequence.new({
@@ -11091,16 +10586,16 @@ local function rng4()
     return rng4.tag
 end
 local function rng()
-    local Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
-    local YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
-    local Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)]
-    return WindUI:Popup({
-        Title = Netflix,
+    rng_s.Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
+    rng_s.YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
+    rng_s.Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)]
+    WindUI:Popup({
+        Title = rng_s.Netflix,
         Icon = "shovel",
-        Content = YouTube,
+        Content = rng_s.YouTube,
         Buttons = {
             {
-                Title = Spotify,
+                Title = rng_s.Spotify,
                 Icon = "hammer",
                 Variant = "Tertiary"
             }
@@ -11108,15 +10603,15 @@ local function rng()
     })
 end
 local function rng2()
-    local bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)]
-    local bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
-    local bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
+    rng_s.bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)]
+    rng_s.bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
+    rng_s.bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
     n({
         Title = "Gravel.cc :3",
-        Content = bju,
-        Audio = bju3,
+        Content = rng_s.bju,
+        Audio = rng_s.bju3,
         Length = 10,
-        Image = bju2,
+        Image = rng_s.bju2,
         BarColor = Color3.fromRGB(0, 170, 255)
     })
 end
@@ -14446,7 +13941,7 @@ local MiscTab = Window:Tab({
 }) do
 MiscTab:Paragraph({
     Title = "Trigger Bot",
-    Desc = "Automatically shoot when crosshair is on target\nNot mobile friendly!",
+    Desc = "Automatically shoot when fov is inside target\nNot mobile friendly!",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -15270,7 +14765,7 @@ local InfoTab = Window:Tab({
     })
     InfoTab:Paragraph({
         Title = "Gravel: SRC",
-        Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source... if ur using a snippet that came from gravel.... credit me or I cry :(",
+        Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source...\nif ur using a snippet that came from gravel....\ncredit me or I cry\n_.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._",
         Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
@@ -15576,11 +15071,6 @@ I luv rng's. :3
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
-        Title = "Gravel (19/07/2026)",
-        Desc = "Added: LazyLoader!\nAdded: UI Refreshing\nAdded: Additional stuff\nFixed Bugs: 7",
-        Color = config.Gradow.uicolor.darkGray
-    })
-    InfoTab:Paragraph({
         Title = "Gravel (20/07/2026)",
         Desc = "Error da handle",
         Color = config.Gradow.uicolor.darkGray
@@ -15610,12 +15100,17 @@ I luv rng's. :3
         Desc = "sum bug fixes",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (01/08/2026)",
+        Desc = "Refactoring :o",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
 --[[
     InfoTab:Paragraph({
-        Title = "Gravel (DD/07/2026)",
+        Title = "Gravel (DD/08/2026)",
         Desc = "",
         Color = config.Gradow.uicolor.darkGray
     })
@@ -16433,6 +15928,8 @@ local function cleanup()
             config.tpwalkConnection:Disconnect()
             config.tpwalkConnection = nil
         end
+        config.camYOffsetEnabled = false
+        config.camYOffsetValue = 0
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
         config.SA2_currentTarget = nil
@@ -16468,12 +15965,6 @@ local function cleanup()
         config.desyncSavedCFrame = nil
         config.desyncHiddenPos = nil
         config.desyncTransparency = nil
-        if lzl then
-            lzl:cleanup()
-            lzl.enabled = false
-            lzl.loaded = {}
-            lzl.q = {}
-        end
         if heartbeatConnection then
             heartbeatConnection:Disconnect()
             heartbeatConnection = nil
