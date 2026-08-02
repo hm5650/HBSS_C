@@ -288,6 +288,8 @@ local config = {
     hbtrans = 1,
     scaleToScreen = false,
     stsdistance = 0,
+    sa_hb_responsiveness = 2,
+    sa_hb_target_range = 500,
     SA2_Enabled = false,
     SA2_Method = "Raycast",
     SA2_TeamTarget = "Enemies",
@@ -304,7 +306,7 @@ local config = {
     SA2_GetTarget = "Closest",
     SA2_currentTarget = nil,
     SA2_TArea = 35,
-    SA2_TargetRange = 1000,
+    SA2_TargetRange = 500,
     SA2_Wallbang = false,
     SA2_BulletTeleport = false,
     currentTarget = nil,
@@ -421,6 +423,28 @@ local config = {
     ignoreForcefield = true,
     QuickToggles = false,
     QTDrag = true,
+    selectedQuickToggles = {
+        SilentAim = true,
+        Hitbox = true,
+        AntiAim = true,
+        Aimbot = true,
+        ESP = true,
+        ClientMod = true,
+        SilentAimHK = true,
+        AutoFarm = true,
+        BHop = true,
+    },
+    availableQuickToggles = {
+        "SilentAim",
+        "Hitbox", 
+        "AntiAim",
+        "Aimbot",
+        "ESP",
+        "ClientMod",
+        "SilentAimHK",
+        "AutoFarm",
+        "BHop",
+    },
     clientModEnabled = false,
     walkspeedEnabled = false,
     walkspeedValue = 16,
@@ -462,8 +486,6 @@ local config = {
     bhop = {
         enabled = false,
         jumpDelay = 0.05,
-        quickToggleEnabled = false,
-        quickToggleDraggable = true
     },
     reach = {
         enabled = false,
@@ -1856,7 +1878,7 @@ local config = {
                 "client the client of client",
             },
             Miscellaneous = {
-                "random bs go!!!🔥🔥🔥🔥",
+                "random bs go!!!🔥🔥??🔥",
                 "the leftovers",
                 "extra stuff",
                 "bruh stuff",
@@ -2010,7 +2032,7 @@ local config = {
         sa2dump = {
             data = {},
             lastClear = 0,
-            maxAge = 0.05,
+            maxAge = 0.02,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -2020,7 +2042,6 @@ local config = {
         patcherwait = 0.5,
         patcher = true,
         bhopConnection = nil,
-        bhopQuickToggleUI = nil,
         lastJumpTime = 0,
         errors = true,
         Rng5stuff = nil,
@@ -3037,6 +3058,7 @@ local function saveConfig(saveName)
             gp2 = config.gp2,
             QuickToggles = config.QuickToggles,
             QTDrag = config.QTDrag,
+            selectedQuickToggles = table.clone(config.selectedQuickToggles),
             espMasterEnabled = config.espMasterEnabled,
             prefHighlightESP = config.prefHighlightESP,
             prefTextESP = config.prefTextESP,
@@ -3131,6 +3153,7 @@ local function saveConfig(saveName)
             wallc = config.wallc,
             scaleToScreen = config.scaleToScreen,
             stsdistance = config.stsdistance,
+            sa_hb_target_range = config.sa_hb_target_range or 500,
             bodypart = config.bodypart,
             hitchance = config.hitchance,
             fovsize = config.fovsize,
@@ -3195,9 +3218,6 @@ local function saveConfig(saveName)
             tbot_fovTransparency = config.tbot.fovTransparency,
             tbot_fovVisible = config.tbot.fovVisible,
             bhop_enabled = config.bhop.enabled,
-            bhop_jumpDelay = config.bhop.jumpDelay,
-            bhop_quickToggleEnabled = config.bhop.quickToggleEnabled,
-            bhop_quickToggleDraggable = config.bhop.quickToggleDraggable,
             antiafk = config.antiafk,
             Viewing = config.Viewing,
             camYOffsetEnabled = config.camYOffsetEnabled,
@@ -3792,9 +3812,6 @@ local function applyFeatureAfterLoad(featureName, state, ...)
             else
                 KillQT()
             end
-        elseif featureName == "bhopQuickToggle" then
-            config.bhop.quickToggleEnabled = state
-            updateBHopQuickToggle()
         elseif featureName == "antiafk" then
             config.antiafk = state
         end
@@ -3953,11 +3970,6 @@ local function loadSave(saveName)
         end
         config.QuickToggles = false
         KillQT()
-        config.bhop.quickToggleEnabled = false
-        if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-            config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-            config.varibz.bhopQuickToggleUI = nil
-        end
         config.antiafk = false
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
@@ -3971,7 +3983,7 @@ local function loadSave(saveName)
         config.targethbSizes = {}
         config.centerLocked = {}
     end)
-    task.wait(0.2)
+    task.wait(0.2) --load
     if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
     if cfg.masterTarget then config.masterTarget = cfg.masterTarget end
     if cfg.masterGetTarget then config.masterGetTarget = cfg.masterGetTarget end
@@ -3988,6 +4000,17 @@ local function loadSave(saveName)
     if cfg.gp2 then config.gp2 = cfg.gp2 end
     if cfg.QuickToggles ~= nil then config.QuickToggles = cfg.QuickToggles end
     if cfg.QTDrag ~= nil then config.QTDrag = cfg.QTDrag end
+    if cfg.selectedQuickToggles then
+        for name, value in pairs(cfg.selectedQuickToggles) do
+            if config.selectedQuickToggles[name] ~= nil then
+                config.selectedQuickToggles[name] = value
+            end
+        end
+        if config.QuickToggles and gui.mobileGui and gui.mobileGui.UpdateLayout then
+            task.wait(0.1)
+            gui.mobileGui.UpdateLayout()
+        end
+    end
     if cfg.espMasterEnabled ~= nil then config.espMasterEnabled = cfg.espMasterEnabled end
     if cfg.prefHighlightESP ~= nil then config.prefHighlightESP = cfg.prefHighlightESP end
     if cfg.prefTextESP ~= nil then config.prefTextESP = cfg.prefTextESP end
@@ -3999,6 +4022,7 @@ local function loadSave(saveName)
     if cfg.lineStartPosition then config.lineStartPosition = cfg.lineStartPosition end
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
     if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
+    if cfg.sa_hb_target_range then config.sa_hb_target_range = cfg.sa_hb_target_range end
     if cfg.espc then
         config.espc = Color3.new(cfg.espc.R or 1, cfg.espc.G or 0.71, cfg.espc.B or 0.76)
     end
@@ -4136,9 +4160,6 @@ local function loadSave(saveName)
     if cfg.tbot_fovTransparency then config.tbot.fovTransparency = cfg.tbot_fovTransparency end
     if cfg.tbot_fovVisible ~= nil then config.tbot.fovVisible = cfg.tbot_fovVisible end
     if cfg.bhop_enabled ~= nil then config.bhop.enabled = cfg.bhop_enabled end
-    if cfg.bhop_jumpDelay then config.bhop.jumpDelay = cfg.bhop_jumpDelay end
-    if cfg.bhop_quickToggleEnabled ~= nil then config.bhop.quickToggleEnabled = cfg.bhop_quickToggleEnabled end
-    if cfg.bhop_quickToggleDraggable ~= nil then config.bhop.quickToggleDraggable = cfg.bhop_quickToggleDraggable end
     if cfg.antiafk ~= nil then config.antiafk = cfg.antiafk end
     if cfg.Viewing ~= nil then config.Viewing = cfg.Viewing end
     if cfg.camYOffsetEnabled ~= nil then config.camYOffsetEnabled = cfg.camYOffsetEnabled end
@@ -4612,11 +4633,6 @@ local function loadSave(saveName)
     pcall(function()
         if config.QuickToggles then
             CreateQT()
-        end
-    end)
-    pcall(function()
-        if config.bhop.quickToggleEnabled then
-            updateBHopQuickToggle()
         end
     end)
     pcall(function()
@@ -5287,7 +5303,7 @@ local function GetClosestPlayer()
     local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local maxRange = config.SA2_TargetRange or 1000
+    local maxRange = config.SA2_TargetRange or 500
     local maxRangeSq = maxRange * maxRange
     local character = plr.Character
     local localRoot = character and character:FindFirstChild("HumanoidRootPart")
@@ -5300,7 +5316,7 @@ local function GetClosestPlayer()
     local camera = cam
     local plr_local = plr
     local config_local = config
-    local checkWall = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
+    local checkWall = config_local.SA2_Wallcheck
     local playerCount = #Players:GetPlayers()
     if playerCount <= 1 then
         config.SA2_currentTarget = nil
@@ -5325,7 +5341,7 @@ local function GetClosestPlayer()
     end
     local candidates = {}
     local candidateCount = 0
-    local checkVisible = config_local.SA2_Wallcheck and not config_local.SA2_ThreeSixtyMode
+    local checkVisible = config_local.SA2_Wallcheck
     local useFOV = not config_local.SA2_ThreeSixtyMode
     
     local players = Players:GetPlayers()
@@ -5510,6 +5526,9 @@ if OldIndex then
 end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
+    if not config.varibz.patcher then
+        return
+    end
     config.varibz.sa2thing += deltaTime
     config.varibz.sa2alot = config.varibz.sa2alot + 1
     if config.varibz.sa2thing >= config.varibz.sa2stuff and config.varibz.sa2alot % 2 == 0 then
@@ -9052,173 +9071,6 @@ local function toggleBHop(state)
     end
 end
 
-local function createBHopQuickToggle()
-    if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-        config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-        config.varibz.bhopQuickToggleUI = nil
-    end
-    
-    if not config.bhop.quickToggleEnabled then return end
-    
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "BHopQuickToggle"
-    screenGui.ResetOnSpawn = false
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
-    
-    local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 110, 0, 36)
-    main.Position = UDim2.new(0, 10, 0, 110)
-    main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    main.BorderSizePixel = 0
-    main.AnchorPoint = Vector2.new(0, 0)
-    main.Active = true
-    main.Draggable = config.bhop.quickToggleDraggable
-    main.Parent = screenGui
-    
-    local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 6)
-    mainCorner.Parent = main
-    
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -44, 1, 0)
-    label.Position = UDim2.new(0, 8, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = config.bhop.enabled and "BHop<" or "BHop"
-    label.TextColor3 = Color3.fromRGB(200, 200, 200)
-    label.Font = Enum.Font.GothamSemibold
-    label.TextSize = 13
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.TextYAlignment = Enum.TextYAlignment.Center
-    label.Parent = main
-    
-    local toggleBg = Instance.new("Frame")
-    toggleBg.Size = UDim2.new(0, 34, 0, 16)
-    toggleBg.Position = UDim2.new(1, -38, 0.5, -8)
-    toggleBg.BackgroundColor3 = config.bhop.enabled and Color3.fromRGB(0, 100, 0) or Color3.fromRGB(15, 15, 15)
-    toggleBg.BorderSizePixel = 0
-    toggleBg.BackgroundTransparency = 0
-    toggleBg.ClipsDescendants = false
-    toggleBg.Parent = main
-    
-    local toggleCorner = Instance.new("UICorner")
-    toggleCorner.CornerRadius = UDim.new(0, 8)
-    toggleCorner.Parent = toggleBg
-    
-    local circle = Instance.new("Frame")
-    circle.Size = UDim2.new(0, 14, 0, 14)
-    circle.Position = config.bhop.enabled and UDim2.new(1, -16, 0, 1) or UDim2.new(0, 1, 0, 1)
-    circle.BackgroundColor3 = config.bhop.enabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(60, 60, 60)
-    circle.BorderSizePixel = 0
-    circle.Parent = toggleBg
-    
-    local circleCorner = Instance.new("UICorner")
-    circleCorner.CornerRadius = UDim.new(1, 0)
-    circleCorner.Parent = circle
-    
-    local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-    
-    local function toggleBHopUI()
-        local newState = not config.bhop.enabled
-        toggleBHop(newState)
-        
-        label.Text = newState and "BHop<" or "BHop"
-        
-        if newState then
-            local onTween = excusemesir.TweenService:Create(circle, tweenInfo, {
-                Position = UDim2.new(1, -16, 0, 1),
-                BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-            })
-            local bgOnTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
-                BackgroundColor3 = Color3.fromRGB(0, 100, 0)
-            })
-            onTween:Play()
-            bgOnTween:Play()
-        else
-            local offTween = excusemesir.TweenService:Create(circle, tweenInfo, {
-                Position = UDim2.new(0, 1, 0, 1),
-                BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            })
-            local bgOffTween = excusemesir.TweenService:Create(toggleBg, tweenInfo, {
-                BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-            })
-            offTween:Play()
-            bgOffTween:Play()
-        end
-    end
-    
-    local isPressing = false
-    local wasPressedHere = false
-    local inputStartTime = 0
-    local inputStartPosition = nil
-    local minPressTime = 0.05
-    
-    local function onInputBegan(input, gameProcessedEvent)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if not gameProcessedEvent then
-                isPressing = true
-                wasPressedHere = true
-                inputStartTime = tick()
-                inputStartPosition = input.Position
-            end
-        end
-    end
-    
-    local function onInputEnded(input, gameProcessedEvent)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if isPressing and wasPressedHere and not gameProcessedEvent then
-                local pressDuration = tick() - inputStartTime
-                local endPosition = input.Position
-                local distanceMoved = inputStartPosition and (endPosition - inputStartPosition).Magnitude or 0
-                
-                if pressDuration >= minPressTime and distanceMoved < 10 then
-                    toggleBHopUI()
-                end
-            end
-            isPressing = false
-            wasPressedHere = false
-            inputStartPosition = nil
-        end
-    end
-    
-    local function onInputChanged(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if isPressing and inputStartPosition then
-                local distanceMoved = (input.Position - inputStartPosition).Magnitude
-                if distanceMoved > 20 then
-                    wasPressedHere = false
-                end
-            end
-        end
-    end
-    
-    toggleBg.InputBegan:Connect(onInputBegan)
-    toggleBg.InputChanged:Connect(onInputChanged)
-    toggleBg.InputEnded:Connect(onInputEnded)
-    circle.InputBegan:Connect(onInputBegan)
-    circle.InputChanged:Connect(onInputChanged)
-    circle.InputEnded:Connect(onInputEnded)
-    config.varibz.bhopQuickToggleUI = {
-        ScreenGui = screenGui,
-        Main = main,
-        Label = label,
-        ToggleBg = toggleBg,
-        Circle = circle
-    }
-end
-
-
-local function updateBHopQuickToggle()
-    if config.bhop.quickToggleEnabled then
-        createBHopQuickToggle()
-    else
-        if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-            config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-            config.varibz.bhopQuickToggleUI = nil
-        end
-    end
-end
-
 local function ineedinvistool()
 local offset = 1100
 local invisible = false
@@ -9381,6 +9233,13 @@ local function CreateQT()
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
+    local container = Instance.new("Frame")
+    container.Name = "QTContainer"
+    container.Size = UDim2.new(0, 0, 0, 0)
+    container.Position = UDim2.new(0, 10, 0, 10)
+    container.BackgroundTransparency = 1
+    container.Parent = screenGui
+
     local function QuickToggle(name, positionX, positionY, getter, setter)
         local main = Instance.new("Frame")
         main.Size = UDim2.new(0, 120, 0, 40)
@@ -9390,11 +9249,13 @@ local function CreateQT()
         main.AnchorPoint = Vector2.new(0, 0)
         main.Active = true
         main.Draggable = config.QTDrag
-        main.Parent = screenGui
+        main.Visible = config.selectedQuickToggles[name] or false
+        main.Parent = container
 
         local mainCorner = Instance.new("UICorner")
         mainCorner.CornerRadius = UDim.new(0, 6)
         mainCorner.Parent = main
+        
         local label = Instance.new("TextLabel")
         label.Size = UDim2.new(1, -50, 1, 0)
         label.Position = UDim2.new(0, 8, 0, 0)
@@ -9419,6 +9280,7 @@ local function CreateQT()
         local toggleCorner = Instance.new("UICorner")
         toggleCorner.CornerRadius = UDim.new(0, 9)
         toggleCorner.Parent = toggleBg
+        
         local circle = Instance.new("Frame")
         circle.Size = UDim2.new(0, 16, 0, 16)
         circle.Position = getter() and UDim2.new(1, -18, 0, 1) or UDim2.new(0, 1, 0, 1)
@@ -9429,6 +9291,7 @@ local function CreateQT()
         local circleCorner = Instance.new("UICorner")
         circleCorner.CornerRadius = UDim.new(1, 0)
         circleCorner.Parent = circle
+        
         local touchButton = Instance.new("TextButton")
         touchButton.Size = UDim2.new(0.4, 0, 0.5, 0)
         touchButton.Position = UDim2.new(0, 70, 0, 9)
@@ -9438,6 +9301,7 @@ local function CreateQT()
         touchButton.Parent = main
 
         local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+        
         local function toggleOn()
             local onTween = excusemesir.TweenService:Create(circle, tweenInfo, {
                 Position = UDim2.new(1, -18, 0, 1),
@@ -9461,40 +9325,45 @@ local function CreateQT()
             offTween:Play()
             bgOffTween:Play()
         end
+        
         local function toggle()
             local newState = not getter()
             setter(newState)
             
             if newState then
                 toggleOn()
-                if name == "Silent Aim (HB)" then
+                if name == "SilentAim" then
                     if gui.RingHolder then gui.RingHolder.Visible = true end
-                elseif name == "Aim bot" then
+                elseif name == "Aimbot" then
                     handleAimbotToggle(true)
-                elseif name == "Auto Farm" then
+                elseif name == "AutoFarm" then
                     autoFarmProcess()
-                elseif name == "Anti Aim" then
-                elseif name == "Hit box" then
+                elseif name == "AntiAim" then
+                elseif name == "Hitbox" then
                     applyhb()
                 elseif name == "ESP" then
                     applyESPMaster(true)
-                elseif name == "Client Mod" then
+                elseif name == "ClientMod" then
                     cmods()
+                elseif name == "SilentAimHK" then
+                    config.SA2_Enabled = true
+                elseif name == "BHop" then
+                    toggleBHop(true)
                 end
             else
                 toggleOff()
-                if name == "Silent Aim (HB)" then
+                if name == "SilentAim" then
                     if gui.RingHolder then gui.RingHolder.Visible = false end
                     for pl, _ in pairs(config.activeApplied) do
                         restorePartForPlayer(pl)
                     end
-                elseif name == "Aim bot" then
+                elseif name == "Aimbot" then
                     handleAimbotToggle(false)
-                elseif name == "Auto Farm" then
+                elseif name == "AutoFarm" then
                     stopAutoFarm()
-                elseif name == "Anti Aim" then
+                elseif name == "AntiAim" then
                     returnToOriginalPosition()
-                elseif name == "Hit box" then
+                elseif name == "Hitbox" then
                     local targetsToRemove = {}
                     for pl, _ in pairs(config.hitboxExpandedParts) do
                         table.insert(targetsToRemove, pl)
@@ -9504,18 +9373,24 @@ local function CreateQT()
                     end
                 elseif name == "ESP" then
                     applyESPMaster(false)
-                elseif name == "Client Mod" then
+                elseif name == "ClientMod" then
                     resetcmods()
+                elseif name == "SilentAimHK" then
+                    config.SA2_Enabled = false
+                elseif name == "BHop" then
+                    toggleBHop(false)
                 end
             end
             
             label.Text = getter() and name .. "<" or name
         end
+        
         local inputStartTime = 0
         local minPressTime = 0.05
         local inputStartPosition = nil
         local isPressing = false
         local wasPressedHere = false
+        
         local function onInputBegan(input, gameProcessedEvent)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 if not gameProcessedEvent then
@@ -9549,6 +9424,7 @@ local function CreateQT()
                 end
             end
         end
+        
         local function onInputEnded(input, gameProcessedEvent)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 if isPressing and wasPressedHere and not gameProcessedEvent then
@@ -9569,6 +9445,7 @@ local function CreateQT()
                 inputStartPosition = nil
             end
         end
+        
         local function onInputChanged(input)
             if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
                 if isPressing and inputStartPosition then
@@ -9580,6 +9457,7 @@ local function CreateQT()
                 end
             end
         end
+        
         toggleBg.InputBegan:Connect(function(...) onInputBegan(...) end)
         toggleBg.InputChanged:Connect(onInputChanged)
         toggleBg.InputEnded:Connect(function(...) onInputEnded(...) end)
@@ -9598,60 +9476,115 @@ local function CreateQT()
             touchButton = touchButton,
             toggleBg = toggleBg,
             circle = circle,
-            label = label
+            label = label,
+            name = name
         }
     end
 
-    local buttons = {}
-    local startX = 10
-    local topRowY = 10
-    local bottomRowY = 60
-    local toggleWidth = 120
-    local horizontalSpacing = 10
-    
-    buttons.SilentAim = QuickToggle("Silent Aim (HB)", startX, topRowY, 
-        function() return config.startsa end, 
-        function(v) config.startsa = v end)
-    
-    buttons.Hitbox = QuickToggle("Hit box", startX + (toggleWidth + horizontalSpacing) * 1, topRowY,
-        function() return config.hitboxEnabled end,
-        function(v) config.hitboxEnabled = v end)
-    
-    buttons.AntiAim = QuickToggle("Anti Aim", startX + (toggleWidth + horizontalSpacing) * 2, topRowY,
-        function() return config.antiAimEnabled end,
-        function(v) config.antiAimEnabled = v end)
-    
-    buttons.Aimbot = QuickToggle("Aim bot", startX + (toggleWidth + horizontalSpacing) * 3, topRowY,
-        function() return config.aimbotEnabled end,
-        function(v) handleAimbotToggle(v) end)
-    
-    local espX = startX + (toggleWidth + horizontalSpacing) * 0
-    buttons.ESP = QuickToggle("ESP", espX, bottomRowY,
-        function() return config.espMasterEnabled end,
-        function(v) applyESPMaster(v) end)
-    buttons.ClientMod = QuickToggle("Client Mod", startX + (toggleWidth + horizontalSpacing) * 4, topRowY,
-        function() return config.clientModEnabled end,
-        function(v) 
-            config.clientModEnabled = v
-            if v then
-                cmods()
-            else
-                resetcmods()
+    local function updateContainerLayout()
+        local visibleToggles = {}
+        for name, visible in pairs(config.selectedQuickToggles) do
+            if visible then
+                table.insert(visibleToggles, name)
             end
-        end)
-    local silentAimHKX = startX + (toggleWidth + horizontalSpacing) * 1
-    buttons.SilentAimHK = QuickToggle("SilentAim (HK)", silentAimHKX, bottomRowY,
-        function() return config.SA2_Enabled end,
-        function(v) 
-            config.SA2_Enabled = v 
-        end)
-
+        end
+        
+        local toggleWidth = 120
+        local horizontalSpacing = 10
+        local verticalSpacing = 10
+        local togglesPerRow = 4
+        local x = 0
+        local y = 0
+        
+        for i, name in ipairs(visibleToggles) do
+            local buttonData = gui.mobileGui.Buttons[name]
+            if buttonData and buttonData.main then
+                local col = (i - 1) % togglesPerRow
+                local row = math.floor((i - 1) / togglesPerRow)
+                
+                buttonData.main.Position = UDim2.new(0, col * (toggleWidth + horizontalSpacing), 0, row * (40 + verticalSpacing))
+                buttonData.main.Visible = true
+                
+                x = math.max(x, (col + 1) * (toggleWidth + horizontalSpacing))
+                y = math.max(y, (row + 1) * (40 + verticalSpacing))
+            end
+        end
+        
+        for name, buttonData in pairs(gui.mobileGui.Buttons) do
+            if buttonData and buttonData.main then
+                if not config.selectedQuickToggles[name] then
+                    buttonData.main.Visible = false
+                end
+            end
+        end
+        
+        container.Size = UDim2.new(0, x + 10, 0, y + 10)
+    end
+    local buttons = {}
+    local startX = 0
+    local startY = 0
+    local toggleConfigs = {
+        SilentAim = {
+            getter = function() return config.startsa end,
+            setter = function(v) config.startsa = v end
+        },
+        Hitbox = {
+            getter = function() return config.hitboxEnabled end,
+            setter = function(v) config.hitboxEnabled = v end
+        },
+        AntiAim = {
+            getter = function() return config.antiAimEnabled end,
+            setter = function(v) config.antiAimEnabled = v end
+        },
+        Aimbot = {
+            getter = function() return config.aimbotEnabled end,
+            setter = function(v) handleAimbotToggle(v) end
+        },
+        ESP = {
+            getter = function() return config.espMasterEnabled end,
+            setter = function(v) applyESPMaster(v) end
+        },
+        ClientMod = {
+            getter = function() return config.clientModEnabled end,
+            setter = function(v) 
+                config.clientModEnabled = v
+                if v then cmods() else resetcmods() end
+            end
+        },
+        SilentAimHK = {
+            getter = function() return config.SA2_Enabled end,
+            setter = function(v) config.SA2_Enabled = v end
+        },
+        AutoFarm = {
+            getter = function() return config.autoFarmEnabled end,
+            setter = function(v) 
+                config.autoFarmEnabled = v
+                if v then autoFarmProcess() else stopAutoFarm() end
+            end
+        },
+        BHop = {
+            getter = function() return config.bhop.enabled end,
+            setter = function(v) toggleBHop(v) end
+        }
+    }
+    local index = 0
+    for name, cfg in pairs(toggleConfigs) do
+        local col = index % 4
+        local row = math.floor(index / 4)
+        local x = col * (120 + 10)
+        local y = row * (40 + 10)
+        
+        buttons[name] = QuickToggle(name, x, y, cfg.getter, cfg.setter)
+        index = index + 1
+    end
 
     gui.mobileGui = {
         ScreenGui = screenGui,
-        Buttons = buttons
+        Buttons = buttons,
+        Container = container,
+        UpdateLayout = updateContainerLayout
     }
-
+    updateContainerLayout()
     if gui.RingHolder then
         gui.RingHolder.Visible = config.startsa
     end
@@ -9659,6 +9592,7 @@ local function CreateQT()
         config.aimbotFOVRing.RingFrame.Visible = config.aimbotEnabled and not config.aimbot360Enabled
     end
 end
+
 local function KillQT()
     if gui and gui.mobileGui and gui.mobileGui.ScreenGui then
         pcall(function()
@@ -9703,7 +9637,8 @@ local function UpdateQT()
             AntiAim = config.antiAimEnabled,
             Hitbox = config.hitboxEnabled,
             ESP = config.espMasterEnabled,
-            SilentAimHK = config.SA2_Enabled
+            SilentAimHK = config.SA2_Enabled,
+            BHop = config.bhop.enabled
         }
         
         for buttonName, isEnabled in pairs(buttonStates) do
@@ -9723,6 +9658,7 @@ local function UpdateQT()
         end
     end
 end
+
 
 local function onRenderStep()
     if not camera or not camera.Parent then
@@ -9750,6 +9686,8 @@ local function onRenderStep()
 
     local candidates = {}
     local allTargetsInFOV = {}
+    local maxRange = config.sa_hb_target_range or 500
+    local maxRangeSq = maxRange * maxRange
     
     for _, pl in ipairs(getAllTargets()) do
         local bodyPart, chosenName = chooseBodyPartInstance(pl)
@@ -9779,6 +9717,12 @@ local function onRenderStep()
 
             if not skip then
                 local topPos = bodyPart.Position
+                local camPos = camera.CFrame.Position
+                local worldDist = (camPos - topPos).Magnitude
+                if worldDist > maxRange then
+                    continue
+                end
+                
                 local screenPos3, onScreen = camera:WorldToViewportPoint(topPos)
                 if onScreen then
                     local screenVec = Vector2.new(screenPos3.X, screenPos3.Y)
@@ -9789,7 +9733,7 @@ local function onRenderStep()
                         part = bodyPart,
                         partName = chosenName,
                         screenDist = distPx,
-                        worldDist = (camera.CFrame.Position - topPos).Magnitude,
+                        worldDist = worldDist,
                         screenPos = screenVec,
                         screenPos3 = screenPos3,
                         humanoid = humanoid,
@@ -9797,10 +9741,8 @@ local function onRenderStep()
                     })
                     
                     if distPx <= radiusPx then
-                        local cameraPos = camera.CFrame.Position
                         local targetPos = bodyPart.Position
-                        if wallCheck(targetPos, cameraPos) then
-                            local worldDist = (cameraPos - targetPos).Magnitude
+                        if wallCheck(targetPos, camPos) then
                             table.insert(candidates, {
                                 player = pl,
                                 part = bodyPart,
@@ -9838,7 +9780,8 @@ local function onRenderStep()
         
         if #targetsInFOV > 0 then
             local currentTime = tick()
-            if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+            local switchRate = config.targetSeenSwitchRate or 0.2
+            if currentTime - config.lastTargetSwitchTime >= switchRate then
                 config.lastTargetSwitchTime = currentTime
                 if not config.currentTarget then
                     local randomIndex = math.random(1, #targetsInFOV)
@@ -9997,6 +9940,16 @@ local function onRenderStep()
         end
 
         diameter = math.max(0.01, diameter)
+        
+        local currentSize = config.targethbSizes[best.player]
+        local targetSize = diameter
+        
+        if currentSize then
+            local lerpAlpha = math.clamp(config.sa_hb_responsiveness, 0.01, 1)
+            local newSize = currentSize.X + (targetSize - currentSize.X) * lerpAlpha
+            diameter = math.max(0.01, newSize)
+        end
+        
         if best.screenDist <= 1 then
             if not config.centerLocked[best.player] then
                 config.centerLocked[best.player] = true
@@ -10719,6 +10672,54 @@ local MainTab = Window:Tab({
         end
     })
 MainTab:Space()
+    MainTab:Toggle({
+        Title = "QuickToggles",
+        Desc = "Show/hide QuickToggles/QT",
+        Value = config.QuickToggles or false,
+        Callback = function(v)
+            config.QuickToggles = v
+            if not v then
+                KillQT()
+            end
+        end
+    })
+MainTab:Dropdown({
+    Title = "QuickToggle Selection",
+    Desc = "Select which toggles to show in QuickToggles",
+    Values = config.availableQuickToggles,
+    Value = config.availableQuickToggles,
+    Multi = true,
+    Callback = function(selected)
+        for name, _ in pairs(config.selectedQuickToggles) do
+            config.selectedQuickToggles[name] = false
+        end
+        for _, name in ipairs(selected) do
+            if config.selectedQuickToggles[name] ~= nil then
+                config.selectedQuickToggles[name] = true
+            end
+        end
+        if gui.mobileGui and gui.mobileGui.UpdateLayout then
+            gui.mobileGui.UpdateLayout()
+        end
+    end
+})
+
+MainTab:Toggle({
+    Title = "QuickToggles Draggable",
+    Desc = "Allow dragging quick toggles",
+    Value = config.QTDrag or true,
+    Callback = function(v)
+        config.QTDrag = v
+        if gui.mobileGui and gui.mobileGui.Buttons then
+            for _, buttonData in pairs(gui.mobileGui.Buttons) do
+                if buttonData and buttonData.main then
+                    buttonData.main.Draggable = v
+                end
+            end
+        end
+    end
+})
+MainTab:Space()
 MainTab:Toggle({
     Title = "Enable Keybinds",
     Desc = "Toggle keybind system on/off",
@@ -10953,34 +10954,6 @@ MainTab:Keybind({
             end
         end
     })
-    
-    MainTab:Toggle({
-        Title = "QuickToggles",
-        Desc = "Show/hide QuickToggles/QT GUI",
-        Value = config.QuickToggles or false,
-        Callback = function(v)
-            config.QuickToggles = v
-            if not v then
-                KillQT()
-            end
-        end
-    })
-
-MainTab:Toggle({
-    Title = "QuickToggles Draggable",
-    Desc = "Allow dragging quick toggles",
-    Value = config.QTDrag or true,
-    Callback = function(v)
-        config.QTDrag = v
-        if gui.mobileGui and gui.mobileGui.Buttons then
-            for _, buttonData in pairs(gui.mobileGui.Buttons) do
-                if buttonData and buttonData.main then
-                    buttonData.main.Draggable = v
-                end
-            end
-        end
-    end
-})
     
     MainTab:Button({
         Title = "Partclaim",
@@ -12537,7 +12510,7 @@ local SilentAimTab = Window:Tab({
 }) do
     SilentAimTab:Paragraph({
         Title = "Gravel",
-        Desc = "[ Hitbox Based ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]\n[ May Lag ]",
+        Desc = "[ Hitbox Based ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]",
         Color = config.Gradow.uicolor.darkGray
     })
 
@@ -12644,6 +12617,21 @@ local SilentAimTab = Window:Tab({
             config.bodypart = Option
         end
     })
+
+SilentAimTab:Slider({
+    Title = "Target Range",
+    Desc = "How far a target should be targeted",
+    IsTextbox = true,
+    Step = 10,
+    Value = {
+        Min = 5,
+        Max = 10000,
+        Default = config.sa_hb_target_range or 500
+    },
+    Callback = function(value)
+        config.sa_hb_target_range = value
+    end
+})
     
     SilentAimTab:Slider({
         Title = "HitChance",
@@ -12891,8 +12879,8 @@ SilentAimTab2:Slider({
         Step = 10,
         Value = {
             Min = 5,
-            Max = 999999,
-            Default = config.SA2_FovRadius or 1000
+            Max = 10000,
+            Default = config.SA2_TargetRange or 500
         },
         Callback = function(value)
             config.SA2_TargetRange = value
@@ -14151,27 +14139,6 @@ MiscTab:Toggle({
     end
 })
 
-MiscTab:Toggle({
-    Title = "Bhop QT",
-    Desc = "Show BHop's custom quick toggle on screen",
-    Value = config.bhop.quickToggleEnabled or false,
-    Callback = function(v)
-        config.bhop.quickToggleEnabled = v
-        updateBHopQuickToggle()
-    end
-})
-
-MiscTab:Toggle({
-    Title = "Bhop QT Draggable",
-    Desc = "Allow dragging the BHop quick toggle",
-    Value = config.bhop.quickToggleDraggable or true,
-    Callback = function(v)
-        config.bhop.quickToggleDraggable = v
-        if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.Main then
-            config.varibz.bhopQuickToggleUI.Main.Draggable = v
-        end
-    end
-})
     MiscTab:Toggle({
         Title = "Toggle AntiAfk",
         Desc = "Prevents idle kick",
@@ -14891,7 +14858,7 @@ InfoTab:Paragraph({
 This is the most unique silent aim in the script.
 It works by dynamically resizing the target's hitbox to match your FOV circle/crosshair, making it easier to hit
 
-1. 'Scale To Screen': Makes the hitbox size adapt to your screen, ensuring it covers the FOV circle perfectly, best for third-person shooters
+1. 'Scale To Screen': Makes the hitbox size adapt to your screen, ensuring it covers the FOV circle perfectly
 
 2. 'STS Distance': Adjusts the scaling to prevent the hitbox from clipping into you
 
@@ -15157,35 +15124,25 @@ aimbotfov()
 local function SetupRespawnHandler()
     plr.CharacterAdded:Connect(function(character)
         if config.varibz.respawnLock then
-            wait(1.5)
+            task.wait(1)
             
             local humanoid = character:WaitForChild("Humanoid", 5)
             if humanoid and humanoid.Health > 0 then
-                if config.varibz.wasEnabledBeforeDeath then
-                    config.SA2_Enabled = true
-                end
-                
                 if config.varibz.wasESPEnabledBeforeDeath then
                     config.espMasterEnabled = true
                 end
                 
                 config.varibz.respawnLock = false
-                config.varibz.wasEnabledBeforeDeath = false
                 config.varibz.wasESPEnabledBeforeDeath = false
             end
         end
     end)
     
     plr.CharacterRemoving:Connect(function(character)
-        if config.SA2_Enabled then
-            config.varibz.wasEnabledBeforeDeath = true
-        end
-        
         if config.espMasterEnabled then
             config.varibz.wasESPEnabledBeforeDeath = true
         end
         
-        config.SA2_Enabled = false
         config.espMasterEnabled = false
         config.varibz.respawnLock = true
     end)
@@ -15195,15 +15152,10 @@ local function SetupRespawnHandler()
             local humanoid = plr.Character:FindFirstChild("Humanoid")
             if humanoid then
                 humanoid.Died:Connect(function()
-                    if config.SA2_Enabled then
-                        config.varibz.wasEnabledBeforeDeath = true
-                    end
-                    
                     if config.espMasterEnabled then
                         config.varibz.wasESPEnabledBeforeDeath = true
                     end
                     
-                    config.SA2_Enabled = false
                     config.espMasterEnabled = false
                     config.varibz.respawnLock = true
                 end)
@@ -15216,7 +15168,7 @@ local function SetupRespawnHandler()
     end
     
     plr.CharacterAdded:Connect(function()
-        wait(0.5)
+        task.wait(0.3)
         trackHumanoidDeath()
     end)
 end
@@ -15758,10 +15710,6 @@ local function cleanup()
             config.varibz.bhopConnection:Disconnect()
             config.varibz.bhopConnection = nil
         end
-        if config.varibz.bhopQuickToggleUI and config.varibz.bhopQuickToggleUI.ScreenGui then
-            config.varibz.bhopQuickToggleUI.ScreenGui:Destroy()
-            config.varibz.bhopQuickToggleUI = nil
-        end
         config.trussEnabled = false
         if config.trussPart then
             config.trussPart:Destroy()
@@ -15832,6 +15780,7 @@ local function cleanup()
         end
         excusemesir.Workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
         config.camYOffsetEnabled = false
+        config.camYOffsetValue = 0
         if config.camYOffsetConnection then
             config.camYOffsetConnection:Disconnect()
             config.camYOffsetConnection = nil
@@ -15994,7 +15943,7 @@ local function cleanup()
             getgenv().destroyInitGui()
         end
         for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and (gui.Name == "FOVSys" or gui.Name == "AimbotFOVRing" or gui.Name == "GravelQT" or gui.Name == "TriggerBotFOV" or gui.Name == "BHopQuickToggle" or gui.Name == "FOVToggleGui_Modern" or gui.Name == "ESP_" or string.find(gui.Name, "ESP_") or string.find(gui.Name, "FOVToggleGui")) then
+            if gui:IsA("ScreenGui") and (gui.Name == "FOVSys" or gui.Name == "AimbotFOVRing" or gui.Name == "GravelQT" or gui.Name == "TriggerBotFOV" or gui.Name == "FOVToggleGui_Modern" or gui.Name == "ESP_" or string.find(gui.Name, "ESP_") or string.find(gui.Name, "FOVToggleGui")) then
                 gui:Destroy()
             end
         end
