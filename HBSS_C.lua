@@ -752,6 +752,7 @@ local config = {
                 "429",
                 "301",
                 "711",
+                --ones with ellipsis is what I despise :/
                 "911...",
                 "764...",
                 "621...",
