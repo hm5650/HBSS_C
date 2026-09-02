@@ -645,11 +645,11 @@ local config = {
                 "Here lies Charlie",
                 "You can tell it's him 'cause we put\nhis name on the stone",
                 "He kept he's showers ice cold, used\neco-friendly light bulbs",
-                "Rode his bicycle to work when the\n gasoline price rose",
+                "Rode his bicycle to work when the\ngasoline price rose",
                 "He'd judge with no pretense,\nfish on the weekends",
                 "Each morning, get up, do the\nPledge of Allegiance",
                 "Never swim in the ocean,\nfor fear of shark attacks",
-                "Bi-monthly get his wife a rose\nwith a card attached",
+                "By-monthly get his wife a rose\nwith their hearts attached",
                 "Avoiding all the little things\nthat we're hard to ask",
                 "Had a car crash, cardiac arrest,\ndied of a heart attack",
                 "Up the golden escalator,\nall he's friends and neighbors",
@@ -680,7 +680,7 @@ local config = {
                 "my language isn't English, Spanish nor Japanese",
                 "not even the other 7000 other languages",
                 "not even binary or hexadecimal",
-                "my language is... lolcat or lol speak",
+                "my language is... lolcat or lolspeak",
                 ":3",
             },
             {
@@ -15212,7 +15212,25 @@ I luv rng's. :3
     })
 
     InfoTab:Paragraph({
-        Title = "Gravel (14/01/2026)",
+        Title = "Gravel (08/13/2025)",
+        Desc = "IAM BORN!1!1!1! >:D (only had silentaim & dats it)",
+        Color = config.Gradow.uicolor.darkGray
+    })
+
+    InfoTab:Paragraph({
+        Title = "Gravel (15/01/2025)",
+        Desc = "Added Tab support & more stuff..\nSilentAim, Aimbot, Hitbox, Main, Autofarm, Visuals, Client",
+        Color = config.Gradow.uicolor.darkGray
+    })
+
+    InfoTab:Paragraph({
+        Title = "Gravel (15/01/2026)",
+        Desc = "Changed from Arceus UI to Dummy UI",
+        Color = config.Gradow.uicolor.darkGray
+    })
+
+    InfoTab:Paragraph({
+        Title = "Gravel (19/01/2026)",
         Desc = "Added: Legacy\nAdded: Reachtab\nAdded: Wallbang in Silentaim HK\nFixed Bugs: 0",
         Color = config.Gradow.uicolor.darkGray
     })
