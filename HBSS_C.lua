@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “bribe me an burger so I'll continue scripting” 
+           “remember that one time when i got blasted by superheated, high-velocity, stream of synthetic diamond ” 
                                            
                                - Gpssickle
 ]])
@@ -255,9 +255,10 @@ local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
 local SaveUI = loadstring(getgist_(getgenv().HttpUrlz_.uithesavory))()
 local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
+--loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 -- other wallmart variables
 local gui = {}
-local ValidTargetParts = {"Head", "HumanoidRootPart"}
+local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
 local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
@@ -296,6 +297,7 @@ local config = {
     SA2_Wallcheck = false,
     SA2_TargetPart = "Head",
     SA2_HitChance = 100,
+    SA2_HeadshotChance = 100,
     SA2_FovRadius = 100,
     SA2_FovVisible = true,
     SA2_FovTransparency = 0.90,
@@ -385,6 +387,8 @@ local config = {
     antiAimOrbitRadius = 5,
     antiAimOrbitHeight = 0,
     masterTeamTarget = "Enemies",
+    specificTeamTarget = false,
+    targetedTeams = {},
     autoFarmEnabled = false,
     autoFarmDistance = 10,
     autoFarmSpeed = 1,
@@ -662,11 +666,33 @@ local config = {
                 "Screaming at the angels while\nthey pushed him through the door.",
             },
             {
+                "u were wondering why\nI stopped updating gravel 4 a while?",
+                "cuz mAh fatigue-ness made me\nlost interest in Roblox & Luau :/",
+                "also I'm not motivated",
+            },
+            {
+                "remember that one time when",
+                "i got blasted by superheated, high-velocity,\nstream of synthetic diamond",
+                "oh.. you don't?",
+                "mkay",
+            },
+            {
+                "my language isn't English, Spanish nor Japanese",
+                "not even the other 7000 other languages",
+                "not even binary or hexadecimal",
+                "my language is... lolcat or lol speak",
+                ":3",
+            },
+            {
                 "hey use the bgmtab\nif u want music ;3",
                 "it has '6 or 7' presets :7",
                 "676767",
                 "I'm sure u'll like da presets",
                 "I think...",
+            },
+            {
+                "wonder how i animate my vids on mobile?",
+                "i used Prisma3D & dats it :p",
             },
             {
                 "why won't you read me???",
@@ -688,6 +714,12 @@ local config = {
                 "proto conversion",
                 "yea proto conversion is a\ncoolio executor",
                 "I think... it's a pretty old 1 tho",
+            },
+            {
+                "what is 59+8... hmm\nwho noes",
+            },
+            {
+                "ÓwÒ",
             },
             {
                 "alt+f4 = free robux",
@@ -739,6 +771,7 @@ local config = {
             {
                 "67",
                 "87",
+                "89",
                 "61",
                 "69",
                 "55",
@@ -747,16 +780,15 @@ local config = {
                 "41",
                 "42",
                 "21",
+                "19",
                 "23",
                 "31",
                 "429",
                 "301",
                 "711",
-                --ones with ellipsis is what I despise :/
-                "911...",
-                "764...",
-                "621...",
-                "34...",
+                "911.",
+                "621",
+                "34",
                 "48 49",
                 "37",
                 "64",
@@ -765,7 +797,7 @@ local config = {
                 "9001",
                 "666",
                 "90",
-                "I'm not a numberphile",
+                "I'm not a numberphile :v",
             },
             {
                 typesp = "2",
@@ -2038,13 +2070,12 @@ local config = {
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
         sa2thing = 0,
-        sa2stuff = 0.5,
+        sa2stuff = 0.8,
         sa2this = false,
         sa2alot = 0,
         sa2dump = {
             data = {},
             lastClear = 0,
-            maxAge = 0.02,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -2133,6 +2164,36 @@ local rng_s = {
     bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)],
     bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
 }
+
+local function isInSpecificTeam(player)
+    if not config.specificTeamTarget or #config.targetedTeams == 0 then
+        return true
+    end
+    
+    if typeof(player) == "Instance" and player:IsA("Player") then
+        local team = player.Team
+        if not team then return false end
+        for _, teamName in ipairs(config.targetedTeams) do
+            if team.Name == teamName then
+                return true
+            end
+        end
+        return false
+    end
+    if typeof(player) == "Instance" and player:IsA("Model") then
+        local npcTeam = player:FindFirstChild("Team")
+        if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+            for _, teamName in ipairs(config.targetedTeams) do
+                if npcTeam.Value.Name == teamName then
+                    return true
+                end
+            end
+        end
+        return false
+    end
+    
+    return true
+end
 
 local function rng5()
     if config.varibz.Rng5stuff then return config.varibz.Rng5stuff end
@@ -3055,6 +3116,8 @@ local function saveConfig(saveName)
         timestamp = os.time(),
         config = {
             masterTeamTarget = config.masterTeamTarget,
+            specificTeamTarget = config.specificTeamTarget,
+            targetedTeams = table.clone(config.targetedTeams),
             masterTarget = config.masterTarget,
             masterGetTarget = config.masterGetTarget,
             targetSeenSwitchRate = config.targetSeenSwitchRate,
@@ -3180,6 +3243,7 @@ local function saveConfig(saveName)
             SA2_TargetPart = config.SA2_TargetPart,
             SA2_HitChance = config.SA2_HitChance,
             SA2_FovRadius = config.SA2_FovRadius,
+            SA2_HeadshotChance = config.SA2_HeadshotChance,
             SA2_TargetRange = config.SA2_TargetRange,
             SA2_TeamTarget = config.SA2_TeamTarget,
             SA2_GetTarget = config.SA2_GetTarget,
@@ -3997,6 +4061,8 @@ local function loadSave(saveName)
     end)
     task.wait(0.2) --load
     if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
+    if cfg.specificTeamTarget ~= nil then config.specificTeamTarget = cfg.specificTeamTarget end
+    if cfg.targetedTeams then config.targetedTeams = cfg.targetedTeams end
     if cfg.masterTarget then config.masterTarget = cfg.masterTarget end
     if cfg.masterGetTarget then config.masterGetTarget = cfg.masterGetTarget end
     if cfg.targetSeenSwitchRate then config.targetSeenSwitchRate = cfg.targetSeenSwitchRate end
@@ -4111,6 +4177,7 @@ local function loadSave(saveName)
     if cfg.SA2_TargetPart then config.SA2_TargetPart = cfg.SA2_TargetPart end
     if cfg.SA2_HitChance then config.SA2_HitChance = cfg.SA2_HitChance end
     if cfg.SA2_FovRadius then config.SA2_FovRadius = cfg.SA2_FovRadius end
+    if cfg.SA2_HeadshotChance then config.SA2_HeadshotChance = cfg.SA2_HeadshotChance end
     if cfg.SA2_TargetRange then config.SA2_TargetRange = cfg.SA2_TargetRange end
     if cfg.SA2_TeamTarget then config.SA2_TeamTarget = cfg.SA2_TeamTarget end
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
@@ -5108,18 +5175,26 @@ end
 local function ArePlayersSameTeam(player1, player2)
     if not player1 or not player2 then return false end
     
+    if config.specificTeamTarget then
+        return isInSpecificTeam(player1) and isInSpecificTeam(player2)
+    end
+    
     local team1 = player1.Team
     local team2 = player2.Team
     if not team1 or not team2 then return false end
     
     return team1 == team2
 end
-
 local function ShouldTargetPlayer(targetPlayer)
     if targetPlayer == plr then return false end
     if config.ignoreForcefield and targetPlayer.Character and hasForcefield(targetPlayer.Character) then
         return false
     end
+    
+    if config.specificTeamTarget then
+        return isInSpecificTeam(targetPlayer)
+    end
+    
     if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Player") then
         if config.SA2_TeamTarget == "All" then
             return true
@@ -5149,6 +5224,14 @@ local function syncSilentAimWithMaster()
         config.aimbotTeamTarget = "All"
         config.hitboxTeamTarget = "All"
         config.antiAimTarget = "All"
+        config.specificTeamTarget = false
+    elseif config.masterTeamTarget == "Specific Team" then
+        config.specificTeamTarget = true
+        config.SA2_TeamTarget = "Specific"
+        config.targetMode = "Specific"
+        config.aimbotTeamTarget = "Specific"
+        config.hitboxTeamTarget = "Specific"
+        config.antiAimTarget = "Specific"
     elseif config.SA2_TeamTarget ~= config.masterTeamTarget and 
            config.masterTeamTarget ~= nil then
         if not config.SA2_TeamTarget then
@@ -5158,6 +5241,7 @@ local function syncSilentAimWithMaster()
         config.aimbotTeamTarget = config.masterTeamTarget
         config.hitboxTeamTarget = config.masterTeamTarget
         config.antiAimTarget = config.masterTeamTarget
+        config.specificTeamTarget = false
     end
     
     if config.masterGetTarget then
@@ -5167,7 +5251,6 @@ local function syncSilentAimWithMaster()
         config.antiAimGetTarget = config.masterGetTarget
     end
 end
-
 local function IsPlayerVisible(player, maxDistance)
     local PlayerCharacter = player.Character
     local LocalPlayerCharacter = plr.Character
@@ -5283,13 +5366,13 @@ local function getVis(target, maxDistance)
 end
 local function isTargetVisible(target, maxDistance)
     local now = tick()
-    if now - config.varibz.sa2dump.lastClear > 5 then
+    if now - config.varibz.sa2dump.lastClear > 60 then
         config.varibz.sa2dump.data = {}
         config.varibz.sa2dump.lastClear = now
     end
     local cacheKey = getVis(target, maxDistance)
     local cached = config.varibz.sa2dump.data[cacheKey]
-    if cached and (now - cached.time) < config.varibz.sa2dump.maxAge then
+    if cached and (now - cached.time) < config.varibz.sa2stuff then
         return cached.visible
     end
     local visible = IsPlayerVisible(target, maxDistance)
@@ -5300,190 +5383,155 @@ local function isTargetVisible(target, maxDistance)
     return visible
 end
 local function GetClosestPlayer()
-    if not config.varibz.sa2this then
-        return nil
-    end
+    if not config.varibz.sa2this then return nil end
     if config.varibz.respawnLock or not plr.Character then
         config.SA2_currentTarget = nil
         return nil
     end
-    
-    local cam = Camera
-    local viewport = cam.ViewportSize
-    local camPos = cam.CFrame.Position
+
+    local checkWall = config.SA2_Wallcheck
+    local useFOV = not config.SA2_ThreeSixtyMode
     local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
-    local targetPartName = config.SA2_TargetPart == "Random" and nil or config.SA2_TargetPart
+    local maxRangeSq = (config.SA2_TargetRange or 1000) ^ 2
+    local localRoot = plr.Character:FindFirstChild("HumanoidRootPart")
+    if not localRoot then return nil end
+
+    local cam = Camera
+    if not cam then return nil end
+    
+    local viewport = cam.ViewportSize
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local maxRange = config.SA2_TargetRange or 500
-    local maxRangeSq = maxRange * maxRange
-    local character = plr.Character
-    local localRoot = character and character:FindFirstChild("HumanoidRootPart")
-    if not localRoot then
-        config.SA2_currentTarget = nil
-        return nil
-    end
-    local Players = excusemesir.Players
-    local Workspace = excusemesir.Workspace
-    local camera = cam
-    local plr_local = plr
-    local config_local = config
-    local checkWall = config_local.SA2_Wallcheck
-    local playerCount = #Players:GetPlayers()
-    if playerCount <= 1 then
-        config.SA2_currentTarget = nil
-        return nil
-    end
-    
-    local function isTargetable(player)
-        if typeof(player) == "Instance" and player:IsA("Player") then
-            if player == plr_local then return false end
-            if config_local.SA2_TeamTarget == "All" then return true end
-            local targetTeam = player.Team
-            if not localTeam or not targetTeam then
-                return config_local.SA2_TeamTarget == "Enemies"
-            end
-            if config_local.SA2_TeamTarget == "Enemies" then
-                return localTeam ~= targetTeam
-            else
-                return localTeam == targetTeam
-            end
-        end
-        return false
-    end
+    local localRootPos = localRoot.Position
     local candidates = {}
     local candidateCount = 0
-    local checkVisible = config_local.SA2_Wallcheck
-    local useFOV = not config_local.SA2_ThreeSixtyMode
-    
-    local players = Players:GetPlayers()
-    for i = 1, #players do
-        local p = players[i]
-        if p ~= plr_local and isTargetable(p) then
+    local targetSeenTargets = {}
+    table.clear(candidates)
+    for _, p in ipairs(excusemesir.Players:GetPlayers()) do
+        if p ~= plr then
+            local targetTeam = p.Team
+            if config.SA2_TeamTarget == "Enemies" then
+                if not localTeam or not targetTeam or localTeam == targetTeam then continue end
+            elseif config.SA2_TeamTarget == "Teams" then
+                if not localTeam or not targetTeam or localTeam ~= targetTeam then continue end
+            end
+            if config.ignoreForcefield and p.Character and hasForcefield(p.Character) then continue end
             local char = p.Character
-            if char then
-                local humanoid = char:FindFirstChildOfClass("Humanoid")
-                if humanoid and humanoid.Health > 0 then
-                    if not config_local.ignoreForcefield or not hasForcefield(char) then
-                        local part = nil
-                        if targetPartName then
-                            part = char:FindFirstChild(targetPartName)
-                        end
-                        if not part then
-                            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-                        end
-                        if part then
-                            local dx = part.Position.X - localRoot.Position.X
-                            local dy = part.Position.Y - localRoot.Position.Y
-                            local dz = part.Position.Z - localRoot.Position.Z
-                            local distSq = dx * dx + dy * dy + dz * dz
-                            if distSq <= maxRangeSq then
-                                if checkVisible then
-                                    if not isTargetVisible(p, maxRange) then
-                                        continue
-                                    end
-                                end
-                                
-                                local worldDist = math.sqrt(distSq)
-                                
-                                if useFOV then
-                                    local targetPos = part.Position
-                                    local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                                    if not onScreen or screenPos.Z <= 0 then
-                                        continue
-                                    end
-                                    local distX = screenPos.X - center.X
-                                    local distY = screenPos.Y - center.Y
-                                    local distPx = math.sqrt(distX * distX + distY * distY)
-                                    if distPx > config_local.SA2_FovRadius then
-                                        continue
-                                    end
-                                    candidateCount = candidateCount + 1
-                                    candidates[candidateCount] = {
-                                        target = p,
-                                        part = part,
-                                        health = humanoid.Health,
-                                        screenDist = distPx,
-                                        worldDist = worldDist,
-                                        isPlayer = true,
-                                        char = char,
-                                        screenPos3 = screenPos
-                                    }
-                                else
-                                    candidateCount = candidateCount + 1
-                                    candidates[candidateCount] = {
-                                        target = p,
-                                        part = part,
-                                        health = humanoid.Health,
-                                        screenDist = 0,
-                                        worldDist = worldDist,
-                                        isPlayer = true,
-                                        char = char,
-                                        screenPos3 = nil
-                                    }
-                                end
-                            end
-                        end
+            if not char then continue end
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then continue end
+            local targetPartName = config.SA2_TargetPart
+            local part = char:FindFirstChild(targetPartName)
+            if targetPartName == "Random" then
+                local headshotChance = config.SA2_HeadshotChance or 100
+                local useHead = false
+                if headshotChance >= 100 then
+                    useHead = true
+                elseif headshotChance > 0 then
+                    useHead = math.random(1, 100) <= headshotChance
+                end
+                
+                if useHead then
+                    part = char:FindFirstChild("Head")
+                    if not part then
+                        part = char:FindFirstChild("HumanoidRootPart")
+                    end
+                else
+                    part = char:FindFirstChild("HumanoidRootPart")
+                    if not part then
+                        part = char:FindFirstChild("Head")
                     end
                 end
+            else
+                if not part then
+                    part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                end
             end
+            
+            if not part then continue end
+
+            local dx, dy, dz = part.Position.X - localRootPos.X, part.Position.Y - localRootPos.Y, part.Position.Z - localRootPos.Z
+            local distSq = dx*dx + dy*dy + dz*dz
+            if distSq > maxRangeSq then continue end
+
+            if checkWall and not isTargetVisible(p, config.SA2_TargetRange) then continue end
+
+            local screenPos, onScreen = cam:WorldToViewportPoint(part.Position)
+            if useFOV then
+                if not onScreen or screenPos.Z <= 0 then continue end
+                local distX, distY = screenPos.X - center.X, screenPos.Y - center.Y
+                if distX*distX + distY*distY > config.SA2_FovRadius^2 then continue end
+            end
+
+            candidateCount = candidateCount + 1
+            candidates[candidateCount] = {
+                target = p,
+                part = part,
+                health = humanoid.Health,
+                screenDist = useFOV and math.sqrt((screenPos.X - center.X)^2 + (screenPos.Y - center.Y)^2) or 0,
+                worldDist = math.sqrt(distSq),
+                inFOV = useFOV
+            }
         end
     end
-    
+
     if candidateCount == 0 then
         config.SA2_currentTarget = nil
         return nil
     end
+
     local bestIdx = 1
+    
     if targetMode == "TargetSeen" then
-        local currentTime = tick()
-        if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-            config.lastTargetSwitchTime = currentTime
-            if not config.SA2_currentTarget then
-                bestIdx = 1
-            else
-                local currentIdx = nil
+        if tick() - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
+            config.lastTargetSwitchTime = tick()
+            if config.SA2_currentTarget then
+                local found = false
                 for i = 1, candidateCount do
                     if candidates[i].target == config.SA2_currentTarget then
-                        currentIdx = i
+                        found = true
+                        bestIdx = (i % candidateCount) + 1
                         break
                     end
                 end
-                if currentIdx then
-                    bestIdx = (currentIdx % candidateCount) + 1
-                else
-                    bestIdx = 1
+                if not found then bestIdx = 1 end
+            else
+                local bestDist = math.huge
+                for i = 1, candidateCount do
+                    local dist = useFOV and candidates[i].screenDist or candidates[i].worldDist
+                    if dist < bestDist then
+                        bestDist = dist
+                        bestIdx = i
+                    end
                 end
             end
         else
-            if config.SA2_currentTarget then
-                for i = 1, candidateCount do
-                    if candidates[i].target == config.SA2_currentTarget then
-                        bestIdx = i
-                        break
-                    end
+            for i = 1, candidateCount do
+                if candidates[i].target == config.SA2_currentTarget then
+                    bestIdx = i
+                    break
                 end
             end
         end
     elseif targetMode == "Lowest Health" then
-        local bestHealthVal = math.huge
+        local bestHealth = math.huge
         for i = 1, candidateCount do
-            if candidates[i].health < bestHealthVal then
-                bestHealthVal = candidates[i].health
+            if candidates[i].health < bestHealth then
+                bestHealth = candidates[i].health
                 bestIdx = i
             end
         end
     else
         local bestDist = math.huge
         for i = 1, candidateCount do
-            local dist = candidates[i].screenDist > 0 and candidates[i].screenDist or candidates[i].worldDist
+            local dist = useFOV and candidates[i].screenDist or candidates[i].worldDist
             if dist < bestDist then
                 bestDist = dist
                 bestIdx = i
             end
         end
     end
-    
+
     local best = candidates[bestIdx]
     if best then
         if config.SA2_currentTarget ~= best.target then
@@ -5530,11 +5578,6 @@ end
 if OldNamecall then
     hookmetamethod(game, "__namecall", OldNamecall)
     OldNamecall = nil
-end
-
-if OldIndex then
-    hookmetamethod(game, "__index", OldIndex)
-    OldIndex = nil
 end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
@@ -5662,47 +5705,6 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     
     return OldNamecall(...)
 end))
-local OldIndex
-OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
-    if config.varibz.respawnLock then
-        return OldIndex(Self, Index)
-    end
-    
-    if config.SA2_Enabled and config.SA2_Method == "Mouse.Hit" and not checkcaller() and Self == mouse then
-        if Index == "Target" or Index == "target" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return HitPart
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        elseif Index == "Hit" or Index == "hit" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return HitPart.CFrame
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        elseif Index == "X" or Index == "x" then
-            return mouse.X
-        elseif Index == "Y" or Index == "y" then
-            return mouse.Y
-        elseif Index == "UnitRay" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return Ray.new(mouse.Origin, (HitPart.Position - mouse.Origin).Unit)
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        end
-    end
-    
-    return OldIndex(Self, Index)
-end))
-
 ScreenGui.Name = "FOVSys"
 ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
@@ -5731,8 +5733,7 @@ excusemesir.RunService.Heartbeat:Connect(function()
         return
     end
     if config.SA2_Enabled and config.SA2_FovVisible and not config.SA2_ThreeSixtyMode then
-        local currentTarget = cachedTarget
-        
+        GetClosestPlayer()
         CircleFrame.Visible = true
         CircleFrame.Position = UDim2.new(0, screenCenter.X, 0, screenCenter.Y)
         CircleFrame.Size = UDim2.new(0, config.SA2_FovRadius * 2, 0, config.SA2_FovRadius * 2)
@@ -5998,13 +5999,23 @@ local function updateTeamTargetModes()
         config.hitboxTeamTarget = "All"
         config.SA2_TeamTarget = "All"
         config.antiAimTarget = "All"
+        config.specificTeamTarget = false
+    elseif masterTeamSelection == "Specific Team" then
+        config.specificTeamTarget = true
+        config.targetMode = "Specific"
+        config.aimbotTeamTarget = "Specific"
+        config.hitboxTeamTarget = "Specific"
+        config.SA2_TeamTarget = "Specific"
+        config.antiAimTarget = "Specific"
     else
         config.targetMode = masterTeamSelection
         config.aimbotTeamTarget = masterTeamSelection
         config.hitboxTeamTarget = masterTeamSelection
         config.SA2_TeamTarget = masterTeamSelection
         config.antiAimTarget = masterTeamSelection
+        config.specificTeamTarget = false
     end
+    
     if config.masterGetTarget then
         config.aimbotGetTarget = config.masterGetTarget
         config.silentGetTarget = config.masterGetTarget
@@ -6235,6 +6246,11 @@ end
 
 local function isTeammate(p)
     if not (localPlayer and p) then return false end
+    
+    if config.specificTeamTarget then
+        return isInSpecificTeam(p)
+    end
+    
     if typeof(p) == "Instance" and p:IsA("Player") then
         if localPlayer.Team and p.Team then
             return localPlayer.Team == p.Team
@@ -6242,8 +6258,49 @@ local function isTeammate(p)
     end
     return false
 end
+
+local function isInTargetedSpecificTeam(player)
+    if not config.specificTeamTarget or #config.targetedTeams == 0 then
+        return true
+    end
+    
+    local team = player.Team
+    if not team then return false end
+    
+    for _, teamName in ipairs(config.targetedTeams) do
+        if team.Name == teamName then
+            return true
+        end
+    end
+    return false
+end
+
 local function addesp(targetPlayer)
     if not targetPlayer then return false end
+    if config.specificTeamTarget and #config.targetedTeams > 0 then
+        if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Player") then
+            local team = targetPlayer.Team
+            if team then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if team.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        elseif typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Model") then
+            local npcTeam = targetPlayer:FindFirstChild("Team")
+            if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if npcTeam.Value.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+        return false
+    end
     
     if (config.masterTarget == "NPCs" or config.masterTarget == "Both") and 
        typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Model") then
@@ -6267,7 +6324,6 @@ local function addesp(targetPlayer)
     
     return false
 end
-
 local function plralive(target)
     if not target then return false end
 
@@ -6363,24 +6419,42 @@ local function getValidAutoFarmTargets()
     for _, t in ipairs(candidates) do
         if t ~= localPlayer and plralive(t) then
             local shouldTarget = false
-            if config.masterTarget == "NPCs" then
-                if typeof(t) == "Instance" and t:IsA("Model") then
-                    shouldTarget = true
-                else
-                    shouldTarget = false
-                end
-            elseif config.masterTarget == "Players" then
+            if config.specificTeamTarget and #config.targetedTeams > 0 then
                 if typeof(t) == "Instance" and t:IsA("Player") then
-                    if not isTeammate(t) or config.masterTeamTarget == "All" then
-                        shouldTarget = true
-                    else
-                        shouldTarget = false
+                    local team = t.Team
+                    if team then
+                        for _, teamName in ipairs(config.targetedTeams) do
+                            if team.Name == teamName then
+                                shouldTarget = true
+                                break
+                            end
+                        end
                     end
-                else
-                    shouldTarget = false
+                elseif typeof(t) == "Instance" and t:IsA("Model") then
+                    local npcTeam = t:FindFirstChild("Team")
+                    if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                        for _, teamName in ipairs(config.targetedTeams) do
+                            if npcTeam.Value.Name == teamName then
+                                shouldTarget = true
+                                break
+                            end
+                        end
+                    end
                 end
-            elseif config.masterTarget == "Both" then
-                shouldTarget = true
+            else
+                if config.masterTarget == "NPCs" then
+                    if typeof(t) == "Instance" and t:IsA("Model") then
+                        shouldTarget = true
+                    end
+                elseif config.masterTarget == "Players" then
+                    if typeof(t) == "Instance" and t:IsA("Player") then
+                        if not isTeammate(t) or config.masterTeamTarget == "All" then
+                            shouldTarget = true
+                        end
+                    end
+                elseif config.masterTarget == "Both" then
+                    shouldTarget = true
+                end
             end
 
             if shouldTarget then
@@ -6388,7 +6462,6 @@ local function getValidAutoFarmTargets()
                 local char = getTargetCharacter(t)
                 if char then
                     humanoid = char:FindFirstChildOfClass("Humanoid")
-                    
                     if config.ignoreForcefield and hasForcefield(char) then
                         shouldTarget = false
                     end
@@ -6438,7 +6511,6 @@ local function getValidAutoFarmTargets()
     
     return validTargets
 end
-
 
 local function tptocrossWithAlignment(target)
     local targetChar = getTargetCharacter(target)
@@ -6758,23 +6830,36 @@ local function findClosestEnemy()
     for _, t in ipairs(getAllTargets()) do
         if t ~= localPlayer and plralive(t) then
             local shouldTarget = false
-            
-            if config.masterTarget == "NPCs" then
-                if typeof(t) == "Instance" and t:IsA("Model") then
-                    shouldTarget = true
-                end
-            elseif config.masterTarget == "Players" then
+            if config.specificTeamTarget and #config.targetedTeams > 0 then
                 if typeof(t) == "Instance" and t:IsA("Player") then
-                    if config.masterTeamTarget == "Enemies" then
-                        shouldTarget = not isTeammate(t)
-                    elseif config.masterTeamTarget == "Teams" then
-                        shouldTarget = isTeammate(t)
-                    elseif config.masterTeamTarget == "All" then
-                        shouldTarget = true
+                    local team = t.Team
+                    if team then
+                        for _, teamName in ipairs(config.targetedTeams) do
+                            if team.Name == teamName then
+                                shouldTarget = true
+                                break
+                            end
+                        end
                     end
                 end
-            elseif config.masterTarget == "Both" then
-                shouldTarget = true
+            else
+                if config.masterTarget == "NPCs" then
+                    if typeof(t) == "Instance" and t:IsA("Model") then
+                        shouldTarget = true
+                    end
+                elseif config.masterTarget == "Players" then
+                    if typeof(t) == "Instance" and t:IsA("Player") then
+                        if config.masterTeamTarget == "Enemies" then
+                            shouldTarget = not isTeammate(t)
+                        elseif config.masterTeamTarget == "Teams" then
+                            shouldTarget = isTeammate(t)
+                        elseif config.masterTeamTarget == "All" then
+                            shouldTarget = true
+                        end
+                    end
+                elseif config.masterTarget == "Both" then
+                    shouldTarget = true
+                end
             end
             
             if shouldTarget then
@@ -6813,6 +6898,7 @@ local function findClosestEnemy()
             end
         end
     end
+    
     if #potentialTargets > 0 then
         if mode == "TargetSeen" then
             if #targetsInView > 0 then
@@ -7319,7 +7405,7 @@ local function makeesp(targetPlayer)
             pcall(function() oldData.screenGui:Destroy() end)
         end
     end
-    
+
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "ESP_" .. getTargetName(targetPlayer)
     screenGui.ResetOnSpawn = false
@@ -7386,6 +7472,7 @@ local function makeesp(targetPlayer)
     headDot.BorderSizePixel = 0
     headDot.Visible = false
     headDot.Parent = screenGui
+    
     local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
     local isTargetedByRegular = config.currentTarget == targetPlayer
     local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
@@ -7399,11 +7486,10 @@ local function makeesp(targetPlayer)
         if config.espData[targetPlayer] and config.espData[targetPlayer].connection then
             pcall(function() config.espData[targetPlayer].connection:Disconnect() end)
         end
-        
         local conn = excusemesir.RunService.Heartbeat:Connect(function()
             local tchar = getTargetCharacter(targetPlayer)
             local charExists = tchar and tchar.Parent
-            
+            local viewportSize = camera.ViewportSize
             if not charExists then
                 if label then label.Visible = false end
                 if boxFrame then boxFrame.Visible = false end
@@ -7419,7 +7505,6 @@ local function makeesp(targetPlayer)
                 headDot.Visible = false
                 return
             end
-
             local head = tchar:FindFirstChild("Head")
             local root = tchar:FindFirstChild("HumanoidRootPart") or tchar:FindFirstChild("Torso") or tchar:FindFirstChild("UpperTorso")
             if not head or not root then
@@ -7429,14 +7514,34 @@ local function makeesp(targetPlayer)
                 headDot.Visible = false
                 return
             end
-
             local topPos = head.Position + Vector3.new(0, 0.4, 0)
             local bottomPos = root.Position - Vector3.new(0, 1.0, 0)
             local midPos = (topPos + bottomPos) * 0.5
             local topV3, onTop = camera:WorldToViewportPoint(topPos)
             local bottomV3, onBottom = camera:WorldToViewportPoint(bottomPos)
             local midV3, onMid = camera:WorldToViewportPoint(midPos)
-            local onScreen = onTop and onBottom and onMid and topV3.Z > 0 and bottomV3.Z > 0 and midV3.Z > 0
+            local anyOnScreen = false
+            local function isOnScreen(pos)
+                return pos.Z > 0 and pos.X >= 0 and pos.X <= viewportSize.X and pos.Y >= 0 and pos.Y <= viewportSize.Y
+            end
+            if onTop and isOnScreen(topV3) then anyOnScreen = true end
+            if not anyOnScreen and onBottom and isOnScreen(bottomV3) then anyOnScreen = true end
+            if not anyOnScreen and onMid and isOnScreen(midV3) then anyOnScreen = true end
+            if not anyOnScreen and head then
+                local headV3, headOn = camera:WorldToViewportPoint(head.Position)
+                if headOn and headV3.Z > 0 then
+                    anyOnScreen = true
+                end
+            end
+            
+            if not anyOnScreen then
+                label.Visible = false
+                boxFrame.Visible = false
+                healthBg.Visible = false
+                headDot.Visible = false
+                return
+            end
+            
             local topScreenY = topV3.Y
             local bottomScreenY = bottomV3.Y
             local centerX = midV3.X
@@ -7477,8 +7582,10 @@ local function makeesp(targetPlayer)
                 end)
 
                 label.Size = UDim2.new(0, absWidth, 0, 18)
-                label.Position = UDim2.new(0, centerX, 0, topScreenY - 4)
-                label.Visible = onScreen
+                local labelX = math.clamp(centerX, 10, viewportSize.X - 10)
+                local labelY = math.clamp(topScreenY - 4, 10, viewportSize.Y - 10)
+                label.Position = UDim2.new(0, labelX, 0, labelY)
+                label.Visible = true
                 if config.prefColorByHealth and humanoid then
                     label.TextColor3 = hpColor
                 else
@@ -7489,9 +7596,12 @@ local function makeesp(targetPlayer)
             end
 
             if config.espMasterEnabled and config.prefBoxESP then
-                boxFrame.Size = UDim2.new(0, widthPx, 0, math.max(2, heightPx))
-                boxFrame.Position = UDim2.new(0, centerX - widthPx / 2, 0, topScreenY)
-                boxFrame.Visible = onScreen
+                local boxX = math.clamp(centerX - widthPx / 2, 0, viewportSize.X - widthPx)
+                local boxY = math.clamp(topScreenY, 0, viewportSize.Y - math.max(2, heightPx))
+                
+                boxFrame.Size = UDim2.new(0, math.min(widthPx, viewportSize.X), 0, math.min(math.max(2, heightPx), viewportSize.Y))
+                boxFrame.Position = UDim2.new(0, boxX, 0, boxY)
+                boxFrame.Visible = true
                 boxFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
                 boxFrame.BackgroundTransparency = 0.7
 
@@ -7505,9 +7615,13 @@ local function makeesp(targetPlayer)
             end
 
             if config.espMasterEnabled and config.prefHealthESP and humanoid then
-                healthBg.Size = UDim2.new(0, 4, 0, math.max(2, heightPx))
-                healthBg.Position = UDim2.new(0, centerX + widthPx / 2 + 4, 0, topScreenY)
-                healthBg.Visible = onScreen
+                local healthX = math.clamp(centerX + widthPx / 2 + 4, 0, viewportSize.X - 4)
+                local healthY = math.clamp(topScreenY, 0, viewportSize.Y - math.max(2, heightPx))
+                local healthHeight = math.min(math.max(2, heightPx), viewportSize.Y)
+                
+                healthBg.Size = UDim2.new(0, 4, 0, healthHeight)
+                healthBg.Position = UDim2.new(0, healthX, 0, healthY)
+                healthBg.Visible = true
                 healthFill.Size = UDim2.new(1, 0, hpRatio, 0)
                 healthFill.Position = UDim2.new(0, 0, 1, 0)
                 healthFill.BackgroundColor3 = healthColor(humanoid)
@@ -7518,7 +7632,9 @@ local function makeesp(targetPlayer)
             if config.espMasterEnabled and config.prefHeadDotESP and head then
                 local headV3, onHead = camera:WorldToViewportPoint(head.Position)
                 if onHead and headV3.Z > 0 then
-                    headDot.Position = UDim2.new(0, headV3.X, 0, headV3.Y)
+                    local dotX = math.clamp(headV3.X, 10, viewportSize.X - 10)
+                    local dotY = math.clamp(headV3.Y, 10, viewportSize.Y - 10)
+                    headDot.Position = UDim2.new(0, dotX, 0, dotY)
                     headDot.Visible = true
                     if config.prefColorByHealth and humanoid then
                         headDot.BackgroundColor3 = hpColor
@@ -8148,6 +8264,21 @@ local function tnormalsize(targetPlayer)
         }
     end
 end
+
+local function tnormalsize(targetPlayer)
+    local char = getTargetCharacter(targetPlayer)
+    if not char then return end  
+
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+
+    if torso and not config.hitboxOriginalSizes[targetPlayer] then
+        config.hitboxOriginalSizes[targetPlayer] = {
+            part = torso,
+            size = torso.Size
+        }
+    end
+end
+
 local function expandhb(targetPlayer, size)
     if not targetPlayer then return end
     if targetPlayer == localPlayer then return end
@@ -8198,7 +8329,6 @@ local function expandhb(targetPlayer, size)
         end
     end
 end
-
 
 local function restoreTorso(targetPlayer)
     if not targetPlayer then return end  
@@ -8287,9 +8417,32 @@ local function targethb(player)
     if not plralive(player) then return false end  
     local char = getTargetCharacter(player)
     if config.ignoreForcefield and char and hasForcefield(char) then return false end
-
+    if config.specificTeamTarget and #config.targetedTeams > 0 then
+        if typeof(player) == "Instance" and player:IsA("Player") then
+            local team = player.Team
+            if team then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if team.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+        if typeof(player) == "Instance" and player:IsA("Model") then
+            local npcTeam = player:FindFirstChild("Team")
+            if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if npcTeam.Value.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+        return false
+    end
     local mode = config.masterTeamTarget or "Enemies"
-
     if typeof(player) == "Instance" and player:IsA("Model") then
         if mode == "Teams" then
             return false
@@ -8307,24 +8460,46 @@ local function targethb(player)
 
     return false
 end
-local function disconnectHB(player)
-    local conns = config.varibz.hbConnections[player]
+
+local hbConnections = {}
+
+function updateHitbox(player)
+    if not config.hitboxEnabled then
+        restoreTorso(player)
+        return
+    end
+
+    if targethb(player) then
+        local size = config.hitboxSize
+        local existing = config.hitboxExpandedParts[player]
+
+        if not existing or existing.targetSize.X ~= size then
+            config.hitboxLastSize[player] = size
+            expandhb(player, size)
+        end
+    else
+        restoreTorso(player)
+    end
+end
+
+function disconnectHB(player)
+    local conns = hbConnections[player]
     if conns then
         for _, c in ipairs(conns) do
             c:Disconnect()
         end
-        config.varibz.hbConnections[player] = nil
+        hbConnections[player] = nil
     end
 end
 
-local function hookPlayer(player)
+function hookPlayer(player)
     if player == localPlayer then
         return
     end
 
     disconnectHB(player)
 
-    config.varibz.hbConnections[player] = {}
+    hbConnections[player] = {}
 
     local function setupCharacter(character)
         task.defer(function()
@@ -8332,7 +8507,7 @@ local function hookPlayer(player)
 
             local hum = character:FindFirstChildOfClass("Humanoid")
             if hum then
-                table.insert(config.varibz.hbConnections[player],
+                table.insert(hbConnections[player],
                     hum.Died:Connect(function()
                         restoreTorso(player)
                     end)
@@ -8341,11 +8516,11 @@ local function hookPlayer(player)
         end)
     end
 
-    table.insert(config.varibz.hbConnections[player],
+    table.insert(hbConnections[player],
         player.CharacterAdded:Connect(setupCharacter)
     )
 
-    table.insert(config.varibz.hbConnections[player],
+    table.insert(hbConnections[player],
         player:GetPropertyChangedSignal("Team"):Connect(function()
             updateHitbox(player)
         end)
@@ -8365,14 +8540,13 @@ local function applyhb()
     end
 
     for _, player in ipairs(getAllTargets()) do
-        if not config.varibz.hbConnections[player] then
+        if not hbConnections[player] then
             hookPlayer(player)
         end
 
         updateHitbox(player)
     end
 end
-
 local function hb()
     local targetsToRemove = {}
     for playerObj, targetSize in pairs(config.targethbSizes) do
@@ -8446,9 +8620,33 @@ local function shouldTargetAimbot(target)
     if not target then return false end
     if target == localPlayer then return false end
     if not plralive(target) then return false end
-    
     local char = getTargetCharacter(target)
     if config.ignoreForcefield and char and hasForcefield(char) then return false end
+    if config.specificTeamTarget and #config.targetedTeams > 0 then
+        if typeof(target) == "Instance" and target:IsA("Player") then
+            local team = target.Team
+            if team then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if team.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+        if typeof(target) == "Instance" and target:IsA("Model") then
+            local npcTeam = target:FindFirstChild("Team")
+            if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                for _, teamName in ipairs(config.targetedTeams) do
+                    if npcTeam.Value.Name == teamName then
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+        return false
+    end
     
     if typeof(target) == "Instance" and target:IsA("Model") then
         if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
@@ -8468,7 +8666,6 @@ local function shouldTargetAimbot(target)
     end
     return false
 end
-
 local function aimbotWallCheck(targetPos, sourcePos)
     if not config.aimbotWallCheck then return true end
     
@@ -8852,25 +9049,40 @@ local function triggerBotUpdate()
         if target ~= localPlayer then
             local shouldTarget = false
             local char = getTargetCharacter(target)
-            
             if not char then continue end
-            if typeof(target) == "Instance" and target:IsA("Player") then
-                local mode = config.masterTeamTarget or "Enemies"
-                if mode == "Enemies" then
-                    shouldTarget = not isTeammate(target)
-                elseif mode == "Teams" then
-                    shouldTarget = isTeammate(target)
-                elseif mode == "All" then
+            if config.specificTeamTarget and #config.targetedTeams > 0 then
+                if typeof(target) == "Instance" and target:IsA("Player") then
+                    local team = target.Team
+                    if team then
+                        for _, teamName in ipairs(config.targetedTeams) do
+                            if team.Name == teamName then
+                                shouldTarget = true
+                                break
+                            end
+                        end
+                    end
+                end
+            else
+                if typeof(target) == "Instance" and target:IsA("Player") then
+                    local mode = config.masterTeamTarget or "Enemies"
+                    if mode == "Enemies" then
+                        shouldTarget = not isTeammate(target)
+                    elseif mode == "Teams" then
+                        shouldTarget = isTeammate(target)
+                    elseif mode == "All" then
+                        shouldTarget = true
+                    end
+                elseif typeof(target) == "Instance" and target:IsA("Model") then
                     shouldTarget = true
                 end
-            elseif typeof(target) == "Instance" and target:IsA("Model") then
-                shouldTarget = true
             end
             
             if not shouldTarget then continue end
+            
             local humanoid = char:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then continue end
             if config.ignoreForcefield and hasForcefield(char) then continue end
+            
             local targetPart = nil
             if config.tbot.targetPart == "Head" then
                 targetPart = char:FindFirstChild("Head")
@@ -8881,6 +9093,7 @@ local function triggerBotUpdate()
             end
             
             if not targetPart then continue end
+            
             local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
             if not onScreen or screenPos.Z <= 0 then continue end
             
@@ -8906,6 +9119,7 @@ local function triggerBotUpdate()
             end
         end
     end
+    
     if bestTarget then
         local char = getTargetCharacter(bestTarget)
         if char then
@@ -9212,7 +9426,6 @@ local function burgerking(deltaTime)
         return
     end
     table.clear(candidates)
-    table.clear(targetsInFOV)
     if config.aimbotEnabled then
         aimbotUpdate()
     end
@@ -10606,36 +10819,88 @@ local MainTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     
-    MainTab:Dropdown({
-        Title = "TeamTarget",
-        Desc = "Select Target Team",
-        Values = {"Enemies", "Teams", "All"},
-        Value = config.masterTeamTarget or "Enemies",
-        Multi = false,
-        Callback = function(Option)
-            config.masterTeamTarget = Option
-            if Option == "All" then
-                config.targetMode = "All"
-                config.aimbotTeamTarget = "All"
-                config.hitboxTeamTarget = "All"
-                config.SA2_TeamTarget = "All"
-                config.antiAimTarget = "All"
-            else
-                config.targetMode = Option
-                config.aimbotTeamTarget = Option
-                config.hitboxTeamTarget = Option
-                config.SA2_TeamTarget = Option
-                config.antiAimTarget = Option
-            end
-            
-            updateTeamTargetModes()
-            syncSilentAimWithMaster()
+MainTab:Dropdown({
+    Title = "TeamTarget",
+    Desc = "what team?? o.o",
+    Values = {"Enemies", "Teams", "All", "Specific Team"},
+    Value = config.masterTeamTarget or "Enemies",
+    Multi = false,
+    Callback = function(Option)
+        config.masterTeamTarget = Option
+        if Option == "All" then
+            config.targetMode = "All"
+            config.aimbotTeamTarget = "All"
+            config.hitboxTeamTarget = "All"
+            config.SA2_TeamTarget = "All"
+            config.antiAimTarget = "All"
+            config.specificTeamTarget = false
+        elseif Option == "Specific Team" then
+            config.specificTeamTarget = true
+            config.targetMode = "Specific"
+            config.aimbotTeamTarget = "Specific"
+            config.hitboxTeamTarget = "Specific"
+            config.SA2_TeamTarget = "Specific"
+            config.antiAimTarget = "Specific"
+        else
+            config.specificTeamTarget = false
+            config.targetMode = Option
+            config.aimbotTeamTarget = Option
+            config.hitboxTeamTarget = Option
+            config.SA2_TeamTarget = Option
+            config.antiAimTarget = Option
         end
-    })
+        updateTeamTargetModes()
+        syncSilentAimWithMaster()
+    end
+})
+local function getTeamNames()
+    local teams = {}
+    for _, team in ipairs(game:GetService("Teams"):GetTeams()) do
+        if team.Name and team.Name ~= "" then
+            table.insert(teams, team.Name)
+        end
+    end
+    return teams
+end
+local function updateTeamList()
+    local teamNames = getTeamNames()
+    if #teamNames == 0 then
+        table.insert(teamNames, "No Teams Found")
+    end
+    return teamNames
+end
+
+local teamDropdown = MainTab:Dropdown({
+    Title = "Target Specific Teams",
+    Desc = "what team specifically?? o.0",
+    Values = updateTeamList(),
+    Value = config.targetedTeams or {},
+    Multi = true,
+    Callback = function(selected)
+        config.targetedTeams = selected or {}
+        WindUI:Notify({
+            Title = "Team Targeting",
+            Content = "Targeting " .. #config.targetedTeams .. " team(s)",
+            Icon = "check",
+            Duration = 2
+        })
+    end
+})
+task.spawn(function()
+    while true do
+        task.wait(5)
+        local teamNames = getTeamNames()
+        if #teamNames > 0 then
+            pcall(function()
+                teamDropdown:SetValues(teamNames)
+            end)
+        end
+    end
+end)
     
     MainTab:Dropdown({
         Title = "TargetType",
-        Desc = "Select target type\n(NPCs are quite unstable)",
+        Desc = "model type shi\n(NPCs are quite unstable)",
         Values = {"Players", "NPCs", "Both"},
         Value = config.masterTarget or "Players",
         Multi = false,
@@ -10686,7 +10951,7 @@ local MainTab = Window:Tab({
 MainTab:Space()
     MainTab:Toggle({
         Title = "QuickToggles",
-        Desc = "Show/hide QuickToggles/QT",
+        Desc = "1000x easier for the mobile folks",
         Value = config.QuickToggles or false,
         Callback = function(v)
             config.QuickToggles = v
@@ -10697,7 +10962,7 @@ MainTab:Space()
     })
 MainTab:Dropdown({
     Title = "QuickToggle Selection",
-    Desc = "Select which toggles to show in QuickToggles",
+    Desc = "show what button now??",
     Values = config.availableQuickToggles,
     Value = config.availableQuickToggles,
     Multi = true,
@@ -10718,7 +10983,7 @@ MainTab:Dropdown({
 
 MainTab:Toggle({
     Title = "QuickToggles Draggable",
-    Desc = "Allow dragging quick toggles",
+    Desc = "move with ur finger",
     Value = config.QTDrag or true,
     Callback = function(v)
         config.QTDrag = v
@@ -10734,7 +10999,7 @@ MainTab:Toggle({
 MainTab:Space()
 MainTab:Toggle({
     Title = "Enable Keybinds",
-    Desc = "Toggle keybind system on/off",
+    Desc = "could be useful?? who knows",
     Value = config.KeybindsEnabled or true,
     Callback = function(v)
         config.KeybindsEnabled = v
@@ -10749,7 +11014,7 @@ MainTab:Toggle({
 
 MainTab:Toggle({
     Title = "Hold Key Mode",
-    Desc = "Require holding modifier key for keybinds",
+    Desc = "basically ''Shift + E'' lol",
     Value = config.HoldKeysEnabled or false,
     Callback = function(v)
         config.HoldKeysEnabled = v
@@ -10764,7 +11029,7 @@ MainTab:Toggle({
 
 MainTab:Keybind({
     Title = "Hold Key Modifier",
-    Desc = "Key to hold for combos (like LeftAlt + Keybind)",
+    Desc = "Key to hold for combos 8)",
     Value = config.Keybinds.HoldKeybind or "LeftAlt",
     Callback = function(key)
         config.Keybinds.HoldKeybind = key
@@ -10941,7 +11206,7 @@ MainTab:Keybind({
     
     MainTab:Toggle({
         Title = "Autofarm Wall Check",
-        Desc = "Prevent teleporting targets behind walls",
+        Desc = "idk a filler button basically",
         Value = config.autoFarmWallCheck or false,
         Callback = function(v)
             config.autoFarmWallCheck = v
@@ -10985,7 +11250,7 @@ MainTab:Keybind({
 
     MainTab:Button({
         Title = "Clear Partclaim",
-        Desc = "Reduce Lag",
+        Desc = "Reduce Lag :p",
         Callback = function()
             pc2()
             n({
@@ -11101,7 +11366,7 @@ MainTab:Keybind({
     
     MainTab:Toggle({
         Title = "Show AntiKick Notifications",
-        Desc = "Enable/disable Antikick Notifications",
+        Desc = "show blocked kicks or shi",
         Value = ED_AntiKick.SendNotifications or false,
         Callback = function(v)
             ED_AntiKick.SendNotifications = v
@@ -11219,7 +11484,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
     
     MainTab:Toggle({
         Title = "Updaters",
-        Desc = "Stops other Updaters when disabled Increases performance. Might cause features to not work",
+        Desc = "Stops other Updaters when disabled Increases performance\nCause features to not work",
         Value = config.varibz.patcher or true,
         Callback = function(v)
             config.varibz.patcher = v
@@ -11228,7 +11493,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
 
     MainTab:Slider({
         Title = "Clean Cache Every",
-        Desc = "Cleans up cache every second",
+        Desc = "dust brusher seconds",
         IsTextbox = true,
         Step = 0.01,
         Value = {
@@ -11243,7 +11508,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
     
     MainTab:Toggle({
         Title = "Cache Cleaners",
-        Desc = "Turning this off Might cause lag",
+        Desc = "toggle da dust brusher",
         Value = config.varibz.patcher or true,
         Callback = function(v)
             config.varibz.lowpatcher = v
@@ -11252,7 +11517,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
     
     MainTab:Toggle({
         Title = "Low Render",
-        Desc = "Renders the game in lower visuals",
+        Desc = "-1 graphics",
         Value = config.LowRender or false,
         Callback = function(v)
             config.LowRender = v
@@ -11261,7 +11526,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
 
 MainTab:Toggle({
     Title = "Errors",
-    Desc = "Enable/disable error catching",
+    Desc = "captures errors",
     Value = config.varibz.errors or true,
     Callback = function(v)
         config.varibz.errors = v
@@ -11318,7 +11583,7 @@ MainTab:Input({
 
 MainTab:Button({
     Title = "New Save",
-    Desc = "Save New/Overwrite\n[leave blank for auto-generated name]",
+    Desc = "Save New/Overwrite\nblank = ''XXXX'' based on game name :3",
     Icon = "save",
     Callback = function()
         local name = saveInputValue or ""
@@ -11362,7 +11627,7 @@ MainTab:Button({
 })
 MainTab:Button({
     Title = "Load Save",
-    Desc = "Load selected save",
+    Desc = "Load that one",
     Icon = "download",
     Callback = function()
         local name = saveInputValue or ""
@@ -11381,7 +11646,7 @@ MainTab:Button({
 
 MainTab:Button({
     Title = "Delete Save",
-    Desc = "Delete selected save",
+    Desc = "Delete that one",
     Icon = "trash",
     Callback = function()
         local name = saveInputValue or ""
@@ -11409,7 +11674,7 @@ MainTab:Button({
 
 MainTab:Button({
     Title = "Autoload on Game",
-    Desc = "Set selected save to autoload on this game",
+    Desc = "too lazy to click on load save",
     Icon = "play",
     Callback = function()
         local name = saveInputValue or ""
@@ -11533,7 +11798,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Highlight ESP",
-        Desc = "Enable player highlight",
+        Desc = "highlight or outline whatever",
         Value = config.prefHighlightESP or false,
         Callback = function(v)
             toggleHighlightESP(v)
@@ -11543,7 +11808,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Text ESP",
-        Desc = "Show player names/health",
+        Desc = "shows ur opponents irl name... trust",
         Value = config.prefTextESP or false,
         Callback = function(v)
             toggleTextESP(v)
@@ -11553,7 +11818,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Box ESP",
-        Desc = "Show bounding boxes",
+        Desc = "weird 2d box",
         Value = config.prefBoxESP or false,
         Callback = function(v)
             toggleBoxESP(v)
@@ -11563,7 +11828,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Health ESP",
-        Desc = "Show health bars",
+        Desc = "HP bars... bar..",
         Value = config.prefHealthESP or false,
         Callback = function(v)
             toggleHealthESP(v)
@@ -11573,7 +11838,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Head Dot ESP",
-        Desc = "Show head indicators",
+        Desc = "poki dots on yer screen",
         Value = config.prefHeadDotESP or false,
         Callback = function(v)
             config.prefHeadDotESP = v
@@ -11591,7 +11856,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Toggle Tracer ESP",
-        Desc = "Draw lines to targets",
+        Desc = "weird lines",
         Value = config.lineESPEnabled or false,
         Callback = function(v)
             config.lineESPEnabled = v
@@ -11606,7 +11871,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "Tracer ESP Only Targets",
-        Desc = "Only show lines when targeting with aimbot/silent aim",
+        Desc = "only target da targetted",
         Value = config.lineESPOnlyTarget or false,
         Callback = function(v)
             config.lineESPOnlyTarget = v
@@ -11616,7 +11881,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Dropdown({
         Title = "Tracer Start Position",
-        Desc = "Where lines start from on screen",
+        Desc = "Wheres lines pos?",
         Values = {"Center", "Bottom", "Top", "BottomLeft", "BottomRight", "TopLeft", "TopRight"},
         Value = config.lineStartPosition or "Center",
         Multi = false,
@@ -11627,7 +11892,7 @@ local VisualsTab = Window:Tab({
     
     VisualsTab:Toggle({
         Title = "ESP Colour Based On Health",
-        Desc = "Dynamic color based on health",
+        Desc = "waht colr",
         Value = config.prefColorByHealth or false,
         Callback = function(v)
             config.prefColorByHealth = v
@@ -11639,7 +11904,7 @@ local VisualsTab = Window:Tab({
 
 VisualsTab:Toggle({
     Title = "Full Bright",
-    Desc = "Enable/disable full bright (no lighting)",
+    Desc = "night vision",
     Value = false,
     Callback = function(v)
         config.fbenabled = v
@@ -11721,7 +11986,7 @@ VisualsTab:Button({
 
 VisualsTab:Toggle({
     Title = "FOV",
-    Desc = "Override the game's default FOV",
+    Desc = "[insert funny desc here]",
     Value = config.customFOVEnabled or false,
     Callback = function(v)
         config.customFOVEnabled = v
@@ -11741,7 +12006,7 @@ VisualsTab:Toggle({
 
 VisualsTab:Slider({
     Title = "FOV Value",
-    Desc = "Adjust Field Of View",
+    Desc = "quake pro",
     IsTextbox = true,
     Step = 1,
     Suffix = "bruhs",
@@ -11769,7 +12034,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "ESP Color",
-    Desc = "Default color for ESP elements",
+    Desc = "make it pretty",
     Default = config.espc or Color3.fromRGB(255, 182, 193),
     Transparency = 0,
     Locked = false,
@@ -11782,7 +12047,7 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Colorpicker({
     Title = "ESP Target Color",
-    Desc = "Color when player is targeted",
+    Desc = "make the target pretty",
     Default = config.esptargetc or Color3.fromRGB(255, 255, 0),
     Transparency = 0,
     Locked = false,
@@ -11795,7 +12060,7 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Colorpicker({
     Title = "ESP Team Color",
-    Desc = "Color for teammates",
+    Desc = "make the teams pretty",
     Default = config.espteamc or Color3.fromRGB(0, 255, 0),
     Transparency = 0,
     Locked = false,
@@ -11808,7 +12073,7 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Colorpicker({
     Title = "Tracer Line Color",
-    Desc = "Color for tracer lines",
+    Desc = "make the weird lines pretty",
     Default = config.lineColor or Color3.fromRGB(255, 255, 255),
     Transparency = 0,
     Locked = false,
@@ -11828,7 +12093,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "FOV Ring Color",
-    Desc = "Color for FOV ring",
+    Desc = "make the fov ring pretty",
     Default = config.fovc or Color3.fromRGB(100, 0, 0),
     Transparency = 0,
     Locked = false,
@@ -11843,7 +12108,7 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Colorpicker({
     Title = "FOV Target Color",
-    Desc = "Color when target is in FOV",
+    Desc = "make the evil fov ring pretty",
     Default = config.fovct or Color3.fromRGB(255, 255, 0),
     Transparency = 0,
     Locked = false,
@@ -11865,7 +12130,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "SA2 FOV Color",
-    Desc = "Color for Silent Aim HK FOV",
+    Desc = "make the fov ring pretty",
     Default = config.SA2_FovColor or Color3.new(0, 0, 0),
     Transparency = 0,
     Locked = false,
@@ -11877,7 +12142,7 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Colorpicker({
     Title = "SA2 FOV Target Color",
-    Desc = "Color when target is in SA2 FOV",
+    Desc = "make the evil fov ring pretty",
     Default = config.SA2_FovColourTarget or Color3.new(1, 1, 0),
     Transparency = 0,
     Locked = false,
@@ -11896,7 +12161,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "TriggerBot FOV Color",
-    Desc = "Color for trigger bot FOV ring",
+    Desc = "make the fov ring pretty",
     Default = config.tbot.fovColor or Color3.fromRGB(255, 0, 0),
     Transparency = 0,
     Locked = false,
@@ -11916,7 +12181,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "Visualizer Color",
-    Desc = "Color of the Hitbox",
+    Desc = "make the weird shape pretty",
     Default = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0),
     Transparency = 0,
     Locked = false,
@@ -11941,7 +12206,7 @@ VisualsTab:Paragraph({
 
 VisualsTab:Colorpicker({
     Title = "Reach Visualizer Color",
-    Desc = "Color for reach visualizer",
+    Desc = "make another weird shape pretty",
     Default = config.visualizer.color or Color3.fromRGB(255, 0, 0),
     Transparency = 0,
     Locked = false,
@@ -11968,7 +12233,7 @@ end
 currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
 VisualsTab:Dropdown({
     Title = "UI Theme",
-    Desc = "Change UI theme",
+    Desc = "make the ui pretty",
     Values = getthemez(),
     Value = currentTheme,
     Multi = false,
@@ -11993,7 +12258,7 @@ VisualsTab:Dropdown({
 
 VisualsTab:Slider({
     Title = "Transparency Value",
-    Desc = "Adjust UI window transparency",
+    Desc = "make the ui ghosty",
     IsTextbox = true,
     Step = 0.05,
     Value = {
@@ -12121,13 +12386,13 @@ local AntiAimTab = Window:Tab({
     AntiAimTab:Space()
     AntiAimTab:Paragraph({
         Title = "AntiAim Modes",
-        Desc = "Different AntiAim evasion modes",
+        Desc = "get away modes",
         Color = config.Gradow.uicolor.lightGreen
     })
     
     AntiAimTab:Toggle({
         Title = "Raycast AntiAim",
-        Desc = "Teleport when targeted",
+        Desc = "raycats antiaim",
         Value = config.raycastAntiAim or false,
         Callback = function(v)
             config.raycastAntiAim = v
@@ -12141,7 +12406,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Toggle({
         Title = "Above Player",
-        Desc = "Teleport above target",
+        Desc = "stay above that player rn",
         Value = config.antiAimAbovePlayer or false,
         Callback = function(v)
             config.antiAimAbovePlayer = v
@@ -12157,7 +12422,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Toggle({
         Title = "Behind Player",
-        Desc = "Teleport behind target",
+        Desc = "hey I'm behind u ;)",
         Value = config.antiAimBehindPlayer or false,
         Callback = function(v)
             config.antiAimBehindPlayer = v
@@ -12173,7 +12438,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Toggle({
         Title = "Orbit Players",
-        Desc = "Orbit around nearest target",
+        Desc = "dizzify that guy",
         Value = config.antiAimOrbitEnabled or false,
         Callback = function(v)
             config.antiAimOrbitEnabled = v
@@ -12198,7 +12463,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Teleport Distance (Raycast)",
-        Desc = "Distance to teleport when targeted",
+        Desc = "raycats antiaim to dist",
         IsTextbox = true,
         Step = 0.5,
         Value = {
@@ -12213,7 +12478,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Above Height (Above Player)",
-        Desc = "Height above target",
+        Desc = "how high am i??",
         IsTextbox = true,
         Step = 1,
         Value = {
@@ -12228,7 +12493,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Behind Distance (Behind Player)",
-        Desc = "Distance behind target",
+        Desc = "am i far or close",
         IsTextbox = true,
         Step = 0.5,
         Value = {
@@ -12243,7 +12508,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Orbit Speed (Orbit)",
-        Desc = "Angular speed multiplier",
+        Desc = "centrifugal force wouldve been bad",
         IsTextbox = true,
         Step = 0.5,
         Value = {
@@ -12258,7 +12523,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Orbit Radius (Orbit)",
-        Desc = "Distance from target",
+        Desc = "how far should i orbit dat guy?",
         IsTextbox = true,
         Step = 0.5,
         Value = {
@@ -12273,7 +12538,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Slider({
         Title = "Orbit Height (Orbit)",
-        Desc = "Vertical offset",
+        Desc = "how high am i to orbit dat guy??",
         IsTextbox = true,
         Step = 1,
         Value = {
@@ -12294,7 +12559,7 @@ AntiAimTab:Paragraph({
 
 AntiAimTab:Toggle({
     Title = "Enable SpinBot",
-    Desc = "Toggle spinning on/off",
+    Desc = "tornado >:>",
     Value = config.spinbot.enabled or false,
     Callback = function(v)
         config.spinbot.enabled = v
@@ -12334,7 +12599,7 @@ AntiAimTab:Toggle({
 
 AntiAimTab:Slider({
     Title = "Spin Speed",
-    Desc = "Rotation speed",
+    Desc = "fidget spinner speed",
     IsTextbox = true,
     Step = 1,
     Value = {
@@ -12349,7 +12614,7 @@ AntiAimTab:Slider({
 
 AntiAimTab:Button({
     Title = "Reset Rotation",
-    Desc = "Reset character rotation to normal",
+    Desc = "an useless button",
     Callback = function()
         if localPlayer.Character then
             local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -12379,7 +12644,7 @@ AntiAimTab:Toggle({
 
 AntiAimTab:Slider({
     Title = "Desync Transparency",
-    Desc = "Transparency level when desynced",
+    Desc = "make desync look pretty",
     Step = 0.05,
     Value = {
         Min = 0,
@@ -12454,7 +12719,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Toggle({
         Title = "WallCheck AB ('H')",
-        Desc = "Check for walls",
+        Desc = "incoming WALL!!",
         Value = config.aimbotWallCheck or false,
         Callback = function(v)
             config.aimbotWallCheck = v
@@ -12463,7 +12728,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Toggle({
         Title = "360° Aimbot",
-        Desc = "Target in all directions",
+        Desc = "i have eyes on everyone",
         Value = config.aimbot360Enabled or false,
         Callback = function(v)
             toggle360Aimbot(v)
@@ -12472,8 +12737,8 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Dropdown({
         Title = "Target Part",
-        Desc = "Part to aim at",
-        Values = {"Head", "HumanoidRootPart", "Torso"},
+        Desc = "wat part",
+        Values = {"Head", "HumanoidRootPart"},
         Value = config.aimbotTargetPart or "Head",
         Multi = false,
         Callback = function(Option)
@@ -12483,7 +12748,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Slider({
         Title = "Aim Strength",
-        Desc = "Smoothing strength",
+        Desc = "aim powa",
         Step = 0.05,
         Value = {
             Min = 0,
@@ -12497,7 +12762,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Slider({
         Title = "FOV Radius",
-        Desc = "Aimbot field of view",
+        Desc = "eyesight",
         IsTextbox = true,
         Step = 10,
         Value = {
@@ -12581,7 +12846,7 @@ local SilentAimTab = Window:Tab({
     
     SilentAimTab:Toggle({
         Title = "WallCheck SA ('B')",
-        Desc = "Check for walls",
+        Desc = "is that a wall or noe?",
         Value = config.wallc or false,
         Callback = function(v)
             config.wallc = v
@@ -12590,7 +12855,7 @@ local SilentAimTab = Window:Tab({
 
     SilentAimTab:Toggle({
         Title = "Scale To Screen",
-        Desc = "Scale hitbox to cover the fov circle",
+        Desc = "try it on tps its useful in dere",
         Value = config.scaleToScreen or false,
         Callback = function(v)
             config.scaleToScreen = v
@@ -12599,7 +12864,7 @@ local SilentAimTab = Window:Tab({
     
     SilentAimTab:Slider({
         Title = "STS Distance",
-        Desc = "distance from player to prevent clipping",
+        Desc = "prevent hitbox clipping to u ig",
         IsTextbox = true,
         Step = 1,
         Value = {
@@ -12614,7 +12879,7 @@ local SilentAimTab = Window:Tab({
     
     SilentAimTab:Dropdown({
         Title = "Target Part",
-        Desc = "Part to target",
+        Desc = "target that one and the other one",
         Values = {"Head", "HumanoidRootPart", "Both"},
         Value = config.bodypart or "Head",
         Multi = false,
@@ -12632,7 +12897,7 @@ local SilentAimTab = Window:Tab({
 
 SilentAimTab:Slider({
     Title = "Target Range",
-    Desc = "How far a target should be targeted",
+    Desc = "eyesight²",
     IsTextbox = true,
     Step = 10,
     Value = {
@@ -12647,7 +12912,7 @@ SilentAimTab:Slider({
     
     SilentAimTab:Slider({
         Title = "HitChance",
-        Desc = "Chance to hit target",
+        Desc = "make me look.. legit",
         Step = 1,
         Suffix = "%",
         Value = {
@@ -12662,7 +12927,7 @@ SilentAimTab:Slider({
     
     SilentAimTab:Slider({
         Title = "Fov Radius",
-        Desc = "Silent aim field of view",
+        Desc = "eyesight",
         IsTextbox = true,
         Step = 10,
         Value = {
@@ -12680,7 +12945,7 @@ SilentAimTab:Slider({
     
     SilentAimTab:Slider({
         Title = "Hitbox Transparency",
-        Desc = "SilentAim Hitbox Transparency",
+        Desc = "not a raycat btw",
         Step = 0.1,
         Value = {
             Min = 0,
@@ -12738,7 +13003,7 @@ local SilentAimTab2 = Window:Tab({
     
     SilentAimTab2:Toggle({
         Title = "WallCheck ('T')",
-        Desc = "Check for walls (Might lag)",
+        Desc = "wallchecker 9001 (Might lag)",
         Value = config.SA2_Wallcheck or false,
         Callback = function(v)
             config.SA2_Wallcheck = v
@@ -12747,7 +13012,7 @@ local SilentAimTab2 = Window:Tab({
     
     SilentAimTab2:Toggle({
         Title = "WallBang",
-        Desc = "Shoot through walls... (self-explanatory)",
+        Desc = "Shoot through walls... (self-explanatory)\nworks in some games",
         Value = config.SA2_Wallbang or false,
         Callback = function(v)
             config.SA2_Wallbang = v
@@ -12775,7 +13040,7 @@ local SilentAimTab2 = Window:Tab({
 
 SilentAimTab2:Toggle({
     Title = "Bullet Teleport",
-    Desc = "Teleports bullet origin to target :]",
+    Desc = "Teleports bullet origin to target :]\nworks in some games",
     Value = config.SA2_BulletTeleport or false,
     Callback = function(v)
         config.SA2_BulletTeleport = v
@@ -12803,7 +13068,7 @@ SilentAimTab2:Toggle({
     
     SilentAimTab2:Toggle({
         Title = "360 Mode",
-        Desc = "Enable silent aim in all directions",
+        Desc = "eyes everywhere",
         Value = config.SA2_ThreeSixtyMode or false,
         Callback = function(v)
             config.SA2_ThreeSixtyMode = v
@@ -12812,8 +13077,8 @@ SilentAimTab2:Toggle({
     
     SilentAimTab2:Dropdown({
         Title = "Aim Method",
-        Desc = "Raycast method to hook",
-        Values = {"Raycast", "FindPartOnRay", "Mouse.Hit"},
+        Desc = "raycat mathod",
+        Values = {"Raycast", "FindPartOnRay"},
         Value = config.SA2_Method or "Raycast",
         Multi = false,
         Callback = function(choice)
@@ -12823,8 +13088,8 @@ SilentAimTab2:Toggle({
     
     SilentAimTab2:Dropdown({
         Title = "Target Part",
-        Desc = "Part to target",
-        Values = {"Head", "HumanoidRootPart"},
+        Desc = "what part should i find???",
+        Values = {"Random", "Head", "HumanoidRootPart"},
         Value = config.SA2_TargetPart or "Head",
         Multi = false,
         Callback = function(choice)
@@ -12842,7 +13107,7 @@ SilentAimTab2:Toggle({
     
     SilentAimTab2:Slider({
         Title = "Hit Chance",
-        Desc = "Accuracy percentage",
+        Desc = "Accuracy to luk mor ''legit''",
         Step = 1,
         Suffix = "%",
         Value = {
@@ -12856,6 +13121,27 @@ SilentAimTab2:Toggle({
     })
 
 SilentAimTab2:Slider({
+    Title = "Headshot Chance",
+    Desc = "hitchance²\n(only works with ''Random'' targetpart)",
+    Step = 1,
+    Suffix = "%",
+    Value = {
+        Min = 0,
+        Max = 100,
+        Default = config.SA2_HeadshotChance or 100
+    },
+    Callback = function(value)
+        config.SA2_HeadshotChance = value
+        WindUI:Notify({
+            Title = "Headshot Chance",
+            Content = "Set to " .. value .. "%",
+            Icon = "crosshair",
+            Duration = 1
+        })
+    end
+})
+
+SilentAimTab2:Slider({
     Title = "Responsiveness",
     Desc = "Higher = More Performance\nLower = More Responsiveness",
     Step = 0.01,
@@ -12863,7 +13149,7 @@ SilentAimTab2:Slider({
     Value = {
         Min = 0.01,
         Max = 2,
-        Default = config.varibz.sa2stuff or 0.50
+        Default = config.varibz.sa2stuff or 0.8
     },
     Callback = function(value)
         config.varibz.sa2stuff = value
@@ -12872,7 +13158,7 @@ SilentAimTab2:Slider({
     
     SilentAimTab2:Slider({
         Title = "FOV Radius",
-        Desc = "Field of View size",
+        Desc = "eyesight",
         IsTextbox = true,
         Step = 10,
         Value = {
@@ -12886,7 +13172,7 @@ SilentAimTab2:Slider({
     })
     SilentAimTab2:Slider({
         Title = "Target Range",
-        Desc = "How far a target should a targeted",
+        Desc = "eyesight²",
         IsTextbox = true,
         Step = 10,
         Value = {
@@ -12958,22 +13244,9 @@ local HitboxTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     
-    HitboxTab:Dropdown({
-        Title = "Team Target",
-        Desc = "Select target team preference",
-        Values = {"Enemies", "Teams", "All"},
-        Value = config.hitboxTeamTarget or "Enemies",
-        Multi = false,
-        Callback = function(Option)
-            if config.masterTeamTarget == "All" then return end
-            config.hitboxTeamTarget = Option
-            applyhb()
-        end
-    })
-    
     HitboxTab:Slider({
         Title = "Hitbox Size",
-        Desc = "Size of expanded hitboxes",
+        Desc = "make shape big :o",
         IsTextbox = true,
         Step = 5,
         Value = {
@@ -13128,7 +13401,7 @@ local ReachTab = Window:Tab({
 
     ReachTab:Toggle({
         Title = "Enable Reach",
-        Desc = "Extend weapon reach distance",
+        Desc = "longer hurtbox basically",
         Value = config.reach.enabled,
         Callback = function(v)
             config.reach.enabled = v
@@ -13158,7 +13431,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Dropdown({
         Title = "Reach Type",
-        Desc = "Shape of the reach area",
+        Desc = "polyester dropdown",
         Values = {"Sphere", "Flat"},
         Value = config.reach.type,
         Multi = false,
@@ -13169,7 +13442,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Input({
         Title = "Reach Distance",
-        Desc = "Enter exact reach value",
+        Desc = "hurtboxsight",
         Placeholder = "10",
         Value = tostring(config.reach.distance),
         ClearTextOnFocus = true,
@@ -13189,7 +13462,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Toggle({
         Title = "Show Visualizer",
-        Desc = "Display reach area visually",
+        Desc = "visualize the weird hurtbox",
         Value = config.visualizer.enabled,
         Callback = function(v)
             config.visualizer.enabled = v
@@ -13201,7 +13474,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Dropdown({
         Title = "Visualizer Material",
-        Desc = "Material for visualizer",
+        Desc = "make the hurtbox pretty",
         Values = {"ForceField", "Plastic", "Glass", "Neon", "SmoothPlastic", "Metal", "DiamondPlate"},
         Value = config.visualizer.material,
         Multi = false,
@@ -13215,7 +13488,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Slider({
         Title = "Visualizer Transparency",
-        Desc = "Transparency of reach visualizer",
+        Desc = "ghostify da hurtbox",
         Step = 0.05,
         Value = {
             Min = 0,
@@ -13230,7 +13503,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Toggle({
         Title = "Auto activate",
-        Desc = "Automatically activate tool",
+        Desc = "autoclicker 4 tools",
         Value = config.reach.autoSwing.enabled,
         Callback = function(v)
             config.reach.autoSwing.enabled = v
@@ -13260,7 +13533,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Slider({
         Title = "Activate Delay",
-        Desc = "Delay between Activate",
+        Desc = "autoclicker delay lays",
         Step = 0.05,
         Suffix = "seconds",
         Value = {
@@ -13392,7 +13665,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Button({
         Title = "Clear Visualizer",
-        Desc = "Remove reach visualizer",
+        Desc = "fix problem button",
         Callback = function()
             visualizer.Parent = nil
             n({
@@ -13407,7 +13680,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Button({
         Title = "Find Nearby Weapons",
-        Desc = "Scan for nearby weapons/tools",
+        Desc = "idk if it works",
         Callback = function()
             local weapons = {}
             local character = excusemesir.Players.LocalPlayer.Character
@@ -13497,7 +13770,7 @@ local ClientTab = Window:Tab({
 
     ClientTab:Toggle({
         Title = "Enable Walkspeed",
-        Desc = "Override walkspeed",
+        Desc = "flash",
         Value = config.walkspeedEnabled or false,
         Callback = function(v)
             config.walkspeedEnabled = v
@@ -13509,7 +13782,7 @@ local ClientTab = Window:Tab({
 
     ClientTab:Slider({
         Title = "Walkspeed",
-        Desc = "Set walkspeed value",
+        Desc = "flash's speed",
         IsTextbox = true,
         Step = 1,
         Suffix = "studs/s",
@@ -13528,7 +13801,7 @@ local ClientTab = Window:Tab({
 
 ClientTab:Toggle({
     Title = "Enable TPWalk",
-    Desc = "Toggle CFrame-based movement",
+    Desc = "temu flash",
     Value = config.tpwalkEnabled or false,
     Callback = function(v)
         config.tpwalkEnabled = v
@@ -13540,7 +13813,7 @@ ClientTab:Toggle({
 
 ClientTab:Slider({
     Title = "TPWalk Speed",
-    Desc = "Movement speed for TPWalk",
+    Desc = "temu flash's speed",
     IsTextbox = true,
     Step = 1,
     Suffix = "studs/s",
@@ -13556,7 +13829,7 @@ ClientTab:Slider({
 
     ClientTab:Toggle({
         Title = "Enable Jumppower",
-        Desc = "Override jump power",
+        Desc = "rabbit",
         Value = config.jumppowerEnabled or false,
         Callback = function(v)
             config.jumppowerEnabled = v
@@ -13568,7 +13841,7 @@ ClientTab:Slider({
 
     ClientTab:Slider({
         Title = "Jumppower",
-        Desc = "Set jump power value",
+        Desc = "rabbit power",
         IsTextbox = true,
         Step = 1,
         Suffix = "studs",
@@ -13587,7 +13860,7 @@ ClientTab:Slider({
 
 ClientTab:Toggle({
     Title = "Enable Gravity",
-    Desc = "Override gravity value",
+    Desc = "gravitons r real",
     Value = config.gravityEnabled or false,
     Callback = function(v)
         config.gravityEnabled = v
@@ -13605,7 +13878,7 @@ ClientTab:Toggle({
 
 ClientTab:Slider({
     Title = "Gravity Value",
-    Desc = "Set gravity value (higher = more gravity)",
+    Desc = "gravy valve",
     IsTextbox = true,
     Step = 1,
     Suffix = "studs/s²",
@@ -13624,7 +13897,7 @@ ClientTab:Slider({
 
     ClientTab:Toggle({
         Title = "Enable HipHeight",
-        Desc = "Override hip height",
+        Desc = "''u float 5 feet above you jack###''",
         Value = config.hipHeightEnabled or false,
         Callback = function(v)
             config.hipHeightEnabled = v
@@ -13636,7 +13909,7 @@ ClientTab:Slider({
 
     ClientTab:Slider({
         Title = "HipHeight",
-        Desc = "Set hip height value",
+        Desc = "how tall r u",
         IsTextbox = true,
         Step = 0.5,
         Suffix = "studs",
@@ -13663,7 +13936,7 @@ ClientTab:Slider({
 
     ClientTab:Toggle({
         Title = "Truss",
-        Desc = "Creates a claimable part to fly (Less detectable)",
+        Desc = "ladder fly (Less detectable)",
         Value = config.trussEnabled or false,
         Callback = function(v)
             config.trussEnabled = v
@@ -13756,7 +14029,7 @@ ClientTab:Slider({
     
     ClientTab:Toggle({
         Title = "Airwalk",
-        Desc = "Walk on air",
+        Desc = "walk on air so u fly",
         Value = config.airwalkEnabled or false,
         Callback = function(v)
             config.airwalkEnabled = v
@@ -13844,7 +14117,7 @@ ClientTab:Slider({
     
     ClientTab:Toggle({
         Title = "Auto Respawn",
-        Desc = "Respawns where you died from",
+        Desc = "''how tf u came back alive?''",
         Value = config.autorespawnEnabled or false,
         Callback = function(v)
             config.autorespawnEnabled = v
@@ -13962,7 +14235,7 @@ MiscTab:Toggle({
 
 MiscTab:Dropdown({
     Title = "Tbot Target Part",
-    Desc = "Part to aim for",
+    Desc = "wat part",
     Values = {"Head", "HumanoidRootPart", "Random"},
     Value = config.tbot.targetPart or "Head",
     Multi = false,
@@ -13973,7 +14246,7 @@ MiscTab:Dropdown({
 
 MiscTab:Slider({
     Title = "Tbot FOV Radius",
-    Desc = "Trigger bot field of view",
+    Desc = "eyesight",
     IsTextbox = true,
     Step = 5,
     Value = {
@@ -13989,7 +14262,7 @@ MiscTab:Slider({
 
 MiscTab:Slider({
     Title = "Tbot Hit Chance",
-    Desc = "Chance to shoot when target is in FOV",
+    Desc = "make me more..... ''legit''",
     Step = 1,
     Suffix = "%",
     Value = {
@@ -14004,7 +14277,7 @@ MiscTab:Slider({
 
 MiscTab:Slider({
     Title = "Tbot Shot Delay",
-    Desc = "Delay between shots (seconds)",
+    Desc = "firerate basically",
     Step = 0.01,
     Suffix = "s",
     Value = {
@@ -14019,7 +14292,7 @@ MiscTab:Slider({
 
 MiscTab:Toggle({
     Title = "Tbot Wall Check ('Y')",
-    Desc = "Check for walls before shooting",
+    Desc = "wallchecker 9999",
     Value = config.tbot.wallCheck or false,
     Callback = function(v)
         config.tbot.wallCheck = v
@@ -14027,8 +14300,8 @@ MiscTab:Toggle({
 })
 
 MiscTab:Toggle({
-    Title = "Tbot Hold to Shoot",
-    Desc = "Only shoot when holding a key",
+    Title = "Tbot Hold Key to Shoot",
+    Desc = "''press E to shoot''",
     Value = config.tbot.holdToShoot or false,
     Callback = function(v)
         config.tbot.holdToShoot = v
@@ -14037,7 +14310,7 @@ MiscTab:Toggle({
 
 MiscTab:Input({
     Title = "Tbot Hold Key",
-    Desc = "Key to hold for shooting",
+    Desc = "wat key",
     Placeholder = "MouseButton1",
     Value = config.tbot.holdKey or "MouseButton1",
     ClearTextOnFocus = true,
@@ -14186,12 +14459,13 @@ MiscTab:Toggle({
             Camera.CameraType = Enum.CameraType.Custom
             return
         end
-
         local function isEnemy(player)
             if not player or player == Players.LocalPlayer then return false end
+            if config.specificTeamTarget then
+                return isInSpecificTeam(player)
+            end
             local localTeam = Players.LocalPlayer.Team
             local targetTeam = player.Team
-            
             if config.masterTeamTarget == "All" then
                 return true
             elseif config.masterTeamTarget == "Enemies" then
@@ -14207,23 +14481,18 @@ MiscTab:Toggle({
             end
             return true
         end
-
         local function isNPCEnemy(model)
             if not model or not model:IsA("Model") then return false end
             if Players:GetPlayerFromCharacter(model) then return false end
             local humanoid = model:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then return false end
             if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
+            if config.specificTeamTarget then
+                return isInSpecificTeam(model)
+            end
             if config.masterTeamTarget == "All" then
                 return true
             elseif config.masterTeamTarget == "Enemies" then
-                local npcTeam = model:FindFirstChild("Team")
-                if npcTeam then
-                    local localTeam = excusemesir.Players.LocalPlayer.Team
-                    if localTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                        return localTeam ~= npcTeam.Value
-                    end
-                end
                 return true
             elseif config.masterTeamTarget == "Teams" then
                 local npcTeam = model:FindFirstChild("Team")
@@ -14449,7 +14718,7 @@ MiscTab:Toggle({
 
 MiscTab:Slider({
     Title = "WallOver Offset Value",
-    Desc = "Vertical offset amount (0-500)",
+    Desc = "y is ur camera so high??",
     IsTextbox = true,
     Step = 1,
     Value = {
@@ -14504,7 +14773,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Input({
         Title = "New Music ID",
-        Desc = "Enter a Roblox asset ID for new music",
+        Desc = "add dat music",
         Placeholder = "128586477335903",
         Value = "",
         ClearTextOnFocus = true,
@@ -14515,8 +14784,8 @@ local BGMTab = Window:Tab({
     
     BGMTab:Input({
         Title = "Music Title",
-        Desc = "Set a title for the new music",
-        Placeholder = "My Song",
+        Desc = "I need a name music",
+        Placeholder = "insanely cool music",
         Value = "",
         ClearTextOnFocus = true,
         Callback = function(text)
@@ -14526,7 +14795,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Button({
         Title = "Add Music",
-        Desc = "Add custom music to the list",
+        Desc = "add dat music 2 dropdown",
         Icon = "plus",
         Callback = function()
             local id = newMusicIdInput or ""
@@ -14560,7 +14829,7 @@ local BGMTab = Window:Tab({
     
     local dropdownMusic = BGMTab:Dropdown({
         Title = "Select Music",
-        Desc = "Choose a music track to play",
+        Desc = "I want to play that music",
         Values = BMG:getDropdownValues(),
         Value = BMG:getSelectedValue(),
         Multi = false,
@@ -14587,7 +14856,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Button({
         Title = "Delete Selected",
-        Desc = "Delete the selected music (presets cannot be deleted)",
+        Desc = "Delete dat music\n(presets cannot be deleted)",
         Icon = "trash",
         Callback = function()
             local selected = dropdownMusic and dropdownMusic.Value or ""
@@ -14638,7 +14907,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Slider({
         Title = "Volume",
-        Desc = "Music volume (0-5)",
+        Desc = "loudness lol",
         Step = 0.1,
         Value = {
             Min = 0,
@@ -14652,7 +14921,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Slider({
         Title = "Pitch",
-        Desc = "Music playback speed (0.5-2.0)",
+        Desc = "pitches gets stitches",
         Step = 0.05,
         Value = {
             Min = 0.5,
@@ -15061,7 +15330,7 @@ I luv rng's. :3
     })
     InfoTab:Paragraph({
         Title = "Gravel (27/07/2026)",
-        Desc = "an good script would have a music player\nAdded: BGMTab an Background Music Tab :3",
+        Desc = "a good script would have a music player\nAdded: BGMTab an Background Music Tab :3",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -15082,6 +15351,11 @@ I luv rng's. :3
     InfoTab:Paragraph({
         Title = "Gravel (01/08/2026)",
         Desc = "Refactoring :o",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (02/09/2026)",
+        Desc = "added more bugs to fix later :p\nFixed: sum lag\nAdded: Headshot Chance & ''Random'' targetpart to SilentAimTab (HK) Tab\nAdded: Specific Team Target in the MainTab\nBugs Fixed: -1",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -15526,9 +15800,9 @@ local function clearTargetCache()
     config.currentTarget = nil
     config.aimbotCurrentTarget = nil
     config.SA2_FovIsTargeted = false
-    config.targetSeenTargets = {}
-    config.autoFarmTargets = {}
-    config.autoFarmCompleted = {}
+    table.clear(config.targetSeenTargets)
+    table.clear(config.autoFarmTargets)
+    table.clear(config.autoFarmCompleted)
 end
 task.spawn(function()
     while config.varibz.lowpatcher do
@@ -16014,12 +16288,8 @@ if autoloadSuccess then
 end
 task.wait(2.5)
 loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
-loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
-return {
-    config = config,
-    lzl = lzl,
-    toggles = toggles
-}
+
+return config
 end)
 
 if not success then
