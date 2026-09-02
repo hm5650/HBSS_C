@@ -1,31 +1,21 @@
--- Optimized SA2 Functions - Reduced Lag
 local plrs = game:GetService("Players")
 local lplr = plrs.LocalPlayer
 local Camera = workspace.CurrentCamera
-
--- Cache frequently used functions and values
 local WorldToScreen = Camera.WorldToScreenPoint
 local GetPlayers = plrs.GetPlayers
 local GetMouseLocation = UserInputService and UserInputService.GetMouseLocation
-
--- Pre-cache random instance
 local random = Random.new()
-
--- Optimized functions table
 local functions = {}
 
--- Optimized: Get screen position with minimal overhead
 functions.GetScreenPosition = function(Vector)
     local Vec3, OnScreen = WorldToScreen(Camera, Vector)
     return Vector2.new(Vec3.X, Vec3.Y), OnScreen
 end
 
--- Optimized: Tool check with minimal calls
 functions.IsTool = function(Tool)
     return Tool:IsA("Tool")
 end
 
--- Optimized: Alive check with early returns and cached references
 functions.IsAlive = function(Plr)
     local char = Plr.Character
     if not char then return false end
@@ -33,7 +23,6 @@ functions.IsAlive = function(Plr)
     return humanoid and humanoid.Health > 0
 end
 
--- Optimized: Team check with nil safety
 functions.TeamCheck = function(Plr)
     local lTeam = lplr.Team
     local pTeam = Plr.Team
@@ -41,7 +30,6 @@ functions.TeamCheck = function(Plr)
     return lTeam ~= pTeam
 end
 
--- Optimized: Get mouse position with cache
 local lastMousePos = Vector2.new(0, 0)
 functions.GetMousePosition = function()
     if UserInputService then
@@ -54,28 +42,22 @@ functions.GetMousePosition = function()
     return lastMousePos
 end
 
--- Optimized: Get gun with single pass and early return
 functions.GetGun = function(Plr)
     local Character = lplr.Character
     if not Character then return end
-    -- Use FindFirstChild which is faster for single search
     return Character:FindFirstChildOfClass("Tool")
 end
 
--- Optimized: Hit chance with pre-rolled random
 functions.HitChance = function(Percentage)
     if Percentage >= 100 then return true end
     if Percentage <= 0 then return false end
     return random:NextNumber() <= Percentage / 100
 end
 
--- Optimized: Direction with pre-calculated magnitude
 functions.Direction = function(Origin, Pos)
-    -- Use CFrame for faster direction calculation
     return (Pos - Origin).Unit * 1000
 end
 
--- NEW: Cache for frequently used functions
 local _cache = {
     camera = Camera,
     players = plrs,
@@ -83,7 +65,6 @@ local _cache = {
     lastUpdate = 0,
 }
 
--- NEW: Batch update function for multiple checks
 functions.BatchCheck = function(targets, checkType, ...)
     local results = {}
     for i, target in ipairs(targets) do
@@ -98,7 +79,6 @@ functions.BatchCheck = function(targets, checkType, ...)
     return results
 end
 
--- NEW: Optimized visibility check with caching
 local visCache = {}
 local visCacheTimeout = 0.05
 
@@ -106,13 +86,9 @@ functions.IsVisible = function(target, maxDistance)
     local now = tick()
     local cacheKey = tostring(target)
     local cached = visCache[cacheKey]
-    
-    -- Return cached result if still valid
     if cached and (now - cached.time) < visCacheTimeout then
         return cached.visible
     end
-    
-    -- Check visibility
     local targetChar = target.Character
     local localChar = lplr.Character
     if not targetChar or not localChar then
@@ -142,7 +118,6 @@ functions.IsVisible = function(target, maxDistance)
         return true
     end
     
-    -- Simplified raycast with minimal ignore list
     local params = RaycastParams.new()
     params.FilterType = Enum.RaycastFilterType.Blacklist
     params.FilterDescendantsInstances = {localChar, targetChar}
@@ -151,10 +126,7 @@ functions.IsVisible = function(target, maxDistance)
     local result = workspace:Raycast(origin, direction.Unit * distance, params)
     local visible = not result or result.Instance:IsDescendantOf(targetChar)
     
-    -- Cache the result
     visCache[cacheKey] = {visible = visible, time = now}
-    
-    -- Clean up old cache entries periodically
     if #visCache > 100 then
         local toRemove = {}
         for key, data in pairs(visCache) do
@@ -170,7 +142,6 @@ functions.IsVisible = function(target, maxDistance)
     return visible
 end
 
--- NEW: Get closest player with optimized distance calculation
 functions.GetClosestPlayer = function(targets, useFOV, fovRadius, maxRange)
     local localPos = lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart")
     if not localPos then return nil end
@@ -188,7 +159,6 @@ functions.GetClosestPlayer = function(targets, useFOV, fovRadius, maxRange)
             local targetChar = target.Character
             local targetRoot = targetChar:FindFirstChild("HumanoidRootPart") or targetChar:FindFirstChild("Head")
             if targetRoot then
-                -- Calculate squared distance to avoid sqrt
                 local dx = targetRoot.Position.X - localPos.X
                 local dy = targetRoot.Position.Y - localPos.Y
                 local dz = targetRoot.Position.Z - localPos.Z
@@ -222,7 +192,6 @@ functions.GetClosestPlayer = function(targets, useFOV, fovRadius, maxRange)
     return best
 end
 
--- NEW: Optimized target updater with throttling
 local targetUpdateCounter = 0
 functions.UpdateTarget = function(targets, config)
     targetUpdateCounter = targetUpdateCounter + 1
