@@ -15218,19 +15218,19 @@ I luv rng's. :3
     })
 
     InfoTab:Paragraph({
-        Title = "Gravel (15/01/2025)",
+        Title = "Gravel (15/13/2025)",
         Desc = "Added Tab support & more stuff..\nSilentAim, Aimbot, Hitbox, Main, Autofarm, Visuals, Client",
         Color = config.Gradow.uicolor.darkGray
     })
 
     InfoTab:Paragraph({
-        Title = "Gravel (15/01/2026)",
+        Title = "Gravel (17/01/2026)",
         Desc = "Changed from Arceus UI to Dummy UI",
         Color = config.Gradow.uicolor.darkGray
     })
 
     InfoTab:Paragraph({
-        Title = "Gravel (19/01/2026)",
+        Title = "Gravel (20/01/2026)",
         Desc = "Added: Legacy\nAdded: Reachtab\nAdded: Wallbang in Silentaim HK\nFixed Bugs: 0",
         Color = config.Gradow.uicolor.darkGray
     })
