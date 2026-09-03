@@ -2070,7 +2070,7 @@ local config = {
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
         sa2thing = 0,
-        sa2stuff = 0.8,
+        sa2stuff = 0.5,
         sa2this = false,
         sa2alot = 0,
         sa2dump = {
@@ -5383,166 +5383,210 @@ local function isTargetVisible(target, maxDistance)
     return visible
 end
 local function GetClosestPlayer()
-    if not config.varibz.sa2this then return nil end
+    if not config.varibz.sa2this then
+        return nil
+    end
     if config.varibz.respawnLock or not plr.Character then
         config.SA2_currentTarget = nil
         return nil
     end
-
-    local checkWall = config.SA2_Wallcheck
-    local useFOV = not config.SA2_ThreeSixtyMode
-    local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
-    local maxRangeSq = (config.SA2_TargetRange or 1000) ^ 2
-    local localRoot = plr.Character:FindFirstChild("HumanoidRootPart")
-    if not localRoot then return nil end
-
-    local cam = Camera
-    if not cam then return nil end
     
+    local cam = Camera
     local viewport = cam.ViewportSize
+    local camPos = cam.CFrame.Position
+    local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
+    local targetPartName = config.SA2_TargetPart
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local localRootPos = localRoot.Position
-    local candidates = {}
-    local candidateCount = 0
-    local targetSeenTargets = {}
-    table.clear(candidates)
-    for _, p in ipairs(excusemesir.Players:GetPlayers()) do
-        if p ~= plr then
-            local targetTeam = p.Team
-            if config.SA2_TeamTarget == "Enemies" then
-                if not localTeam or not targetTeam or localTeam == targetTeam then continue end
-            elseif config.SA2_TeamTarget == "Teams" then
-                if not localTeam or not targetTeam or localTeam ~= targetTeam then continue end
-            end
-            if config.ignoreForcefield and p.Character and hasForcefield(p.Character) then continue end
-            local char = p.Character
-            if not char then continue end
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            if not humanoid or humanoid.Health <= 0 then continue end
-            local targetPartName = config.SA2_TargetPart
-            local part = char:FindFirstChild(targetPartName)
-            if targetPartName == "Random" then
-                local headshotChance = config.SA2_HeadshotChance or 100
-                local useHead = false
-                if headshotChance >= 100 then
-                    useHead = true
-                elseif headshotChance > 0 then
-                    useHead = math.random(1, 100) <= headshotChance
-                end
-                
-                if useHead then
-                    part = char:FindFirstChild("Head")
-                    if not part then
-                        part = char:FindFirstChild("HumanoidRootPart")
-                    end
-                else
-                    part = char:FindFirstChild("HumanoidRootPart")
-                    if not part then
-                        part = char:FindFirstChild("Head")
-                    end
-                end
-            else
-                if not part then
-                    part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-                end
-            end
-            
-            if not part then continue end
-
-            local dx, dy, dz = part.Position.X - localRootPos.X, part.Position.Y - localRootPos.Y, part.Position.Z - localRootPos.Z
-            local distSq = dx*dx + dy*dy + dz*dz
-            if distSq > maxRangeSq then continue end
-
-            if checkWall and not isTargetVisible(p, config.SA2_TargetRange) then continue end
-
-            local screenPos, onScreen = cam:WorldToViewportPoint(part.Position)
-            if useFOV then
-                if not onScreen or screenPos.Z <= 0 then continue end
-                local distX, distY = screenPos.X - center.X, screenPos.Y - center.Y
-                if distX*distX + distY*distY > config.SA2_FovRadius^2 then continue end
-            end
-
-            candidateCount = candidateCount + 1
-            candidates[candidateCount] = {
-                target = p,
-                part = part,
-                health = humanoid.Health,
-                screenDist = useFOV and math.sqrt((screenPos.X - center.X)^2 + (screenPos.Y - center.Y)^2) or 0,
-                worldDist = math.sqrt(distSq),
-                inFOV = useFOV
-            }
-        end
-    end
-
-    if candidateCount == 0 then
+    local maxRange = config.SA2_TargetRange or 500
+    local maxRangeSq = maxRange * maxRange
+    local character = plr.Character
+    local localRoot = character and character:FindFirstChild("HumanoidRootPart")
+    if not localRoot then
         config.SA2_currentTarget = nil
         return nil
     end
-
-    local bestIdx = 1
-    
-    if targetMode == "TargetSeen" then
-        if tick() - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-            config.lastTargetSwitchTime = tick()
-            if config.SA2_currentTarget then
-                local found = false
-                for i = 1, candidateCount do
-                    if candidates[i].target == config.SA2_currentTarget then
-                        found = true
-                        bestIdx = (i % candidateCount) + 1
+    local Players = excusemesir.Players
+    local camera = cam
+    local checkWall = config.SA2_Wallcheck
+    local useFOV = not config.SA2_ThreeSixtyMode
+    local seenTargets = {}
+    local bestTarget = nil
+    local bestScore = nil
+    local currentTime = tick()
+    local shouldSwitch = (currentTime - config.lastTargetSwitchTime) >= config.targetSeenSwitchRate
+    if #Players:GetPlayers() <= 1 then
+        config.SA2_currentTarget = nil
+        return nil
+    end
+    local function isTargetable(player)
+        if player == plr then return false end
+        if config.SA2_TeamTarget == "All" then return true end
+        local targetTeam = player.Team
+        if not localTeam or not targetTeam then
+            return config.SA2_TeamTarget == "Enemies"
+        end
+        if config.SA2_TeamTarget == "Enemies" then
+            return localTeam ~= targetTeam
+        else
+            return localTeam == targetTeam
+        end
+    end
+    local function getTargetPartForPlayer(char)
+        if not char then return nil, nil end
+        
+        local targetPartStr = targetPartName
+        if targetPartStr == "Random" then
+            local headshotChance = config.SA2_HeadshotChance or 100
+            local shouldHeadshot = math.random(1, 100) <= headshotChance
+            
+            if shouldHeadshot then
+                local head = char:FindFirstChild("Head")
+                if head then
+                    return head, "Head"
+                end
+            end
+            local root = char:FindFirstChild("HumanoidRootPart")
+            if root then
+                return root, "HumanoidRootPart"
+            end
+            local fallback = char:FindFirstChild("Head") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+            return fallback, fallback and fallback.Name or "Unknown"
+        end
+        local part = targetPartName and char:FindFirstChild(targetPartName)
+        if not part then
+            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+        end
+        return part, part and part.Name or "Unknown"
+    end
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= plr and isTargetable(p) then
+            local char = p.Character
+            if char then
+                local humanoid = char:FindFirstChildOfClass("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    if not config.ignoreForcefield or not hasForcefield(char) then
+                        local part, partName = getTargetPartForPlayer(char)
+                        if part then
+                            local dx = part.Position.X - localRoot.Position.X
+                            local dy = part.Position.Y - localRoot.Position.Y
+                            local dz = part.Position.Z - localRoot.Position.Z
+                            local distSq = dx * dx + dy * dy + dz * dz
+                            
+                            if distSq <= maxRangeSq then
+                                if checkWall and not isTargetVisible(p, maxRange) then
+                                    -- David bazooka
+                                else
+                                    local worldDist = math.sqrt(distSq)
+                                    seenTargets[p] = true
+                                    local inFOV = false
+                                    local screenDist = 0
+                                    if useFOV then
+                                        local targetPos = part.Position
+                                        local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                        if onScreen and screenPos.Z > 0 then
+                                            local distX = screenPos.X - center.X
+                                            local distY = screenPos.Y - center.Y
+                                            screenDist = math.sqrt(distX * distX + distY * distY)
+                                            inFOV = screenDist <= config.SA2_FovRadius
+                                        end
+                                    else
+                                        inFOV = true
+                                    end
+                                    
+                                    if inFOV then
+                                        local score
+                                        if targetMode == "Closest" then
+                                            score = worldDist
+                                        elseif targetMode == "Lowest Health" then
+                                            score = humanoid.Health
+                                        elseif targetMode == "TargetSeen" then
+                                            if p == config.SA2_currentTarget then
+                                                score = -1
+                                            else
+                                                score = screenDist > 0 and screenDist or worldDist
+                                            end
+                                        else
+                                            score = worldDist
+                                        end
+                                        if bestTarget == nil then
+                                            bestTarget = p
+                                            bestScore = score
+                                        else
+                                            local isBetter = false
+                                            if targetMode == "Closest" then
+                                                isBetter = score < bestScore
+                                            elseif targetMode == "Lowest Health" then
+                                                isBetter = score < bestScore
+                                            elseif targetMode == "TargetSeen" then
+                                                if score == -1 then
+                                                    isBetter = false
+                                                elseif bestScore == -1 then
+                                                    isBetter = false
+                                                else
+                                                    isBetter = score < bestScore
+                                                end
+                                            end
+                                            
+                                            if isBetter then
+                                                bestTarget = p
+                                                bestScore = score
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    local toRemove = {}
+    for key, _ in pairs(config.SA2_VisibleCache or {}) do
+        if not seenTargets[key] then
+            table.insert(toRemove, key)
+        end
+    end
+    for _, key in ipairs(toRemove) do
+        config.SA2_VisibleCache[key] = nil
+    end
+    if bestTarget then
+        if targetMode == "TargetSeen" and bestTarget ~= config.SA2_currentTarget then
+            if shouldSwitch or not config.SA2_currentTarget then
+                config.lastTargetSwitchTime = currentTime
+                config.SA2_currentTarget = bestTarget
+            else
+                local currentStillValid = false
+                for p, _ in pairs(seenTargets) do
+                    if p == config.SA2_currentTarget then
+                        currentStillValid = true
                         break
                     end
                 end
-                if not found then bestIdx = 1 end
-            else
-                local bestDist = math.huge
-                for i = 1, candidateCount do
-                    local dist = useFOV and candidates[i].screenDist or candidates[i].worldDist
-                    if dist < bestDist then
-                        bestDist = dist
-                        bestIdx = i
-                    end
+                if not currentStillValid then
+                    config.SA2_currentTarget = bestTarget
+                    config.lastTargetSwitchTime = currentTime
                 end
             end
         else
-            for i = 1, candidateCount do
-                if candidates[i].target == config.SA2_currentTarget then
-                    bestIdx = i
-                    break
-                end
+            config.SA2_currentTarget = bestTarget
+        end
+        updateESPColors()
+        local char = bestTarget.Character
+        if char then
+            local part, partName = getTargetPartForPlayer(char)
+            if not part then
+                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
+            return part
         end
-    elseif targetMode == "Lowest Health" then
-        local bestHealth = math.huge
-        for i = 1, candidateCount do
-            if candidates[i].health < bestHealth then
-                bestHealth = candidates[i].health
-                bestIdx = i
-            end
-        end
-    else
-        local bestDist = math.huge
-        for i = 1, candidateCount do
-            local dist = useFOV and candidates[i].screenDist or candidates[i].worldDist
-            if dist < bestDist then
-                bestDist = dist
-                bestIdx = i
-            end
-        end
-    end
-
-    local best = candidates[bestIdx]
-    if best then
-        if config.SA2_currentTarget ~= best.target then
-            config.SA2_currentTarget = best.target
-            updateESPColors()
-        end
-        return best.part
     else
         config.SA2_currentTarget = nil
         return nil
     end
+    
+    return nil
 end
 local ExpectedArguments = {
     FindPartOnRay = {
@@ -5576,8 +5620,21 @@ local function validate_args(Args, RayMethod)
 end
 
 if OldNamecall then
+    if not hookmetamethod or not hookfunction then 
+        warn("Gravel: Your exploit doesn't support hooking functions")
+        return false
+    end
     hookmetamethod(game, "__namecall", OldNamecall)
     OldNamecall = nil
+end
+
+if OldIndex then
+    if not hookmetamethod or not hookfunction then 
+        warn("Gravel: Your exploit doesn't support hooking functions")
+        return false
+    end
+    hookmetamethod(game, "__index", OldIndex)
+    OldIndex = nil
 end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
@@ -5607,8 +5664,11 @@ local function calc_chance(chance)
 end
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
-local OldNamecall
-OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+    if not hookmetamethod or not hookfunction then 
+        warn("Gravel: Your exploit doesn't support hooking functions")
+        return false
+    end
     if config.varibz.respawnLock then
         return OldNamecall(...)
     end
@@ -5705,6 +5765,50 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     
     return OldNamecall(...)
 end))
+local OldIndex; OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
+    if not hookmetamethod or not hookfunction then 
+        warn("Gravel: Your exploit doesn't support hooking functions")
+        return false
+    end
+    if config.varibz.respawnLock then
+        return OldIndex(Self, Index)
+    end
+    
+    if config.SA2_Enabled and config.SA2_Method == "Mouse.Hit" and not checkcaller() and Self == mouse then
+        if Index == "Target" or Index == "target" then
+            local HitPart = cachedTarget
+            if HitPart then
+                config.SA2_FovIsTargeted = true
+                return HitPart
+            else
+                config.SA2_FovIsTargeted = false
+            end
+        elseif Index == "Hit" or Index == "hit" then
+            local HitPart = cachedTarget
+            if HitPart then
+                config.SA2_FovIsTargeted = true
+                return HitPart.CFrame
+            else
+                config.SA2_FovIsTargeted = false
+            end
+        elseif Index == "X" or Index == "x" then
+            return mouse.X
+        elseif Index == "Y" or Index == "y" then
+            return mouse.Y
+        elseif Index == "UnitRay" then
+            local HitPart = cachedTarget
+            if HitPart then
+                config.SA2_FovIsTargeted = true
+                return Ray.new(mouse.Origin, (HitPart.Position - mouse.Origin).Unit)
+            else
+                config.SA2_FovIsTargeted = false
+            end
+        end
+    end
+    
+    return OldIndex(Self, Index)
+end))
+
 ScreenGui.Name = "FOVSys"
 ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
@@ -5733,7 +5837,8 @@ excusemesir.RunService.Heartbeat:Connect(function()
         return
     end
     if config.SA2_Enabled and config.SA2_FovVisible and not config.SA2_ThreeSixtyMode then
-        GetClosestPlayer()
+        local currentTarget = cachedTarget
+        
         CircleFrame.Visible = true
         CircleFrame.Position = UDim2.new(0, screenCenter.X, 0, screenCenter.Y)
         CircleFrame.Size = UDim2.new(0, config.SA2_FovRadius * 2, 0, config.SA2_FovRadius * 2)
@@ -13149,7 +13254,7 @@ SilentAimTab2:Slider({
     Value = {
         Min = 0.01,
         Max = 2,
-        Default = config.varibz.sa2stuff or 0.8
+        Default = config.varibz.sa2stuff or 0.5
     },
     Callback = function(value)
         config.varibz.sa2stuff = value
@@ -15802,9 +15907,7 @@ local function init()
     config.varibz.lowpatcher = false
     getgenv().ED_AntiKickEnabled = false
     getgenv().ED_AntiKickCheckCaller = false
-    config.varibz.sa2stuff = 0.5
     task.wait(0.40)
-    config.varibz.sa2stuff = 0.5
     config.SA2_Wallbang = false
     config.varibz.lowpatcher = true
     getgenv().ED_AntiKickEnabled = true
