@@ -255,7 +255,6 @@ local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
 local SaveUI = loadstring(getgist_(getgenv().HttpUrlz_.uithesavory))()
 local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
---loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 -- other wallmart variables
 local gui = {}
 local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
@@ -282,7 +281,6 @@ getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
 }
 -- cfg
 local config = {
-    confIg = "Gravel",
     startsa = false,
     fovsize = 120,
     predic = 1,
@@ -406,6 +404,7 @@ local config = {
     autoFarmWallCheck = false,
     aimbot360Enabled = false,
     aimbot360OriginalFOV = 100,
+    aimbotTargetRange = 500,
     gp = 200,
     gp2 = 1,
     customFOVEnabled = false,
@@ -600,6 +599,24 @@ local config = {
                 "if u want an tutorial\nwatch 100 seconds of lua or smth",
             },
             {
+                "HE WAS WHIPPING UP ANGER\nIN A KETTLE",
+                "FESTERING HATRED",
+                "''LIKE STEAM OUT THE EARS''",
+                "MANIFESTING RAGE IN THE KETTLE",
+                "MAKING THE SCREAMS",
+                "''BOILING WRATH?''",
+                "RAGE.. in the kettle.",
+            },
+            {
+                typesp = "3.5",
+                "dustin lucas will mike me-",
+                "adrian christian hernandex\nor the locals call me 'A'",
+                "dustin lucas will mike max-",
+                "adrian christian hernandex\nor the locals call me 'A'",
+                "dustin lucas will mike STO-",
+                "adrian christian hernandex\nor the locals call me 'A'",
+            },
+            {
                 "sand.cc is an larper",
                 "it's a actual gravel larper",
                 "sand larps gravel",
@@ -626,8 +643,7 @@ local config = {
                 "i am an fucking architect",
                 "GOD DAMN IT, IM JUST STUCK",
                 "SELLING SHIT FURNITURE",
-                "BECAUSE SOMEONE WONT GET OFF",
-                "THEIR FAT FUCKING ASS AND HELP ME.",
+                "BECAUSE SOMEONE WONT GET OFF\nTHEIR FAT FUCKING ASS AND HELP ME.",
             },
             {
                 typesp = "1",
@@ -864,8 +880,18 @@ local config = {
                 "What's the capital of france?",
                 "''Oh oui oui oui''",
                 "''It is Parii''",
-                "",
+                "merci",
                 "Horror Skunx ur\nNOT cooking ts",
+            },
+            {
+                "verity",
+                "obesity",
+                "falsity",
+                "moggity",
+                "lovity",
+                "freakity",
+                "eclipsity",
+                "#######",
             },
             {
                 typesp = "2.3",
@@ -1487,6 +1513,80 @@ local config = {
                 "u're welcome :D",
             },
             {
+                "do you want to go to the backrooms???",
+                "first find a furniture shop",
+                "then find the basement from it",
+                "find that weird wall",
+                "put blue tape on the wall\nand shape it like a doorway",
+                "now u has bahkruums",
+            },
+            {
+                typesp = "3",
+                "DIAMOND, DIAMOND,\nDIAMOND, DIAMOND",
+                "it's la peace",
+                "it's la peace",
+                "DIAMOND, DIAMOND,\nDIAMOND, DIAMOND",
+                "it's la peace",
+                "it's la peace",
+            },
+            {
+                "rest in peace my granny she\ngot hit by a bazooka",
+                "kaboom kablow kaboom",
+                "REST IN PEACE MY GRANNY SHE\nGOT HIT BY BAZOOKA",
+                "YEAH I THINK ABOUT HER EVERYTIME I\nHIT THE HOOKAH",
+                "KABOOM KABLOW KABOOM",
+            },
+            {
+                "meow",
+                "mrow",
+                "mraw",
+            },
+            {
+                typesp = "5",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无信号",
+                "无 信 号",
+                "无 信 号",
+                "无 信 号",
+                "无 信 号",
+                "无 信 号",
+                "无 信 号",
+                "无 信 号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无   信    号",
+                "无      信    号",
+                "无      信    号",
+                "无      信    号",
+                "无      信    号",
+                "无      信    号",
+                "无      信    号",
+            },
+            {
+                "don't worry... even gravel no likes\nLesbian Space Princess",
+                "... one of the most random movies I've seen..",
+                "I've wonder what happened to the animatiors",
+            },
+            {
+                typesp = "2",
+                "TOYOTA YARIS.",
+                "why's this dealer.. taking a piss?",
+                "I've been standing here for 30 mins.",
+            },
+            {
                 typesp = "1.5",
                 "if u enjoy this script",
                 "tell a friend",
@@ -1751,6 +1851,12 @@ local config = {
             "rbxassetid://130435138559679",
             "rbxassetid://127155823074936",
             "rbxassetid://126485931781624",
+            "rbxassetid://1152809259",
+            "rbxassetid://8669816197",
+            "rbxassetid://11818627057",
+            "rbxassetid://7866490119",
+            "rbxassetid://12442731398",
+            "rbxassetid://9835676490",
         },
         tinf3 = {
     	    "rbxassetid://72298953503422",
@@ -1877,6 +1983,7 @@ local config = {
                 "uncatchable",
                 "legit looking I think..",
                 "aimbot 2.0",
+                "awesome sauce",
                 "aim-ster",
             },
             Hitbox = {
@@ -1929,7 +2036,7 @@ local config = {
                 "random stuff my brain made",
                 "the rest of em",
                 "thingamabob",
-                "experimental features",
+                "storage tabber",
                 "za-silly",
                 "wha",
                 "hidden gems",
@@ -1942,7 +2049,9 @@ local config = {
                 "musssiccc :3",
                 "it's super loud here",
                 "make g.cc louder",
+                "friday night funkin'",
                 "[insert noises]",
+                "THE SOUND DROVE THEM CRAZY!!!",
                 "bgm = background music",
                 "y is there boss music?",
                 "FIRE SONG >:D",
@@ -2076,6 +2185,15 @@ local config = {
         sa2dump = {
             data = {},
             lastClear = 0,
+            wallCache = {},
+            wallCacheTimeout = 0.01
+        },
+        aimbotdump = {
+            data = {},
+            timeout = 0.01,
+            lastClear = 0,
+            aimrp = 0.01,
+            aimlp = 0,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -2152,7 +2270,8 @@ local config = {
             tablet = UDim2.fromOffset(600, 80),
             pc = UDim2.fromOffset(800, 70)
         }
-    }
+    },
+    con = "47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33\n01000111 01110000 01110011 73 69 63 6B 6C 65",
 }
 
 local rng_s = {
@@ -3220,6 +3339,7 @@ local function saveConfig(saveName)
             aimbotWallCheck = config.aimbotWallCheck,
             aimbot360Enabled = config.aimbot360Enabled,
             aimbotTargetPart = config.aimbotTargetPart,
+            aimbotTargetRange = config.aimbotTargetRange or 500,
             aimbotStrength = config.aimbotStrength,
             aimbotFOVSize = config.aimbotFOVSize,
             aimbotGetTarget = config.aimbotGetTarget,
@@ -4154,6 +4274,7 @@ local function loadSave(saveName)
     if cfg.aimbotEnabled ~= nil then config.aimbotEnabled = cfg.aimbotEnabled end
     if cfg.aimbotWallCheck ~= nil then config.aimbotWallCheck = cfg.aimbotWallCheck end
     if cfg.aimbot360Enabled ~= nil then config.aimbot360Enabled = cfg.aimbot360Enabled end
+    if cfg.aimbotTargetRange then config.aimbotTargetRange = cfg.aimbotTargetRange end
     if cfg.aimbotTargetPart then config.aimbotTargetPart = cfg.aimbotTargetPart end
     if cfg.aimbotStrength then config.aimbotStrength = cfg.aimbotStrength end
     if cfg.aimbotFOVSize then config.aimbotFOVSize = cfg.aimbotFOVSize end
@@ -5368,15 +5489,22 @@ local function isTargetVisible(target, maxDistance)
     local now = tick()
     if now - config.varibz.sa2dump.lastClear > 60 then
         config.varibz.sa2dump.data = {}
+        config.varibz.sa2dump.wallCache = {}
         config.varibz.sa2dump.lastClear = now
     end
-    local cacheKey = getVis(target, maxDistance)
-    local cached = config.varibz.sa2dump.data[cacheKey]
-    if cached and (now - cached.time) < config.varibz.sa2stuff then
-        return cached.visible
+    local targetId = typeof(target) == "Instance" and target:IsA("Player") and "player_" .. tostring(target.UserId) or tostring(target)
+    local cacheKey = targetId .. "_" .. tostring(maxDistance)
+    local wallCached = config.varibz.sa2dump.wallCache[cacheKey]
+    if wallCached and (now - wallCached.time) < config.varibz.sa2dump.wallCacheTimeout then
+        return wallCached.visible
     end
     local visible = IsPlayerVisible(target, maxDistance)
-    config.varibz.sa2dump.data[cacheKey] = {
+    config.varibz.sa2dump.wallCache[cacheKey] = {
+        visible = visible,
+        time = now
+    }
+    local regularCacheKey = getVis(target, maxDistance)
+    config.varibz.sa2dump.data[regularCacheKey] = {
         visible = visible,
         time = now
     }
@@ -5395,161 +5523,305 @@ local function GetClosestPlayer()
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
     local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
-    local targetPartName = config.SA2_TargetPart
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
-    local maxRange = config.SA2_TargetRange or 500
-    local maxRangeSq = maxRange * maxRange
+    local maxRangeSq1 = config.SA2_TargetRange * config.SA2_TargetRange
     local character = plr.Character
     local localRoot = character and character:FindFirstChild("HumanoidRootPart")
     if not localRoot then
         config.SA2_currentTarget = nil
         return nil
     end
-    local Players = excusemesir.Players
-    local camera = cam
-    local checkWall = config.SA2_Wallcheck
-    local useFOV = not config.SA2_ThreeSixtyMode
-    local seenTargets = {}
-    local bestTarget = nil
-    local bestScore = nil
+    
     local currentTime = tick()
     local shouldSwitch = (currentTime - config.lastTargetSwitchTime) >= config.targetSeenSwitchRate
-    if #Players:GetPlayers() <= 1 then
+    local useFOV = not config.SA2_ThreeSixtyMode
+    local fovRadiusSq = config.SA2_FovRadius * config.SA2_FovRadius
+    local bestTarget = nil
+    local bestScore = nil
+    local seenTargets = {}
+    local lp = plr
+    local players = excusemesir.Players:GetPlayers()
+    if #players <= 1 then
         config.SA2_currentTarget = nil
         return nil
     end
-    local function isTargetable(player)
-        if player == plr then return false end
-        if config.SA2_TeamTarget == "All" then return true end
-        local targetTeam = player.Team
-        if not localTeam or not targetTeam then
-            return config.SA2_TeamTarget == "Enemies"
-        end
-        if config.SA2_TeamTarget == "Enemies" then
-            return localTeam ~= targetTeam
-        else
-            return localTeam == targetTeam
-        end
-    end
-    local function getTargetPartForPlayer(char)
-        if not char then return nil, nil end
-        
-        local targetPartStr = targetPartName
-        if targetPartStr == "Random" then
-            local headshotChance = config.SA2_HeadshotChance or 100
-            local shouldHeadshot = math.random(1, 100) <= headshotChance
-            
-            if shouldHeadshot then
-                local head = char:FindFirstChild("Head")
-                if head then
-                    return head, "Head"
+    local validPlayers = {}
+    for _, p in ipairs(players) do
+        if p ~= lp then
+            if config.SA2_TeamTarget ~= "All" then
+                local targetTeam = p.Team
+                if not localTeam or not targetTeam then
+                    if config.SA2_TeamTarget == "Teams" then 
+                        validPlayers[p] = false
+                        continue 
+                    end
+                elseif config.SA2_TeamTarget == "Enemies" and localTeam == targetTeam then
+                    validPlayers[p] = false
+                    continue
+                elseif config.SA2_TeamTarget == "Teams" and localTeam ~= targetTeam then
+                    validPlayers[p] = false
+                    continue
                 end
             end
-            local root = char:FindFirstChild("HumanoidRootPart")
-            if root then
-                return root, "HumanoidRootPart"
-            end
-            local fallback = char:FindFirstChild("Head") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-            return fallback, fallback and fallback.Name or "Unknown"
-        end
-        local part = targetPartName and char:FindFirstChild(targetPartName)
-        if not part then
-            part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-        end
-        return part, part and part.Name or "Unknown"
-    end
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= plr and isTargetable(p) then
+            
             local char = p.Character
             if char then
                 local humanoid = char:FindFirstChildOfClass("Humanoid")
                 if humanoid and humanoid.Health > 0 then
-                    if not config.ignoreForcefield or not hasForcefield(char) then
-                        local part, partName = getTargetPartForPlayer(char)
-                        if part then
-                            local dx = part.Position.X - localRoot.Position.X
-                            local dy = part.Position.Y - localRoot.Position.Y
-                            local dz = part.Position.Z - localRoot.Position.Z
-                            local distSq = dx * dx + dy * dy + dz * dz
+                    if config.ignoreForcefield and hasForcefield(char) then
+                        validPlayers[p] = false
+                        continue
+                    end
+                    local part = nil
+                    local targetPartStr = config.SA2_TargetPart
+                    if targetPartStr == "Random" then
+                        local headshotChance = config.SA2_HeadshotChance or 100
+                        if math.random(1, 100) <= headshotChance then
+                            part = char:FindFirstChild("Head")
+                        end
+                        if not part then
+                            part = char:FindFirstChild("HumanoidRootPart")
+                        end
+                        if not part then
+                            part = char:FindFirstChild("Head")
+                        end
+                    else
+                        part = char:FindFirstChild(targetPartStr)
+                        if not part then
+                            part = char:FindFirstChild("Head")
+                        end
+                    end
+                    
+                    if part then
+                        local dx = part.Position.X - localRoot.Position.X
+                        local dy = part.Position.Y - localRoot.Position.Y
+                        local dz = part.Position.Z - localRoot.Position.Z
+                        local distSq = dx * dx + dy * dy + dz * dz
+                        
+                        if distSq <= maxRangeSq1 then
+                            if config.SA2_Wallcheck then
+                                if not isTargetVisible(p, config.SA2_TargetRange) then
+                                    validPlayers[p] = false
+                                    continue
+                                end
+                            end
                             
-                            if distSq <= maxRangeSq then
-                                if checkWall and not isTargetVisible(p, maxRange) then
-                                    -- David bazooka
-                                else
-                                    local worldDist = math.sqrt(distSq)
-                                    seenTargets[p] = true
-                                    local inFOV = false
-                                    local screenDist = 0
-                                    if useFOV then
-                                        local targetPos = part.Position
-                                        local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                                        if onScreen and screenPos.Z > 0 then
-                                            local distX = screenPos.X - center.X
-                                            local distY = screenPos.Y - center.Y
-                                            screenDist = math.sqrt(distX * distX + distY * distY)
-                                            inFOV = screenDist <= config.SA2_FovRadius
-                                        end
+                            validPlayers[p] = true
+                            seenTargets[p] = true
+                            local worldDist = math.sqrt(distSq)
+                            local inFOV = false
+                            local screenDist = 0
+                            
+                            if useFOV then
+                                local targetPos = part.Position
+                                local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                if onScreen and screenPos.Z > 0 then
+                                    local distX = screenPos.X - center.X
+                                    local distY = screenPos.Y - center.Y
+                                    screenDist = distX * distX + distY * distY
+                                    inFOV = screenDist <= fovRadiusSq
+                                end
+                            else
+                                inFOV = true
+                            end
+                            
+                            if inFOV then
+                                local score
+                                if targetMode == "Closest" then
+                                    score = worldDist
+                                elseif targetMode == "Lowest Health" then
+                                    score = humanoid.Health
+                                elseif targetMode == "TargetSeen" then
+                                    if p == config.SA2_currentTarget then
+                                        score = -1
                                     else
-                                        inFOV = true
+                                        score = screenDist > 0 and math.sqrt(screenDist) or worldDist
+                                    end
+                                else
+                                    score = worldDist
+                                end
+                                
+                                if bestTarget == nil then
+                                    bestTarget = p
+                                    bestScore = score
+                                else
+                                    local isBetter = false
+                                    if targetMode == "Closest" then
+                                        isBetter = score < bestScore
+                                    elseif targetMode == "Lowest Health" then
+                                        isBetter = score < bestScore
+                                    elseif targetMode == "TargetSeen" then
+                                        if score == -1 then
+                                            isBetter = false
+                                        elseif bestScore == -1 then
+                                            isBetter = false
+                                        else
+                                            isBetter = score < bestScore
+                                        end
                                     end
                                     
-                                    if inFOV then
-                                        local score
-                                        if targetMode == "Closest" then
-                                            score = worldDist
-                                        elseif targetMode == "Lowest Health" then
-                                            score = humanoid.Health
-                                        elseif targetMode == "TargetSeen" then
-                                            if p == config.SA2_currentTarget then
-                                                score = -1
-                                            else
-                                                score = screenDist > 0 and screenDist or worldDist
-                                            end
-                                        else
-                                            score = worldDist
-                                        end
-                                        if bestTarget == nil then
-                                            bestTarget = p
-                                            bestScore = score
-                                        else
-                                            local isBetter = false
-                                            if targetMode == "Closest" then
-                                                isBetter = score < bestScore
-                                            elseif targetMode == "Lowest Health" then
-                                                isBetter = score < bestScore
-                                            elseif targetMode == "TargetSeen" then
-                                                if score == -1 then
-                                                    isBetter = false
-                                                elseif bestScore == -1 then
-                                                    isBetter = false
-                                                else
-                                                    isBetter = score < bestScore
-                                                end
-                                            end
-                                            
-                                            if isBetter then
-                                                bestTarget = p
-                                                bestScore = score
-                                            end
-                                        end
+                                    if isBetter then
+                                        bestTarget = p
+                                        bestScore = score
                                     end
                                 end
                             end
+                        else
+                            validPlayers[p] = false
                         end
+                    else
+                        validPlayers[p] = false
                     end
+                else
+                    validPlayers[p] = false
                 end
+            else
+                validPlayers[p] = false
             end
         end
     end
-    local toRemove = {}
-    for key, _ in pairs(config.SA2_VisibleCache or {}) do
-        if not seenTargets[key] then
-            table.insert(toRemove, key)
+    local cacheKeysToRemove = {}
+    for cacheKey, cacheData in pairs(config.varibz.sa2dump.data) do
+        local playerId = cacheKey:match("player_(%d+)")
+        if playerId then
+            playerId = tonumber(playerId)
+            local isValid = false
+            for p, valid in pairs(validPlayers) do
+                if p and p.UserId == playerId and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(cacheKeysToRemove, cacheKey)
+            end
         end
     end
-    for _, key in ipairs(toRemove) do
-        config.SA2_VisibleCache[key] = nil
+    for _, key in ipairs(cacheKeysToRemove) do
+        config.varibz.sa2dump.data[key] = nil
+    end
+    local wallCacheKeysToRemove = {}
+    for cacheKey, cacheData in pairs(config.varibz.sa2dump.wallCache) do
+        local playerId = cacheKey:match("player_(%d+)")
+        if playerId then
+            playerId = tonumber(playerId)
+            local isValid = false
+            for p, valid in pairs(validPlayers) do
+                if p and p.UserId == playerId and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(wallCacheKeysToRemove, cacheKey)
+            end
+        end
+    end
+    for _, key in ipairs(wallCacheKeysToRemove) do
+        config.varibz.sa2dump.wallCache[key] = nil
+    end
+    if config.SA2_currentTarget then
+        local currentValid = false
+        for p, valid in pairs(validPlayers) do
+            if p == config.SA2_currentTarget and valid == true then
+                currentValid = true
+                break
+            end
+        end
+        if not currentValid then
+            config.SA2_currentTarget = nil
+        end
+    end
+    if config.SA2_VisibleCache then
+        local visibleKeysToRemove = {}
+        for p, _ in pairs(config.SA2_VisibleCache) do
+            local isValid = false
+            for targetP, valid in pairs(validPlayers) do
+                if targetP == p and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(visibleKeysToRemove, p)
+            end
+        end
+        for _, key in ipairs(visibleKeysToRemove) do
+            config.SA2_VisibleCache[key] = nil
+        end
+    end
+    if config.targetSeenTargets then
+        local seenKeysToRemove = {}
+        for i, target in ipairs(config.targetSeenTargets) do
+            local isValid = false
+            for p, valid in pairs(validPlayers) do
+                if p == target and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(seenKeysToRemove, i)
+            end
+        end
+        for i = #seenKeysToRemove, 1, -1 do
+            table.remove(config.targetSeenTargets, seenKeysToRemove[i])
+        end
+    end
+    if config.activeApplied then
+        local appliedKeysToRemove = {}
+        for p, _ in pairs(config.activeApplied) do
+            local isValid = false
+            for targetP, valid in pairs(validPlayers) do
+                if targetP == p and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(appliedKeysToRemove, p)
+            end
+        end
+        for _, p in ipairs(appliedKeysToRemove) do
+            restorePartForPlayer(p)
+        end
+    end
+    if config.originalSizes then
+        local sizeKeysToRemove = {}
+        for p, _ in pairs(config.originalSizes) do
+            local isValid = false
+            for targetP, valid in pairs(validPlayers) do
+                if targetP == p and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(sizeKeysToRemove, p)
+            end
+        end
+        for _, p in ipairs(sizeKeysToRemove) do
+            config.originalSizes[p] = nil
+        end
+    end
+    if config.targethbSizes then
+        local hbKeysToRemove = {}
+        for p, _ in pairs(config.targethbSizes) do
+            local isValid = false
+            for targetP, valid in pairs(validPlayers) do
+                if targetP == p and valid == true then
+                    isValid = true
+                    break
+                end
+            end
+            if not isValid then
+                table.insert(hbKeysToRemove, p)
+            end
+        end
+        for _, p in ipairs(hbKeysToRemove) do
+            config.targethbSizes[p] = nil
+        end
     end
     if bestTarget then
         if targetMode == "TargetSeen" and bestTarget ~= config.SA2_currentTarget then
@@ -5572,14 +5844,19 @@ local function GetClosestPlayer()
         else
             config.SA2_currentTarget = bestTarget
         end
-        updateESPColors()
         local char = bestTarget.Character
         if char then
-            local part, partName = getTargetPartForPlayer(char)
+            local part = char:FindFirstChild(config.SA2_TargetPart)
             if not part then
-                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                part = char:FindFirstChild("Head")
             end
-            return part
+            if not part then
+                part = char:FindFirstChild("HumanoidRootPart")
+            end
+            if part then
+                updateESPColors()
+                return part
+            end
         end
     else
         config.SA2_currentTarget = nil
@@ -5626,15 +5903,6 @@ if OldNamecall then
     end
     hookmetamethod(game, "__namecall", OldNamecall)
     OldNamecall = nil
-end
-
-if OldIndex then
-    if not hookmetamethod or not hookfunction then 
-        warn("Gravel: Your exploit doesn't support hooking functions")
-        return false
-    end
-    hookmetamethod(game, "__index", OldIndex)
-    OldIndex = nil
 end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
@@ -5692,22 +5960,7 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
         end
         config.SA2_FovIsTargeted = true
         if config.SA2_BulletTeleport then
-            if Method == "FindPartOnRay" then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = A_Ray.Direction
-                local hitPosition = HitPart.Position
-                local toTarget = (hitPosition - Origin)
-                local distance = toTarget.Magnitude
-                if distance > 0 then
-                    local dir = toTarget.Unit
-                    local newOrigin = hitPosition - (dir * 2)
-                    local newDirection = dir * (distance + 2)
-                    Arguments[2] = Ray.new(newOrigin, newDirection)
-                    return OldNamecall(unpack(Arguments))
-                end
-                
-            elseif Method == "Raycast" then
+            if Method == "Raycast" then
                 local Origin = Arguments[2]
                 local Direction = Arguments[3]
                 local hitPosition = HitPart.Position
@@ -5724,14 +5977,7 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
         end
         
         if config.SA2_Wallbang then
-            if Method == "FindPartOnRay" then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Distance = A_Ray.Direction.Magnitude
-                local hitPosition = HitPart.Position
-                local normal = (hitPosition - Origin).Unit
-                local material = HitPart.Material
-            elseif Method == "Raycast" then
+            if Method == "Raycast" then
                 local hitPosition = HitPart.Position
                 local normal = (hitPosition - Arguments[2]).Unit
                 
@@ -5764,49 +6010,6 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
     end
     
     return OldNamecall(...)
-end))
-local OldIndex; OldIndex = hookmetamethod(game, "__index", newcclosure(function(Self, Index)
-    if not hookmetamethod or not hookfunction then 
-        warn("Gravel: Your exploit doesn't support hooking functions")
-        return false
-    end
-    if config.varibz.respawnLock then
-        return OldIndex(Self, Index)
-    end
-    
-    if config.SA2_Enabled and config.SA2_Method == "Mouse.Hit" and not checkcaller() and Self == mouse then
-        if Index == "Target" or Index == "target" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return HitPart
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        elseif Index == "Hit" or Index == "hit" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return HitPart.CFrame
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        elseif Index == "X" or Index == "x" then
-            return mouse.X
-        elseif Index == "Y" or Index == "y" then
-            return mouse.Y
-        elseif Index == "UnitRay" then
-            local HitPart = cachedTarget
-            if HitPart then
-                config.SA2_FovIsTargeted = true
-                return Ray.new(mouse.Origin, (HitPart.Position - mouse.Origin).Unit)
-            else
-                config.SA2_FovIsTargeted = false
-            end
-        end
-    end
-    
-    return OldIndex(Self, Index)
 end))
 
 ScreenGui.Name = "FOVSys"
@@ -8773,21 +8976,53 @@ local function shouldTargetAimbot(target)
 end
 local function aimbotWallCheck(targetPos, sourcePos)
     if not config.aimbotWallCheck then return true end
-    
-    if (targetPos - sourcePos).Magnitude <= 0 then return true end
-
-    local rayDirection = (targetPos - sourcePos)
-    local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    local ignoreList = ignorethisandthat()
-
-    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-    if hit and position then
-        local distanceToTarget = (targetPos - sourcePos).Magnitude
-        local distanceToHit = (position - sourcePos).Magnitude
-        return distanceToHit >= (distanceToTarget - 2)
+    local distance = (targetPos - sourcePos).Magnitude
+    if distance <= 0 then return true end
+    local cacheKey = string.format("%.1f,%.1f,%.1f|%.1f,%.1f,%.1f", 
+        targetPos.X, targetPos.Y, targetPos.Z,
+        sourcePos.X, sourcePos.Y, sourcePos.Z)
+    local now = tick()
+    if now - config.varibz.aimbotdump.lastClear > 60 then
+        config.varibz.aimbotdump.data = {}
+        config.varibz.aimbotdump.lastClear = now
     end
-
-    return true
+    local cached = config.varibz.aimbotdump.data[cacheKey]
+    if cached and (now - cached.time) < config.varibz.aimbotdump.timeout then
+        return cached.visible
+    end
+    local rayDirection = (targetPos - sourcePos)
+    local ray = Ray.new(sourcePos, rayDirection.Unit * distance)
+    local ignoreList = {}
+    if localPlayer and localPlayer.Character then
+        for _, part in ipairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                table.insert(ignoreList, part)
+            end
+        end
+    end
+    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+    local visible = true
+    if hit and position then
+        local hitParent = hit.Parent
+        if hitParent and hitParent:IsA("Model") then
+            local hitPlayer = excusemesir.Players:GetPlayerFromCharacter(hitParent)
+            if hitPlayer and hitPlayer ~= localPlayer then
+                visible = true
+            else
+                local distanceToHit = (position - sourcePos).Magnitude
+                visible = distanceToHit >= (distance - 2)
+            end
+        else
+            local distanceToHit = (position - sourcePos).Magnitude
+            visible = distanceToHit >= (distance - 2)
+        end
+    end
+    
+    config.varibz.aimbotdump.data[cacheKey] = {
+        visible = visible,
+        time = now
+    }
+    return visible
 end
 local function getAimbotTargetPart(target)
     if not target then return nil end
@@ -8822,136 +9057,97 @@ local function aimbotUpdate()
     
     if not camera then camera = workspace.CurrentCamera end
     if not camera then return end
-    
     local viewportSize = camera.ViewportSize
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    local cameraPos = camera.CFrame.Position
     local fovRadius = config.aimbot360Enabled and math.huge or config.aimbotFOVSize
-    local cameraCFrame = camera.CFrame
-    local cameraPos = cameraCFrame.Position
-    
+    local localPlayer = excusemesir.Players.LocalPlayer
+    local allPlayers = excusemesir.Players:GetPlayers()
+    if #allPlayers <= 1 then 
+        config.aimbotCurrentTarget = nil 
+        return 
+    end
     local potentialTargets = {}
-    local allTargets = getAllTargets()
+    local centerSq = fovRadius * fovRadius
     
-    for _, target in ipairs(allTargets) do
-        if shouldTargetAimbot(target) then
-            local targetPart = getAimbotTargetPart(target)
-            if targetPart then
-                local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
-                local screenVec = Vector2.new(screenPos.X, screenPos.Y)
-                local distPx = (screenVec - center).Magnitude
-                
-                local inFOV = config.aimbot360Enabled or (onScreen and distPx <= fovRadius)
-                
-                if inFOV then
-                    local worldDist = (targetPart.Position - cameraPos).Magnitude
+    for _, target in ipairs(allPlayers) do
+        if target ~= localPlayer then
+            if not target.Character then continue end
+            local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then continue end
+            if config.masterTeamTarget == "Enemies" and isTeammate(target) then continue end
+            if config.masterTeamTarget == "Teams" and not isTeammate(target) then continue end
+            if config.ignoreForcefield and hasForcefield(target.Character) then continue end
+            local targetPart = nil
+            if config.aimbotTargetPart == "Head" then
+                targetPart = target.Character:FindFirstChild("Head")
+            elseif config.aimbotTargetPart == "HumanoidRootPart" then
+                targetPart = target.Character:FindFirstChild("HumanoidRootPart")
+            else
+                targetPart = target.Character:FindFirstChild("Head") or target.Character:FindFirstChild("HumanoidRootPart")
+            end
+            
+            if not targetPart then continue end
+            
+            local worldDist = (targetPart.Position - cameraPos).Magnitude
+            if worldDist > config.aimbotTargetRange then continue end
+            
+            local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
+            if not onScreen or screenPos.Z <= 0 then continue end
+            local screenVec = Vector2.new(screenPos.X, screenPos.Y)
+            local distPxSq = (screenVec.X - center.X)^2 + (screenVec.Y - center.Y)^2
+            if config.aimbot360Enabled or distPxSq <= centerSq then
+                if config.aimbotWallCheck then
                     local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
-                    
-                    local tgtChar = getTargetCharacter(target)
-                    local hasFF = config.ignoreForcefield and tgtChar and hasForcefield(tgtChar)
-                    
-                    if isVisible and not hasFF then
-                        local humanoid = tgtChar and tgtChar:FindFirstChildOfClass("Humanoid")
-                        table.insert(potentialTargets, {
-                            target = target,
-                            part = targetPart,
-                            worldDist = worldDist,
-                            screenDist = distPx,
-                            screenPos = screenVec,
-                            humanoid = humanoid,
-                            health = humanoid and humanoid.Health or math.huge,
-                            inFOV = true
-                        })
-                    end
+                    if not isVisible then continue end
                 end
+                
+                table.insert(potentialTargets, {
+                    target = target,
+                    part = targetPart,
+                    worldDist = worldDist,
+                    screenDist = math.sqrt(distPxSq),
+                    humanoid = humanoid,
+                    health = humanoid.Health
+                })
             end
         end
+    end
+    if #potentialTargets == 0 then
+        config.aimbotCurrentTarget = nil
+        updateESPColors()
+        return
     end
     local bestTarget = nil
     local targetingMode = config.aimbotGetTarget or config.masterGetTarget or "Closest"
     
-    if #potentialTargets > 0 then
-        if targetingMode == "TargetSeen" then
-            local targetsInFOV = {}
-            for _, target in ipairs(potentialTargets) do
-                if target.inFOV then
-                    table.insert(targetsInFOV, target)
-                end
+    if targetingMode == "Lowest Health" then
+        local lowestHealth = math.huge
+        for _, t in ipairs(potentialTargets) do
+            if t.health < lowestHealth then
+                lowestHealth = t.health
+                bestTarget = t
             end
-            
-            if #targetsInFOV > 0 then
-                config.targetSeenTargets = targetsInFOV
-                
-                local currentTime = tick()
-                if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
-                    config.lastTargetSwitchTime = currentTime
-                    
-                    if not config.aimbotCurrentTarget then
-                        table.sort(targetsInFOV, function(a, b)
-                            return a.worldDist < b.worldDist
-                        end)
-                        bestTarget = targetsInFOV[1]
-                    else
-                        local currentIndex = nil
-                        for i, target in ipairs(targetsInFOV) do
-                            if target.target == config.aimbotCurrentTarget then
-                                currentIndex = i
-                                break
-                            end
-                        end
-                        
-                        if currentIndex then
-                            local nextIndex = (currentIndex % #targetsInFOV) + 1
-                            bestTarget = targetsInFOV[nextIndex]
-                        else
-                            table.sort(targetsInFOV, function(a, b)
-                                return a.worldDist < b.worldDist
-                            end)
-                            bestTarget = targetsInFOV[1]
-                        end
-                    end
-                else
-                    if config.aimbotCurrentTarget then
-                        for _, target in ipairs(targetsInFOV) do
-                            if target.target == config.aimbotCurrentTarget then
-                                bestTarget = target
-                                break
-                            end
-                        end
-                    end
-                    if not bestTarget and #targetsInFOV > 0 then
-                        table.sort(targetsInFOV, function(a, b)
-                            return a.worldDist < b.worldDist
-                        end)
-                        bestTarget = targetsInFOV[1]
-                    end
-                end
-            end
-        elseif targetingMode == "Lowest Health" then
-            local lowestHealth = math.huge
-            for _, target in ipairs(potentialTargets) do
-                if target.health < lowestHealth then
-                    lowestHealth = target.health
-                    bestTarget = target
-                end
-            end
-        else
-            local closestDist = math.huge
-            for _, target in ipairs(potentialTargets) do
-                if target.worldDist < closestDist then
-                    closestDist = target.worldDist
-                    bestTarget = target
-                end
+        end
+    else
+        local closestDist = math.huge
+        for _, t in ipairs(potentialTargets) do
+            if t.worldDist < closestDist then
+                closestDist = t.worldDist
+                bestTarget = t
             end
         end
     end
-    
-    local newTarget = bestTarget and bestTarget.target or nil
-    if config.aimbotCurrentTarget ~= newTarget then
-        config.aimbotCurrentTarget = newTarget
+    if not bestTarget then
+        config.aimbotCurrentTarget = nil
+        updateESPColors()
+        return
+    end
+    if config.aimbotCurrentTarget ~= bestTarget.target then
+        config.aimbotCurrentTarget = bestTarget.target
         updateESPColors()
     end
-    
-    if bestTarget and bestTarget.part and localPlayer.Character then
+    if bestTarget.part and localPlayer.Character then
         local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
         if humanoid and humanoid.Health > 0 then
             local targetPosition = bestTarget.part.Position
@@ -8960,7 +9156,7 @@ local function aimbotUpdate()
             
             local strength = math.clamp(config.aimbotStrength, 0, 1)
             if strength < 1 then
-                targetCFrame = smoothAim(currentCFrame, targetCFrame, strength)
+                targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
             end
             
             camera.CFrame = targetCFrame
@@ -9531,8 +9727,10 @@ local function burgerking(deltaTime)
         return
     end
     table.clear(candidates)
-    if config.aimbotEnabled then
+    local currentTime = tick()
+    if config.aimbotEnabled and (currentTime - config.varibz.aimbotdump.aimlp) >= config.varibz.aimbotdump.aimrp then
         aimbotUpdate()
+        config.varibz.aimbotdump.aimlp = currentTime
     end
     updateLineESP()
     if config.hitboxEnabled then
@@ -10013,12 +10211,8 @@ local function onRenderStep()
         local currentSize = gui.RingHolder.AbsoluteSize and gui.RingHolder.AbsoluteSize.X or (config.fovsize * 2)
         radiusPx = currentSize / 2
     end
-
     local candidates = {}
     local allTargetsInFOV = {}
-    local maxRange = config.sa_hb_target_range or 500
-    local maxRangeSq = maxRange * maxRange
-    
     for _, pl in ipairs(getAllTargets()) do
         local bodyPart, chosenName = chooseBodyPartInstance(pl)
         local humanoid = nil
@@ -10049,7 +10243,7 @@ local function onRenderStep()
                 local topPos = bodyPart.Position
                 local camPos = camera.CFrame.Position
                 local worldDist = (camPos - topPos).Magnitude
-                if worldDist > maxRange then
+                if worldDist > config.sa_hb_target_range then
                     continue
                 end
                 
@@ -11032,7 +11226,7 @@ end)
     
     MainTab:Slider({
         Title = "Targetseen Switch Rate",
-        Desc = "Time between target switches (seconds)",
+        Desc = "switcharoo delays :p",
         IsTextbox = true,
         Step = 0.1,
         Value = {
@@ -11047,7 +11241,7 @@ end)
     
     MainTab:Toggle({
         Title = "Ignore Forcefield",
-        Desc = "Skip targets with forcefields",
+        Desc = "i hate blue bubble",
         Value = config.ignoreForcefield or true,
         Callback = function(v)
             config.ignoreForcefield = v
@@ -12880,6 +13074,20 @@ local AimbotTab = Window:Tab({
             updateAimbotFOVRing()
         end
     })
+    AimbotTab:Slider({
+        Title = "Target Range",
+        Desc = "eyesight²",
+        IsTextbox = true,
+        Step = 10,
+        Value = {
+            Min = 5,
+            Max = 10000,
+            Default = config.aimbotTargetRange or 500
+        },
+        Callback = function(value)
+            config.aimbotTargetRange = value
+        end
+    })
 end
 
 -- SA1Tab
@@ -13121,25 +13329,6 @@ local SilentAimTab2 = Window:Tab({
         Value = config.SA2_Wallbang or false,
         Callback = function(v)
             config.SA2_Wallbang = v
-            if v then
-                n({
-                    Title = "WallBang",
-                    Content = "Enabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 170, 255)
-                })
-            else
-                n({
-                    Title = "WallBang",
-                    Content = "Disabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 0, 0)
-                })
-            end
         end
     })
 
@@ -13149,25 +13338,6 @@ SilentAimTab2:Toggle({
     Value = config.SA2_BulletTeleport or false,
     Callback = function(v)
         config.SA2_BulletTeleport = v
-        if v then
-            n({
-                Title = "Bullet Teleport",
-                Content = "Enabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255)
-            })
-        else
-            n({
-                Title = "Bullet Teleport",
-                Content = "Disabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(255, 0, 0)
-            })
-        end
     end
 })
     
@@ -13237,12 +13407,6 @@ SilentAimTab2:Slider({
     },
     Callback = function(value)
         config.SA2_HeadshotChance = value
-        WindUI:Notify({
-            Title = "Headshot Chance",
-            Content = "Set to " .. value .. "%",
-            Icon = "crosshair",
-            Duration = 1
-        })
     end
 })
 
@@ -15123,7 +15287,7 @@ local InfoTab = Window:Tab({
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
         Color = config.Gradow.uicolor.Black
     })
     InfoTab:Paragraph({
@@ -15903,17 +16067,10 @@ local function init()
     end)
     excusemesir.RunService:BindToRenderStep("FOVhbUpdater_Modern", Enum.RenderPriority.First.Value, onRenderStep)
     task.wait(1)
-    config.SA2_Wallbang = true
     config.varibz.lowpatcher = false
-    getgenv().ED_AntiKickEnabled = false
-    getgenv().ED_AntiKickCheckCaller = false
     task.wait(0.40)
-    config.SA2_Wallbang = false
     config.varibz.lowpatcher = true
-    getgenv().ED_AntiKickEnabled = true
-    getgenv().ED_AntiKickCheckCaller = true
-    print("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33")
-    print("01000111 01110000 01110011 73 69 63 6B 6C 65")
+    print(config.con)
 end
 
 local function clearTargetCache()
@@ -16409,7 +16566,7 @@ if autoloadSuccess then
 end
 task.wait(2.5)
 loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
-
+loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 return config
 end)
 
