@@ -583,7 +583,21 @@ local config = {
                 "",
             },
 ]]
+--[[
         convo = {
+            {
+                typesp = "1.5",
+                mode = "3",
+                "EYO",
+                "{displayname} THIS IS A TEST",
+                "IT'S SUPER COOL EIFHT?",
+                "Ok maybe not rhat cool",
+                "like... maybeee",
+            },
+        },
+]]
+
+        convo = { -- brah
             {
                 typesp = "1.5",
                 "HEY",
@@ -600,7 +614,7 @@ local config = {
             },
             {
                 "HE WAS WHIPPING UP ANGER\nIN A KETTLE",
-                "FESTERING HATRED",
+                "PESTERING HATRED",
                 "''LIKE STEAM OUT THE EARS''",
                 "MANIFESTING RAGE IN THE KETTLE",
                 "MAKING THE SCREAMS",
@@ -610,11 +624,11 @@ local config = {
             {
                 typesp = "3.5",
                 "dustin lucas will mike me-",
-                "adrian christian hernandex\nor the locals call me 'A'",
+                "adrian christian hernandez\nor the locals call me 'A'",
                 "dustin lucas will mike max-",
-                "adrian christian hernandex\nor the locals call me 'A'",
+                "adrian christian hernandez\nor the locals call me 'A'",
                 "dustin lucas will mike STO-",
-                "adrian christian hernandex\nor the locals call me 'A'",
+                "adrian christian hernandez\nor the locals call me 'A'",
             },
             {
                 "sand.cc is an larper",
@@ -707,8 +721,41 @@ local config = {
                 "I think...",
             },
             {
+                "bye-bye",
+                "",
+                "",
+                "",
+                "what r u doing.. mew bruh\ni just said 'bye-bye'",
+            },
+            {
+                typesp = "2",
+                mode = "2",
+                "Psycho Teddy!!!",
+                "I'm your TEDDY bear",
+                "so bouncy, lovely",
+                "little 'QT'",
+                "won't you?",
+                "cuddle me? :3",
+                "cuddle me? :3",
+                "cuddle me? :3",
+                "cuddle me? :3",
+                "I'm your TEDDY bear",
+                "so bouncy, lovely",
+                "little 'QT'",
+                "won't you?",
+                "follow me? :3c",
+                "follow me? :3c",
+                "follow me? :3c",
+                "follow me? :3c",
+            },
+            {
                 "wonder how i animate my vids on mobile?",
                 "i used Prisma3D & dats it :p",
+            },
+            {
+                "Gpssickle is a gps + sickle",
+                "and also handsome",
+                "and roadblocks",
             },
             {
                 "why won't you read me???",
@@ -927,6 +974,7 @@ local config = {
             },
             {
                 typesp = "1.5",
+                mode = "3",
                 "Error: (can't find message)",
                 "Error: (can't find message)",
                 "Error: (can't find message)",
@@ -940,6 +988,7 @@ local config = {
             },
             {
                 typesp = "2.5",
+                mode = "2",
                 ":o",
                 ":)",
                 ";)",
@@ -952,6 +1001,7 @@ local config = {
             },
             {
                 typesp = "1.5",
+                mode = "2",
                 "I JUST HIT THE",
                 "JACKPOTTTTTTT",
                 "AY, AY, AY, AY, AY",
@@ -979,6 +1029,7 @@ local config = {
             },
             {
                 typesp = "1.5",
+                mode = "2",
                 "if you could listen closely",
                 "you'll be a villain mostly",
                 "you have to chase a hero",
@@ -1034,6 +1085,7 @@ local config = {
             },
             {
                 typesp = "3",
+                mode = "3",
                 ":3",
                 ">:3",
                 ":3",
@@ -1461,6 +1513,7 @@ local config = {
             },
             {
                 typesp = "5",
+                mode = "3",
                 "IM TYPING SUPER DUPER FAST",
                 "IM TYPING SO FAST U CANT EVEN",
                 "READ ALL OF IT >:D",
@@ -1522,6 +1575,7 @@ local config = {
             },
             {
                 typesp = "3",
+                mode = "2",
                 "DIAMOND, DIAMOND,\nDIAMOND, DIAMOND",
                 "it's la peace",
                 "it's la peace",
@@ -1543,6 +1597,7 @@ local config = {
             },
             {
                 typesp = "5",
+                mode = "3",
                 "无信号",
                 "无信号",
                 "无信号",
@@ -1578,7 +1633,7 @@ local config = {
             {
                 "don't worry... even gravel no likes\nLesbian Space Princess",
                 "... one of the most random movies I've seen..",
-                "I've wonder what happened to the animatiors",
+                "I've wonder what happened to the animators",
             },
             {
                 typesp = "2",
@@ -1652,7 +1707,8 @@ local config = {
                 "gravel skill",
                 ";D",
             },
-        },
+        }, -- brah
+
         defaults = {
             minDelay = 25,
             maxDelay = 85,
@@ -2231,6 +2287,7 @@ local config = {
             eraseSpeed = 1,
             messageDelay = 1,
             convoDelay = 2,
+            typingMode = "1",
         },
     },
     Gradow = {
@@ -10794,6 +10851,7 @@ local function rng4()
             currentMessage = "",
             messageIndex = 1,
             isErasing = false,
+            typingMode = "1",
         }
     end
     
@@ -10887,6 +10945,13 @@ local function rng4()
         return 1
     end
     
+    local function getTypingMode(conversation)
+        if type(conversation) == "table" and conversation.mode then
+            return tostring(conversation.mode)
+        end
+        return rng4.typingMode or "1"
+    end
+    
     local function isLetter(char)
         return char:match("[%a]") ~= nil
     end
@@ -10905,15 +10970,13 @@ local function rng4()
         end
         return runLength
     end
-    
-    local function typeText(text, speedMultiplier)
+    local function typeDefault(text, speedMultiplier)
         local processedText = processText(text)
         rng4.processedText = processedText
         rng4.typed = ""
         rng4.charIndex = 1
         rng4.speedMultiplier = speedMultiplier
         rng4.isTyping = true
-        
         while rng4.charIndex <= #processedText do
             while isWindowMinimized() do
                 task.wait(0.1)
@@ -10974,6 +11037,73 @@ local function rng4()
         rng4.isTyping = false
     end
     
+    local function typeWordInstant(text, speedMultiplier)
+        local processedText = processText(text)
+        rng4.processedText = processedText
+        rng4.typed = ""
+        rng4.charIndex = 1
+        rng4.speedMultiplier = speedMultiplier
+        rng4.isTyping = true
+        
+        local words = {}
+        for word in processedText:gmatch("%S+") do
+            table.insert(words, word)
+        end
+        
+        local wordIndex = 1
+        while wordIndex <= #words do
+            while isWindowMinimized() do
+                task.wait(0.1)
+            end
+            
+            local word = words[wordIndex]
+            local isLastWord = (wordIndex == #words)
+            local hasPunctuation = false
+            if word:match("[%.%!%?,:]$") then
+                hasPunctuation = true
+            end
+            rng4.typed = rng4.typed .. word
+            setText(rng4.typed)
+            if not isLastWord then
+                rng4.typed = rng4.typed .. " "
+                setText(rng4.typed)
+            end
+            local baseDelay = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier
+            local wordDelay = baseDelay * (1 + (#word * 0.05))
+            
+            if hasPunctuation then
+                wordDelay = wordDelay + (math.random(config.varibz.defaults.punctExtraMin, config.varibz.defaults.punctExtraMax) / 1000) * speedMultiplier
+            end
+            
+            if math.random() < config.varibz.defaults.breakChance then
+                wordDelay = wordDelay + (math.random(config.varibz.defaults.breakExtraMin, config.varibz.defaults.breakExtraMax) / 1000) * speedMultiplier
+            end
+            
+            task.wait(math.max(wordDelay, 0.02))
+            wordIndex = wordIndex + 1
+        end
+        
+        rng4.isTyping = false
+    end
+    local function typeSentenceInstant(text, speedMultiplier)
+        local processedText = processText(text)
+        rng4.processedText = processedText
+        rng4.typed = processedText
+        rng4.speedMultiplier = speedMultiplier
+        rng4.isTyping = true
+        setText(processedText)
+        local displayDuration = (math.random(config.varibz.defaults.minDelay, config.varibz.defaults.maxDelay) / 1000) * speedMultiplier * 10
+        displayDuration = displayDuration + (#processedText * 0.01)
+        displayDuration = math.max(displayDuration, 0.3)
+        if speedMultiplier > 0 then
+            displayDuration = displayDuration * (1 + (speedMultiplier * 0.5))
+        end
+        
+        task.wait(displayDuration)
+        
+        rng4.isTyping = false
+    end
+    
     local function eraseText(speedMultiplier)
         rng4.isErasing = true
         local text = rng4.currentText
@@ -10999,24 +11129,35 @@ local function rng4()
                 end
                 task.wait(math.random(config.varibz.defaults.shuffleWaitMin, config.varibz.defaults.shuffleWaitMax) / 10)
             end
+            
             local randomPos = math.random(1, #availableIndices)
             local convoIndex = availableIndices[randomPos]
             table.remove(availableIndices, randomPos)
             local conversation = config.varibz.convo[convoIndex]
+            
             if conversation then
                 local speedMultiplier = getSpeedMultiplier(conversation)
+                local mode = getTypingMode(conversation)
                 
                 local messages = {}
                 if type(conversation) == "table" then
                     for key, value in ipairs(conversation) do
-                        table.insert(messages, value)
+                        if type(value) == "string" then
+                            table.insert(messages, value)
+                        end
                     end
                 else
                     messages = {conversation}
                 end
                 
                 for index, message in ipairs(messages) do
-                    typeText(message, speedMultiplier)
+                    if mode == "2" then
+                        typeWordInstant(message, speedMultiplier)
+                    elseif mode == "3" then
+                        typeSentenceInstant(message, speedMultiplier)
+                    else
+                        typeDefault(message, speedMultiplier)
+                    end
                     
                     if index < #messages then
                         local waitTime = (math.random(config.varibz.defaults.messageWaitMin, config.varibz.defaults.messageWaitMax) / 10) * speedMultiplier
@@ -11039,6 +11180,7 @@ local function rng4()
         Icon = "clock",
         Color = Color3.fromHex("#00ff88")
     })
+    
     if fpsTag then
         local accum = 0
         local function isWindowMinimized()
@@ -11060,6 +11202,7 @@ local function rng4()
             end
         end)
     end
+    
     return rng4.tag
 end
 local function rng()
@@ -14166,7 +14309,7 @@ ClientTab:Slider({
 
     ClientTab:Toggle({
         Title = "Enable HipHeight",
-        Desc = "''u float 5 feet above you jack###''",
+        Desc = "''u float 5 feet above the ground you jackass''",
         Value = config.hipHeightEnabled or false,
         Callback = function(v)
             config.hipHeightEnabled = v
@@ -14579,7 +14722,7 @@ MiscTab:Toggle({
 
 MiscTab:Input({
     Title = "Tbot Hold Key",
-    Desc = "wat key",
+    Desc = "wat key should me press 2 shoot",
     Placeholder = "MouseButton1",
     Value = config.tbot.holdKey or "MouseButton1",
     ClearTextOnFocus = true,
