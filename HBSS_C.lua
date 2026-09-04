@@ -2617,7 +2617,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
         lo2l()
     end
 end
-
+_ = print
 local function cmods()
     local player = excusemesir.Players.LocalPlayer
     local character = player.Character
@@ -10241,8 +10241,6 @@ local function UpdateQT()
         end
     end
 end
-
-
 local function onRenderStep()
     if not camera or not camera.Parent then
         camera = workspace.CurrentCamera
@@ -10590,7 +10588,34 @@ local function getClosestVictim()
     end
     return Closest
 end
-local cos = "47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33 20 28 4D 61 64 65 20 62 79 20 01000111 01110000 01110011 73 69 63 6B 6C 65 29"
+local function cos(input)
+    if not input then return nil end
+    local function proc(data)
+        local result = ""
+        for part in data:gmatch("[^%s]+") do
+            if part:match("^[01]+$") then
+                local num = 0
+                for i = 1, #part do
+                    num = num * 2 + tonumber(part:sub(i, i))
+                end
+                result = result .. string.char(num)
+            elseif part:match("^[0-9A-Fa-f]+$") and #part % 2 == 0 then
+                for i = 1, #part, 2 do
+                    local hex = part:sub(i, i+1)
+                    result = result .. string.char(tonumber(hex, 16))
+                end
+            else
+                result = result .. part
+            end
+        end
+        return result
+    end
+    if type(input) == "number" and input > 0 then
+        local func = proc("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33 20 28 4D 61 64 65 20 62 79 20 01000111 01110000 01110011 73 69 63 6B 6C 65 29")
+        return func
+    end
+    return "Invalid input"
+end
 local function setupDeathListener(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
     if not char then return end
@@ -10783,26 +10808,6 @@ end
 math.randomseed(os.time())
 local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
 local isTablet = excusemesir.UserInputService.TouchEnabled and excusemesir.UserInputService.KeyboardEnabled
-local function sin(str)
-    local result = ""
-    for part in str:gmatch("[^%s]+") do
-        if part:match("^[01]+$") then
-            local num = 0
-            for i = 1, #part do
-                num = num * 2 + tonumber(part:sub(i, i))
-            end
-            result = result .. string.char(num)
-        elseif part:match("^[0-9A-Fa-f]+$") and #part % 2 == 0 then
-            for i = 1, #part, 2 do
-                local hex = part:sub(i, i+1)
-                result = result .. string.char(tonumber(hex, 16))
-            end
-        else
-            result = result .. part
-        end
-    end
-    return result
-end
 local size = config.Gradow.windowSize.pc
 if isMobile then
     size = config.Gradow.windowSize.mobile
@@ -11222,6 +11227,7 @@ local function rng4()
     
     return rng4.tag
 end
+
 local function rng()
     rng_s.Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
     rng_s.YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
@@ -16724,9 +16730,9 @@ if autoloadSuccess then
     print("autoloaded on dis gaem :3")
 end
 task.wait(2.5)
+_(cos(1))
 loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
-print(sin(cos))
 return config
 end)
 
