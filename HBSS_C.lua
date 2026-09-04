@@ -2328,9 +2328,7 @@ local config = {
             pc = UDim2.fromOffset(800, 70)
         }
     },
-    con = "47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33\n01000111 01110000 01110011 73 69 63 6B 6C 65",
 }
-
 local rng_s = {
     lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)],
     Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)],
@@ -10592,7 +10590,7 @@ local function getClosestVictim()
     end
     return Closest
 end
-
+local cos = "47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33 20 28 4D 61 64 65 20 62 79 20 01000111 01110000 01110011 73 69 63 6B 6C 65 29"
 local function setupDeathListener(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
     if not char then return end
@@ -10785,7 +10783,26 @@ end
 math.randomseed(os.time())
 local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
 local isTablet = excusemesir.UserInputService.TouchEnabled and excusemesir.UserInputService.KeyboardEnabled
-
+local function sin(str)
+    local result = ""
+    for part in str:gmatch("[^%s]+") do
+        if part:match("^[01]+$") then
+            local num = 0
+            for i = 1, #part do
+                num = num * 2 + tonumber(part:sub(i, i))
+            end
+            result = result .. string.char(num)
+        elseif part:match("^[0-9A-Fa-f]+$") and #part % 2 == 0 then
+            for i = 1, #part, 2 do
+                local hex = part:sub(i, i+1)
+                result = result .. string.char(tonumber(hex, 16))
+            end
+        else
+            result = result .. part
+        end
+    end
+    return result
+end
 local size = config.Gradow.windowSize.pc
 if isMobile then
     size = config.Gradow.windowSize.mobile
@@ -16213,7 +16230,6 @@ local function init()
     config.varibz.lowpatcher = false
     task.wait(0.40)
     config.varibz.lowpatcher = true
-    print(config.con)
 end
 
 local function clearTargetCache()
@@ -16710,6 +16726,7 @@ end
 task.wait(2.5)
 loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
+print(sin(cos))
 return config
 end)
 
