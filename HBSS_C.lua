@@ -283,12 +283,11 @@ getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
 local config = {
     startsa = false,
     fovsize = 120,
-    predic = 1,
     hbtrans = 1,
     scaleToScreen = false,
     stsdistance = 0,
-    sa_hb_responsiveness = 2,
     sa_hb_target_range = 500,
+    sa_hb_headshot_chance = 100,
     SA2_Enabled = false,
     SA2_Method = "Raycast",
     SA2_TeamTarget = "Enemies",
@@ -354,6 +353,8 @@ local config = {
     aimbotTeamTarget = "Enemies",
     aimbotCurrentTarget = nil,
     aimbotFOVRing = nil,
+    aimbotFOVColor = Color3.fromRGB(255, 0, 0),
+    aimbotFOVTargetColor = Color3.fromRGB(255, 255, 0),
     hitboxEnabled = false,
     hitboxSize = 10,
     hitboxTeamTarget = "Enemies",
@@ -520,7 +521,8 @@ local config = {
         delay = 0.1,
         fovRadius = 150,
         fovVisible = true,
-        fovColor = Color3.fromRGB(255, 0, 0),
+        fovColor = Color3.fromRGB(180, 210, 228),
+        fovTargetColor = Color3.fromRGB(255, 255, 0),
         fovTransparency = 0.7,
         targetPart = "Head",
         wallCheck = false,
@@ -528,6 +530,8 @@ local config = {
         holdToShoot = false,
         holdKey = "MouseButton1"
     },
+    tbotcurrenttarget = nil,
+    tbotTargetted = false,
     KeybindsEnabled = true,
     HoldKeysEnabled = false,
     Keybinds = {
@@ -636,6 +640,21 @@ local config = {
                 "sand larps gravel",
             },
             {
+                "My predictions of the future :D ...",
+                "AI might take over seemlingly\nevery humans work",
+                "The world would slowly lose its color",
+                "The world would become\ndystopian of automations",
+                "Data centers would use more than\n300k gallons of water",
+                "Chemical pollution would\ntake over the rain",
+                "A new virus outbreak",
+                "Pretty cool predictions right? :>",
+                "",
+                "you've wanted flying cars...",
+                "right?...",
+                "",
+                "...",
+            },
+            {
                 "Guys he's hacking REPORT",
                 "EVERYBODY SPAM REPORT HIM",
                 "HACKER REPORTTT",
@@ -694,6 +713,22 @@ local config = {
                 "''If i could see someone who\nknew me or someone in uniform''",
                 "''I go to church on Sunday, truly,\nusually more!''",
                 "Screaming at the angels while\nthey pushed him through the door.",
+            },
+            {
+                "if you guys ever find a exploit\nthat makes you join a group..",
+                "and it brings you to the\nRoblox login screen",
+                "make sure to check it's domain...",
+                "you might risk losing ur account",
+                "",
+                "be careful :c",
+            },
+            {
+                "isn't Folk Valley just a new Ohio meme?",
+                "but like the Ohio is fictional",
+                "and more... brutal",
+                "and also.. wtf is a Huss Valley.. who's making these",
+                "",
+                "..wtf is a Tuff Valley 🥀",
             },
             {
                 "u were wondering why\nI stopped updating gravel 4 a while?",
@@ -1068,7 +1103,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 16000+ lines long :(",
+                "Bro ts code is 17000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1489,7 +1524,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*16000+ lines later*",
+                "*17000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -1760,7 +1795,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 16000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 15000+ and now 17000+ lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -1780,7 +1815,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 16000 o_o",
+            "da script reached 8000 lines to 17000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -1907,12 +1942,11 @@ local config = {
             "rbxassetid://130435138559679",
             "rbxassetid://127155823074936",
             "rbxassetid://126485931781624",
-            "rbxassetid://1152809259",
-            "rbxassetid://8669816197",
-            "rbxassetid://11818627057",
-            "rbxassetid://7866490119",
-            "rbxassetid://12442731398",
-            "rbxassetid://9835676490",
+            "rbxassetid://8932053668",
+            "rbxassetid://8932338197",
+            "rbxassetid://10316507030",
+            "rbxassetid://12626199947",
+            "rbxassetid://8932006501",
         },
         tinf3 = {
     	    "rbxassetid://72298953503422",
@@ -2248,8 +2282,6 @@ local config = {
             data = {},
             timeout = 0.01,
             lastClear = 0,
-            aimrp = 0.01,
-            aimlp = 0,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -3360,6 +3392,21 @@ local function saveConfig(saveName)
                 B = config.SA2_FovColourTarget.B
             },
             SA2_FovTransparency = config.SA2_FovTransparency,
+            aimbotFOVColor = {
+                R = config.aimbotFOVColor.R,
+                G = config.aimbotFOVColor.G,
+                B = config.aimbotFOVColor.B
+            },
+            aimbotFOVTargetColor = {
+                R = config.aimbotFOVTargetColor.R,
+                G = config.aimbotFOVTargetColor.G,
+                B = config.aimbotFOVTargetColor.B
+            },
+            tbot_fovTargetColor = {
+                R = config.tbot.fovTargetColor.R,
+                G = config.tbot.fovTargetColor.G,
+                B = config.tbot.fovTargetColor.B
+            },
             tbot_fovColor = {
                 R = config.tbot.fovColor.R,
                 G = config.tbot.fovColor.G,
@@ -3404,6 +3451,7 @@ local function saveConfig(saveName)
             scaleToScreen = config.scaleToScreen,
             stsdistance = config.stsdistance,
             sa_hb_target_range = config.sa_hb_target_range or 500,
+            sa_hb_headshot_chance = config.sa_hb_headshot_chance or 100,
             bodypart = config.bodypart,
             hitchance = config.hitchance,
             fovsize = config.fovsize,
@@ -4276,6 +4324,7 @@ local function loadSave(saveName)
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
     if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
     if cfg.sa_hb_target_range then config.sa_hb_target_range = cfg.sa_hb_target_range end
+    if cfg.sa_hb_headshot_chance then config.sa_hb_headshot_chance = cfg.sa_hb_headshot_chance end
     if cfg.espc then
         config.espc = Color3.new(cfg.espc.R or 1, cfg.espc.G or 0.71, cfg.espc.B or 0.76)
     end
@@ -4304,6 +4353,27 @@ local function loadSave(saveName)
     if cfg.SA2_FovTransparency then config.SA2_FovTransparency = cfg.SA2_FovTransparency end
     if cfg.tbot_fovColor then
         config.tbot.fovColor = Color3.new(cfg.tbot_fovColor.R or 1, cfg.tbot_fovColor.G or 0, cfg.tbot_fovColor.B or 0)
+    end
+    if cfg.aimbotFOVColor then
+        config.aimbotFOVColor = Color3.new(
+            cfg.aimbotFOVColor.R or 1,
+            cfg.aimbotFOVColor.G or 0,
+            cfg.aimbotFOVColor.B or 0
+        )
+    end
+    if cfg.aimbotFOVTargetColor then
+        config.aimbotFOVTargetColor = Color3.new(
+            cfg.aimbotFOVTargetColor.R or 1,
+            cfg.aimbotFOVTargetColor.G or 1,
+            cfg.aimbotFOVTargetColor.B or 0
+        )
+    end
+    if cfg.tbot_fovTargetColor then
+        config.tbot.fovTargetColor = Color3.new(
+            cfg.tbot_fovTargetColor.R or 1,
+            cfg.tbot_fovTargetColor.G or 1,
+            cfg.tbot_fovTargetColor.B or 0
+        )
     end
     if cfg.hitboxColor then
         config.hitboxColor = Color3.new(cfg.hitboxColor.R or 1, cfg.hitboxColor.G or 1, cfg.hitboxColor.B or 1)
@@ -5332,8 +5402,11 @@ local function isPlayerBeingTargeted(targetPlayer)
     if config.currentTarget == targetPlayer then
         return true, "silentaim"
     end
-    if config.aimbotCurrentTarget == targetPlayer then
+    if config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer then
         return true, "aimbot"
+    end
+    if config.tbot.enabled and config.tbotcurrenttarget == targetPlayer then
+        return true, "triggerbot"
     end
     return false, nil
 end
@@ -5631,8 +5704,7 @@ local function GetClosestPlayer()
                     local part = nil
                     local targetPartStr = config.SA2_TargetPart
                     if targetPartStr == "Random" then
-                        local headshotChance = config.SA2_HeadshotChance or 100
-                        if math.random(1, 100) <= headshotChance then
+                        if math.random(1, 100) <= config.SA2_HeadshotChance then
                             part = char:FindFirstChild("Head")
                         end
                         if not part then
@@ -7839,21 +7911,19 @@ local function makeesp(targetPlayer)
     local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
     local isTargetedByRegular = config.currentTarget == targetPlayer
     local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
-    local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot
-    
+    local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+    local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
     label.TextColor3 = isTargeted and config.esptargetc or config.espc
     boxOutline.Color = isTargeted and config.esptargetc or config.espc
     headDot.BackgroundColor3 = isTargeted and config.esptargetc or config.espc
-    
     local function startUpdater()
         if config.espData[targetPlayer] and config.espData[targetPlayer].connection then
             pcall(function() config.espData[targetPlayer].connection:Disconnect() end)
         end
+
         local conn = excusemesir.RunService.Heartbeat:Connect(function()
-            local tchar = getTargetCharacter(targetPlayer)
-            local charExists = tchar and tchar.Parent
-            local viewportSize = camera.ViewportSize
-            if not charExists then
+            local currentCamera = workspace.CurrentCamera
+            if not currentCamera then
                 if label then label.Visible = false end
                 if boxFrame then boxFrame.Visible = false end
                 if healthBg then healthBg.Visible = false end
@@ -7861,42 +7931,55 @@ local function makeesp(targetPlayer)
                 return
             end
 
-            if not addesp(targetPlayer) then
-                label.Visible = false
-                boxFrame.Visible = false
-                healthBg.Visible = false
-                headDot.Visible = false
+            local tchar = getTargetCharacter(targetPlayer)
+
+            if not tchar or not tchar.Parent or not addesp(targetPlayer) then
+                if label then label.Visible = false end
+                if boxFrame then boxFrame.Visible = false end
+                if healthBg then healthBg.Visible = false end
+                if headDot then headDot.Visible = false end
                 return
             end
+
             local head = tchar:FindFirstChild("Head")
-            local root = tchar:FindFirstChild("HumanoidRootPart") or tchar:FindFirstChild("Torso") or tchar:FindFirstChild("UpperTorso")
+            local root = tchar:FindFirstChild("HumanoidRootPart")
+                or tchar:FindFirstChild("Torso")
+                or tchar:FindFirstChild("UpperTorso")
+
             if not head or not root then
+                if label then label.Visible = false end
+                if boxFrame then boxFrame.Visible = false end
+                if healthBg then healthBg.Visible = false end
+                if headDot then headDot.Visible = false end
+                return
+            end
+            local viewportSize = currentCamera.ViewportSize
+            local topPos = head.Position + Vector3.new(0, 0.4, 0)
+            local bottomPos = root.Position - Vector3.new(0, 1, 0)
+            local midPos = (topPos + bottomPos) * 0.5
+            local topV3, topOn = currentCamera:WorldToViewportPoint(topPos)
+            local bottomV3, bottomOn = currentCamera:WorldToViewportPoint(bottomPos)
+            local midV3, midOn = currentCamera:WorldToViewportPoint(midPos)
+            if topV3.Z <= 0 and bottomV3.Z <= 0 and midV3.Z <= 0 then
                 label.Visible = false
                 boxFrame.Visible = false
                 healthBg.Visible = false
                 headDot.Visible = false
                 return
             end
-            local topPos = head.Position + Vector3.new(0, 0.4, 0)
-            local bottomPos = root.Position - Vector3.new(0, 1.0, 0)
-            local midPos = (topPos + bottomPos) * 0.5
-            local topV3, onTop = camera:WorldToViewportPoint(topPos)
-            local bottomV3, onBottom = camera:WorldToViewportPoint(bottomPos)
-            local midV3, onMid = camera:WorldToViewportPoint(midPos)
-            local anyOnScreen = false
-            local function isOnScreen(pos)
-                return pos.Z > 0 and pos.X >= 0 and pos.X <= viewportSize.X and pos.Y >= 0 and pos.Y <= viewportSize.Y
-            end
-            if onTop and isOnScreen(topV3) then anyOnScreen = true end
-            if not anyOnScreen and onBottom and isOnScreen(bottomV3) then anyOnScreen = true end
-            if not anyOnScreen and onMid and isOnScreen(midV3) then anyOnScreen = true end
-            if not anyOnScreen and head then
-                local headV3, headOn = camera:WorldToViewportPoint(head.Position)
-                if headOn and headV3.Z > 0 then
-                    anyOnScreen = true
-                end
-            end
-            
+            local anyOnScreen =
+                (topOn and topV3.Z > 0 and
+                    topV3.X >= 0 and topV3.X <= viewportSize.X and
+                    topV3.Y >= 0 and topV3.Y <= viewportSize.Y)
+                or
+                (bottomOn and bottomV3.Z > 0 and
+                    bottomV3.X >= 0 and bottomV3.X <= viewportSize.X and
+                    bottomV3.Y >= 0 and bottomV3.Y <= viewportSize.Y)
+                or
+                (midOn and midV3.Z > 0 and
+                    midV3.X >= 0 and midV3.X <= viewportSize.X and
+                    midV3.Y >= 0 and midV3.Y <= viewportSize.Y)
+
             if not anyOnScreen then
                 label.Visible = false
                 boxFrame.Visible = false
@@ -7904,12 +7987,14 @@ local function makeesp(targetPlayer)
                 headDot.Visible = false
                 return
             end
-            
             local topScreenY = topV3.Y
             local bottomScreenY = bottomV3.Y
             local centerX = midV3.X
             local heightPx = math.abs(bottomScreenY - topScreenY)
-            if heightPx <= 2 then heightPx = 2 end
+            if heightPx < 2 then
+                heightPx = 2
+            end
+
             local widthPx = math.clamp(heightPx * 0.45, 4, 400)
 
             local humanoid = tchar:FindFirstChildOfClass("Humanoid")
@@ -7929,8 +8014,8 @@ local function makeesp(targetPlayer)
             local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
             local isTargetedByRegular = config.currentTarget == targetPlayer
             local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
-            local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot
-
+            local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+            local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
             if config.espMasterEnabled and config.prefTextESP then
                 local text = string.format("%s [%d]", getTargetName(targetPlayer), humanoid and math.floor(humanoid.Health) or 0)
                 label.Text = text
@@ -7993,7 +8078,7 @@ local function makeesp(targetPlayer)
             end
 
             if config.espMasterEnabled and config.prefHeadDotESP and head then
-                local headV3, onHead = camera:WorldToViewportPoint(head.Position)
+                local headV3, onHead = currentCamera:WorldToViewportPoint(head.Position)
                 if onHead and headV3.Z > 0 then
                     local dotX = math.clamp(headV3.X, 10, viewportSize.X - 10)
                     local dotY = math.clamp(headV3.Y, 10, viewportSize.Y - 10)
@@ -8023,7 +8108,6 @@ local function makeesp(targetPlayer)
             headDot = headDot
         }
     end
-
     local char = getTargetCharacter(targetPlayer)
     if char and (char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")) then
         startUpdater()
@@ -8055,49 +8139,28 @@ local function updateESPColors()
                 local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
                 local isTargetedByRegular = config.currentTarget == targetPlayer
                 local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
-                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot
-                
-                if data.label then
-                    if config.espMasterEnabled and config.prefTextESP then
-                        if isTargeted then
-                            data.label.TextColor3 = Color3.fromRGB(255, 255, 0)
-                        elseif hpColor then
-                            data.label.TextColor3 = hpColor
-                        else
-                            data.label.TextColor3 = config.espc
-                        end
-                        data.label.Visible = true
+                local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
+                if isTargeted then
+                    data.label.TextColor3 = Color3.fromRGB(255, 255, 0)
+                elseif hpColor then
+                    data.label.TextColor3 = hpColor
+                else
+                    data.label.TextColor3 = config.espc
+                end
+                if data.boxOutline then
+                    if isTargeted then
+                        data.boxOutline.Color = Color3.fromRGB(255, 255, 0)
                     else
-                        data.label.Visible = false
+                        data.boxOutline.Color = hpColor or config.espc
                     end
                 end
-                if data.box then
-                    if config.espMasterEnabled and config.prefBoxESP then
-                        data.box.Visible = true
-                        if data.boxOutline then
-                            if isTargeted then
-                                data.boxOutline.Color = Color3.fromRGB(255, 255, 0)
-                            else
-                                data.boxOutline.Color = hpColor or config.espc
-                            end
-                        end
-                    else
-                        data.box.Visible = false
-                    end
-                end
-                if data.headDot then
-                    if config.espMasterEnabled and config.prefHeadDotESP then
-                        data.headDot.Visible = true
-                        if isTargeted then
-                            data.headDot.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-                        elseif hpColor then
-                            data.headDot.BackgroundColor3 = hpColor
-                        else
-                            data.headDot.BackgroundColor3 = config.espc
-                        end
-                    else
-                        data.headDot.Visible = false
-                    end
+                if isTargeted then
+                    data.headDot.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+                elseif hpColor then
+                    data.headDot.BackgroundColor3 = hpColor
+                else
+                    data.headDot.BackgroundColor3 = config.espc
                 end
             end
         end
@@ -8117,7 +8180,8 @@ local function updateESPColors()
                 local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
                 local isTargetedByRegular = config.currentTarget == targetPlayer
                 local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
-                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot
+                local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
                 
                 if isTargeted then
                     highlight.FillColor = Color3.fromRGB(255, 255, 0)
@@ -8351,29 +8415,44 @@ local function chooseBodyPartInstance(target)
         return char:FindFirstChild("Head"), "Head"
     elseif bp == "HumanoidRootPart" then
         return char:FindFirstChild("HumanoidRootPart"), "HumanoidRootPart"
-    elseif bp == "Both" then
-        local roll = math.random(1, 100)
-        local primaryName, secondaryName
-        if roll <= 85 then
-            primaryName = "HumanoidRootPart"
-            secondaryName = "Head"
-        else
-            primaryName = "Head"
-            secondaryName = "HumanoidRootPart"
+    elseif bp == "Random" then
+        config._selectedPartForTarget = config._selectedPartForTarget or {}
+        if config._selectedPartForTarget[target] then
+            local selectedName = config._selectedPartForTarget[target]
+            local part = char:FindFirstChild(selectedName)
+            if part then
+                return part, selectedName
+            end
         end
-        local primaryPart = char:FindFirstChild(primaryName)
-        if primaryPart then
-            return primaryPart, primaryName
-        else
-            local fallback = char:FindFirstChild(secondaryName)
-            return fallback, secondaryName
+        local selectedPart = nil
+        local selectedName = "Head"
+        
+        if math.random(1, 100) <= config.sa_hb_headshot_chance then
+            local head = char:FindFirstChild("Head")
+            if head then
+                selectedPart = head
+                selectedName = "Head"
+            end
         end
+        if not selectedPart then
+            local rootPart = char:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                selectedPart = rootPart
+                selectedName = "HumanoidRootPart"
+            end
+        end
+        if not selectedPart then
+            local head = char:FindFirstChild("Head")
+            selectedPart = head
+            selectedName = (head and head.Name) or "Head"
+        end
+        config._selectedPartForTarget[target] = selectedName
+        return selectedPart, selectedName
     else
         local found = char:FindFirstChild(bp) or char:FindFirstChild("Head")
         return found, (found and found.Name) or "Head"
     end
 end
-
 local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     local char = getTargetCharacter(targetPlayer)
     if not char or targetPlayer == localPlayer then return end
@@ -8387,9 +8466,21 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         partName = part.Name
     end
     if not part then return end
-
     if not config.originalSizes[targetPlayer] then
-        saveOriginalPartInfo(targetPlayer, part)
+        config.originalSizes[targetPlayer] = {
+            partName = part.Name,
+            size = part.Size,
+        }
+    end
+    if config._selectedPartForTarget and config._selectedPartForTarget[targetPlayer] then
+        local expectedPart = config._selectedPartForTarget[targetPlayer]
+        if part.Name ~= expectedPart then
+            local correctPart = char:FindFirstChild(expectedPart)
+            if correctPart then
+                part = correctPart
+                partName = expectedPart
+            end
+        end
     end
 
     local expansionSize = Vector3.new(
@@ -8420,6 +8511,7 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
             end
         end
     end
+    
     local useExpanded = true
     local chance = math.clamp(tonumber(config.hitchance) or 100, 0, 100)
     if chance <= 0 then
@@ -8441,7 +8533,7 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         if original and original.size then
             config.targethbSizes[targetPlayer] = original.size
         else
-            config.targethbSizes[targetPlayer] = Vector3.new(0.05, 0.05, 0.05)
+            config.targethbSizes[targetPlayer] = part.Size
         end
     end
 
@@ -8460,41 +8552,43 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
 end
 local function restorePartForPlayer(targetPlayer)
     if not targetPlayer or targetPlayer == localPlayer then return end
-
     local char = getTargetCharacter(targetPlayer)
     local original = config.originalSizes[targetPlayer]
-    if not original then
-        config.activeApplied[targetPlayer] = nil
-        config.targethbSizes[targetPlayer] = nil
-        return
-    end
-
-    local part = nil
-    if char then
-        part = char:FindFirstChild(original.partName) or char:FindFirstChild(config.bodypart) or char:FindFirstChild("Head")
-    end
-
-    if part and original.size then
-        pcall(function()
-            part.Size = original.size
-            if part.Name == "HumanoidRootPart" then
-                part.Transparency = 1
-            else
-                part.Transparency = 0
+    if original and original.size then
+        local part = nil
+        if char then
+            if original.partName then
+                part = char:FindFirstChild(original.partName)
             end
-            part.CanCollide = false
-            part.Massless = false
-            if part:IsA("BasePart") then
-                part.Velocity = Vector3.new(0, 0, 0)
-                part.RotVelocity = Vector3.new(0, 0, 0)
+            if not part then
+                part = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
-        end)
-    end
+        end
 
+        if part and part.Parent then
+            pcall(function()
+                part.Size = original.size
+                if part.Name == "HumanoidRootPart" then
+                    part.Transparency = 1
+                else
+                    part.Transparency = 0
+                end
+                part.CanCollide = false
+                part.Massless = false
+                if part:IsA("BasePart") then
+                    part.Velocity = Vector3.new(0, 0, 0)
+                    part.RotVelocity = Vector3.new(0, 0, 0)
+                end
+            end)
+        end
+    end
     config.activeApplied[targetPlayer] = nil
     config.originalSizes[targetPlayer] = nil
     config.targethbSizes[targetPlayer] = nil
     config.centerLocked[targetPlayer] = nil
+    if config._selectedPartForTarget then
+        config._selectedPartForTarget[targetPlayer] = nil
+    end
 end
 local function proxyhb(targetPlayer)
     if not targetPlayer then return nil end
@@ -8925,7 +9019,7 @@ local function hb()
 
             if part then
                 local currentSize = part.Size
-                local lerpAlpha = math.clamp(tonumber(config.predic) or 1, 0, 1)
+                math.clamp(tonumber(1) or 1, 0, 1)
                 local newSize = currentSize:Lerp(targetSize, lerpAlpha)
 
                 pcall(function()
@@ -9245,7 +9339,7 @@ local function aimbotfov()
     local ringStroke = Instance.new("UIStroke")
     ringStroke.Thickness = 1
     ringStroke.LineJoinMode = Enum.LineJoinMode.Round
-    ringStroke.Color = Color3.fromRGB(255, 0, 0)
+    ringStroke.Color = config.aimbotFOVColor or Color3.fromRGB(255, 0, 0)
     ringStroke.Transparency = 0.3
     ringStroke.Parent = ringFrame
     
@@ -9266,11 +9360,17 @@ local function updateAimbotFOVRing()
             config.aimbotFOVRing.RingFrame.Size = UDim2.new(0, config.aimbotFOVSize * 2, 0, config.aimbotFOVSize * 2)
             config.aimbotFOVRing.RingFrame.Position = UDim2.new(0.5, 0, 0.5, -28)
             config.aimbotFOVRing.RingFrame.Visible = true
+            if config.aimbotCurrentTarget then
+                config.aimbotFOVRing.RingStroke.Color = config.aimbotFOVTargetColor or Color3.fromRGB(255, 255, 0)
+            else
+                config.aimbotFOVRing.RingStroke.Color = config.aimbotFOVColor or Color3.fromRGB(255, 0, 0)
+            end
         else
             config.aimbotFOVRing.RingFrame.Visible = false
         end
     end
 end
+
 local function aimbot360UpdateLoop()
     if config.varibz.aimbot360LoopRunning then
         return
@@ -9382,30 +9482,46 @@ end
 
 local function triggerBotUpdate()
     if not config.tbot.enabled then return end
-    
     local camera = workspace.CurrentCamera
     if not camera then return end
-    
     local viewportSize = camera.ViewportSize
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local fovRadius = config.tbot.fovRadius
+    if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+        config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
+    end
+    
     if config.tbot.holdToShoot then
         local uis = excusemesir.UserInputService
         local key = Enum.KeyCode[config.tbot.holdKey] or Enum.KeyCode.MouseButton1
         if not uis:IsKeyDown(key) then
+            config.tbotcurrenttarget = nil
+            config.tbotTargetted = false
             return
         end
     end
-    
     local targets = getAllTargets()
     local bestTarget = nil
     local bestDist = math.huge
+    local targetsInFOV = {}
     
     for _, target in ipairs(targets) do
         if target ~= localPlayer then
             local shouldTarget = false
             local char = getTargetCharacter(target)
             if not char then continue end
+            local isESPVisible = false
+            if config.espMasterEnabled then
+                for espTarget, _ in pairs(config.espData) do
+                    if espTarget == target then
+                        isESPVisible = true
+                        break
+                    end
+                end
+            end
+            if config.espMasterEnabled and not isESPVisible then
+                continue
+            end
             if config.specificTeamTarget and #config.targetedTeams > 0 then
                 if typeof(target) == "Instance" and target:IsA("Player") then
                     local team = target.Team
@@ -9447,15 +9563,11 @@ local function triggerBotUpdate()
             else
                 targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
-            
             if not targetPart then continue end
-            
             local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
             if not onScreen or screenPos.Z <= 0 then continue end
-            
             local screenVec = Vector2.new(screenPos.X, screenPos.Y)
             local distPx = (screenVec - center).Magnitude
-            
             if distPx <= fovRadius then
                 if config.tbot.wallCheck then
                     local ray = Ray.new(camera.CFrame.Position, (targetPart.Position - camera.CFrame.Position).Unit * (targetPart.Position - camera.CFrame.Position).Magnitude)
@@ -9465,8 +9577,16 @@ local function triggerBotUpdate()
                         continue
                     end
                 end
+                
                 local chance = math.random(1, 100)
                 if chance <= config.tbot.hitChance then
+                    table.insert(targetsInFOV, {
+                        target = target,
+                        dist = distPx,
+                        part = targetPart,
+                        char = char
+                    })
+                    
                     if distPx < bestDist then
                         bestDist = distPx
                         bestTarget = target
@@ -9475,8 +9595,28 @@ local function triggerBotUpdate()
             end
         end
     end
-    
     if bestTarget then
+        config.tbotcurrenttarget = bestTarget
+        config.tbotTargetted = true
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+            config.tbot.fovCircle.RingStroke.Color = config.tbot.fovTargetColor or Color3.fromRGB(255, 255, 0)
+        end
+        if config.espMasterEnabled and config.prefHighlightESP then
+            local char = getTargetCharacter(bestTarget)
+            if char then
+                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == bestTarget
+                local isTargetedByRegular = config.currentTarget == bestTarget
+                local isTargetedByAimbot = config.aimbotCurrentTarget == bestTarget
+                if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
+                    if config.highlightData[bestTarget] then
+                        config.highlightData[bestTarget].FillColor = Color3.fromRGB(255, 100, 0)
+                    end
+                    if config.espData[bestTarget] and config.espData[bestTarget].label then
+                        config.espData[bestTarget].label.TextColor3 = Color3.fromRGB(255, 100, 0)
+                    end
+                end
+            end
+        end
         local char = getTargetCharacter(bestTarget)
         if char then
             local targetPart = nil
@@ -9505,9 +9645,29 @@ local function triggerBotUpdate()
                 end
             end
         end
+    else
+        config.tbotcurrenttarget = nil
+        config.tbotTargetted = false
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+            config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
+        end
+        if config.espMasterEnabled then
+            for target, _ in pairs(config.espData) do
+                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == target
+                local isTargetedByRegular = config.currentTarget == target
+                local isTargetedByAimbot = config.aimbotCurrentTarget == target
+                if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
+                    if config.espData[target] and config.espData[target].label then
+                        config.espData[target].label.TextColor3 = config.espc
+                    end
+                    if config.highlightData[target] then
+                        config.highlightData[target].FillColor = config.espc
+                    end
+                end
+            end
+        end
     end
 end
-
 local function createTriggerBotFOV()
     if config.tbot.fovCircle and config.tbot.fovCircle.ScreenGui and config.tbot.fovCircle.ScreenGui.Parent then
         config.tbot.fovCircle.ScreenGui:Destroy()
@@ -9535,7 +9695,7 @@ local function createTriggerBotFOV()
     local ringStroke = Instance.new("UIStroke")
     ringStroke.Thickness = 1.5
     ringStroke.LineJoinMode = Enum.LineJoinMode.Round
-    ringStroke.Color = config.tbot.fovColor
+    ringStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
     ringStroke.Transparency = 1 - config.tbot.fovTransparency
     ringStroke.Parent = ringFrame
     
@@ -9547,6 +9707,7 @@ local function createTriggerBotFOV()
     
     return config.tbot.fovCircle
 end
+
 
 local function updateTriggerBotFOV()
     if config.tbot.fovCircle and config.tbot.fovCircle.RingFrame then
@@ -9782,10 +9943,8 @@ local function burgerking(deltaTime)
         return
     end
     table.clear(candidates)
-    local currentTime = tick()
-    if config.aimbotEnabled and (currentTime - config.varibz.aimbotdump.aimlp) >= config.varibz.aimbotdump.aimrp then
+    if config.aimbotEnabled then
         aimbotUpdate()
-        config.varibz.aimbotdump.aimlp = currentTime
     end
     updateLineESP()
     if config.hitboxEnabled then
@@ -10447,11 +10606,9 @@ local function onRenderStep()
             table.insert(targetsToRemove, pl)
         end
     end
-    
     for _, pl in ipairs(targetsToRemove) do
         restorePartForPlayer(pl)
     end
-
     if best and plralive(best.player) then
         local function calculateDiameter(worldDist, screenRadius, cam)
             local viewportSize = cam.ViewportSize
@@ -10522,7 +10679,7 @@ local function onRenderStep()
         local targetSize = diameter
         
         if currentSize then
-            local lerpAlpha = math.clamp(config.sa_hb_responsiveness, 0.01, 1)
+            local lerpAlpha = math.clamp(2, 0.01, 1)
             local newSize = currentSize.X + (targetSize - currentSize.X) * lerpAlpha
             diameter = math.max(0.01, newSize)
         end
@@ -12551,13 +12708,13 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "FOV Colors",
+    Title = "Silentaim (HB) FOV Colors",
     Desc = "Customize FOV ring colors",
     Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
-    Title = "FOV Ring Color",
+    Title = "SA1 FOV Color",
     Desc = "make the fov ring pretty",
     Default = config.fovc or Color3.fromRGB(100, 0, 0),
     Transparency = 0,
@@ -12572,7 +12729,7 @@ VisualsTab:Colorpicker({
 })
 
 VisualsTab:Colorpicker({
-    Title = "FOV Target Color",
+    Title = "SA1 FOV Target Color",
     Desc = "make the evil fov ring pretty",
     Default = config.fovct or Color3.fromRGB(255, 255, 0),
     Transparency = 0,
@@ -12619,21 +12776,77 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "TriggerBot Colors",
-    Desc = "Customize TriggerBot colors",
+    Title = "Aimbot FOV Colors",
+    Desc = "Customize Aimbot FOV ring colors",
+    Color = config.Gradow.uicolor.lightGreen
+})
+
+VisualsTab:Colorpicker({
+    Title = "Aimbot FOV Color",
+    Desc = "make the fov ring pretty",
+    Default = config.aimbotFOVColor or Color3.fromRGB(255, 0, 0),
+    Transparency = 0,
+    Locked = false,
+    LockedTitle = "Locked message",
+    Callback = function(color)
+        config.aimbotFOVColor = color
+        if config.aimbotFOVRing and config.aimbotFOVRing.RingStroke then
+            if not config.aimbotCurrentTarget then
+                config.aimbotFOVRing.RingStroke.Color = color
+            end
+        end
+    end
+})
+
+VisualsTab:Colorpicker({
+    Title = "Aimbot FOV Target Color",
+    Desc = "make the evil fov ring pretty",
+    Default = config.aimbotFOVTargetColor or Color3.fromRGB(255, 255, 0),
+    Transparency = 0,
+    Locked = false,
+    LockedTitle = "Locked message",
+    Callback = function(color)
+        config.aimbotFOVTargetColor = color
+        if config.aimbotFOVRing and config.aimbotFOVRing.RingStroke and config.aimbotCurrentTarget then
+            config.aimbotFOVRing.RingStroke.Color = color
+        end
+    end
+})
+
+VisualsTab:Space()
+VisualsTab:Paragraph({
+    Title = "TriggerBot FOV Colors",
+    Desc = "Customize TriggerBot FOV ring colors",
     Color = config.Gradow.uicolor.lightGreen
 })
 
 VisualsTab:Colorpicker({
     Title = "TriggerBot FOV Color",
     Desc = "make the fov ring pretty",
-    Default = config.tbot.fovColor or Color3.fromRGB(255, 0, 0),
+    Default = config.tbot.fovColor or Color3.fromRGB(180, 210, 228),
     Transparency = 0,
     Locked = false,
     LockedTitle = "Locked message",
     Callback = function(color)
         config.tbot.fovColor = color
-        updateTriggerBotFOV()
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke and not config.tbotcurrenttarget then
+            config.tbot.fovCircle.RingStroke.Color = color
+        end
+    end
+})
+
+VisualsTab:Colorpicker({
+    Title = "TriggerBot FOV Target Color",
+    Desc = "make the evil fov ring pretty",
+    Default = config.tbot.fovTargetColor or Color3.fromRGB(255, 255, 0),
+    Transparency = 0,
+    Locked = false,
+    LockedTitle = "Locked message",
+    Callback = function(color)
+        config.tbot.fovTargetColor = color
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke and config.tbotcurrenttarget then
+            config.tbot.fovCircle.RingStroke.Color = color
+        end
     end
 })
 
@@ -13359,7 +13572,7 @@ local SilentAimTab = Window:Tab({
     SilentAimTab:Dropdown({
         Title = "Target Part",
         Desc = "target that one and the other one",
-        Values = {"Head", "HumanoidRootPart", "Both"},
+        Values = {"Random", "Head", "HumanoidRootPart"},
         Value = config.bodypart or "Head",
         Multi = false,
         Callback = function(Option)
@@ -13404,6 +13617,20 @@ SilentAimTab:Slider({
         end
     })
     
+SilentAimTab:Slider({
+    Title = "Headshot Chance",
+    Desc = "hitchance²\n(only works with ''Random'' targetpart)\n>:3",
+    Step = 1,
+    Suffix = "%",
+    Value = {
+        Min = 0,
+        Max = 100,
+        Default = config.sa_hb_headshot_chance or 100
+    },
+    Callback = function(value)
+        config.sa_hb_headshot_chance = value
+    end
+})
     SilentAimTab:Slider({
         Title = "Fov Radius",
         Desc = "eyesight",
@@ -15441,11 +15668,50 @@ local InfoTab = Window:Tab({
     Icon = "info",
     IconColor = config.Gradow.uicolor.lightGray
 }) do
+InfoTab:Paragraph({
+    Title = "Support",
+    Desc = "Support grabell & I know u like gravel\ni know you realllllllly like gravel\nriiight??? :o",
+    Color = config.Gradow.uicolor.lightGreen
+})
     InfoTab:Paragraph({
         Title = "Gravel",
-        Desc = "Our YouTube channel is @gpssickle\nim mischievousidhwkwuhd",
+        Desc = "yt is @gpssickle\nim mischievousidhwkwuhd",
         Color = config.Gradow.uicolor.Red
     })
+InfoTab:Button({
+    Title = "social hangout game :>",
+    Desc = "u can dono or play the game :p",
+    Icon = "copy",
+    Callback = function()
+        setclipboard("https://www.roblox.com/games/96489792142939/Happy-Home")
+        n({
+            Title = "YAYY :D",
+            Content = "Gaem id copied!1!1!",
+            Audio = "rbxassetid://12222253",
+            Length = 1,
+            Image = "rbxassetid://10245993691",
+            BarColor = Color3.fromRGB(255, 255, 0)
+        })
+    end
+})
+
+InfoTab:Button({
+    Title = "profile :p",
+    Desc = "follow me or i cry 3:",
+    Icon = "user",
+    Callback = function()
+        setclipboard("https://www.roblox.com/users/8517361356/profile")
+        n({
+            Title = "YIPPEEE >:D",
+            Content = "Profy id copied!1!1!",
+            Audio = "rbxassetid://12222253",
+            Length = 1,
+            Image = "rbxassetid://10246338786",
+            BarColor = Color3.fromRGB(255, 255, 0)
+        })
+    end
+})
+InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Gravel: SRC",
         Desc = "https://github.com/hm5650/HBSS/tree/main\n\nholy open source...\nif ur using a snippet that came from gravel....\ncredit me or I cry\n_.⁠·⁠´⁠¯⁠`⁠(⁠>⁠▂⁠<⁠)⁠´⁠¯⁠`⁠·⁠._",
@@ -15456,6 +15722,7 @@ local InfoTab = Window:Tab({
         Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
         Color = config.Gradow.uicolor.Black
     })
+InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Tabs",
         Desc = "Information about each tab",
