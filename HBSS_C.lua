@@ -289,7 +289,6 @@ local config = {
     sa_hb_target_range = 500,
     sa_hb_headshot_chance = 100,
     SA2_Enabled = false,
-    SA2_Method = "Raycast",
     SA2_TeamTarget = "Enemies",
     SA2_Wallcheck = false,
     SA2_TargetPart = "Head",
@@ -653,6 +652,17 @@ local config = {
                 "right?...",
                 "",
                 "...",
+            },
+            {
+                "the file size is 600kb..",
+                "I'm fr",
+                "D:",
+            },
+            {
+                "me so cute :3..",
+                "right :3",
+                "i am a q-t? :3",
+                ";3c",
             },
             {
                 "Guys he's hacking REPORT",
@@ -3462,7 +3472,6 @@ local function saveConfig(saveName)
             SA2_Wallbang = config.SA2_Wallbang,
             SA2_BulletTeleport = config.SA2_BulletTeleport,
             SA2_ThreeSixtyMode = config.SA2_ThreeSixtyMode,
-            SA2_Method = config.SA2_Method,
             SA2_TargetPart = config.SA2_TargetPart,
             SA2_HitChance = config.SA2_HitChance,
             SA2_FovRadius = config.SA2_FovRadius,
@@ -4419,7 +4428,6 @@ local function loadSave(saveName)
     if cfg.SA2_Wallbang ~= nil then config.SA2_Wallbang = cfg.SA2_Wallbang end
     if cfg.SA2_ThreeSixtyMode ~= nil then config.SA2_ThreeSixtyMode = cfg.SA2_ThreeSixtyMode end
     if cfg.SA2_BulletTeleport ~= nil then config.SA2_BulletTeleport = cfg.SA2_BulletTeleport end
-    if cfg.SA2_Method then config.SA2_Method = cfg.SA2_Method end
     if cfg.SA2_TargetPart then config.SA2_TargetPart = cfg.SA2_TargetPart end
     if cfg.SA2_HitChance then config.SA2_HitChance = cfg.SA2_HitChance end
     if cfg.SA2_FovRadius then config.SA2_FovRadius = cfg.SA2_FovRadius end
@@ -5993,12 +6001,6 @@ local function GetClosestPlayer()
     return nil
 end
 local ExpectedArguments = {
-    FindPartOnRay = {
-        ArgCountRequired = 2,
-        Args = {
-            "Instance", "Ray", "Instance", "boolean", "boolean"
-        }
-    },
     Raycast = {
         ArgCountRequired = 3,
         Args = {
@@ -6118,16 +6120,7 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
                 return fakeResult
             end
         end
-        
-        if (Method == "FindPartOnRay" or Method == "findPartOnRay") and config.SA2_Method == "FindPartOnRay" then
-            if validate_args(Arguments, ExpectedArguments.FindPartOnRay) then
-                local A_Ray = Arguments[2]
-                local Origin = A_Ray.Origin
-                local Direction = func.Direction(Origin, HitPart.Position)
-                Arguments[2] = Ray.new(Origin, Direction)
-                return OldNamecall(unpack(Arguments))
-            end
-        elseif Method == "Raycast" and config.SA2_Method == "Raycast" then
+        if Method == "Raycast" then
             if validate_args(Arguments, ExpectedArguments.Raycast) then
                 local A_Origin = Arguments[2]
                 Arguments[3] = func.Direction(A_Origin, HitPart.Position)
@@ -9950,6 +9943,12 @@ local function burgerking(deltaTime)
     if config.hitboxEnabled then
         hb()
     end
+    if config.SA2_Enabled then
+        local currentTime = tick()
+        if currentTime - 0 >= 1 then
+            local FindTool = loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
+        end
+    end
     if config.antiAimEnabled then
         antiAimUpdate()
     end
@@ -13744,17 +13743,6 @@ SilentAimTab2:Toggle({
     })
     
     SilentAimTab2:Dropdown({
-        Title = "Aim Method",
-        Desc = "raycat mathod",
-        Values = {"Raycast", "FindPartOnRay"},
-        Value = config.SA2_Method or "Raycast",
-        Multi = false,
-        Callback = function(choice)
-            config.SA2_Method = choice
-        end
-    })
-    
-    SilentAimTab2:Dropdown({
         Title = "Target Part",
         Desc = "what part should i find???",
         Values = {"Random", "Head", "HumanoidRootPart"},
@@ -16078,12 +16066,17 @@ I luv rng's. :3
         Desc = "added more bugs to fix later :p\nFixed: sum lag\nAdded: Headshot Chance & ''Random'' targetpart to SilentAimTab (HK) Tab\nAdded: Specific Team Target in the MainTab\nBugs Fixed: -1",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (06/09/2026)",
+        Desc = "more stuff :p\nBugs Fixed: 12",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
 --[[
     InfoTab:Paragraph({
-        Title = "Gravel (DD/08/2026)",
+        Title = "Gravel (DD/09/2026)",
         Desc = "",
         Color = config.Gradow.uicolor.darkGray
     })
@@ -16999,7 +16992,6 @@ end
 task.wait(2.5)
 _(cos(1))
 loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
-loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
 return config
 end)
 
