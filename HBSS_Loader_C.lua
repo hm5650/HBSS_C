@@ -13,6 +13,7 @@ local brand = Instance.new("TextLabel")
 local loadingText = Instance.new("TextLabel")
 local bar = Instance.new("TextLabel")
 local icon = Instance.new("ImageLabel")
+local gravelVideo = Instance.new("ImageLabel")
 local aspect = Instance.new("UIAspectRatioConstraint")
 local plrs = game:GetService("Players")
 local blurEffect = Instance.new("BlurEffect")
@@ -21,6 +22,20 @@ local filesText = Instance.new("TextLabel")
 local memeText = Instance.new("TextLabel")
 local floatOffset = 0
 local floatDirection = 1
+local gravelFrames = {
+    "rbxassetid://77615568468059",
+    "rbxassetid://134610085244549",
+    "rbxassetid://96860104682417"
+}
+local currentFrame = 1
+gravelVideo.Size = UDim2.fromScale(0.15, 0.25)
+gravelVideo.Position = UDim2.fromScale(0.08, 0.88)
+gravelVideo.AnchorPoint = Vector2.new(0.5, 0.5)
+gravelVideo.Image = gravelFrames[1]
+gravelVideo.BackgroundTransparency = 1
+gravelVideo.ImageTransparency = 1
+gravelVideo.ScaleType = Enum.ScaleType.Fit
+gravelVideo.Parent = gui
 blurEffect.Size = 0
 blurEffect.Parent = game:GetService("Lighting")
 gui.Name = "load"
@@ -97,7 +112,6 @@ memeText.TextColor3 = Color3.fromRGB(120, 120, 120)
 memeText.TextTransparency = 1
 memeText.BackgroundTransparency = 1
 memeText.Parent = center
-
 local rngTitles = {
     "Gravel.cc", "G.cc", "HBSS.cc", "Gravel-est", "Gravel-er", 
     "Graaaavel.cc", "Gravelly.cc", "Gravel.com", "Hi! I'm Gravel.cc",
@@ -199,12 +213,19 @@ local fadeIn = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 TweenService:Create(blurEffect, fadeIn, {Size = 24}):Play()
 TweenService:Create(bg, fadeIn, {BackgroundTransparency = 0.4}):Play()
 TweenService:Create(icon, fadeIn, {ImageTransparency = 0}):Play()
+TweenService:Create(gravelVideo, fadeIn, {ImageTransparency = 0}):Play()
 TweenService:Create(brand, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(loadingText, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(bar, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(filesText, fadeIn, {TextTransparency = 0}):Play()
 TweenService:Create(memeText, fadeIn, {TextTransparency = 0}):Play()
-
+task.spawn(function()
+    while gui and gui.Parent do
+        currentFrame = currentFrame % #gravelFrames + 1
+        gravelVideo.Image = gravelFrames[currentFrame]
+        task.wait(0.1)
+    end
+end)
 task.spawn(function()
     while gui and gui.Parent do
         floatOffset = floatOffset + (0.5 * floatDirection)
@@ -214,6 +235,20 @@ task.spawn(function()
             floatDirection = 1
         end
         icon.Position = UDim2.fromScale(0.5, 0.10 + (floatOffset / 1000))
+        task.wait(0.02)
+    end
+end)
+task.spawn(function()
+    local gravelFloat = 0
+    local gravelDir = 1
+    while gui and gui.Parent do
+        gravelFloat = gravelFloat + (0.2 * gravelDir)
+        if gravelFloat > 8 then
+            gravelDir = -1
+        elseif gravelFloat < -8 then
+            gravelDir = 1
+        end
+        gravelVideo.Position = UDim2.fromScale(0.08, 0.88 + (gravelFloat / 1000))
         task.wait(0.02)
     end
 end)
@@ -395,6 +430,7 @@ task.spawn(function()
     TweenService:Create(blurEffect, fadeOut, {Size = 0}):Play()
     TweenService:Create(bg, fadeOut, {BackgroundTransparency = 1}):Play()
     TweenService:Create(icon, fadeOut, {ImageTransparency = 1}):Play()
+    TweenService:Create(gravelVideo, fadeOut, {ImageTransparency = 1}):Play()
     TweenService:Create(brand, fadeOut, {TextTransparency = 1}):Play()
     TweenService:Create(loadingText, fadeOut, {TextTransparency = 1}):Play()
     TweenService:Create(bar, fadeOut, {TextTransparency = 1}):Play()
