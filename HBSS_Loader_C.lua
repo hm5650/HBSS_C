@@ -48,7 +48,7 @@ UIObject1.Name = "UIimage"
 UIObject1.ImageColor3 = Color3.fromRGB(255,255,255)
 UIObject1.BorderMode = Enum.BorderMode.Outline
 UIObject1.AnchorPoint = Vector2.new(0.5, 0.5)
-UIObject1.Image = "rbxassetid://111829430881220"
+UIObject1.Image = "rbxassetid://108749043601477"
 UIObject1.ImageRectSize = Vector2.new(0,0)
 UIObject1.ZIndex = 1
 UIObject1.BorderSizePixel = 0
@@ -310,7 +310,7 @@ local function playGlitchStartAnimation()
     }
     for _, step in ipairs(glitchSteps) do
         if step.normal then
-            UIObject1.Image = "rbxassetid://111829430881220"
+            UIObject1.Image = "rbxassetid://108749043601477"
             applyGlitchPositions(0)
         else
             UIObject1.Image = step.image
@@ -328,7 +328,7 @@ local function playGlitchStartAnimation()
             blackFrame.BackgroundTransparency = 1
         end
     end
-    UIObject1.Image = "rbxassetid://111829430881220"
+    UIObject1.Image = "rbxassetid://108749043601477"
     applyGlitchPositions(0)
     UIObject2.Visible = true
     UIObject3.Visible = true
@@ -352,7 +352,7 @@ task.spawn(function()
             applyGlitchPositions(glitchData.offset)
             glitchSounds[random(1, #glitchSounds)]:Play()
             task.wait(random(1, 4) / 10)
-            UIObject1.Image = "rbxassetid://111829430881220"
+            UIObject1.Image = "rbxassetid://108749043601477"
             applyGlitchPositions(0)
         end
         task.wait(1.5)
