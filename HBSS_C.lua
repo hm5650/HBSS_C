@@ -78,6 +78,7 @@ local UICorner = Instance.new("UICorner")
 getgenv().HttpUrlz_ = {
     --hbss completely random useless & useful modules :]
     hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbsscloser = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Closer" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
@@ -139,116 +140,7 @@ local function n(opts)
         end)
     end
 end
-
-n({
-    Title = "Gravel.cc",
-    Content = "script made by hmmm5651\nyt: @gpssickle",
-    Audio = "rbxassetid://17208361335",
-    Length = 8,
-    Image = "rbxassetid://4483362458",
-    BarColor = Color3.fromRGB(0, 170, 255)
-})
-
-task.wait(2.30)
-pcall(function()
-loadstring(getgist_(getgenv().HttpUrlz_.adonisabuse))()
-local getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, lower, gsub, match = getgenv, getnamecallmethod, hookmetamethod, hookfunction, newcclosure, checkcaller, string.lower, string.gsub, string.match
-if getgenv().ED_AntiKick then
-    return
-end
-
-local cloneref = cloneref or function(...) 
-    return ...
-end
-
-local clonefunction = clonefunction or function(...)
-    return ...
-end
-
-local Players, LocalPlayer, StarterGui = cloneref(game:GetService("Players")), cloneref(game:GetService("Players").LocalPlayer), cloneref(game:GetService("StarterGui"))
-local SetCore = clonefunction(StarterGui.SetCore)
-local FindFirstChild = clonefunction(game.FindFirstChild)
-
-local CompareInstances = (CompareInstances and function(Instance1, Instance2)
-        if typeof(Instance1) == "Instance" and typeof(Instance2) == "Instance" then
-            return CompareInstances(Instance1, Instance2)
-        end
-    end)
-or
-function(Instance1, Instance2)
-    return (typeof(Instance1) == "Instance" and typeof(Instance2) == "Instance")
-end
-
-local CanCastToSTDString = function(...)
-    return pcall(FindFirstChild, game, ...)
-end
-task.wait(0.4)
-getgenv().ED_AntiKick = {
-    Enabled = true, 
-    SendNotifications = false,
-    CheckCaller = true
-}
-
-OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
-    local self, message = ...
-    local method = getnamecallmethod()
-    local isCallerValid = true
-    if ED_AntiKick.CheckCaller then
-        local success, result = pcall(checkcaller)
-        isCallerValid = success and result or true
-    end
-    
-    if (isCallerValid or not ED_AntiKick.CheckCaller) and CompareInstances(self, LocalPlayer) and gsub(method, "^%l", string.upper) == "Kick" and ED_AntiKick.Enabled then
-        if CanCastToSTDString(message) then
-            if ED_AntiKick.SendNotifications then
-                SetCore(StarterGui, "SendNotification", {
-                    Title = "Gravel Anti-Kick",
-                    Text = "Successfully blocked an attempted kick.",
-                    Icon = "rbxassetid://4483362458",
-                    Duration = 1
-                })
-            end
-            return
-        end
-    end
-
-    return OldNamecall(...)
-end))
-OldFunction = hookfunction(LocalPlayer.Kick, function(...)
-    local self, Message = ...
-
-    local isCallerValid = true
-    if ED_AntiKick.CheckCaller then
-        local success, result = pcall(checkcaller)
-        isCallerValid = success and result or true
-    end
-    
-    if (isCallerValid or not ED_AntiKick.CheckCaller) and CompareInstances(self, LocalPlayer) and ED_AntiKick.Enabled then
-        if CanCastToSTDString(Message) then
-            if ED_AntiKick.SendNotifications then
-                SetCore(StarterGui, "SendNotification", {
-                    Title = "Gravel Anti-Kick",
-                    Text = "Successfully blocked an attempted kick.",
-                    Icon = "rbxassetid://4483362458",
-                    Duration = 1
-                })
-            end
-            return
-        end
-    end
-    return OldFunction(...)
-end)
-
-
-n({
-    Title = "Gravel.cc",
-    Content = "Antikick started!",
-    Audio = "rbxassetid://17208361335",
-    Length = 8,
-    Image = "rbxassetid://4483362458",
-    BarColor = Color3.fromRGB(0, 170, 255)
-})
-end)
+task.wait(5.3)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
 local func = loadstring(getgist_(getgenv().HttpUrlz_.sa2func))()
 local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
@@ -281,6 +173,7 @@ getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
 }
 -- cfg
 local config = {
+    antikick = true,
     startsa = false,
     fovsize = 120,
     hbtrans = 1,
@@ -302,6 +195,7 @@ local config = {
     SA2_FovIsTargeted = false,
     SA2_ThreeSixtyMode = false,
     SA2_GetTarget = "Closest",
+    SA2_AimMethod = "Raycast",
     SA2_currentTarget = nil,
     SA2_TArea = 35,
     SA2_TargetRange = 500,
@@ -330,6 +224,7 @@ local config = {
     lineColor = Color3.fromRGB(255, 255, 255),
     lineThickness = 1,
     lineESPData = {},
+    espRefreshRate = 0.03,
     originalSizes = {},
     activeApplied = {},
     espData = {},
@@ -1969,15 +1864,6 @@ local config = {
            "rbxassetid://17517499979",
            "rbxassetid://119888856502065",
         },
-        uwu = {
-            "rbxassetid://72298953503422",
-            "rbxassetid://17608357332",
-            "rbxassetid://130776885039264",
-            "rbxassetid://6303045144",
-            "rbxassetid://101513669346450",
-            "rbxassetid://17748195478",
-            "rbxassetid://17517499979",
-        },
         descs = {
             Main = {
                 "y u touching my brain",
@@ -2285,14 +2171,16 @@ local config = {
         sa2alot = 0,
         sa2dump = {
             data = {},
-            lclr = 0,
             cache = {},
-            t = 0.01
+            fcache = {},
+            rcache = {},
+            lclr = 0,
+            t = 0.03,
         },
         aimbotdump = {
             data = {},
-            t = 0.01,
             lclr = 0,
+            t = 0.02,
         },
         spinbotConnection = nil,
         ViewConnection = nil,
@@ -2382,6 +2270,57 @@ local rng_s = {
     bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
 }
 
+n({
+    Title = "Gravel.cc",
+    Content = "that 100% not a redliner inspired intro",
+    Audio = "rbxassetid://17208361335",
+    Length = 8,
+    Image = rng_s.bju2,
+    BarColor = Color3.fromRGB(0, 170, 255)
+})
+
+function gestalt_______(state)
+    config.antikick = state
+    if state then
+        if not hookmetamethod or not hookfunction then 
+            warn("Gravel: Your exploit doesn't support hooking functions for antikick")
+            config.antikick = false
+            return
+        end
+        local LocalPlayer = excusemesir.Players.LocalPlayer
+        if not config._antikick_original then
+            config._antikick_original = {}
+        end
+        if not config._antikick_original.namecall then
+            config._antikick_original.namecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+                local method = getnamecallmethod and getnamecallmethod() or ""
+                if select(1, ...) == LocalPlayer and (method == "Kick" or method == "kick") then
+                    return nil
+                end
+                return config._antikick_original.namecall(...)
+            end))
+        end
+        if not config._antikick_original.kick then
+            config._antikick_original.kick = hookfunction(LocalPlayer.Kick, newcclosure(function(self, _)
+                if self ~= LocalPlayer then
+                    error("Expected ':' not '.' calling member function Kick", 2)
+                end
+                return nil
+            end))
+        end
+    else
+        if config._antikick_original then
+            if config._antikick_original.namecall then
+                hookmetamethod(game, "__namecall", config._antikick_original.namecall)
+                config._antikick_original.namecall = nil
+            end
+            if config._antikick_original.kick then
+                hookfunction(excusemesir.Players.LocalPlayer.Kick, config._antikick_original.kick)
+                config._antikick_original.kick = nil
+            end
+        end
+    end
+end
 local function isInSpecificTeam(player)
     if not config.specificTeamTarget or #config.targetedTeams == 0 then
         return true
@@ -3332,6 +3271,7 @@ local function saveConfig(saveName)
         version = "2.0",
         timestamp = os.time(),
         config = {
+            antikick = config.antikick,
             masterTeamTarget = config.masterTeamTarget,
             specificTeamTarget = config.specificTeamTarget,
             targetedTeams = table.clone(config.targetedTeams),
@@ -3361,6 +3301,7 @@ local function saveConfig(saveName)
             lineESPOnlyTarget = config.lineESPOnlyTarget,
             lineStartPosition = config.lineStartPosition,
             prefColorByHealth = config.prefColorByHealth,
+            espRefreshRate = config.espRefreshRate,
             espc = {
                 R = config.espc.R,
                 G = config.espc.G,
@@ -4293,6 +4234,12 @@ local function loadSave(saveName)
         config.centerLocked = {}
     end)
     task.wait(0.2) --load
+    if cfg.antikick ~= nil then 
+        config.antikick = cfg.antikick
+        if config.antikick then
+            gestalt_______(true)
+        end
+    end
     if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
     if cfg.specificTeamTarget ~= nil then config.specificTeamTarget = cfg.specificTeamTarget end
     if cfg.targetedTeams then config.targetedTeams = cfg.targetedTeams end
@@ -4332,6 +4279,7 @@ local function loadSave(saveName)
     if cfg.lineESPOnlyTarget ~= nil then config.lineESPOnlyTarget = cfg.lineESPOnlyTarget end
     if cfg.lineStartPosition then config.lineStartPosition = cfg.lineStartPosition end
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
+    if cfg.espRefreshRate then config.espRefreshRate = cfg.espRefreshRate end
     if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
     if cfg.sa_hb_target_range then config.sa_hb_target_range = cfg.sa_hb_target_range end
     if cfg.sa_hb_headshot_chance then config.sa_hb_headshot_chance = cfg.sa_hb_headshot_chance end
@@ -5983,13 +5931,14 @@ local function GetClosestPlayer()
 end
 function sa2_________________()
     local currentTime = tick()
-    local cutoff = currentTime - 3
+    local cutoff = currentTime - 1
     local newData = {}
     for key, val in pairs(config.varibz.sa2dump.data) do
         if val.time and val.time > cutoff then
             newData[key] = val
         end
     end
+    table.clear(config.varibz.sa2dump.data)
     config.varibz.sa2dump.data = newData
     local newWall = {}
     for key, val in pairs(config.varibz.sa2dump.cache) do
@@ -5997,44 +5946,115 @@ function sa2_________________()
             newWall[key] = val
         end
     end
+    table.clear(config.varibz.sa2dump.cache)
     config.varibz.sa2dump.cache = newWall
-    local dataCount = 0
-    for _ in pairs(config.varibz.sa2dump.data) do
-        dataCount = dataCount + 1
-        if dataCount > 50 then break end
+    if config.varibz.sa2dump.rcache then
+        local newRcache = {}
+        for key, val in pairs(config.varibz.sa2dump.rcache) do
+            if val.time and val.time > cutoff then
+                newRcache[key] = val
+            end
+        end
+        table.clear(config.varibz.sa2dump.rcache)
+        config.varibz.sa2dump.rcache = newRcache
     end
-    if dataCount > 50 then
+    if config.varibz.sa2dump.fcache then
+        local newFcache = {}
+        for key, val in pairs(config.varibz.sa2dump.fcache) do
+            if val.time and val.time > cutoff then
+                newFcache[key] = val
+            end
+        end
+        table.clear(config.varibz.sa2dump.fcache)
+        config.varibz.sa2dump.fcache = newFcache
+    end
+    local dataKeys = {}
+    for key, _ in pairs(config.varibz.sa2dump.data) do
+        table.insert(dataKeys, key)
+    end
+    
+    if #dataKeys > 30 then
         local sorted = {}
         for key, val in pairs(config.varibz.sa2dump.data) do
             table.insert(sorted, {key = key, time = val.time or 0})
         end
         table.sort(sorted, function(a, b) return a.time > b.time end)
+        
         local newLimited = {}
-        for i = 1, math.min(50, #sorted) do
-            if config.varibz.sa2dump.data[sorted[i].key] then
+        for i = 1, 30 do
+            if sorted[i] and config.varibz.sa2dump.data[sorted[i].key] then
                 newLimited[sorted[i].key] = config.varibz.sa2dump.data[sorted[i].key]
             end
         end
+        table.clear(config.varibz.sa2dump.data)
         config.varibz.sa2dump.data = newLimited
     end
-    local wallCount = 0
-    for _ in pairs(config.varibz.sa2dump.cache) do
-        wallCount = wallCount + 1
-        if wallCount > 50 then break end
+    local wallKeys = {}
+    for key, _ in pairs(config.varibz.sa2dump.cache) do
+        table.insert(wallKeys, key)
     end
-    if wallCount > 50 then
+    
+    if #wallKeys > 30 then
         local sorted = {}
         for key, val in pairs(config.varibz.sa2dump.cache) do
             table.insert(sorted, {key = key, time = val.time or 0})
         end
         table.sort(sorted, function(a, b) return a.time > b.time end)
+        
         local newLimited = {}
-        for i = 1, math.min(50, #sorted) do
-            if config.varibz.sa2dump.cache[sorted[i].key] then
+        for i = 1, 30 do
+            if sorted[i] and config.varibz.sa2dump.cache[sorted[i].key] then
                 newLimited[sorted[i].key] = config.varibz.sa2dump.cache[sorted[i].key]
             end
         end
+        table.clear(config.varibz.sa2dump.cache)
         config.varibz.sa2dump.cache = newLimited
+    end
+    if config.varibz.sa2dump.rcache then
+        local rcacheKeys = {}
+        for key, _ in pairs(config.varibz.sa2dump.rcache) do
+            table.insert(rcacheKeys, key)
+        end
+        
+        if #rcacheKeys > 30 then
+            local sorted = {}
+            for key, val in pairs(config.varibz.sa2dump.rcache) do
+                table.insert(sorted, {key = key, time = val.time or 0})
+            end
+            table.sort(sorted, function(a, b) return a.time > b.time end)
+            
+            local newLimited = {}
+            for i = 1, 30 do
+                if sorted[i] and config.varibz.sa2dump.rcache[sorted[i].key] then
+                    newLimited[sorted[i].key] = config.varibz.sa2dump.rcache[sorted[i].key]
+                end
+            end
+            table.clear(config.varibz.sa2dump.rcache)
+            config.varibz.sa2dump.rcache = newLimited
+        end
+    end
+    if config.varibz.sa2dump.fcache then
+        local fcacheKeys = {}
+        for key, _ in pairs(config.varibz.sa2dump.fcache) do
+            table.insert(fcacheKeys, key)
+        end
+        
+        if #fcacheKeys > 30 then
+            local sorted = {}
+            for key, val in pairs(config.varibz.sa2dump.fcache) do
+                table.insert(sorted, {key = key, time = val.time or 0})
+            end
+            table.sort(sorted, function(a, b) return a.time > b.time end)
+            
+            local newLimited = {}
+            for i = 1, 30 do
+                if sorted[i] and config.varibz.sa2dump.fcache[sorted[i].key] then
+                    newLimited[sorted[i].key] = config.varibz.sa2dump.fcache[sorted[i].key]
+                end
+            end
+            table.clear(config.varibz.sa2dump.fcache)
+            config.varibz.sa2dump.fcache = newLimited
+        end
     end
 end
 local ExpectedArguments = {
@@ -6060,15 +6080,6 @@ local function validate_args(Args, RayMethod)
         end
     end
     return Matches >= RayMethod.ArgCountRequired
-end
-
-if OldNamecall then
-    if not hookmetamethod or not hookfunction then 
-        warn("Gravel: Your exploit doesn't support hooking functions")
-        return false
-    end
-    hookmetamethod(game, "__namecall", OldNamecall)
-    OldNamecall = nil
 end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
@@ -6098,7 +6109,16 @@ local function calc_chance(chance)
 end
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
-local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+local OldNamecall;
+if OldNamecall then
+    if not hookmetamethod or not hookfunction then 
+        warn("Gravel: Your exploit doesn't support hooking functions")
+        return false
+    end
+    hookmetamethod(game, "__namecall", OldNamecall)
+    OldNamecall = nil
+end
+OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     if not hookmetamethod or not hookfunction then 
         warn("Gravel: Your exploit doesn't support hooking functions")
         return false
@@ -6113,20 +6133,19 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
     local Arguments = {...}
     local self = Arguments[1]
     local chance = calc_chance(config.SA2_HitChance)
-    
     if config.SA2_Enabled and self == workspace and not checkcaller() then
-        if not config.SA2_ThreeSixtyMode and not chance then
-            config.SA2_FovIsTargeted = false
-            return OldNamecall(...)
-        end
-        local HitPart = cachedTarget
-        if not HitPart then
-            config.SA2_FovIsTargeted = false
-            return OldNamecall(...)
-        end
-        config.SA2_FovIsTargeted = true
-        if config.SA2_BulletTeleport then
-            if Method == "Raycast" then
+        if (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") and Method == "Raycast" then
+            if not config.SA2_ThreeSixtyMode and not chance then
+                config.SA2_FovIsTargeted = false
+                return OldNamecall(...)
+            end
+            local HitPart = cachedTarget
+            if not HitPart then
+                config.SA2_FovIsTargeted = false
+                return OldNamecall(...)
+            end
+            config.SA2_FovIsTargeted = true
+            if config.SA2_BulletTeleport then
                 local Origin = Arguments[2]
                 local Direction = Arguments[3]
                 local hitPosition = HitPart.Position
@@ -6140,32 +6159,96 @@ local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(
                     return OldNamecall(unpack(Arguments))
                 end
             end
-        end
-        
-        if config.SA2_Wallbang then
-            if Method == "Raycast" then
+            if config.SA2_Wallbang then
                 local hitPosition = HitPart.Position
                 local normal = (hitPosition - Arguments[2]).Unit
-                
                 local fakeResult = {
                     Instance = HitPart,
                     Position = hitPosition,
                     Normal = normal,
                     Material = HitPart.Material
                 }
-                
                 return fakeResult
             end
+            if Method == "Raycast" then
+                if validate_args(Arguments, ExpectedArguments.Raycast) then
+                    local A_Origin = Arguments[2]
+                    Arguments[3] = func.Direction(A_Origin, HitPart.Position)
+                    return OldNamecall(unpack(Arguments))
+                end
+            end
         end
-        if Method == "Raycast" then
-            if validate_args(Arguments, ExpectedArguments.Raycast) then
-                local A_Origin = Arguments[2]
-                Arguments[3] = func.Direction(A_Origin, HitPart.Position)
-                return OldNamecall(unpack(Arguments))
+        if (config.SA2_AimMethod == "FireServer" or config.SA2_AimMethod == "All") and (Method == "FireServer" or Method == "InvokeServer") and typeof(self) == "Instance" then
+            if not config.SA2_ThreeSixtyMode and not chance then
+                config.SA2_FovIsTargeted = false
+                return OldNamecall(...)
+            end
+            local HitPart = cachedTarget
+            if not HitPart then
+                config.SA2_FovIsTargeted = false
+                return OldNamecall(...)
+            end
+            config.SA2_FovIsTargeted = true
+            local selfName = self.Name:lower()
+            local remoteNames = {"fire", "hit", "attack", "damage", "shoot", "bullet", "gun", "weapon", "projectile", "raycast", "ray", "hitscan", "dmg", "proj", "fired", "shot"}
+            local isRelevant = false
+            for _, name in pairs(remoteNames) do
+                if string.find(selfName, name) then
+                    isRelevant = true
+                    break
+                end
+            end
+            if not isRelevant then
+                return OldNamecall(...)
+            end
+            local newArgs = {}
+            local modified = false
+            for i, arg in pairs(Arguments) do
+                if typeof(arg) == "Vector3" then
+                    newArgs[i] = HitPart.Position
+                    modified = true
+                elseif typeof(arg) == "CFrame" then
+                    newArgs[i] = CFrame.new(HitPart.Position)
+                    modified = true
+                elseif typeof(arg) == "Ray" then
+                    local origin = arg.Origin
+                    newArgs[i] = Ray.new(origin, (HitPart.Position - origin).Unit * 100)
+                    modified = true
+                elseif typeof(arg) == "table" then
+                    local isPositionTable = false
+                    local hasX = arg.X ~= nil
+                    local hasY = arg.Y ~= nil
+                    local hasZ = arg.Z ~= nil
+                    if hasX and hasY and hasZ then
+                        isPositionTable = true
+                    end
+                    if isPositionTable then
+                        local newTable = {}
+                        for k, v in pairs(arg) do
+                            if k == "X" or k == "x" then
+                                newTable[k] = HitPart.Position.X
+                            elseif k == "Y" or k == "y" then
+                                newTable[k] = HitPart.Position.Y
+                            elseif k == "Z" or k == "z" then
+                                newTable[k] = HitPart.Position.Z
+                            else
+                                newTable[k] = v
+                            end
+                        end
+                        newArgs[i] = newTable
+                        modified = true
+                    else
+                        newArgs[i] = arg
+                    end
+                else
+                    newArgs[i] = arg
+                end
+            end
+            if modified then
+                return OldNamecall(self, unpack(newArgs))
             end
         end
     end
-    
     return OldNamecall(...)
 end))
 
@@ -11549,6 +11632,14 @@ local MainTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     
+MainTab:Toggle({
+    Title = "Client AntiKick",
+    Desc = "go away evil localspirit",
+    Value = config.antikick or true,
+    Callback = function(v)
+        gestalt_______(v)
+    end
+})
     MainTab:Paragraph({
         Title = "Global",
         Desc = "Global configurations",
@@ -12072,70 +12163,6 @@ MainTab:Keybind({
     })
     
     MainTab:Paragraph({
-        Title = "Antikick [ I didn't made this ]",
-        Desc = "Client-side anti-kick protection",
-        Color = config.Gradow.uicolor.lightGreen
-    })
-    
-    MainTab:Paragraph({
-        Title = "Gravel",
-        Desc = "[ AntiKick only prevents client kicks ]\n[ Good Injectors are recommend ]",
-        Color = config.Gradow.uicolor.darkGray
-    })
-    
-    MainTab:Toggle({
-        Title = "Toggle AntiKick",
-        Desc = "Enable/disable Antikick",
-        Value = ED_AntiKick.Enabled or true,
-        Callback = function(v)
-            ED_AntiKick.Enabled = v
-            n({
-                Title = "AntiKick",
-                Content = "AntiKick " .. (v and "Enabled" or "Disabled"),
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            })
-        end
-    })
-    
-    MainTab:Toggle({
-        Title = "Show AntiKick Notifications",
-        Desc = "show blocked kicks or shi",
-        Value = ED_AntiKick.SendNotifications or false,
-        Callback = function(v)
-            ED_AntiKick.SendNotifications = v
-            n({
-                Title = "AntiKick",
-                Content = "AntiKick " .. (v and "Enabled" or "Disabled"),
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            })
-        end
-    })
-    
-    MainTab:Toggle({
-        Title = "Toggle AntiKick Checkcallers",
-        Desc = "Enable/disable Antikick Checkcallers (fixes nil and index errors)",
-        Value = ED_AntiKick.CheckCaller or true,
-        Callback = function(v)
-            ED_AntiKick.CheckCaller = v
-            n({
-                Title = "AntiKick",
-                Content = "AntiKick " .. (v and "Enabled" or "Disabled"),
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            })
-        end
-    })
-    
-    
-    MainTab:Paragraph({
         Title = "Optimization",
         Desc = "Performance optimization settings",
         Color = config.Gradow.uicolor.lightGreen
@@ -12493,10 +12520,36 @@ local VisualsTab = Window:Tab({
     IconColor = config.Gradow.uicolor.lightGray
 }) do
     VisualsTab:Paragraph({
-        Title = "ESP Master",
-        Desc = "Master control for ESP features",
+        Title = "ESP",
+        Desc = "ESP features",
         Color = config.Gradow.uicolor.lightGreen
     })
+VisualsTab:Slider({
+    Title = "ESP Hertz",
+    Desc = "refreshrate basically",
+    IsTextbox = true,
+    Step = 0.01,
+    Suffix = "Hz",
+    Value = {
+        Min = 0,
+        Max = 1,
+        Default = config.espRefreshRate or 0.03
+    },
+    Callback = function(value)
+        config.espRefreshRate = value
+        if config.espMasterEnabled then
+            for target, data in pairs(config.espData) do
+                if data and data.connection then
+                    data.connection:Disconnect()
+                    data.connection = nil
+                end
+                if data and data.label then
+                    makeesp(target)
+                end
+            end
+        end
+    end
+})
     VisualsTab:Space()
     VisualsTab:Toggle({
         Title = "Toggle ESP ('Z')",
@@ -13865,17 +13918,19 @@ SilentAimTab2:Toggle({
         Multi = false,
         Callback = function(choice)
             config.SA2_TargetPart = choice
-            n({
-                Title = "Target Part",
-                Content = "Targeting: " .. choice,
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
-            })
         end
     })
     
+SilentAimTab2:Dropdown({
+    Title = "Aim Method",
+    Desc = "where's my raycat & rmeote",
+    Values = {"Raycast", "FireServer", "InvokeServer", "All"},
+    Value = config.SA2_AimMethod or "Raycast",
+    Multi = false,
+    Callback = function(choice)
+        config.SA2_AimMethod = choice
+    end
+})
     SilentAimTab2:Slider({
         Title = "Hit Chance",
         Desc = "Accuracy to luk mor ''legit''",
@@ -16000,11 +16055,6 @@ I luv rng's. :3
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
-        Title = "Gravel: AntiKick",
-        Desc = "AntiKick: Pixeluted (I think...)",
-        Color = config.Gradow.uicolor.darkGray
-    })
-    InfoTab:Paragraph({
         Title = "Gravel: Math",
         Desc = "Mathematicalmatics: my teacher & the other other guy",
         Color = config.Gradow.uicolor.darkGray
@@ -16722,58 +16772,7 @@ task.spawn(function()
 end)
 init()
 local function cleanup()
-    pcall(function()
-        local owo = config.varibz.uwu[math.random(1, #config.varibz.uwu)]
-        local explosionGui = Instance.new("ScreenGui")
-        local flash = Instance.new("Frame")
-        local explosion = Instance.new("ImageLabel")
-        local memeSound = Instance.new("Sound")
-        local explosionSound = Instance.new("Sound")
-        explosionGui.Name = "bang"
-        explosionGui.ResetOnSpawn = false
-        explosionGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        explosionGui.Parent = localPlayer:WaitForChild("PlayerGui")
-        flash.Name = "Flash"
-        flash.Size = UDim2.new(1, 0, 1, 0)
-        flash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        flash.BackgroundTransparency = 0
-        flash.ZIndex = 9
-        flash.Parent = explosionGui
-        explosion.Name = "Explosion"
-        explosion.Size = UDim2.new(0, 200, 0, 200)
-        explosion.Position = UDim2.new(0.5, 0, 0.5, 0)
-        explosion.AnchorPoint = Vector2.new(0.5, 0.5)
-        explosion.BackgroundTransparency = 1
-        explosion.Image = "rbxassetid://128670966889578"
-        explosion.ImageTransparency = 0
-        explosion.ZIndex = 10
-        explosion.Parent = explosionGui
-        memeSound.SoundId = owo
-        memeSound.Volume = 1
-        memeSound.Parent = explosionGui
-        memeSound:Play()
-        explosionSound.SoundId = "rbxassetid://8447388510"
-        explosionSound.Volume = 2
-        explosionSound.Parent = explosionGui
-        explosionSound:Play()
-        local flashTween = excusemesir.TweenService:Create(flash, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundTransparency = 1
-        })
-        local explosionTween = excusemesir.TweenService:Create(explosion, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 850, 0, 850),
-            ImageTransparency = 0.2
-        })
-        flashTween:Play()
-        explosionTween:Play()
-        task.wait(1.2)
-        local fadeOut = excusemesir.TweenService:Create(explosion, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-            ImageTransparency = 1,
-            Size = UDim2.new(0, 1200, 0, 1200)
-        })
-        fadeOut:Play()
-        task.wait(0.6)
-        explosionGui:Destroy()
-    end)
+    loadstring(getgist_(getgenv().HttpUrlz_.hbsscloser))()
     pcall(function()
         excusemesir.RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
         excusemesir.RunService:UnbindFromRenderStep("ESPUpdater")
@@ -17111,7 +17110,7 @@ if autoloadSuccess then
 end
 task.wait(2.5)
 _(cos(1))
-loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
+--loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 return config
 end)
 
