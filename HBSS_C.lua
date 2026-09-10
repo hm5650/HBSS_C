@@ -16,7 +16,7 @@ print([[
 ⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 
-           “remember that one time when i got blasted by superheated, high-velocity, stream of synthetic diamond ” 
+           “i think I got addicted to redliner a lil” 
                                            
                                - Gpssickle
 ]])
@@ -79,10 +79,10 @@ getgenv().HttpUrlz_ = {
     --hbss completely random useless & useful modules :]
     hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbsscloser = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Closer" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
@@ -201,6 +201,8 @@ local config = {
     SA2_TargetRange = 500,
     SA2_Wallbang = false,
     SA2_BulletTeleport = false,
+    customRemoteNames = {"hit", "bullet", "projectile", "hitscan"},
+    detectedRemotes = {},
     currentTarget = nil,
     espc = Color3.fromRGB(255, 182, 193),
     esptargetc = Color3.fromRGB(255, 255, 0),
@@ -2158,6 +2160,8 @@ local config = {
             "Adrian.cc",
         },
         savesParagraph = nil,
+        remotespara = nil,
+        remotesInput = nil,
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -2175,7 +2179,7 @@ local config = {
             fcache = {},
             rcache = {},
             lclr = 0,
-            t = 0.03,
+            t = 0.06,
         },
         aimbotdump = {
             data = {},
@@ -2203,12 +2207,6 @@ local config = {
             usedConversations = {},
             availableIndices = {},
             tag = nil,
-            isWindowMinimized = function()
-                if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
-                local sizeY = Window.UIElements.Main.Size.Y.Offset
-                if sizeY < 50 then return true end
-                return false
-            end,
             conversationMessages = {},
             activeConversation = nil,
             typingSpeed = 1,
@@ -2278,6 +2276,13 @@ n({
     Image = rng_s.bju2,
     BarColor = Color3.fromRGB(0, 170, 255)
 })
+
+subside_I_I_I_I_I_ = function()
+    if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
+    local sizeY = Window.UIElements.Main.Size.Y.Offset
+    if sizeY < 50 then return true end
+    return false
+end
 
 function gestalt_______(state)
     config.antikick = state
@@ -3161,14 +3166,58 @@ end
 
 local function saveConfig(saveName)
     if not saveName or saveName == "" then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Please enter a save name!",
-            Icon = "x",
-            Duration = 2
+        local gameName = givegaemname()
+        if gameName then
+            local abbr = gengameabbr(gameName)
+            if abbr then
+                saveName = abbr
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Auto-named: " .. saveName,
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(0, 170, 255)
+                })
+            else
+                local timestamp = os.time()
+                local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
+                saveName = "Config_" .. date
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Auto-named: " .. saveName,
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(0, 170, 255)
+                })
+            end
+        else
+            local timestamp = os.time()
+            local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
+            saveName = "Config_" .. date
+            n({
+                Title = "Gravel.cc",
+                Content = "Auto-named: " .. saveName,
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 170, 255)
+            })
+        end
+    end
+    if not saveName or saveName == "" then
+        n({
+            Title = "Gravel.cc",
+            Content = "couldn't auto generate name :c",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
+
     local saves = getSaveList()
     local exactMatch = nil
     for _, save in ipairs(saves) do
@@ -3204,12 +3253,6 @@ local function saveConfig(saveName)
                 
                 if isUnique then
                     finalName = name
-                    WindUI:Notify({
-                        Title = "Save System",
-                        Content = "Save '" .. saveName .. "' exists. Using: " .. finalName,
-                        Icon = "info",
-                        Duration = 3
-                    })
                     break
                 end
             end
@@ -3243,11 +3286,13 @@ local function saveConfig(saveName)
                     
                     if isUnique then
                         finalName = newName
-                        WindUI:Notify({
-                            Title = "Save System",
+                        n({
+                            Title = "Gravel.cc",
                             Content = "Save '" .. saveName .. "' exists. Using: " .. finalName,
-                            Icon = "info",
-                            Duration = 3
+                            Audio = "rbxassetid://17208361335",
+                            Length = 2,
+                            Image = "rbxassetid://4483362458",
+                            BarColor = Color3.fromRGB(0, 170, 255)
                         })
                         break
                     end
@@ -3259,11 +3304,13 @@ local function saveConfig(saveName)
         if finalName == saveName then
             local timestamp = os.time()
             finalName = "S" .. tostring(timestamp % 10000)
-            WindUI:Notify({
-                Title = "Save System",
+            n({
+                Title = "Gravel.cc",
                 Content = "Using: " .. finalName,
-                Icon = "info",
-                Duration = 2
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 255, 0)
             })
         end
     end
@@ -3421,6 +3468,7 @@ local function saveConfig(saveName)
             SA2_TargetRange = config.SA2_TargetRange,
             SA2_TeamTarget = config.SA2_TeamTarget,
             SA2_GetTarget = config.SA2_GetTarget,
+            customRemoteNames = table.clone(config.customRemoteNames),
             sa2stuff = config.varibz.sa2stuff,
             hitboxEnabled = config.hitboxEnabled,
             hitboxTeamTarget = config.hitboxTeamTarget,
@@ -3491,11 +3539,13 @@ local function saveConfig(saveName)
     end)
     
     if not success then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Failed to encode save data!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "Failed to encode datat :(",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -3511,40 +3561,48 @@ local function saveConfig(saveName)
     
     if success then
         getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = finalName
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Saved '" .. finalName .. "' successfully!",
-            Icon = "check",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "Saved '" .. finalName .. "' successfully! :3",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
         })
         return true
     else
-        WindUI:Notify({
-            Title = "Save System",
+        n({
+            Title = "Gravel.cc",
             Content = "Failed to save: " .. tostring(err),
-            Icon = "x",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
 end
 local function deleteSave(saveName)
     if not saveName or saveName == "" then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Please enter a save name to delete!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "dude put a name :/",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
     local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
-        WindUI:Notify({
-            Title = "Save System",
+        n({
+            Title = "Gravel.cc",
             Content = errorMsg,
-            Icon = "x",
-            Duration = 3
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -3555,11 +3613,13 @@ local function deleteSave(saveName)
     
     local path = getSavePath(saveName)
     if not isfile(path) then
-        WindUI:Notify({
-            Title = "Save System",
+        n({
+            Title = "Gravel.cc",
             Content = "Save '" .. saveName .. "' not found!",
-            Icon = "x",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
         })
         return false
     end
@@ -3568,13 +3628,14 @@ local function deleteSave(saveName)
     end)
     
     if success then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Deleted '" .. saveName .. "' successfully!",
-            Icon = "check",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "Deleted '" .. saveName .. "' successfully! c:",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
         })
-        
         local memory = raedmahbrain_()
         local removedCount = 0
         for gameId, data in pairs(memory) do
@@ -3585,12 +3646,6 @@ local function deleteSave(saveName)
         end
         if removedCount > 0 then
             writehaxsandstuff_(memory)
-            WindUI:Notify({
-                Title = "Autoload System",
-                Content = "Removed " .. removedCount .. " autoload entry(ies) for '" .. saveName .. "'",
-                Icon = "info",
-                Duration = 3
-            })
             autolaodpara()
         end
         if getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave == saveName then
@@ -3606,11 +3661,13 @@ local function deleteSave(saveName)
         
         return true
     else
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Failed to delete: " .. tostring(err),
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "Failed to delete :c",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -3618,11 +3675,13 @@ end
 local function deleteAllSaves()
     local saves = getSaveList()
     if #saves == 0 then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "No saves found to delete!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "where da saves",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -3719,34 +3778,32 @@ local function deleteAllSaves()
                                 end
                                 if removedCount > 0 then
                                     writehaxsandstuff_(memory)
-                                    WindUI:Notify({
-                                        Title = "Autoload System",
-                                        Content = "Removed " .. removedCount .. " autoload entry(ies) for deleted saves",
-                                        Icon = "info",
-                                        Duration = 3
-                                    })
                                 end
                             end
                             getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = nil
                             
                             if deletedCount > 0 then
-                                WindUI:Notify({
-                                    Title = "Save System",
+                                n({
+                                    Title = "Gravel.cc",
                                     Content = string.format(
-                                        "Deleted %d/%d saves successfully!",
+                                        "Deleted %d/%d saves successfully! :p",
                                         deletedCount,
                                         #saves
                                     ),
-                                    Icon = "check",
-                                    Duration = 3
+                                    Audio = "rbxassetid://17208361335",
+                                    Length = 2,
+                                    Image = "rbxassetid://4483362458",
+                                    BarColor = Color3.fromRGB(255, 0, 0)
                                 })
                             end
                             if #failedSaves > 0 then
-                                WindUI:Notify({
-                                    Title = "Save System",
+                                n({
+                                    Title = "Gravel.cc",
                                     Content = "Failed to delete: " .. table.concat(failedSaves, ", "),
-                                    Icon = "x",
-                                    Duration = 4
+                                    Audio = "rbxassetid://17208361335",
+                                    Length = 2,
+                                    Image = "rbxassetid://4483362458",
+                                    BarColor = Color3.fromRGB(255, 0, 0)
                                 })
                             end
                             
@@ -3769,11 +3826,13 @@ local function deleteAllSaves()
                     Variant = "Secondary",
                     Callback = function()
                         confirmCount = 0
-                        WindUI:Notify({
-                            Title = "Save System",
+                        n({
+                            Title = "Gravel.cc",
                             Content = "ofc u picked no XD",
-                            Icon = "info",
-                            Duration = 2
+                            Audio = "rbxassetid://17208361335",
+                            Length = 4,
+                            Image = "rbxassetid://4483362458",
+                            BarColor = Color3.fromRGB(0, 170, 255)
                         })
                     end
                 }
@@ -4071,21 +4130,25 @@ end
 -- ^_^/
 local function loadSave(saveName)
     if not saveName or saveName == "" then
-        WindUI:Notify({
-            Title = "Save System",
-            Content = "Please enter a save name to load!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "enter a save name bru",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
     local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
-        WindUI:Notify({
-            Title = "Save System",
+        n({
+            Title = "Gravel.cc",
             Content = errorMsg,
-            Icon = "x",
-            Duration = 3
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -4096,11 +4159,13 @@ local function loadSave(saveName)
     
     local data = loadSaveData(saveName)
     if not data or not data.config then
-        WindUI:Notify({
-            Title = "Save System",
+        n({
+            Title = "Gravel.cc",
             Content = "Save '" .. saveName .. "' not found or corrupted!",
-            Icon = "x",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -4384,6 +4449,7 @@ local function loadSave(saveName)
     if cfg.SA2_TargetRange then config.SA2_TargetRange = cfg.SA2_TargetRange end
     if cfg.SA2_TeamTarget then config.SA2_TeamTarget = cfg.SA2_TeamTarget end
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
+    if cfg.customRemoteNames then config.customRemoteNames = cfg.customRemoteNames end
     if cfg.hitboxEnabled ~= nil then config.hitboxEnabled = cfg.hitboxEnabled end
     if cfg.hitboxTeamTarget then config.hitboxTeamTarget = cfg.hitboxTeamTarget end
     if cfg.hitboxSize then config.hitboxSize = cfg.hitboxSize end
@@ -4698,11 +4764,13 @@ local function loadSave(saveName)
             local Target = FindTargetWithLoop(30)
             if not Target then
                 config.Viewing = false
-                WindUI:Notify({
-                    Title = "Cframe View",
-                    Content = "where da people",
-                    Icon = "x",
-                    Duration = 2
+                n({
+                    Title = "Gravel.cc",
+                    Content = "where da robloxians",
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = Color3.fromRGB(255, 0, 0)
                 })
                 return
             end
@@ -4758,12 +4826,6 @@ local function loadSave(saveName)
                 local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
                 Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
             end)
-            WindUI:Notify({
-                Title = "Cframe View",
-                Content = "Viewing " .. (Target.type == "player" and Target.instance.Name or "NPC"),
-                Icon = "eye",
-                Duration = 2
-            })
         end
     end)
     pcall(function()
@@ -4949,11 +5011,13 @@ local function loadSave(saveName)
         end
     end)
     
-    WindUI:Notify({
-        Title = "Save System",
-        Content = "Loaded '" .. saveName .. "' successfully!",
-        Icon = "check",
-        Duration = 3
+    n({
+        Title = "Gravel.cc",
+        Content = "Loaded '" .. saveName .. "' successfully! c:",
+        Audio = "rbxassetid://17208361335",
+        Length = 2,
+        Image = "rbxassetid://4483362458",
+        BarColor = Color3.fromRGB(0, 255, 0)
     })
     
     return true
@@ -5030,21 +5094,25 @@ function ineedgaemforaotu_()
 end
 function SETDAAUTOLAOD_(saveName)
     if not saveName or saveName == "" then
-        WindUI:Notify({
-            Title = "Autoload System",
-            Content = "Please enter a save name!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "dude ensfer a save name :/",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
     local exactMatch, errorMsg = fuzzymatch(saveName)
     if errorMsg then
-        WindUI:Notify({
-            Title = "Autoload System",
+        n({
+            Title = "Gravel.cc",
             Content = "Save not found: " .. errorMsg,
-            Icon = "x",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -5052,11 +5120,13 @@ function SETDAAUTOLAOD_(saveName)
     saveName = exactMatch or saveName
     local path = getSavePath(saveName)
     if not isfile(path) then
-        WindUI:Notify({
-            Title = "Autoload System",
+        n({
+            Title = "Gravel.cc",
             Content = "Save '" .. saveName .. "' does not exist!",
-            Icon = "x",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -5081,22 +5151,26 @@ function SETDAAUTOLAOD_(saveName)
     }
     
     if writehaxsandstuff_(memory) then
-        WindUI:Notify({
-            Title = "Autoload System",
+        n({
+            Title = "Gravel.cc",
             Content = "Autoload set for '" .. saveName .. "' on " .. gameName,
-            Icon = "check",
-            Duration = 3
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
         })
         if config.varibz.autoloadParagraph then
             autolaodpara()
         end
         return true
     else
-        WindUI:Notify({
-            Title = "Autoload System",
-            Content = "Failed to save autoload settings!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "failed to autoload 4 game",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -5108,11 +5182,13 @@ function nullifymahfilez_()
     local memory = raedmahbrain_()
     
     if not memory[gameId] then
-        WindUI:Notify({
-            Title = "Autoload System",
-            Content = "No autoload set for this game!",
-            Icon = "info",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "there isn't an autoload file in this game :/",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -5120,22 +5196,26 @@ function nullifymahfilez_()
     memory[gameId] = nil
     
     if writehaxsandstuff_(memory) then
-        WindUI:Notify({
-            Title = "Autoload System",
+        n({
+            Title = "Gravel.cc",
             Content = "Removed autoload for " .. gameName,
-            Icon = "check",
-            Duration = 3
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 255, 0)
         })
         if config.varibz.autoloadParagraph then
             autolaodpara()
         end
         return true
     else
-        WindUI:Notify({
-            Title = "Autoload System",
-            Content = "Failed to remove autoload settings!",
-            Icon = "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "failed to remove autoload :c",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
         })
         return false
     end
@@ -5202,34 +5282,11 @@ function startdaautlado_()
             memory[gameId] = nil
             writehaxsandstuff_(memory)
             autolaodpara()
-            
-            WindUI:Notify({
-                Title = "Autoload System",
-                Content = "Save '" .. saveName .. "' no longer exists! Autoload removed.",
-                Icon = "x",
-                Duration = 3
-            })
             return false
         end
-        
-        WindUI:Notify({
-            Title = "Autoload System",
-            Content = "Auto-loading '" .. saveName .. "' for " .. gameName,
-            Icon = "info",
-            Duration = 3
-        })
-        
         task.wait(1)
         
         local success = loadSave(saveName)
-        if success then
-            WindUI:Notify({
-                Title = "Autoload System",
-                Content = "Successfully auto-loaded '" .. saveName .. "'",
-                Icon = "check",
-                Duration = 2
-            })
-        end
         return success
     end
     
@@ -5244,6 +5301,64 @@ local function saveUISettings(theme, transparency)
     return SaveUI:save(theme, transparency)
 end
 
+function detectrem__________()
+    local detected = {}
+    local remoteNames = config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}
+    local function searchForRemotes(parent)
+        if not parent then return end
+        for _, child in ipairs(parent:GetChildren()) do
+            if child:IsA("RemoteEvent") or child:IsA("RemoteFunction") or child:IsA("UnreliableRemoteEvent") then
+                local nameLower = string.lower(child.Name)
+                for _, pattern in ipairs(remoteNames) do
+                    if string.find(nameLower, pattern) then
+                        if not detected[child.Name] then
+                            detected[child.Name] = true
+                        end
+                        break
+                    end
+                end
+            end
+            if child:IsA("Folder") or child:IsA("Model") then
+                searchForRemotes(child)
+            end
+        end
+    end
+    searchForRemotes(excusemesir.ReplicatedStorage)
+    searchForRemotes(excusemesir.Workspace)
+    local detectedList = {}
+    for name, _ in pairs(detected) do
+        table.insert(detectedList, name)
+    end
+    table.sort(detectedList)
+    config.detectedRemotes = detectedList
+end
+
+function rerempara________()
+    local detected = config.detectedRemotes or {}
+    local text = "Discovered Remotes:\n"
+    if type(detected) ~= "table" then
+        detected = {}
+    end
+    local validCount = 0
+    for i, name in ipairs(detected) do
+        if type(name) == "string" and name ~= "" then
+            validCount = validCount + 1
+        end
+    end
+    if validCount == 0 then
+        text = text .. "  No matching remotes found yet\n  Make sure you're in a game with remotes! >:/"
+    else
+        for i, name in ipairs(detected) do
+            if type(name) == "string" and name ~= "" then
+                text = text .. "  • " .. name
+                if i < validCount then text = text .. "\n" end
+            end
+        end
+    end
+    
+    text = text .. "\n\nTip: use rspy :p"
+    return text
+end
 local function ignorethisandthat(additionalIgnore)
     local ignoreList = {}
     if localPlayer and localPlayer.Character then
@@ -5461,44 +5576,53 @@ local function IsPlayerVisible(player, maxDistance)
     local PlayerCharacter = player.Character
     local LocalPlayerCharacter = plr.Character
     if not (PlayerCharacter and LocalPlayerCharacter) then return false end
+    
     local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
     if not PlayerRoot then return false end
+    
     local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
     if not LocalRoot then return false end
+    
     local origin = LocalRoot.Position
     local targetPos = PlayerRoot.Position
     local direction = (targetPos - origin)
     local distance = direction.Magnitude
+    
     if maxDistance and distance > maxDistance then
         return false
     end
     if distance < 0.1 then return true end
-    local filterList = {LocalPlayerCharacter, PlayerCharacter}
-    for playerKey, proxyPart in pairs(config.proxyHitboxes) do
-        if proxyPart and proxyPart.Parent then
-            table.insert(filterList, proxyPart)
-        end
-    end
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-        if otherPlayer.Character then
-            local torso = otherPlayer.Character:FindFirstChild("Torso") or 
-                          otherPlayer.Character:FindFirstChild("UpperTorso") or 
-                          otherPlayer.Character:FindFirstChild("LowerTorso")
-            if torso then
-                table.insert(filterList, torso)
+    local currentTime = tick()
+    if currentTime - filterListCacheTime > FILTER_CACHE_DURATION then
+        local filterList = {LocalPlayerCharacter, PlayerCharacter}
+        for playerKey, proxyPart in pairs(config.proxyHitboxes) do
+            if proxyPart and proxyPart.Parent then
+                table.insert(filterList, proxyPart)
             end
         end
-    end
-    for playerKey, data in pairs(config.hitboxExpandedParts) do
-        if data and data.part and data.part.Parent then
-            table.insert(filterList, data.part)
+        
+        for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+            if otherPlayer.Character and otherPlayer ~= player then
+                local torso = otherPlayer.Character:FindFirstChild("Torso") or 
+                              otherPlayer.Character:FindFirstChild("UpperTorso") or 
+                              otherPlayer.Character:FindFirstChild("LowerTorso")
+                if torso then
+                    table.insert(filterList, torso)
+                end
+            end
         end
+        
+        for playerKey, data in pairs(config.hitboxExpandedParts) do
+            if data and data.part and data.part.Parent then
+                table.insert(filterList, data.part)
+            end
+        end
+        
+        filterListCache = filterList
+        filterListCacheTime = currentTime
     end
-    local params = RaycastParams.new()
-    params.FilterType = Enum.RaycastFilterType.Blacklist
-    params.FilterDescendantsInstances = filterList
-    params.IgnoreWater = true
-    local result = workspace:Raycast(origin, direction.Unit * distance, params)
+    sa2RaycastParams.FilterDescendantsInstances = filterListCache
+    local result = workspace:Raycast(origin, direction.Unit * distance, sa2RaycastParams)
     if not result then
         return true
     end
@@ -5506,7 +5630,6 @@ local function IsPlayerVisible(player, maxDistance)
     if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
         return true
     end
-    
     return false
 end
 local function IsPlayerVisible(player, maxDistance)
@@ -6190,7 +6313,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             end
             config.SA2_FovIsTargeted = true
             local selfName = self.Name:lower()
-            local remoteNames = {"fire", "hit", "attack", "damage", "shoot", "bullet", "gun", "weapon", "projectile", "raycast", "ray", "hitscan", "dmg", "proj", "fired", "shot"}
+            local remoteNames = config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}
             local isRelevant = false
             for _, name in pairs(remoteNames) do
                 if string.find(selfName, name) then
@@ -6336,11 +6459,13 @@ local function ineednextgenrep(state)
     if state then
         local char = LocalPlayer.Character
         if not char then 
-            WindUI:Notify({
-                Title = "Desync",
+            n({
+                Title = "Gravel.cc",
                 Content = "folk where r u",
-                Icon = "x",
-                Duration = 2
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return false
         end
@@ -6349,11 +6474,13 @@ local function ineednextgenrep(state)
         local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
         
         if not root or not torso then
-            WindUI:Notify({
-                Title = "Desync",
-                Content = "Missing body parts :/",
-                Icon = "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "missing body parts :/",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return false
         end
@@ -6479,12 +6606,6 @@ local function ineednextgenrep(state)
         
         config.desyncActive = false
         config.desyncSavedCFrame = nil
-        WindUI:Notify({
-            Title = "Gravel.cc",
-            Content = "TP'd to visual pos :v",
-            Icon = "info",
-            Duration = 2
-        })
         return true
     end
 end
@@ -11204,12 +11325,6 @@ local function rng4()
             usedConversations = {},
             availableIndices = {},
             tag = nil,
-            isWindowMinimized = function()
-                if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
-                local sizeY = Window.UIElements.Main.Size.Y.Offset
-                if sizeY < 50 then return true end
-                return false
-            end,
             conversationMessages = {},
             activeConversation = nil,
             typingSpeed = 1,
@@ -11270,16 +11385,9 @@ local function rng4()
         return info
     end
     
-    local function isWindowMinimized()
-        if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
-        local sizeY = Window.UIElements.Main.Size.Y.Offset
-        if sizeY < 50 then return true end
-        return false
-    end
-    
     task.spawn(function()
         while rng4.tag do
-            if not isWindowMinimized() then
+            if not subside_I_I_I_I_I_() then
                 rng4.cursorVisible = not rng4.cursorVisible
                 if rng4.tag.SetTitle then
                     rng4.tag:SetTitle(rng4.currentText .. (rng4.cursorVisible and config.Gradow.textcursor or config.Gradow.textcursor2))
@@ -11354,7 +11462,7 @@ local function rng4()
         rng4.speedMultiplier = speedMultiplier
         rng4.isTyping = true
         while rng4.charIndex <= #processedText do
-            while isWindowMinimized() do
+            while subside_I_I_I_I_I_() do
                 task.wait(0.1)
             end
             
@@ -11428,7 +11536,7 @@ local function rng4()
         
         local wordIndex = 1
         while wordIndex <= #words do
-            while isWindowMinimized() do
+            while subside_I_I_I_I_I_() do
                 task.wait(0.1)
             end
             
@@ -11484,7 +11592,7 @@ local function rng4()
         rng4.isErasing = true
         local text = rng4.currentText
         for i = #text, 0, -1 do
-            while isWindowMinimized() do
+            while subside_I_I_I_I_I_() do
                 task.wait(0.1)
             end
             setText(text:sub(1, i))
@@ -11495,7 +11603,7 @@ local function rng4()
     
     task.spawn(function()
         while rng4.tag do
-            while isWindowMinimized() do
+            while subside_I_I_I_I_I_() do
                 task.wait(0.5)
             end
             
@@ -11559,15 +11667,9 @@ local function rng4()
     
     if fpsTag then
         local accum = 0
-        local function isWindowMinimized()
-            if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
-            local sizeY = Window.UIElements.Main.Size.Y.Offset
-            if sizeY < 50 then return true end
-            return false
-        end
         
         excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
-            if isWindowMinimized() then return end
+            if subside_I_I_I_I_I_() then return end
             accum = accum + deltaTime
             if accum >= 0.3 then
                 local fps = math.round(1 / math.max(deltaTime, 1e-6))
@@ -11705,12 +11807,6 @@ local teamDropdown = MainTab:Dropdown({
     Multi = true,
     Callback = function(selected)
         config.targetedTeams = selected or {}
-        WindUI:Notify({
-            Title = "Team Targeting",
-            Content = "Targeting " .. #config.targetedTeams .. " team(s)",
-            Icon = "check",
-            Duration = 2
-        })
     end
 })
 task.spawn(function()
@@ -11825,31 +11921,35 @@ MainTab:Toggle({
 })
 MainTab:Space()
 MainTab:Toggle({
-    Title = "Enable Keybinds",
+    Title = "Keybinds",
     Desc = "could be useful?? who knows",
     Value = config.KeybindsEnabled or true,
     Callback = function(v)
         config.KeybindsEnabled = v
-        WindUI:Notify({
-            Title = "Keybinds",
-            Content = "Keybinds " .. (v and "Enabled" or "Disabled"),
-            Icon = v and "check" or "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "Keybinds" .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         })
     end
 })
 
 MainTab:Toggle({
-    Title = "Hold Key Mode",
+    Title = "HoldKey Mode",
     Desc = "basically ''Shift + E'' lol",
     Value = config.HoldKeysEnabled or false,
     Callback = function(v)
         config.HoldKeysEnabled = v
-        WindUI:Notify({
-            Title = "Hold Keys",
-            Content = "Hold key mode " .. (v and "Enabled" or "Disabled"),
-            Icon = v and "check" or "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "HoldKey" .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         })
     end
 })
@@ -12010,8 +12110,8 @@ MainTab:Keybind({
             if v then
                 autoFarmProcess()
                 n({
-                    Title = "AutoFarm",
-                    Content = "Enabled",
+                    Title = "Gravel.cc",
+                    Content = "AutoFarm: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -12020,8 +12120,8 @@ MainTab:Keybind({
             else
                 stopAutoFarm()
                 n({
-                    Title = "AutoFarm",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "AutoFarm: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -12030,32 +12130,13 @@ MainTab:Keybind({
             end
         end
     })
-    
+
     MainTab:Toggle({
         Title = "Autofarm Wall Check",
         Desc = "idk a filler button basically",
         Value = config.autoFarmWallCheck or false,
         Callback = function(v)
             config.autoFarmWallCheck = v
-            if v then
-                n({
-                    Title = "Autofarm Wall Check",
-                    Content = "Enabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 170, 255)
-                })
-            else
-                n({
-                    Title = "Autofarm Wall Check",
-                    Content = "Disabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 100, 0)
-                })
-            end
         end
     })
     
@@ -12065,12 +12146,12 @@ MainTab:Keybind({
         Callback = function()
             pc()
             n({
-                Title = "PartClaim",
+                Title = "Gravel.cc",
                 Content = "Refreshed",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
+                BarColor = Color3.fromRGB(0, 170, 255)
             })
         end
     })
@@ -12081,12 +12162,12 @@ MainTab:Keybind({
         Callback = function()
             pc2()
             n({
-                Title = "PartClaim",
+                Title = "Gravel.cc",
                 Content = "Cleared",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
+                BarColor = Color3.fromRGB(0, 170, 255)
             })
         end
     })
@@ -12219,11 +12300,13 @@ local Config = {
 
 local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
                     setclipboard(code)
-                    WindUI:Notify({
-                        Title = "Optimization",
-                        Content = "Code copied to clipboard!",
-                        Icon = "check",
-                        Duration = 3
+                    n({
+                        Title = "Gravel.cc",
+                        Content = "Code copied to clipboard! :3",
+                        Audio = "rbxassetid://17208361335",
+                        Length = 2,
+                        Image = "rbxassetid://4483362458",
+                        BarColor = Color3.fromRGB(0, 170, 255)
                     })
                 end
             }
@@ -12350,44 +12433,10 @@ MainTab:Button({
     Icon = "save",
     Callback = function()
         local name = saveInputValue or ""
-        if name == "" then
-            local gameName = givegaemname()
-            if gameName then
-                local abbr = gengameabbr(gameName)
-                if abbr then
-                    name = abbr
-                    WindUI:Notify({
-                        Title = "Save System",
-                        Content = "Auto-named: " .. name,
-                        Icon = "info",
-                        Duration = 2
-                    })
-                else
-                    local timestamp = os.time()
-                    local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
-                    name = "Config_" .. date
-                    WindUI:Notify({
-                        Title = "Save System",
-                        Content = "Auto-named: " .. name,
-                        Icon = "info",
-                        Duration = 2
-                    })
-                end
-            else
-                local timestamp = os.time()
-                local date = os.date("%Y-%m-%d_%H-%M-%S", timestamp)
-                name = "Config_" .. date
-                WindUI:Notify({
-                    Title = "Save System",
-                    Content = "Auto-named: " .. name,
-                    Icon = "info",
-                    Duration = 2
-                })
-            end
-        end
         saveConfig(name)
     end
 })
+
 MainTab:Button({
     Title = "Load Save",
     Desc = "Load that one",
@@ -12395,11 +12444,13 @@ MainTab:Button({
     Callback = function()
         local name = saveInputValue or ""
         if name == "" then
-            WindUI:Notify({
-                Title = "Save System",
-                Content = "Please enter a save name to load! D:",
-                Icon = "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "enter a save name bru",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return
         end
@@ -12414,11 +12465,13 @@ MainTab:Button({
     Callback = function()
         local name = saveInputValue or ""
         if name == "" then
-            WindUI:Notify({
-                Title = "Save System",
-                Content = "Please enter a save name to delete! :/",
-                Icon = "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "enter a save name bru",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return
         end
@@ -12442,11 +12495,13 @@ MainTab:Button({
     Callback = function()
         local name = saveInputValue or ""
         if name == "" then
-            WindUI:Notify({
-                Title = "Autoload System",
-                Content = "Please enter a save name! D:",
-                Icon = "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "enter a save name bru",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return
         end
@@ -12481,9 +12536,7 @@ task.spawn(function()
         
         if config.varibz.savesParagraph then
             local newDesc = savePara() .. "\nBLLEHH >:P"
-            pcall(function()
-                config.varibz.savesParagraph:SetDesc(newDesc)
-            end)
+            config.varibz.savesParagraph:SetDesc(newDesc)
         end
     end
 end)
@@ -12504,9 +12557,7 @@ task.spawn(function()
         end
         
         if config.varibz.autoloadParagraph then
-            pcall(function()
-                autolaodpara()
-            end)
+            autolaodpara()
         end
     end
 end)
@@ -12557,25 +12608,14 @@ VisualsTab:Slider({
         Value = config.espMasterEnabled or false,
         Callback = function(v)
             applyESPMaster(v)
-            if v then
-                n({
-                    Title = "ESP Master",
-                    Content = "ESP Enabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 170, 255)
-                })
-            else
-                n({
-                    Title = "ESP Master",
-                    Content = "ESP Disabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 0, 0)
-                })
-            end
+            n({
+                Title = "Gravel.cc",
+                Content = "ESP: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
         end
     })
     
@@ -12692,8 +12732,8 @@ VisualsTab:Slider({
     VisualsTab:Space()
 
 VisualsTab:Toggle({
-    Title = "Full Bright",
-    Desc = "night vision",
+    Title = "FullBright",
+    Desc = "night vision ig",
     Value = false,
     Callback = function(v)
         config.fbenabled = v
@@ -12717,8 +12757,8 @@ VisualsTab:Toggle({
             lighting.ClockTime = 14
             
             n({
-                Title = "Full Bright",
-                Content = "Enabled",
+                Title = "Gravel.cc",
+                Content = "FullBright: Enabled",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -12734,8 +12774,8 @@ VisualsTab:Toggle({
             end
             
             n({
-                Title = "Full Bright",
-                Content = "Disabled",
+                Title = "Gravel.cc",
+                Content = "FullBright: Disabled",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -13086,14 +13126,6 @@ VisualsTab:Dropdown({
         local success, err = pcall(function()
             WindUI:SetTheme(selectedTheme)
             SaveUI:setTheme(selectedTheme)
-            n({
-                Title = "Theme Changed",
-                Content = "Switched to " .. selectedTheme,
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255)
-            })
         end)
         if not success then
             warn("blame windui: " .. tostring(err))
@@ -13163,14 +13195,14 @@ VisualsTab:Button({
         local success = SaveUI:load()
         if success then
             WindUI:Notify({
-                Title = "UI Loaded!",
+                Title = "WindUI!",
                 Content = "Theme & transparency loaded :7",
                 Icon = "check",
                 Duration = 2
             })
         else
             WindUI:Notify({
-                Title = "UI Load Error",
+                Title = "WindUI",
                 Content = "No saved UI settings found! :[",
                 Icon = "x",
                 Duration = 2
@@ -13209,8 +13241,8 @@ local AntiAimTab = Window:Tab({
             if not v then
                 returnToOriginalPosition()
                 n({
-                    Title = "AntiAim",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "AntiAim: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13218,12 +13250,12 @@ local AntiAimTab = Window:Tab({
                 })
             else
                 n({
-                    Title = "AntiAim",
-                    Content = "Enabled",
+                    Title = "Gravel.cc",
+                    Content = "AntiAim: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 100, 0)
+                    BarColor = Color3.fromRGB(0, 255, 0)
                 })
             end
         end
@@ -13411,8 +13443,8 @@ AntiAimTab:Toggle({
         if v then
             spinbotUpdate()
             n({
-                Title = "SpinBot",
-                Content = "Enabled",
+                Title = "Gravel.cc",
+                Content = "SpinBot: Enabled",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -13431,8 +13463,8 @@ AntiAimTab:Toggle({
                 end
             end
             n({
-                Title = "SpinBot",
-                Content = "Disabled",
+                Title = "Gravel.cc",
+                Content = "SpinBot: Disabled",
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -13457,27 +13489,6 @@ AntiAimTab:Slider({
     end
 })
 
-AntiAimTab:Button({
-    Title = "Reset Rotation",
-    Desc = "an useless button",
-    Callback = function()
-        if localPlayer.Character then
-            local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if rootPart then
-                local pos = rootPart.Position
-                rootPart.CFrame = CFrame.new(pos)
-                n({
-                    Title = "SpinBot",
-                    Content = "Rotation reset",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 170, 255)
-                })
-            end
-        end
-    end
-})
 AntiAimTab:Toggle({
     Title = "Toggle Desync",
     Desc = "(not compatible with save/load)",
@@ -13534,25 +13545,14 @@ local AimbotTab = Window:Tab({
         Value = config.aimbotEnabled or false,
         Callback = function(v)
             handleAimbotToggle(v)
-            if v then
-                n({
-                    Title = "Aimbot",
-                    Content = "Enabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 255, 0)
-                })
-            else
-                n({
-                    Title = "Aimbot",
-                    Content = "Disabled",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 0, 0)
-                })
-            end
+            n({
+                Title = "Gravel.cc",
+                Content = "Aimbot: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
         end
     })
     
@@ -13674,8 +13674,8 @@ local SilentAimTab = Window:Tab({
                     restorePartForPlayer(pl)
                 end
                 n({
-                    Title = "SilentAim",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HB): Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13686,8 +13686,8 @@ local SilentAimTab = Window:Tab({
                     gui.RingHolder.Visible = true
                 end
                 n({
-                    Title = "SilentAim",
-                    Content = "Enabled",
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HB): Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -13858,8 +13858,8 @@ local SilentAimTab2 = Window:Tab({
         Callback = function(v)
             config.SA2_Enabled = v
             n({
-                Title = "Silent Aim",
-                Content = "Silent Aim " .. (v and "Enabled" or "Disabled"),
+                Title = "Gravel.cc",
+                Content = "SilentAim (HK): " .. (v and "Enabled" or "Disabled"),
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -14004,6 +14004,55 @@ SilentAimTab2:Slider({
             config.SA2_TargetRange = value
         end
     })
+SilentAimTab2:Space()
+    SilentAimTab2:Paragraph({
+        Title = "Remote Interceptor",
+        Desc = "Change remote interception for InvokeServer & FireServer",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+config.varibz.remotesInput = SilentAimTab2:Input({
+    Title = "Remote Gestalt",
+    Desc = "remotes 2 Intercept :p",
+    Placeholder = "hit, bullet, projectile, hitscan",
+    Value = table.concat(config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}, ", "),
+    ClearTextOnFocus = false,
+    Callback = function(text)
+        if text and text ~= "" then
+            local newNames = {}
+            for name in text:gmatch("[^,]+") do
+                local trimmed = name:gsub("^%s+", ""):gsub("%s+$", "")
+                if trimmed ~= "" then
+                    table.insert(newNames, trimmed:lower())
+                end
+            end
+            if #newNames > 0 then
+                config.customRemoteNames = newNames
+                detectrem__________()
+            end
+        end
+    end
+})
+
+config.varibz.remotespara = SilentAimTab2:Paragraph({
+    Title = "Detected Remotes",
+    Desc = "",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+task.spawn(function()
+    while true do
+        if subside_I_I_I_I_I_() then
+            task.wait(0.5)
+            continue
+        end
+        
+        if config.varibz.remotespara then
+            detectrem__________()
+            config.varibz.remotespara:SetDesc(rerempara________())
+        end
+        task.wait(2)
+    end
+end)
 end
 
 -- Hitbox Tab
@@ -14026,7 +14075,7 @@ local HitboxTab = Window:Tab({
     })
     
     HitboxTab:Toggle({
-        Title = "Toggle Hitbox ('G')",
+        Title = "Hitbox ('G')",
         Desc = "Expand hitboxes",
         Value = config.hitboxEnabled or false,
         Callback = function(v)
@@ -14034,8 +14083,8 @@ local HitboxTab = Window:Tab({
             if v then
                 applyhb()
                 n({
-                    Title = "Hitbox",
-                    Content = "Enabled",
+                    Title = "Gravel.cc",
+                    Content = "Hitbox: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14047,8 +14096,8 @@ local HitboxTab = Window:Tab({
                 end
                 config.hitboxExpandedParts = {}
                 n({
-                    Title = "Hitbox",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "Hitbox: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14097,7 +14146,7 @@ HitboxTab:Paragraph({
 })
 
 HitboxTab:Toggle({
-    Title = "Enable Visualizer",
+    Title = "Hitbox Visualizer",
     Desc = "Show hitbox visualizer :7",
     Value = config.hitboxVisualizer.enabled or false,
     Callback = function(v)
@@ -14109,8 +14158,8 @@ HitboxTab:Toggle({
                 end
             end
             n({
-                Title = "Hitbox Visualizer",
-                Content = v and "Enabled" or "Disabled",
+                Title = "Gravel.cc",
+                Content = "Hitbox Visualizer: " .. (v and "Enabled" or "Disabled"),
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -14233,8 +14282,8 @@ local ReachTab = Window:Tab({
                 end
             end
             n({
-                Title = "Reach",
-                Content = "Reach " .. (v and "Enabled" or "Disabled"),
+                Title = "Gravel.cc",
+                Content = "Reach: " .. (v and "Enabled" or "Disabled"),
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
                 Image = "rbxassetid://4483362458",
@@ -14476,68 +14525,6 @@ local ReachTab = Window:Tab({
             onHit(target.hrp, handle)
         end
     end)
-    
-    ReachTab:Paragraph({
-        Title = "Utilities",
-        Desc = "Utility functions for reach",
-        Color = config.Gradow.uicolor.lightGreen
-    })
-    
-    ReachTab:Button({
-        Title = "Clear Visualizer",
-        Desc = "fix problem button",
-        Callback = function()
-            visualizer.Parent = nil
-            n({
-                Title = "Reach",
-                Content = "Visualizer cleared",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255)
-            })
-        end
-    })
-    
-    ReachTab:Button({
-        Title = "Find Nearby Weapons",
-        Desc = "idk if it works",
-        Callback = function()
-            local weapons = {}
-            local character = excusemesir.Players.LocalPlayer.Character
-            
-            if character then
-                for _, child in ipairs(character:GetChildren()) do
-                    if child:IsA("Tool") then
-                        table.insert(weapons, child.Name)
-                    end
-                end
-                
-                for _, child in ipairs(excusemesir.Players.LocalPlayer.Backpack:GetChildren()) do
-                    if child:IsA("Tool") then
-                        table.insert(weapons, child.Name)
-                    end
-                end
-            end
-            
-            if #weapons > 0 then
-                n({
-                    Title = "Weapons Found",
-                    Content = "Found " .. #weapons .. " weapon(s): " .. table.concat(weapons, ", "),
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(0, 255, 0)
-                })
-            else
-                n({
-                    Title = "No Weapons",
-                    Content = "No weapons/tools found",
-                    Length = 1,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 0, 0)
-                })
-            end
-        end
-    })
 end
 
 -- Client Tab
@@ -14554,7 +14541,7 @@ local ClientTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     ClientTab:Toggle({
-        Title = "Toggle Client Modification ('N')",
+        Title = "ClientMods ('N')",
         Desc = "Enable/disable all client modifications",
         Value = config.clientModEnabled or false,
         Callback = function(v)
@@ -14562,8 +14549,8 @@ local ClientTab = Window:Tab({
             if v then
                 cmods()
                 n({
-                    Title = "Client Mod",
-                    Content = "Enabled",
+                    Title = "Gravel.cc",
+                    Content = "ClientMods: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14572,8 +14559,8 @@ local ClientTab = Window:Tab({
             else
                 resetcmods()
                 n({
-                    Title = "Client Mod",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "ClientMods: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14687,12 +14674,6 @@ ClientTab:Toggle({
         if config.clientModEnabled then
             cmods()
         end
-        WindUI:Notify({
-            Title = "Gravity",
-            Content = v and "Enabled" or "Disabled",
-            Icon = v and "check" or "x",
-            Duration = 1
-        })
     end
 })
 
@@ -14765,7 +14746,7 @@ ClientTab:Slider({
                 local character = player.Character
                 if not character then
                     n({
-                        Title = "Truss",
+                        Title = "Gravel.cc",
                         Content = "Character not found!",
                         Audio = "rbxassetid://17208361335",
                         Length = 1,
@@ -14778,7 +14759,7 @@ ClientTab:Slider({
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 if not rootPart then
                     n({
-                        Title = "Truss",
+                        Title = "Gravel.cc",
                         Content = "HumanoidRootPart not found!",
                         Audio = "rbxassetid://17208361335",
                         Length = 1,
@@ -14817,8 +14798,8 @@ ClientTab:Slider({
                 end)
                 
                 n({
-                    Title = "Truss",
-                    Content = "Enabled Created climb part",
+                    Title = "Gravel.cc",
+                    Content = "Truss: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14836,8 +14817,8 @@ ClientTab:Slider({
                 end
                 
                 n({
-                    Title = "Truss",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "Truss: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14857,7 +14838,7 @@ ClientTab:Slider({
                 local character = excusemesir.Players.LocalPlayer.Character
                 if not character then
                     n({
-                        Title = "Airwalk",
+                        Title = "Gravel.cc",
                         Content = "Character not found!",
                         Audio = "rbxassetid://17208361335",
                         Length = 1,
@@ -14870,7 +14851,7 @@ ClientTab:Slider({
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 if not rootPart then
                     n({
-                        Title = "Airwalk",
+                        Title = "Gravel.cc",
                         Content = "HumanoidRootPart not found!",
                         Audio = "rbxassetid://17208361335",
                         Length = 1,
@@ -14905,8 +14886,8 @@ ClientTab:Slider({
                 end)
                 
                 n({
-                    Title = "Airwalk",
-                    Content = "Enabled Created air platform",
+                    Title = "Gravel.cc",
+                    Content = "Airwalk: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14924,8 +14905,8 @@ ClientTab:Slider({
                 end
                 
                 n({
-                    Title = "Airwalk",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "Airwalk: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -14965,14 +14946,6 @@ ClientTab:Slider({
                     if config.autorespawnEnabled and config.autorespawnDeathPosition then
                         local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
                         newRoot.CFrame = config.autorespawnDeathPosition
-                        n({
-                            Title = "AutoRespawn",
-                            Content = "Teleported to death location",
-                            Audio = "rbxassetid://17208361335",
-                            Length = 1,
-                            Image = "rbxassetid://4483362458",
-                            BarColor = Color3.fromRGB(0, 255, 0)
-                        })
                         config.autorespawnDeathPosition = nil
                     end
                 end
@@ -14994,8 +14967,8 @@ ClientTab:Slider({
                 end)
                 
                 n({
-                    Title = "AutoRespawn",
-                    Content = "Enabled Will respawn at death location",
+                    Title = "Gravel.cc",
+                    Content = "AutoRespawn: Enabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -15013,8 +14986,8 @@ ClientTab:Slider({
                 end
                 
                 n({
-                    Title = "AutoRespawn",
-                    Content = "Disabled",
+                    Title = "Gravel.cc",
+                    Content = "AutoRespawn: Disabled",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -15044,11 +15017,13 @@ MiscTab:Toggle({
     Value = config.tbot.enabled or false,
     Callback = function(v)
         toggleTriggerBot(v)
-        WindUI:Notify({
-            Title = "Trigger Bot",
-            Content = v and "Enabled" or "Disabled",
-            Icon = v and "check" or "x",
-            Duration = 2
+        n({
+            Title = "Gravel.cc",
+            Content = "TriggerBot: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         })
     end
 })
@@ -15241,20 +15216,30 @@ MiscTab:Toggle({
     Value = config.bhop.enabled or false,
     Callback = function(v)
         toggleBHop(v)
+        n({
+            Title = "Gravel.cc",
+            Content = "BHop: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
     end
 })
 
     MiscTab:Toggle({
-        Title = "Toggle AntiAfk",
+        Title = "AntiAfk",
         Desc = "Prevents idle kick",
         Value = config.antiafk or false,
         Callback = function(v)
             config.antiafk = v
-            WindUI:Notify({
-                Title = "AntiAfk",
-                Content = "AntiAfk " .. (v and "Enabled" or "Disabled"),
-                Icon = v and "check" or "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "AntiAfk: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
             })
         end
     })
@@ -15263,6 +15248,14 @@ MiscTab:Toggle({
     Desc = "view randos with cframe view & kill em >:]",
     Value = config.wallc or false,
     Callback = function(v)
+        n({
+            Title = "Gravel.cc",
+            Content = "Cframe View: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
         local Players = game:GetService("Players")
         local RunService = game:GetService("RunService")
         local Camera = workspace.CurrentCamera
@@ -15411,11 +15404,13 @@ MiscTab:Toggle({
 
         local Target = FindTargetWithLoop(30)
         if not Target then
-            WindUI:Notify({
-                Title = "Cframe View",
-                Content = "where da people",
-                Icon = "x",
-                Duration = 2
+            n({
+                Title = "Gravel.cc",
+                Content = "where da robloxians",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
             })
             return
         end
@@ -15479,11 +15474,13 @@ MiscTab:Toggle({
             Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
         end)
         
-        WindUI:Notify({
-            Title = "Cframe View",
+        n({
+            Title = "Gravel.cc",
             Content = "Viewing " .. (Target.type == "player" and Target.instance.Name or "NPC"),
-            Icon = "eye",
-            Duration = 2
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(0, 170, 255)
         })
     end
 })
@@ -15507,6 +15504,14 @@ MiscTab:Toggle({
     Value = config.camYOffsetEnabled or false,
     Callback = function(v)
         config.camYOffsetEnabled = v
+        n({
+            Title = "Gravel.cc",
+            Content = "WallOver: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
         if not v then
             if config.camYOffsetConnection then
                 config.camYOffsetConnection:Disconnect()
@@ -15573,7 +15578,7 @@ local BGMTab = Window:Tab({
             BMG:togglePlay(v)
             local status = v and "Playing" or "Stopped"
             n({
-                Title = "Background Music",
+                Title = "Gravel.cc",
                 Content = status .. " - " .. BMG.CurrentTitle,
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
@@ -15658,16 +15663,6 @@ local BGMTab = Window:Tab({
                 local id = selected:match("%((%d+)%)")
                 if id then
                     local success, msg = BMG:setCurrentMusic(id)
-                    if success then
-                        n({
-                            Title = "Background Music",
-                            Content = "Now playing: " .. BMG.CurrentTitle,
-                            Audio = "rbxassetid://17208361335",
-                            Length = 1,
-                            Image = "rbxassetid://4483362458",
-                            BarColor = Color3.fromRGB(0, 170, 255)
-                        })
-                    end
                 end
             end
         end
@@ -15682,7 +15677,7 @@ local BGMTab = Window:Tab({
             local selected = dropdownMusic and dropdownMusic.Value or ""
             if selected == "" then
                 n({
-                    Title = "Background Music",
+                    Title = "Gravel.cc",
                     Content = "Please select a music to delete",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -15695,8 +15690,8 @@ local BGMTab = Window:Tab({
             local id = selected:match("%((%d+)%)")
             if not id then
                 n({
-                    Title = "Background Music",
-                    Content = "Invalid selection",
+                    Title = "Gravel.cc",
+                    Content = "Invalid selection :/",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
                     Image = "rbxassetid://4483362458",
@@ -15707,7 +15702,7 @@ local BGMTab = Window:Tab({
             
             local success, msg = BMG:deleteMusic(id)
             n({
-                Title = "Background Music",
+                Title = "Gravel.cc",
                 Content = success and "Deleted: " .. selected or "Error: " .. msg,
                 Audio = "rbxassetid://17208361335",
                 Length = 1,
@@ -15769,7 +15764,7 @@ local BGMTab = Window:Tab({
             local success = BMG:save()
             if success then
                 n({
-                    Title = "Background Music",
+                    Title = "Gravel.cc",
                     Content = "Settings saved!",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -15778,7 +15773,7 @@ local BGMTab = Window:Tab({
                 })
             else
                 n({
-                    Title = "Background Music",
+                    Title = "Gravel.cc",
                     Content = "Failed to save settings",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -15797,7 +15792,7 @@ local BGMTab = Window:Tab({
             local success = BMG:load()
             if success then
                 n({
-                    Title = "Background Music",
+                    Title = "Gravel.cc",
                     Content = "Settings loaded! Now playing: " .. BMG.CurrentTitle,
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -15806,7 +15801,7 @@ local BGMTab = Window:Tab({
                 })
             else
                 n({
-                    Title = "Background Music",
+                    Title = "Gravel.cc",
                     Content = "No saved settings found",
                     Audio = "rbxassetid://17208361335",
                     Length = 1,
@@ -15970,78 +15965,6 @@ InfoTab:Space()
         Desc = "Tutorial for some features",
         Color = config.Gradow.uicolor.Blue
     })
-InfoTab:Paragraph({
-    Title = "Save/Load Guide",
-    Desc = [[
-1. Type a name in "Save Name" (or leave blank for auto-name)
-
-2. Click "New Save" to save your current settings
-
-3. Type a saved name from "Save Name" inputbox and click "Load Save" to load an specific save!
-
-4. Use "Delete Save" to remove a specific save (type in, Save Name from the inputbox)
-
-5. Use "Delete All Saves" to remove ALL saves (requires 3 yessirski's)
-
-6. "Autoload on Game" Sets the currently entered save name to automatically load whenever you join this specific game
-
-7. "Remove Autoload" Removes the autoload setting for the current game
-
-8. Autoload settings are saved per-game, so you can have different configs autoload for different games! ;D
-
-Note: sum features might not get saved properly D:
-]],
-    Color = config.Gradow.uicolor.darkGray
-})
-InfoTab:Paragraph({
-        Title = "Silent Aim (HB) Guide",
-        Desc = [[
-This is the most unique silent aim in the script.
-It works by dynamically resizing the target's hitbox to match your FOV circle/crosshair, making it easier to hit
-
-1. 'Scale To Screen': Makes the hitbox size adapt to your screen, ensuring it covers the FOV circle perfectly
-
-2. 'STS Distance': Adjusts the scaling to prevent the hitbox from clipping into you
-
-3. 'WallOver': Found in the MiscTab it's the closest thing for wallbang for Silent Aim (HB) it allows you to shoot over walls!
-]],
-        Color = config.Gradow.uicolor.darkGray
-    })
-    InfoTab:Paragraph({
-        Title = "Optimization Guide",
-        Desc = [[
-The script can be heavy. Use these settings to improve performance.
-
-1. 'Updaters speed': Increase this value to reduce how often features like ESP and Hitbox update (e.g., set to 1.0 for better performance).
-
-2. 'Cache Cleaners': Turn off if you have a powerful PC to improve responsiveness.
-
-3. 'Low Render': Drops the game's graphics quality to boost FPS.
-
-4. 'Errors': Disable to suppress error messages in the console prevents error spam that causes lag.
-]],
-        Color = config.Gradow.uicolor.darkGray
-    })
-    InfoTab:Paragraph({
-        Title = "RNG",
-        Desc = [[
-What is RNG? It stands for Random Number Generator.
-Gravel uses it for picking random messages cuz yes
-
-1. 'Open Button Title': The text on the button to open it would change everytime you reload the script
-
-2. 'Tag Messages': The scrolling text at the top of the GUI, cycling through silly messages and references.
-
-3. 'Popup Messages': The popup that appears when you load the script.
-
-4. 'Notifications': The random titles and sounds in notifications just to jumpscare u
-
-5. 'Tabs': Holding down a tab shows a Tooltip/Description which also has rng text :v
-
-I luv rng's. :3
-]],
-        Color = config.Gradow.uicolor.darkGray
-    })
     InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Credits",
@@ -16086,29 +16009,29 @@ I luv rng's. :3
 
     InfoTab:Paragraph({
         Title = "Gravel (20/01/2026)",
-        Desc = "Added: Legacy\nAdded: Reachtab\nAdded: Wallbang in Silentaim HK\nFixed Bugs: 0",
+        Desc = "Added: Legacy\nAdded: Reachtab\nAdded: Wallbang in Silentaim HK\nBugs Fixed: 0",
         Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "Gravel (22/01/2026)",
-        Desc = "Added: MiscTab\nChanged: Redesigned the OptionGui\nFixed Bugs: 9",
+        Desc = "Added: MiscTab\nChanged: Redesigned the OptionGui\nBugs Fixed: 9",
         Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
         Title = "Gravel (23/01/2026)",
-        Desc = "Fixed: Execution Problem\nFixed: Bugs in the SilentAimTab (HK)\nAdded: BackgroundBlur on the loading screeen\nFixed Bugs: 27",
+        Desc = "Fixed: Execution Problem\nFixed: Bugs in the SilentAimTab (HK)\nAdded: BackgroundBlur on the loading screeen\nBugs Fixed: 27",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (02/02/2026)",
-        Desc = "Changed: DummyUI to WindUI Rewritten UI Creation\nFixed: Keybind Systems are now more accurate and Rewritten\nFixed: SilentAimTab (HK) hooks now less laggy\nFixed: Loop Errors\nFixed: Notification Spam\nAdded: Colorpickers to the VisualsTab\nAdded: Random Messages to the OpenButton and Popup UI\nFixed: UI Causing errors, Callback errors\nFixed Bugs: 34+",
+        Desc = "Changed: DummyUI to WindUI Rewritten UI Creation\nFixed: Keybind Systems are now more accurate and Rewritten\nFixed: SilentAimTab (HK) hooks now less laggy\nFixed: Loop Errors\nFixed: Notification Spam\nAdded: Colorpickers to the VisualsTab\nAdded: Random Messages to the OpenButton and Popup UI\nFixed: UI Causing errors, Callback errors\nBugs Fixed: 34+",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (10/02/2026)",
-        Desc = "Added: Optimization and tweaks\nFixed: Optimized SilentAimTab (HK)\nAdded: Distance limitation to SilentAimTab (HK)\nAdded: Cache Optimization\nFixed Bugs: 5",
+        Desc = "Added: Optimization and tweaks\nFixed: Optimized SilentAimTab (HK)\nAdded: Distance limitation to SilentAimTab (HK)\nAdded: Cache Optimization\nBugs Fixed: 5",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -16133,7 +16056,7 @@ I luv rng's. :3
     })
     InfoTab:Paragraph({
         Title = "Gravel (19/06/2026)",
-        Desc = "Fixed: Targeting Systems\nFixed Bugs: 10",
+        Desc = "Fixed: Targeting Systems\nBugs Fixed: 10",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -16148,12 +16071,12 @@ I luv rng's. :3
     })
     InfoTab:Paragraph({
         Title = "Gravel (25/06/2026)",
-        Desc = "Added: Triggerbot & Spinbot in the MiscTab\nAdded: Additional stuff & optimization \nFixed Bugs: 7",
+        Desc = "Added: Triggerbot & Spinbot in the MiscTab\nAdded: Additional stuff & optimization \nBugs Fixed: 7",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
         Title = "Gravel (27/06/2026)",
-        Desc = "Added: Bhop in the MiscTab\nAdded: Draggable toggle for QuickToggles in MainTab\nMoved: Spinbot in the AntiAimTab\nFixed: Hitbox freezing issue\nAdded: Keybind for TriggerBot Wallcheck 'Y'\nChanged Client Keybind to 'N'\nFixed Bugs: 1",
+        Desc = "Added: Bhop in the MiscTab\nAdded: Draggable toggle for QuickToggles in MainTab\nMoved: Spinbot in the AntiAimTab\nFixed: Hitbox freezing issue\nAdded: Keybind for TriggerBot Wallcheck 'Y'\nChanged Client Keybind to 'N'\nBugs Fixed: 1",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -16163,7 +16086,7 @@ I luv rng's. :3
     })
     InfoTab:Paragraph({
         Title = "Gravel (01/07/2026)",
-        Desc = "Fixed: Save/Load bugs\nFixed: Hitbox bugs\nFixed Bugs: 5",
+        Desc = "Fixed: Save/Load bugs\nFixed: Hitbox bugs\nBugs Fixed: 5",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -16239,6 +16162,11 @@ I luv rng's. :3
     InfoTab:Paragraph({
         Title = "Gravel (07/09/2026)",
         Desc = "sum lag and bug fixes :p\nBugs Fixed: 4",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (10/09/2026)",
+        Desc = "other stuff & lag fixes\nAdded: Remote Gestalt in SilentAimTab (HK)\nAdded: MORE QOL!1!1!\nUpdated: Loader & Closer\nBugs Fixed: 5",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -16771,7 +16699,7 @@ task.spawn(function()
     end
 end)
 init()
-local function cleanup()
+local function buhbyegravellllllll________()
     loadstring(getgist_(getgenv().HttpUrlz_.hbsscloser))()
     pcall(function()
         excusemesir.RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
@@ -17098,7 +17026,7 @@ local function cleanup()
     end)
 end
 Window:OnDestroy(function()
-    cleanup()
+    buhbyegravellllllll________()
     print("Gravel.cc closed :(")
 end)
 getgenv().destroyInitGui()
@@ -17110,7 +17038,7 @@ if autoloadSuccess then
 end
 task.wait(2.5)
 _(cos(1))
---loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
+loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 return config
 end)
 
