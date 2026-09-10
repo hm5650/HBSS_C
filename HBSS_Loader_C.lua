@@ -9,6 +9,19 @@ local random = math.random
 local randomTable = table.random or function(t)
     return t[random(1, #t)]
 end
+local normie = "rbxassetid://108749043601477"
+local bsodImage = "rbxassetid://98002726954215"
+local glitchVersions = {
+    {id = "rbxassetid://94264734340895", weight = 30, offset = 2},
+    {id = "rbxassetid://73199835850160", weight = 25, offset = 4},
+    {id = "rbxassetid://111659265884052", weight = 20, offset = 6},
+    {id = "rbxassetid://135403100516021", weight = 15, offset = 8},
+    {id = "rbxassetid://108402549365872", weight = 10, offset = 12}
+}
+local bsodGlitchVersions = {
+    {id = "rbxassetid://77757317460779", offset = 2},
+    {id = "rbxassetid://126677278690113", offset = 4}
+}
 local originalPositions = {
     filelabel = UDim2.new(0,7,0,4),
     barlabel = UDim2.new(0,302,0,203),
@@ -48,7 +61,7 @@ UIObject1.Name = "UIimage"
 UIObject1.ImageColor3 = Color3.fromRGB(255,255,255)
 UIObject1.BorderMode = Enum.BorderMode.Outline
 UIObject1.AnchorPoint = Vector2.new(0.5, 0.5)
-UIObject1.Image = "rbxassetid://108749043601477"
+UIObject1.Image = normie
 UIObject1.ImageRectSize = Vector2.new(0,0)
 UIObject1.ZIndex = 1
 UIObject1.BorderSizePixel = 0
@@ -147,15 +160,16 @@ for i, id in ipairs(sounds.glitch) do
     sound.Parent = SoundService
     glitchSounds[i] = sound
 end
+local bsodGlitchSounds = {}
+for i, id in ipairs(sounds.glitch) do
+    local sound = Instance.new("Sound")
+    sound.SoundId = id
+    sound.Volume = 0.08
+    sound.Parent = SoundService
+    bsodGlitchSounds[i] = sound
+end
 startSound:Play()
 humSound:Play()
-local glitchVersions = {
-    {id = "rbxassetid://94264734340895", weight = 30, offset = 2},
-    {id = "rbxassetid://73199835850160", weight = 25, offset = 4},
-    {id = "rbxassetid://111659265884052", weight = 20, offset = 6},
-    {id = "rbxassetid://135403100516021", weight = 15, offset = 8},
-    {id = "rbxassetid://108402549365872", weight = 10, offset = 12}
-}
 local glitchPool = {}
 for _, v in ipairs(glitchVersions) do
     for _ = 1, v.weight do
@@ -164,6 +178,9 @@ for _, v in ipairs(glitchVersions) do
 end
 local function getRandomGlitch()
     return glitchPool[random(1, #glitchPool)]
+end
+local function getRandomBsodGlitch()
+    return bsodGlitchVersions[random(1, #bsodGlitchVersions)]
 end
 local function applyGlitchPositions(offset)
     if not offset or offset == 0 then
@@ -199,7 +216,6 @@ local function applyGlitchPositions(offset)
         originalPositions.gravelmeme.Y.Offset + (random(0, 1) == 0 and -offset or offset)
     )
 end
-local bsodImage = "rbxassetid://119715944001369"
 local rngMemes = {
     "did someone say spaghetti", "my code is pasta", "al dente and tangled",
     "bon appetit", "gaming chair diff fr", "i got the 4000$ chair",
@@ -310,7 +326,7 @@ local function playGlitchStartAnimation()
     }
     for _, step in ipairs(glitchSteps) do
         if step.normal then
-            UIObject1.Image = "rbxassetid://108749043601477"
+            UIObject1.Image = normie
             applyGlitchPositions(0)
         else
             UIObject1.Image = step.image
@@ -328,7 +344,7 @@ local function playGlitchStartAnimation()
             blackFrame.BackgroundTransparency = 1
         end
     end
-    UIObject1.Image = "rbxassetid://108749043601477"
+    UIObject1.Image = normie
     applyGlitchPositions(0)
     UIObject2.Visible = true
     UIObject3.Visible = true
@@ -352,7 +368,7 @@ task.spawn(function()
             applyGlitchPositions(glitchData.offset)
             glitchSounds[random(1, #glitchSounds)]:Play()
             task.wait(random(1, 4) / 10)
-            UIObject1.Image = "rbxassetid://108749043601477"
+            UIObject1.Image = normie
             applyGlitchPositions(0)
         end
         task.wait(1.5)
@@ -452,14 +468,16 @@ task.spawn(function()
     humSound:Stop()
     isBSODActive = true
     local glitchSequence = {
-        {type = "glitch", duration = 0.05},
-        {type = "glitch", duration = 0.08},
-        {type = "bsod", duration = 0.1},
+        {type = "bsodGlitch", duration = 0.05},
         {type = "glitch", duration = 0.06},
-        {type = "bsod", duration = 0.1},
-        {type = "glitch", duration = 0.04},
+        {type = "bsodGlitch", duration = 0.04},
         {type = "bsod", duration = 0.08},
         {type = "glitch", duration = 0.05},
+        {type = "glitch", duration = 0.04},
+        {type = "bsodGlitch", duration = 0.05},
+        {type = "bsod", duration = 0.12},
+        {type = "glitch", duration = 0.06},
+        {type = "bsodGlitch", duration = 0.04},
         {type = "bsod", duration = 0.15}
     }
     endSound:Play()
@@ -468,6 +486,13 @@ task.spawn(function()
             local glitchData = getRandomGlitch()
             UIObject1.Image = glitchData.id
             applyGlitchPositions(glitchData.offset)
+            bsodGlitchSounds[random(1, #bsodGlitchSounds)]:Play()
+            task.wait(step.duration)
+        elseif step.type == "bsodGlitch" then
+            local bsodGlitchData = getRandomBsodGlitch()
+            UIObject1.Image = bsodGlitchData.id
+            applyGlitchPositions(bsodGlitchData.offset)
+            bsodGlitchSounds[random(1, #bsodGlitchSounds)]:Play()
             task.wait(step.duration)
         else
             UIObject1.Image = bsodImage
@@ -491,13 +516,16 @@ task.spawn(function()
     flash.Parent = gui
     local fadeOut = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
     TweenService:Create(blurEffect, fadeOut, {Size = 0}):Play()
-    task.wait(0.3)
+    task.wait(0.1)
     startSound:Destroy()
     humSound:Destroy()
     endSound:Destroy()
     flashSound:Destroy()
     barSound:Destroy()
     for _, sound in ipairs(glitchSounds) do
+        sound:Destroy()
+    end
+    for _, sound in ipairs(bsodGlitchSounds) do
         sound:Destroy()
     end
     gui:Destroy()
