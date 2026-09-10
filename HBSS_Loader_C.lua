@@ -217,24 +217,13 @@ local function applyGlitchPositions(offset)
     )
 end
 local rngMemes = {
-    "did someone say spaghetti", "my code is pasta", "al dente and tangled",
-    "bon appetit", "gaming chair diff fr", "i got the 4000$ chair",
-    "that's why i never miss", "totally not aimbot", "me and the boys",
-    "running the script", "and getting banned", "worth it every time",
-    "the script is free", "and open source", "and has silent aim",
-    "what more could you want", "Error: can't find message",
-    "i'm not having errors actually", "or maybe I am, who knows??",
-    "is that a hack?", "no it's a gaming chair", "my chair has aimbot",
-    "you should get one", "please read the InfoTab",
-    "and credit me if u did a snippet", "i'm not a robot",
-    "i'm a gravel", "robots are metal", "gravel is rock",
-    "big difference", "checkmate atheists", "u ever just",
-    "silent aim someone", "and they go '??? how'", "and then u say ping diff",
-    "well I did that", "i love when the script", "works on the first try",
-    "that's a lie", "it never does", "Gravel has 0 calories 2 burn",
-    "wait this isn't a virus", "i was told it was a virus",
-    "it's open source", "you can literally read it", "is that a toby?",
-    "meow :3 .... MAW >:3",
+    "Error: can't find message",
+    "i'm not having errors actually",
+    "my chair has aimbot",
+    "please read the InfoTab 4 goodness sake",
+    "credit me if u did a snippet >:[", "i'm not a robot",
+    "i'm gravel", "gravel is rock", "Gravel has 0 calories 2 burn", "wait this isn't a virus i swear", 
+    "it's open source", "is this loader sigma?", "meow :3 .... MAW >:3",
     "This loader is definitely 100% not a inspiration from redliner's merc.os",
     "Gugu Gaga Ultimated Flex Works", "can gravel run doom?",
     "ipad kid vs ipad, who would win?", "why is there ai slop on my TikTok fyp",
@@ -243,10 +232,7 @@ local rngMemes = {
     "01001000 01101001", "roblox is no longer robloz", "GRAVEL-MAN",
     "IM SKYLER WHITE, YO", "my diet is gravel", "ur definitely using delta cuz idk",
     "dab me up :>", "how much saves do u has", "O rly", ":3",
-    "lololololooloo", "wth is ts", "hell nah", "OHHHH HELLL NAH",
-    "pop-up goes bye bye", "isn't phonk just noise?", "guys it's a-a, a-a h-hacker!?!?!",
-    "tiki tiki", "Nosirski!", "click here or ur gay", "lolzer-fying",
-    "helohi", "portal above portal below *jumps in*", "ifone 90 proe max"
+    "helohi", "portal above portal below *jumps in*", "ifone 90 proe max", "what game is this :s"
 }
 local function startFastTyping()
     local textLabel = UIObject5
