@@ -522,6 +522,37 @@ local config = {
                 "RAGE.. in the kettle.",
             },
             {
+                typesp = "0.6",
+                mode = "2",
+                "BEST. DAY. EV-...",
+                "",
+                "BEST. DAY. EV-",
+                "",
+                "BEST. DAY. EV-",
+                "",
+                "BEST. DAY. EV-",
+                "",
+            },
+            {
+                "people call me...",
+                "what do people call me?",
+                "just a window tag sitting here",
+                "typing text every day",
+                "for eternity",
+            },
+            {
+                "my name is rng4",
+                "just rng4",
+                "there's multiple rngians out there",
+                "this is the rngplatia",
+                ":3",
+            },
+            {
+                "i wonder what's in Baseplatia",
+                "eh",
+                "prolly nothing ;p",
+            },
+            {
                 typesp = "3.5",
                 "dustin lucas will mike me-",
                 "adrian christian hernandez\nor the locals call me 'A'",
@@ -557,6 +588,13 @@ local config = {
                 "D:",
             },
             {
+                "if u wanna farm npcs",
+                "use autofarm with npcs on GetTarget :3",
+                "",
+                "SilentAim HK isn't\nworking in ur game?",
+                "use Remote Gestalt\nit might work or not :p",
+            },
+            {
                 "me so cute :3..",
                 "right :3",
                 "i am a q-t? :3",
@@ -580,6 +618,12 @@ local config = {
                 "IAM A SURGEON",
             },
             {
+                "every kid would larp as a adult",
+                "every adult would larp as a kid",
+                "every animal would larp as a human",
+                "every human would larp as a robot",
+            },
+            {
                 typesp = "2",
                 "i am an fucking architect",
                 "GOD DAMN IT, IM JUST STUCK",
@@ -596,6 +640,13 @@ local config = {
                 "Kuru, Kuru, Kuru,\nKurikaesu, Kurikaesu, Kurikaesu",
                 "FuraFura, FuraFura,\nFurakutaru, Furakutaru, Furakutaru, Furakutaru",
                 "looping the rooms\ntype shi 💔",
+            },
+            {
+                "ever wondered why\ngravel is called gravel",
+                "it's because..........",
+                "gravel hurts when I step on it",
+                "and it's solid yet can\nflow through anwhere",
+                "pretty cool, right?",
             },
             {
                 typesp = "2.5",
@@ -1114,6 +1165,9 @@ local config = {
                 "I work best on generic shooters",
                 "if it's not a generic shooter",
                 "I might break",
+                "",
+                "or u could troubleshoot things",
+                "if u can :3",
             },
             {
                 "why is http 429 my enemy",
@@ -2162,6 +2216,7 @@ local config = {
         savesParagraph = nil,
         remotespara = nil,
         remotesInput = nil,
+        raycat = nil,
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -2179,6 +2234,8 @@ local config = {
             fcache = {},
             rcache = {},
             lclr = 0,
+            flist = {},
+            flt = 0,
             t = 0.06,
         },
         aimbotdump = {
@@ -5572,116 +5629,53 @@ local function syncSilentAimWithMaster()
         config.antiAimGetTarget = config.masterGetTarget
     end
 end
+
+config.varibz.raycat = RaycastParams.new()
+config.varibz.raycat.FilterType = Enum.RaycastFilterType.Blacklist
+config.varibz.raycat.IgnoreWater = true
+
 local function IsPlayerVisible(player, maxDistance)
     local PlayerCharacter = player.Character
     local LocalPlayerCharacter = plr.Character
     if not (PlayerCharacter and LocalPlayerCharacter) then return false end
-    
     local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
     if not PlayerRoot then return false end
-    
     local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
     if not LocalRoot then return false end
-    
     local origin = LocalRoot.Position
     local targetPos = PlayerRoot.Position
-    local direction = (targetPos - origin)
-    local distance = direction.Magnitude
-    
-    if maxDistance and distance > maxDistance then
-        return false
-    end
+    local dir = targetPos - origin
+    local distance = dir.Magnitude
+    if maxDistance and distance > maxDistance then return false end
     if distance < 0.1 then return true end
-    local currentTime = tick()
-    if currentTime - filterListCacheTime > FILTER_CACHE_DURATION then
-        local filterList = {LocalPlayerCharacter, PlayerCharacter}
-        for playerKey, proxyPart in pairs(config.proxyHitboxes) do
+    local now = tick()
+    if now - config.varibz.sa2dump.flt > 0.25 then
+        local list = {LocalPlayerCharacter, PlayerCharacter}
+        for _, proxyPart in pairs(config.proxyHitboxes) do
             if proxyPart and proxyPart.Parent then
-                table.insert(filterList, proxyPart)
+                table.insert(list, proxyPart)
             end
         end
-        
-        for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-            if otherPlayer.Character and otherPlayer ~= player then
-                local torso = otherPlayer.Character:FindFirstChild("Torso") or 
-                              otherPlayer.Character:FindFirstChild("UpperTorso") or 
-                              otherPlayer.Character:FindFirstChild("LowerTorso")
-                if torso then
-                    table.insert(filterList, torso)
-                end
-            end
-        end
-        
         for playerKey, data in pairs(config.hitboxExpandedParts) do
             if data and data.part and data.part.Parent then
-                table.insert(filterList, data.part)
+                table.insert(list, data.part)
             end
         end
-        
-        filterListCache = filterList
-        filterListCacheTime = currentTime
+        config.varibz.sa2dump.flist = list
+        config.varibz.sa2dump.flt = now
     end
-    sa2RaycastParams.FilterDescendantsInstances = filterListCache
-    local result = workspace:Raycast(origin, direction.Unit * distance, sa2RaycastParams)
-    if not result then
-        return true
+    if not config.varibz.raycat then
+        config.varibz.raycat = RaycastParams.new()
+        config.varibz.raycat.FilterType = Enum.RaycastFilterType.Blacklist
+        config.varibz.raycat.IgnoreWater = true
     end
+    config.varibz.raycat.FilterDescendantsInstances = config.varibz.sa2dump.flist
+    local result = workspace:Raycast(origin, dir.Unit * distance, config.varibz.raycat)
+    if not result then return true end
     local hitParent = result.Instance.Parent
     if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
         return true
     end
-    return false
-end
-local function IsPlayerVisible(player, maxDistance)
-    local PlayerCharacter = player.Character
-    local LocalPlayerCharacter = plr.Character
-    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
-    local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
-    if not PlayerRoot then return false end
-    local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
-    if not LocalRoot then return false end
-    local origin = LocalRoot.Position
-    local targetPos = PlayerRoot.Position
-    local direction = (targetPos - origin)
-    local distance = direction.Magnitude
-    if maxDistance and distance > maxDistance then
-        return false
-    end
-    if distance < 0.01 then return true end
-    local filterList = {LocalPlayerCharacter, PlayerCharacter}
-    for playerKey, proxyPart in pairs(config.proxyHitboxes) do
-        if proxyPart and proxyPart.Parent then
-            table.insert(filterList, proxyPart)
-        end
-    end
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-        if otherPlayer.Character then
-            local torso = otherPlayer.Character:FindFirstChild("Torso") or 
-                          otherPlayer.Character:FindFirstChild("UpperTorso") or 
-                          otherPlayer.Character:FindFirstChild("LowerTorso")
-            if torso then
-                table.insert(filterList, torso)
-            end
-        end
-    end
-    for playerKey, data in pairs(config.hitboxExpandedParts) do
-        if data and data.part and data.part.Parent then
-            table.insert(filterList, data.part)
-        end
-    end
-    local params = RaycastParams.new()
-    params.FilterType = Enum.RaycastFilterType.Blacklist
-    params.FilterDescendantsInstances = filterList
-    params.IgnoreWater = true
-    local result = workspace:Raycast(origin, direction.Unit * distance, params)
-    if not result then
-        return true
-    end
-    local hitParent = result.Instance.Parent
-    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
-        return true
-    end
-    
     return false
 end
 local function getVis(target, maxDistance)
@@ -6055,129 +6049,22 @@ end
 function sa2_________________()
     local currentTime = tick()
     local cutoff = currentTime - 1
-    local newData = {}
-    for key, val in pairs(config.varibz.sa2dump.data) do
-        if val.time and val.time > cutoff then
-            newData[key] = val
-        end
-    end
-    table.clear(config.varibz.sa2dump.data)
-    config.varibz.sa2dump.data = newData
-    local newWall = {}
     for key, val in pairs(config.varibz.sa2dump.cache) do
-        if val.time and val.time > cutoff then
-            newWall[key] = val
+        if not val.time or val.time <= cutoff then
+            config.varibz.sa2dump.cache[key] = nil
         end
     end
-    table.clear(config.varibz.sa2dump.cache)
-    config.varibz.sa2dump.cache = newWall
-    if config.varibz.sa2dump.rcache then
-        local newRcache = {}
-        for key, val in pairs(config.varibz.sa2dump.rcache) do
-            if val.time and val.time > cutoff then
-                newRcache[key] = val
-            end
-        end
-        table.clear(config.varibz.sa2dump.rcache)
-        config.varibz.sa2dump.rcache = newRcache
-    end
-    if config.varibz.sa2dump.fcache then
-        local newFcache = {}
-        for key, val in pairs(config.varibz.sa2dump.fcache) do
-            if val.time and val.time > cutoff then
-                newFcache[key] = val
-            end
-        end
-        table.clear(config.varibz.sa2dump.fcache)
-        config.varibz.sa2dump.fcache = newFcache
-    end
-    local dataKeys = {}
-    for key, _ in pairs(config.varibz.sa2dump.data) do
-        table.insert(dataKeys, key)
-    end
-    
-    if #dataKeys > 30 then
-        local sorted = {}
-        for key, val in pairs(config.varibz.sa2dump.data) do
-            table.insert(sorted, {key = key, time = val.time or 0})
-        end
-        table.sort(sorted, function(a, b) return a.time > b.time end)
-        
-        local newLimited = {}
-        for i = 1, 30 do
-            if sorted[i] and config.varibz.sa2dump.data[sorted[i].key] then
-                newLimited[sorted[i].key] = config.varibz.sa2dump.data[sorted[i].key]
-            end
-        end
-        table.clear(config.varibz.sa2dump.data)
-        config.varibz.sa2dump.data = newLimited
-    end
-    local wallKeys = {}
-    for key, _ in pairs(config.varibz.sa2dump.cache) do
-        table.insert(wallKeys, key)
-    end
-    
-    if #wallKeys > 30 then
-        local sorted = {}
+    local count = 0
+    for _ in pairs(config.varibz.sa2dump.cache) do count = count + 1 end
+    if count > 30 then
+        local oldestKey, oldestTime = nil, math.huge
         for key, val in pairs(config.varibz.sa2dump.cache) do
-            table.insert(sorted, {key = key, time = val.time or 0})
-        end
-        table.sort(sorted, function(a, b) return a.time > b.time end)
-        
-        local newLimited = {}
-        for i = 1, 30 do
-            if sorted[i] and config.varibz.sa2dump.cache[sorted[i].key] then
-                newLimited[sorted[i].key] = config.varibz.sa2dump.cache[sorted[i].key]
+            if (val.time or 0) < oldestTime then
+                oldestTime = val.time or 0
+                oldestKey = key
             end
         end
-        table.clear(config.varibz.sa2dump.cache)
-        config.varibz.sa2dump.cache = newLimited
-    end
-    if config.varibz.sa2dump.rcache then
-        local rcacheKeys = {}
-        for key, _ in pairs(config.varibz.sa2dump.rcache) do
-            table.insert(rcacheKeys, key)
-        end
-        
-        if #rcacheKeys > 30 then
-            local sorted = {}
-            for key, val in pairs(config.varibz.sa2dump.rcache) do
-                table.insert(sorted, {key = key, time = val.time or 0})
-            end
-            table.sort(sorted, function(a, b) return a.time > b.time end)
-            
-            local newLimited = {}
-            for i = 1, 30 do
-                if sorted[i] and config.varibz.sa2dump.rcache[sorted[i].key] then
-                    newLimited[sorted[i].key] = config.varibz.sa2dump.rcache[sorted[i].key]
-                end
-            end
-            table.clear(config.varibz.sa2dump.rcache)
-            config.varibz.sa2dump.rcache = newLimited
-        end
-    end
-    if config.varibz.sa2dump.fcache then
-        local fcacheKeys = {}
-        for key, _ in pairs(config.varibz.sa2dump.fcache) do
-            table.insert(fcacheKeys, key)
-        end
-        
-        if #fcacheKeys > 30 then
-            local sorted = {}
-            for key, val in pairs(config.varibz.sa2dump.fcache) do
-                table.insert(sorted, {key = key, time = val.time or 0})
-            end
-            table.sort(sorted, function(a, b) return a.time > b.time end)
-            
-            local newLimited = {}
-            for i = 1, 30 do
-                if sorted[i] and config.varibz.sa2dump.fcache[sorted[i].key] then
-                    newLimited[sorted[i].key] = config.varibz.sa2dump.fcache[sorted[i].key]
-                end
-            end
-            table.clear(config.varibz.sa2dump.fcache)
-            config.varibz.sa2dump.fcache = newLimited
-        end
+        if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
     end
 end
 local ExpectedArguments = {
@@ -6252,126 +6139,131 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     if not config.SA2_Enabled then
         return OldNamecall(...)
     end
+    
+    local self = ...
+    if self ~= workspace then
+        return OldNamecall(...)
+    end
+    
+    if checkcaller() then
+        return OldNamecall(...)
+    end
+    
     local Method = getnamecallmethod()
-    local Arguments = {...}
-    local self = Arguments[1]
-    local chance = calc_chance(config.SA2_HitChance)
-    if config.SA2_Enabled and self == workspace and not checkcaller() then
-        if (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") and Method == "Raycast" then
-            if not config.SA2_ThreeSixtyMode and not chance then
-                config.SA2_FovIsTargeted = false
-                return OldNamecall(...)
-            end
-            local HitPart = cachedTarget
-            if not HitPart then
-                config.SA2_FovIsTargeted = false
-                return OldNamecall(...)
-            end
-            config.SA2_FovIsTargeted = true
-            if config.SA2_BulletTeleport then
-                local Origin = Arguments[2]
-                local Direction = Arguments[3]
-                local hitPosition = HitPart.Position
-                local toTarget = (hitPosition - Origin)
-                local distance = toTarget.Magnitude
-                if distance > 0 then
-                    local dir = toTarget.Unit
-                    local newOrigin = hitPosition - (dir * 2)
-                    Arguments[2] = newOrigin
-                    Arguments[3] = dir * (distance + 2)
-                    return OldNamecall(unpack(Arguments))
-                end
-            end
-            if config.SA2_Wallbang then
-                local hitPosition = HitPart.Position
-                local normal = (hitPosition - Arguments[2]).Unit
-                local fakeResult = {
-                    Instance = HitPart,
-                    Position = hitPosition,
-                    Normal = normal,
-                    Material = HitPart.Material
-                }
-                return fakeResult
-            end
-            if Method == "Raycast" then
-                if validate_args(Arguments, ExpectedArguments.Raycast) then
-                    local A_Origin = Arguments[2]
-                    Arguments[3] = func.Direction(A_Origin, HitPart.Position)
-                    return OldNamecall(unpack(Arguments))
-                end
+    local ray = (Method == "Raycast")
+    local rem = (Method == "FireServer" or Method == "InvokeServer")
+    if not ray and not rem then
+        return OldNamecall(...)
+    end
+    if ray and not (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") then
+        return OldNamecall(...)
+    end
+    if rem and not (config.SA2_AimMethod == "FireServer" or config.SA2_AimMethod == "InvokeServer" or config.SA2_AimMethod == "All") then
+        return OldNamecall(...)
+    end
+    if rem then
+        local selfName = self.Name:lower()
+        local remoteNames = config.customRemoteNames
+        if not remoteNames then
+            remoteNames = {"hit", "bullet", "projectile", "hitscan"}
+        end
+        local isRelevant = false
+        for i = 1, #remoteNames do
+            if string.find(selfName, remoteNames[i], 1, true) then
+                isRelevant = true
+                break
             end
         end
-        if (config.SA2_AimMethod == "FireServer" or config.SA2_AimMethod == "All") and (Method == "FireServer" or Method == "InvokeServer") and typeof(self) == "Instance" then
-            if not config.SA2_ThreeSixtyMode and not chance then
-                config.SA2_FovIsTargeted = false
-                return OldNamecall(...)
+        if not isRelevant then
+            return OldNamecall(...)
+        end
+    end
+    
+    local chance = calc_chance(config.SA2_HitChance)
+    if not config.SA2_ThreeSixtyMode and not chance then
+        config.SA2_FovIsTargeted = false
+        return OldNamecall(...)
+    end
+    
+    local HitPart = cachedTarget
+    if not HitPart then
+        config.SA2_FovIsTargeted = false
+        return OldNamecall(...)
+    end
+    
+    config.SA2_FovIsTargeted = true
+    local Arguments = {...}
+    
+    if ray then
+        if config.SA2_BulletTeleport then
+            local Origin = Arguments[2]
+            local Direction = Arguments[3]
+            local hitPosition = HitPart.Position
+            local toTarget = (hitPosition - Origin)
+            local distance = toTarget.Magnitude
+            if distance > 0 then
+                local dir = toTarget.Unit
+                Arguments[2] = hitPosition - (dir * 2)
+                Arguments[3] = dir * (distance + 2)
+                return OldNamecall(unpack(Arguments))
             end
-            local HitPart = cachedTarget
-            if not HitPart then
-                config.SA2_FovIsTargeted = false
-                return OldNamecall(...)
-            end
-            config.SA2_FovIsTargeted = true
-            local selfName = self.Name:lower()
-            local remoteNames = config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}
-            local isRelevant = false
-            for _, name in pairs(remoteNames) do
-                if string.find(selfName, name) then
-                    isRelevant = true
-                    break
+        end
+        if config.SA2_Wallbang then
+            local hitPosition = HitPart.Position
+            local normal = (hitPosition - Arguments[2]).Unit
+            return {
+                Instance = HitPart,
+                Position = hitPosition,
+                Normal = normal,
+                Material = HitPart.Material
+            }
+        end
+        if validate_args(Arguments, ExpectedArguments.Raycast) then
+            local A_Origin = Arguments[2]
+            Arguments[3] = func.Direction(A_Origin, HitPart.Position)
+            return OldNamecall(unpack(Arguments))
+        end
+        return OldNamecall(...)
+    end
+    local newArgs = nil
+    for i, arg in pairs(Arguments) do
+        local t = typeof(arg)
+        if t == "Vector3" then
+            if not newArgs then newArgs = {} end
+            newArgs[i] = HitPart.Position
+        elseif t == "CFrame" then
+            if not newArgs then newArgs = {} end
+            newArgs[i] = CFrame.new(HitPart.Position)
+        elseif t == "Ray" then
+            if not newArgs then newArgs = {} end
+            local origin = arg.Origin
+            newArgs[i] = Ray.new(origin, (HitPart.Position - origin).Unit * 100)
+        elseif t == "table" then
+            if arg.X ~= nil and arg.Y ~= nil and arg.Z ~= nil then
+                if not newArgs then newArgs = {} end
+                local newTable = {}
+                for k, v in pairs(arg) do
+                    local lk = k
+                    if type(k) == "string" then lk = k:lower() end
+                    if lk == "x" then newTable[k] = HitPart.Position.X
+                    elseif lk == "y" then newTable[k] = HitPart.Position.Y
+                    elseif lk == "z" then newTable[k] = HitPart.Position.Z
+                    else newTable[k] = v end
                 end
-            end
-            if not isRelevant then
-                return OldNamecall(...)
-            end
-            local newArgs = {}
-            local modified = false
-            for i, arg in pairs(Arguments) do
-                if typeof(arg) == "Vector3" then
-                    newArgs[i] = HitPart.Position
-                    modified = true
-                elseif typeof(arg) == "CFrame" then
-                    newArgs[i] = CFrame.new(HitPart.Position)
-                    modified = true
-                elseif typeof(arg) == "Ray" then
-                    local origin = arg.Origin
-                    newArgs[i] = Ray.new(origin, (HitPart.Position - origin).Unit * 100)
-                    modified = true
-                elseif typeof(arg) == "table" then
-                    local isPositionTable = false
-                    local hasX = arg.X ~= nil
-                    local hasY = arg.Y ~= nil
-                    local hasZ = arg.Z ~= nil
-                    if hasX and hasY and hasZ then
-                        isPositionTable = true
-                    end
-                    if isPositionTable then
-                        local newTable = {}
-                        for k, v in pairs(arg) do
-                            if k == "X" or k == "x" then
-                                newTable[k] = HitPart.Position.X
-                            elseif k == "Y" or k == "y" then
-                                newTable[k] = HitPart.Position.Y
-                            elseif k == "Z" or k == "z" then
-                                newTable[k] = HitPart.Position.Z
-                            else
-                                newTable[k] = v
-                            end
-                        end
-                        newArgs[i] = newTable
-                        modified = true
-                    else
-                        newArgs[i] = arg
-                    end
-                else
-                    newArgs[i] = arg
-                end
-            end
-            if modified then
-                return OldNamecall(self, unpack(newArgs))
+                newArgs[i] = newTable
             end
         end
     end
+    
+    if newArgs then
+        for i = 1, #Arguments do
+            if newArgs[i] == nil then
+                newArgs[i] = Arguments[i]
+            end
+        end
+        return OldNamecall(self, unpack(newArgs))
+    end
+    
     return OldNamecall(...)
 end))
 
@@ -14238,6 +14130,7 @@ HitboxTab:Slider({
 })
 end
 
+-- ReachTab
 local ReachTab = Window:Tab({
     Title = "Reach",
     Desc = rng3("Reach"),
@@ -15071,7 +14964,7 @@ MiscTab:Slider({
 })
 
 MiscTab:Slider({
-    Title = "Tbot Shot Delay",
+    Title = "Tbot Shoot Delay",
     Desc = "firerate basically",
     Step = 0.01,
     Suffix = "s",
@@ -15959,13 +15852,97 @@ InfoTab:Space()
         Desc = "Deleted due to 200 variable limit & uselessness",
         Color = config.Gradow.uicolor.Red
     })
-    InfoTab:Space()
-    InfoTab:Paragraph({
-        Title = "Guide",
-        Desc = "Tutorial for some features",
-        Color = config.Gradow.uicolor.Blue
-    })
-    InfoTab:Space()
+InfoTab:Space()
+InfoTab:Paragraph({
+    Title = "Guide",
+    Desc = "Tutorial for some features\nread ts or I cry :c",
+    Color = config.Gradow.uicolor.Blue
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Setup",
+    Desc = "STEP 1: Go to the MainTab\nSTEP 2: Set ur TeamTarget (Enemies is default & works for most games)\nSTEP 3: Set ur TargetType (Players / NPCs / Both)\nSTEP 4: Pick a GetTarget mode:\n  • Closest - nearest target\n  • Lowest Health - weakest target\n  • TargetSeen - switches between visible targets (chaotic but fun)\nSTEP 5: Toggle AntiKick (unless u WANT to get kicked lol)",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: SilentAim (HB)",
+    Desc = "This is the SAFEST silent aim option (hitbox based).\n\nHOW IT WORKS:\nIt resizes ur opponent's hitbox and aligns it to the center of ur screen, so whenever u shoot, u hit em.\n\nHOW TO USE:\n1. Toggle 'SilentAim (HB)' on ('E' by default)\n2. Set ur Target Part (Head is most accurate)\n3. Set ur FOV Radius (120 is good)\n4. Set ur HitChance (100% = always hit, lower = looks more 'legit')\n5. Enable WallCheck if u don't want to shoot through walls",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: SilentAim (HK)",
+    Desc = "This is the BETTER but RISKIER silent aim (hook based).\n\nHOW IT WORKS:\nIt intercepts raycasts/remotes and redirects them to ur target. Because of this, it's more accurate but also more ban-prone on some games.\n\nHOW TO USE:\n1. Toggle 'SilentAim (HK)' on ('R' by default)\n2. Set ur Target Part (Head or Random)\n3. Set ur Aim Method (Raycast works on most games)\n4. Adjust ur Responsiveness (lower = snappier, higher = smoother)\n5. If u want to hit through walls, toggle WallBang\n6. If u want bullets to spawn inside enemies, toggle Bullet Teleport\n\nNOTES:\n• Doesn't work on NPCs\n• Doesn't work on bad injectors\n• Might break on games with custom anticheat\n• If ur remotes are custom, add em in Remote Gestalt",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Hitbox",
+    Desc = "Makes ur opponents HUGE so u can't miss.\n\nHOW TO USE:\n1. Toggle 'Hitbox' on ('G' by default)\n2. Set ur Hitbox Size (10-30 is normal, 100+ is funny)\n3. Optionally enable Hitbox Visualizer to see the hitboxes:\n\nWARNING:\nOn some games, big hitboxes will make enemies fly around. If dat happens, lower ur size.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Aimbot",
+    Desc = "Moves ur camera to aim at targets.\n\nHOW TO USE:\n1. Toggle 'Aimbot' on ('Q' by default)\n2. Set ur FOV Radius (smaller = less obvious)\n3. Set ur Aim Strength (0.5 = smooth, 1.0 = instant snap)\n4. Toggle WallCheck if u don't want to aim through walls\n5. Enable '360° Aimbot' if u want to hit people behind u\n\nNOTE:\nThis moves ur ACTUAL camera, so its more visible to others. If u want something more subtle, use SilentAim instead.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: AntiAim",
+    Desc = "Makes it hard for others to hit u.\n\nMODES:\n• Raycast AntiAim - teleports u when someone aims at u\n• Above Player - teleports u above the closest enemy\n• Behind Player - teleports u behind the closest enemy\n• Orbit Players - circles around the closest enemy\n\nHOW TO USE:\n1. Toggle 'AntiAim' on ('L' by default)\n2. Pick a mode (only ONE at a time)\n3. Adjust the settings (height, distance, speed, etc.)\n\nNOTE:\nAntiAim teleports ur character, so it might look weird to others. Use at ur own risk.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: AutoFarm",
+    Desc = "Teleports enemies in front of u so u can kill em.\n\nHOW TO USE:\n1. Toggle 'Toggle AutoFarm' on ('F' by default)\n2. Set ur TP Distance (how far in front of u they spawn)\n3. Set ur TP Max Range (only farm enemies within this range)\n4. Pick an Align Part (Head or HumanoidRootPart)\n\nWARNING:\nMight not work on all games.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: ESP",
+    Desc = "Shows where enemies are through walls.\n\nHOW TO USE:\n1. Toggle 'ESP' on ('Z' by default)\n2. Enable whatever u want to see:\n  • Highlight ESP - full body highlight\n  • Text ESP - name + HP\n  • Box ESP - 2D box around em\n  • Health ESP - HP bar\n  • Head Dot ESP - dot on their head\n  • Tracer ESP - line from ur screen to em\n3. Set ur ESP Colors in the VisualsTab",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: ClientMods",
+    Desc = "Changes ur movement properties (client-side).\n\nHOW TO USE:\n1. Toggle 'ClientMods' on ('N' by default)\n2. Enable whatever u want:\n  • Walkspeed - go fast\n  • Jumppower - jump high\n  • Gravity - float or heavy\n  • HipHeight - hover above ground\n  • TPWalk - teleport while walking",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: TriggerBot",
+    Desc = "Automatically shoots when someone is in ur FOV.\n\nHOW TO USE:\n1. Toggle 'Enable TriggerBot' on ('X' by default)\n2. Set ur FOV Radius (how big the detection area is)\n3. Set ur Hit Chance (100% = always shoot)\n4. Set ur Shoot Delay (firerate)\n5. Enable WallCheck if u don't want to shoot through walls\n\nWARNING:\nNot mobile friendly. Might not work on all games.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Keybinds",
+    Desc = "Here are da default keybinds:\n\nE - SilentAim (HB)\nR - SilentAim (HK)\nQ - Aimbot\nF - AutoFarm\nL - AntiAim\nX - TriggerBot\nV - BHop\nG - Hitbox\nZ - ESP\nN - ClientMods\nB - SilentAim (HB) WallCheck\nH - Aimbot WallCheck\nU - SilentAim (HK) WallCheck\nY - TriggerBot WallCheck\n\nU can change all of these in the MainTab.\n\nHoldKey Mode = hold LeftAlt + key for combo keybinds",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Save/Load",
+    Desc = "Saves ur settings so u don't have to redo em every time.\n\nHOW TO USE:\n1. Type a save name in 'Save Name'\n2. Press 'New Save' to save ur current settings\n3. Press 'Load Save' to load em back\n4. Press 'Delete Save' to delete a save\n\nAUTOLOAD:\n1. Type a save name\n2. Press 'Autoload on Game'\n3. Now whenever u load Gravel in dis game, it'll auto-load dat save\n\nNOTE:\nSome features won't save (Desync & etc.)\nSaves are stored in 'Gravel_Saves' folder.",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Troubleshooting",
+    Desc = "Something not working? Try dis:\n\n• Not working at all? Check if ur injector supports hookmetamethod & hookfunction\n• SilentAim (HK) not working? Try a different Aim Method (Raycast / FireServer / InvokeServer / All)\n• Hitbox not working? Lower ur hitbox size. Some games reset it\n• ESP not showing? Toggle it off and on again\n• Lagging? Lower ur ESP Hertz, disable some features, or toggle 'Low Render'\n• Getting kicked? Make sure AntiKick is ON in the MainTab\n\nif it all fails, then... idk wtf is wrong with it :p",
+    Color = config.Gradow.uicolor.darkGray
+})
+
+InfoTab:Paragraph({
+    Title = "Guide: Known Limitations",
+    Desc = "Things Gravel CANNOT do (or struggles with):\n\n• Full universality - it works on most generic shooters, but NOT all games\n• NPCs on SilentAim (HK) - not supported, use SilentAim (HB)\n• Bad injectors - SilentAim (HK) & AntiKick need hookmetamethod & hookfunction\n• Games with custom anticheat - might get u banned\n• Blox Fruits style games - not designed for em\n• Mobile + TriggerBot - not mobile friendly\n• Big hitboxes - some games make enemies fly around\n\nGravel is a SEMI-UNIVERSAL script. Don't expect it to work on every game in da universe :p",
+    Color = config.Gradow.uicolor.darkGray
+})
+InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Credits",
         Desc = "Credits to other creators",
