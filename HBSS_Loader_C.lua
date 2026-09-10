@@ -235,7 +235,7 @@ local rngMemes = {
     "wait this isn't a virus", "i was told it was a virus",
     "it's open source", "you can literally read it", "is that a toby?",
     "meow :3 .... MAW >:3",
-    "This loader is definitely 100% not a inspiration from redliner's mercy.os",
+    "This loader is definitely 100% not a inspiration from redliner's merc.os",
     "Gugu Gaga Ultimated Flex Works", "can gravel run doom?",
     "ipad kid vs ipad, who would win?", "why is there ai slop on my TikTok fyp",
     "bombastic side eye", "oh shiddings nott gud D:", "what's a brainfuck :s",
