@@ -182,6 +182,13 @@ end
 local function getRandomBsodGlitch()
     return bsodGlitchVersions[random(1, #bsodGlitchVersions)]
 end
+local function setTextLabelsColor(color)
+    UIObject2.TextColor3 = color
+    UIObject3.TextColor3 = color
+    UIObject4.TextColor3 = color
+    UIObject5.TextColor3 = color
+end
+
 local function applyGlitchPositions(offset)
     if not offset or offset == 0 then
         UIObject2.Position = originalPositions.filelabel
@@ -453,6 +460,8 @@ task.spawn(function()
     task.wait(1.2)
     humSound:Stop()
     isBSODActive = true
+    setTextLabelsColor(Color3.fromRGB(255, 0, 0))
+
     local glitchSequence = {
         {type = "bsodGlitch", duration = 0.05},
         {type = "glitch", duration = 0.06},
@@ -467,27 +476,42 @@ task.spawn(function()
         {type = "bsod", duration = 0.15}
     }
     endSound:Play()
+    local flickerState = false
     for _, step in ipairs(glitchSequence) do
         if step.type == "glitch" then
             local glitchData = getRandomGlitch()
             UIObject1.Image = glitchData.id
             applyGlitchPositions(glitchData.offset)
             bsodGlitchSounds[random(1, #bsodGlitchSounds)]:Play()
+            flickerState = not flickerState
+            if flickerState then
+                setTextLabelsColor(Color3.fromRGB(255, 0, 0))
+            else
+                setTextLabelsColor(Color3.fromRGB(255, 255, 255))
+            end
             task.wait(step.duration)
         elseif step.type == "bsodGlitch" then
             local bsodGlitchData = getRandomBsodGlitch()
             UIObject1.Image = bsodGlitchData.id
             applyGlitchPositions(bsodGlitchData.offset)
             bsodGlitchSounds[random(1, #bsodGlitchSounds)]:Play()
+            flickerState = not flickerState
+            if flickerState then
+                setTextLabelsColor(Color3.fromRGB(255, 0, 0))
+            else
+                setTextLabelsColor(Color3.fromRGB(255, 255, 255))
+            end
             task.wait(step.duration)
         else
             UIObject1.Image = bsodImage
             applyGlitchPositions(0)
+            setTextLabelsColor(Color3.fromRGB(255, 0, 0))
             task.wait(step.duration)
         end
     end
     UIObject1.Image = bsodImage
     applyGlitchPositions(0)
+    setTextLabelsColor(Color3.fromRGB(255, 0, 0))
     UIObject2.Visible = false
     UIObject3.Visible = false
     UIObject4.Visible = false
