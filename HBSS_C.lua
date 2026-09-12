@@ -7785,7 +7785,6 @@ local function wallCheck(targetPos, sourcePos)
         config.varibz.raycats.rayuwu.FilterType = Enum.RaycastFilterType.Exclude
         config.varibz.raycats.rayuwu.IgnoreWater = true
     end
-    local ignoreList = {}
     if localPlayer and localPlayer.Character then
         table.insert(ignoreList, localPlayer.Character)
     end
@@ -9312,7 +9311,6 @@ local function aimbotWallCheck(targetPos, sourcePos)
         return cached.visible
     end
     local rayDirection = (targetPos - sourcePos)
-    local ignoreList = {}
     if localPlayer and localPlayer.Character then
         for _, part in ipairs(localPlayer.Character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -16966,6 +16964,7 @@ local function buhbyegravellllllll________()
         table.clear(config.hitboxLastSize)
         table.clear(config.varibz.candidates)
         table.clear(config.varibz.targetsInFOV)
+        table.clear(ignoreList)
     end)
 end
 Window:OnDestroy(function()
