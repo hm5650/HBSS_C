@@ -559,6 +559,12 @@ local config = {
                 "sand larps gravel",
             },
             {
+                "/kill {displayname}",
+                "did it work????",
+                "oh it's Roblox..",
+                "how could i forget :p",
+            },
+            {
                 "My predictions of the future :D ...",
                 "AI might take over seemlingly\nevery humans work",
                 "The world would slowly lose its color",
@@ -2282,11 +2288,11 @@ local config = {
             "Adrian.cc",
         },
         raycats = {
-            raycat = nil,
-            rayuwu = nil,
-            rayowo = nil,
-            raykitty = nil,
-            ihazrays = nil,
+            raycat = RaycastParams.new(),
+            rayuwu = RaycastParams.new(),
+            rayowo = RaycastParams.new(),
+            raykitty = RaycastParams.new(),
+            ihazrays = RaycastParams.new(),
         },
         savesParagraph = nil,
         remotespara = nil,
@@ -5708,19 +5714,14 @@ local function syncSilentAimWithMaster()
 end
 
 --raycats
-config.varibz.raycats.raycat = RaycastParams.new()
 config.varibz.raycats.raycat.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.raycat.IgnoreWater = true
-config.varibz.raycats.raykitty = RaycastParams.new()
 config.varibz.raycats.raykitty.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.raykitty.IgnoreWater = true
-config.varibz.raycats.rayuwu = RaycastParams.new()
 config.varibz.raycats.rayuwu.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.rayuwu.IgnoreWater = true
-config.varibz.raycats.rayowo = RaycastParams.new()
 config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.rayowo.IgnoreWater = true
-config.varibz.raycats.ihazrays = RaycastParams.new()
 config.varibz.raycats.ihazrays.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.ihazrays.IgnoreWater = true
 
