@@ -140,7 +140,7 @@ local function n(opts)
         end)
     end
 end
-task.wait(5.3)
+task.wait(5.7)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
 local func = loadstring(getgist_(getgenv().HttpUrlz_.sa2func))()
 local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
@@ -154,16 +154,12 @@ local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
 local GetPlayers = excusemesir.Players.GetPlayers
-local GetPartsObscuringTarget = Camera.GetPartsObscuringTarget
 local lastCharacter = nil
 local camera = workspace.CurrentCamera
 local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local clone_ref = cloneref or function(v) return v end
-local candidates = {}
-local targetsInFOV = {}
-
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
 getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
@@ -226,7 +222,7 @@ local config = {
     lineColor = Color3.fromRGB(255, 255, 255),
     lineThickness = 1,
     lineESPData = {},
-    espRefreshRate = 0.03,
+    esphertz = 100,
     originalSizes = {},
     activeApplied = {},
     espData = {},
@@ -302,8 +298,6 @@ local config = {
     aimbot360Enabled = false,
     aimbot360OriginalFOV = 100,
     aimbotTargetRange = 500,
-    gp = 200,
-    gp2 = 1,
     customFOVEnabled = false,
     customFOVValue = 70,
     fbenabled = false,
@@ -411,7 +405,6 @@ local config = {
         ["Metal"] = Enum.Material.Metal,
         ["DiamondPlate"] = Enum.Material.DiamondPlate
     },
-    LowRender = false,
     tbot = {
         enabled = false,
         delay = 0.1,
@@ -580,7 +573,7 @@ local config = {
                 "you've wanted flying cars...",
                 "right?...",
                 "",
-                "let the pass be the pass :p",
+                "let the past be the past :p",
             },
             {
                 "the file size is 600kb..",
@@ -588,11 +581,26 @@ local config = {
                 "D:",
             },
             {
+                "We're all brothers in a ''perfect'' world",
+                "In a ''perfect'' world there is uniformity",
+                "We're all brothers in a ''perfect'' world",
+                "In a ''perfect'' world there is continuity",
+                "We're all brothers in a ''perfect'' world",
+                "There is no need for spontaneity",
+            },
+            {
                 "if u wanna farm npcs",
                 "use autofarm with npcs on GetTarget :3",
                 "",
                 "SilentAim HK isn't\nworking in ur game?",
                 "use Remote Gestalt\nit might work or not :p",
+            },
+            {
+                "My FUCKING wifi is trolling my ass",
+                "everytime i fix bugs and\nthe script doesn't load i usually thought it crashed",
+                "but NOOOO.. it's actually the 4 bar wifi\ndelaying the script to load",
+                "it happens everytime",
+                "everytime >:[",
             },
             {
                 "me so cute :3..",
@@ -1898,27 +1906,40 @@ local config = {
             "lololololooloo",
         },
         tinf2 = {
-            "rbxassetid://128670966889578",
-            "rbxassetid://132214308111067",
-            "rbxassetid://72509803293342",
-            "rbxassetid://130435138559679",
-            "rbxassetid://127155823074936",
-            "rbxassetid://126485931781624",
-            "rbxassetid://8932053668",
+            "rbxassetid://11818627057",
+            "rbxassetid://7866490119",
             "rbxassetid://8932338197",
-            "rbxassetid://10316507030",
-            "rbxassetid://12626199947",
+            "rbxassetid://10245993691",
+            "rbxassetid://8932049774",
             "rbxassetid://8932006501",
+            "rbxassetid://12442731398",
+            "rbxassetid://10180628683",
+            "rbxassetid://9835676490",
+            "rbxassetid://5636955920",
+            "rbxassetid://10732694360",
+            "rbxassetid://8373881910",
+            "rbxassetid://8450601351",
+            "rbxassetid://2721397761",
+            "rbxassetid://9603655572",
+            "rbxassetid://7915312891",
         },
         tinf3 = {
-    	    "rbxassetid://72298953503422",
-    	    "rbxassetid://17608357332",
-           "rbxassetid://130776885039264",
-           "rbxassetid://6303045144",
-           "rbxassetid://101513669346450",
-           "rbxassetid://17748195478",
-           "rbxassetid://17517499979",
-           "rbxassetid://119888856502065",
+            "rbxassetid://18900008907",
+            "rbxassetid://9068077052",
+            "rbxassetid://125374397189170",
+            "rbxassetid://129084748747846",
+            "rbxassetid://135545038339685",
+            "rbxassetid://133762931722734",
+            "rbxassetid://112035104766653",
+            "rbxassetid://138468043135514",
+            "rbxassetid://7486914328",
+            "rbxassetid://119974879573475",
+            "rbxassetid://90634189811821",
+            "rbxassetid://102260594499787",
+            "rbxassetid://133789315328542",
+            "rbxassetid://6011094380",
+            "rbxassetid://135680040975059",
+            "rbxassetid://94964479268464",
         },
         descs = {
             Main = {
@@ -2224,8 +2245,10 @@ local config = {
         aimbot360LoopTask = nil,
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
+        npcCache = { list = {}, lastRefresh = 0 },
         sa2thing = 0,
         sa2stuff = 0.5,
+        espstuff = 0,
         sa2this = false,
         sa2alot = 0,
         sa2dump = {
@@ -2236,7 +2259,10 @@ local config = {
             lclr = 0,
             flist = {},
             flt = 0,
-            t = 0.06,
+            t = 1,
+        },
+        sa1dump = {
+            rs = 0,
         },
         aimbotdump = {
             data = {},
@@ -2258,6 +2284,12 @@ local config = {
         orgfov = nil,
         autoloadParagraph = nil,
         autoloadMemoryFile = "Gravel_Saves/assets/memory.json",
+        candidates = {},
+        targetsInFOV = {},
+        allTargetsInFOV = {},
+        targetsToRemove = {},
+        targetsToRemoveHigh = {},
+        lineToRemove = {},
         rng4 = {
             cursorVisible = true,
             currentText = "",
@@ -3390,8 +3422,6 @@ local function saveConfig(saveName)
             autoFarmVerticalOffset = config.autoFarmVerticalOffset,
             autoFarmTargetPart = config.autoFarmTargetPart,
             autoFarmMinRange = config.autoFarmMinRange,
-            gp = config.gp,
-            gp2 = config.gp2,
             QuickToggles = config.QuickToggles,
             QTDrag = config.QTDrag,
             selectedQuickToggles = table.clone(config.selectedQuickToggles),
@@ -3405,7 +3435,7 @@ local function saveConfig(saveName)
             lineESPOnlyTarget = config.lineESPOnlyTarget,
             lineStartPosition = config.lineStartPosition,
             prefColorByHealth = config.prefColorByHealth,
-            espRefreshRate = config.espRefreshRate,
+            esphertz = config.esphertz,
             espc = {
                 R = config.espc.R,
                 G = config.espc.G,
@@ -3478,7 +3508,6 @@ local function saveConfig(saveName)
                 G = config.visualizer.color.G,
                 B = config.visualizer.color.B
             },
-            LowRender = config.LowRender,
             antiAimEnabled = config.antiAimEnabled,
             raycastAntiAim = config.raycastAntiAim,
             antiAimAbovePlayer = config.antiAimAbovePlayer,
@@ -4031,7 +4060,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                         config.trussPart.Size = Vector3.new(2, 10, 2)
                         config.trussPart.Parent = workspace
                         config.trussPart.CanCollide = true
-                        config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
+                        config.trussPart.Name = "498372737377_83727737_837272_" .. tostring(math.random(10000, 99999))
                         config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
                             if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
                                 config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
@@ -4067,7 +4096,7 @@ local function applyFeatureAfterLoad(featureName, state, ...)
                         config.airwalkPart.Parent = workspace
                         config.airwalkPart.CanCollide = true
                         config.airwalkPart.Anchored = true
-                        config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
+                        config.airwalkPart.Name = "487362637488_393872738_392887_" .. tostring(math.random(10000, 99999))
                         if config.airwalkConnection then
                             config.airwalkConnection:Disconnect()
                             config.airwalkConnection = nil
@@ -4376,8 +4405,6 @@ local function loadSave(saveName)
     if cfg.autoFarmVerticalOffset then config.autoFarmVerticalOffset = cfg.autoFarmVerticalOffset end
     if cfg.autoFarmTargetPart then config.autoFarmTargetPart = cfg.autoFarmTargetPart end
     if cfg.autoFarmMinRange then config.autoFarmMinRange = cfg.autoFarmMinRange end
-    if cfg.gp then config.gp = cfg.gp end
-    if cfg.gp2 then config.gp2 = cfg.gp2 end
     if cfg.QuickToggles ~= nil then config.QuickToggles = cfg.QuickToggles end
     if cfg.QTDrag ~= nil then config.QTDrag = cfg.QTDrag end
     if cfg.selectedQuickToggles then
@@ -4401,7 +4428,7 @@ local function loadSave(saveName)
     if cfg.lineESPOnlyTarget ~= nil then config.lineESPOnlyTarget = cfg.lineESPOnlyTarget end
     if cfg.lineStartPosition then config.lineStartPosition = cfg.lineStartPosition end
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
-    if cfg.espRefreshRate then config.espRefreshRate = cfg.espRefreshRate end
+    if cfg.esphertz then config.esphertz = cfg.esphertz end
     if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
     if cfg.sa_hb_target_range then config.sa_hb_target_range = cfg.sa_hb_target_range end
     if cfg.sa_hb_headshot_chance then config.sa_hb_headshot_chance = cfg.sa_hb_headshot_chance end
@@ -4461,7 +4488,6 @@ local function loadSave(saveName)
     if cfg.visualizer_color then
         config.visualizer.color = Color3.new(cfg.visualizer_color.R or 1, cfg.visualizer_color.G or 0, cfg.visualizer_color.B or 0)
     end
-    if cfg.LowRender ~= nil then config.LowRender = cfg.LowRender end
     if cfg.antiAimEnabled ~= nil then config.antiAimEnabled = cfg.antiAimEnabled end
     if cfg.raycastAntiAim ~= nil then config.raycastAntiAim = cfg.raycastAntiAim end
     if cfg.antiAimAbovePlayer ~= nil then config.antiAimAbovePlayer = cfg.antiAimAbovePlayer end
@@ -4926,7 +4952,7 @@ local function loadSave(saveName)
                     config.trussPart.Size = Vector3.new(2, 10, 2)
                     config.trussPart.Parent = workspace
                     config.trussPart.CanCollide = true
-                    config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
+                    config.trussPart.Name = "498372737377_83727737_837272_" .. tostring(math.random(10000, 99999))
                     config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
                         if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
                             config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
@@ -4953,7 +4979,7 @@ local function loadSave(saveName)
                     config.airwalkPart.Parent = workspace
                     config.airwalkPart.CanCollide = true
                     config.airwalkPart.Anchored = true
-                    config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
+                    config.airwalkPart.Name = "487362637488_393872738_392887_" .. tostring(math.random(10000, 99999))
                     if config.airwalkConnection then
                         config.airwalkConnection:Disconnect()
                         config.airwalkConnection = nil
@@ -6129,145 +6155,282 @@ if OldNamecall then
     OldNamecall = nil
 end
 OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
-    if not hookmetamethod or not hookfunction then 
+    if not hookmetamethod or not hookfunction then
         warn("Gravel: Your exploit doesn't support hooking functions")
-        return false
-    end
-    if config.varibz.respawnLock then
         return OldNamecall(...)
     end
-    if not config.SA2_Enabled then
+    if config.varibz.respawnLock or not config.SA2_Enabled then
         return OldNamecall(...)
     end
-    
     local self = ...
-    if self ~= workspace then
+    local method = getnamecallmethod()
+    local raycatism = (method == "Raycast")
+    local remotebattery = (method == "FireServer" or method == "InvokeServer")
+    if not raycatism and not remotebattery then
         return OldNamecall(...)
     end
-    
     if checkcaller() then
         return OldNamecall(...)
     end
-    
-    local Method = getnamecallmethod()
-    local ray = (Method == "Raycast")
-    local rem = (Method == "FireServer" or Method == "InvokeServer")
-    if not ray and not rem then
+    if raycatism and not (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") then
         return OldNamecall(...)
     end
-    if ray and not (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") then
+    if remotebattery and not (config.SA2_AimMethod == "FireServer"
+        or config.SA2_AimMethod == "InvokeServer"
+        or config.SA2_AimMethod == "All") then
         return OldNamecall(...)
     end
-    if rem and not (config.SA2_AimMethod == "FireServer" or config.SA2_AimMethod == "InvokeServer" or config.SA2_AimMethod == "All") then
-        return OldNamecall(...)
-    end
-    if rem then
-        local selfName = self.Name:lower()
-        local remoteNames = config.customRemoteNames
-        if not remoteNames then
-            remoteNames = {"hit", "bullet", "projectile", "hitscan"}
+    if remotebattery then
+        if typeof(self) ~= "Instance"
+            or not (self:IsA("RemoteEvent")
+                or self:IsA("RemoteFunction")
+                or self:IsA("UnreliableRemoteEvent")) then
+            return OldNamecall(...)
         end
-        local isRelevant = false
+        local remoteNames = config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}
+        local selfName = string.lower(self.Name)
+        local matched = false
         for i = 1, #remoteNames do
-            if string.find(selfName, remoteNames[i], 1, true) then
-                isRelevant = true
+            if string.find(selfName, string.lower(remoteNames[i]), 1, true) then
+                matched = true
                 break
             end
         end
-        if not isRelevant then
+        if not matched then
             return OldNamecall(...)
         end
     end
-    
-    local chance = calc_chance(config.SA2_HitChance)
-    if not config.SA2_ThreeSixtyMode and not chance then
+    local function rollChance(chance)
+        if chance == 100 then return true end
+        if chance <= 0 then return false end
+        return math.random(1, 100) <= chance
+    end
+    if not config.SA2_ThreeSixtyMode and not rollChance(config.SA2_HitChance) then
         config.SA2_FovIsTargeted = false
         return OldNamecall(...)
     end
-    
     local HitPart = cachedTarget
-    if not HitPart then
+    if not HitPart or not HitPart.Parent then
         config.SA2_FovIsTargeted = false
         return OldNamecall(...)
     end
-    
     config.SA2_FovIsTargeted = true
+    local targetPos = HitPart.Position
+    local targetCFrame = CFrame.new(targetPos)
     local Arguments = {...}
-    
-    if ray then
+    if raycatism then
+        local Origin = Arguments[2]
+        local Direction = Arguments[3]
+        if typeof(Origin) ~= "Vector3" or typeof(Direction) ~= "Vector3" then
+            return OldNamecall(...)
+        end
         if config.SA2_BulletTeleport then
-            local Origin = Arguments[2]
-            local Direction = Arguments[3]
-            local hitPosition = HitPart.Position
-            local toTarget = (hitPosition - Origin)
+            local toTarget = targetPos - Origin
             local distance = toTarget.Magnitude
             if distance > 0 then
                 local dir = toTarget.Unit
-                Arguments[2] = hitPosition - (dir * 2)
+                Arguments[2] = targetPos - (dir * 2)
                 Arguments[3] = dir * (distance + 2)
                 return OldNamecall(unpack(Arguments))
             end
         end
         if config.SA2_Wallbang then
-            local hitPosition = HitPart.Position
-            local normal = (hitPosition - Arguments[2]).Unit
+            local normal = (targetPos - Origin).Unit
             return {
                 Instance = HitPart,
-                Position = hitPosition,
+                Position = targetPos,
                 Normal = normal,
-                Material = HitPart.Material
+                Material = HitPart.Material,
+                Distance = (targetPos - Origin).Magnitude
             }
         end
-        if validate_args(Arguments, ExpectedArguments.Raycast) then
-            local A_Origin = Arguments[2]
-            Arguments[3] = func.Direction(A_Origin, HitPart.Position)
-            return OldNamecall(unpack(Arguments))
-        end
-        return OldNamecall(...)
+        local newDir = (targetPos - Origin).Unit
+        Arguments[3] = newDir * Direction.Magnitude
+        return OldNamecall(unpack(Arguments))
     end
-    local newArgs = nil
-    for i, arg in pairs(Arguments) do
-        local t = typeof(arg)
+    local newArgs = table.clone(Arguments)
+    local function rewriteVector(v)
+        return v
+    end
+    local function isVecTable(t)
+        if type(t) ~= "table" then return false end
+        local hasX = rawget(t, "X") ~= nil or rawget(t, "x") ~= nil
+        local hasY = rawget(t, "Y") ~= nil or rawget(t, "y") ~= nil
+        local hasZ = rawget(t, "Z") ~= nil or rawget(t, "z") ~= nil
+        return hasX and hasY and hasZ
+    end
+    local function makeVecTable(template, newVec)
+        local newT = table.clone(template)
+        for k in pairs(newT) do
+            local lk = type(k) == "string" and string.lower(k) or k
+            if lk == "x" then newT[k] = newVec.X
+            elseif lk == "y" then newT[k] = newVec.Y
+            elseif lk == "z" then newT[k] = newVec.Z
+            end
+        end
+        return newT
+    end
+    local function rewriteValue(val, keyHint)
+        local t = typeof(val)
         if t == "Vector3" then
-            if not newArgs then newArgs = {} end
-            newArgs[i] = HitPart.Position
-        elseif t == "CFrame" then
-            if not newArgs then newArgs = {} end
-            newArgs[i] = CFrame.new(HitPart.Position)
-        elseif t == "Ray" then
-            if not newArgs then newArgs = {} end
-            local origin = arg.Origin
-            newArgs[i] = Ray.new(origin, (HitPart.Position - origin).Unit * 100)
-        elseif t == "table" then
-            if arg.X ~= nil and arg.Y ~= nil and arg.Z ~= nil then
-                if not newArgs then newArgs = {} end
-                local newTable = {}
-                for k, v in pairs(arg) do
-                    local lk = k
-                    if type(k) == "string" then lk = k:lower() end
-                    if lk == "x" then newTable[k] = HitPart.Position.X
-                    elseif lk == "y" then newTable[k] = HitPart.Position.Y
-                    elseif lk == "z" then newTable[k] = HitPart.Position.Z
-                    else newTable[k] = v end
+            if keyHint == "direction"
+                or keyHint == "lookvector"
+                or keyHint == "dir"
+                or keyHint == "aimdirection" then
+                return (targetPos - val).Unit
+            elseif keyHint == "origin"
+                or keyHint == "start"
+                or keyHint == "startpos"
+                or keyHint == "startposition"
+                or keyHint == "muzzleposition" then
+                if config.SA2_BulletTeleport then
+                    return targetPos - ((targetPos - val).Unit * 2)
                 end
-                newArgs[i] = newTable
+                return val
+            elseif keyHint == "hitposition"
+                or keyHint == "hitpos"
+                or keyHint == "endposition"
+                or keyHint == "endpos"
+                or keyHint == "targetposition" then
+                return targetPos
+            else
+                return val
+            end
+        elseif t == "CFrame" then
+            if keyHint == "origin"
+                or keyHint == "start"
+                or keyHint == "startpos"
+                or keyHint == "startposition" then
+                if config.SA2_BulletTeleport then
+                    return CFrame.new(targetPos - ((targetPos - val.Position).Unit * 2))
+                end
+                return val
+            elseif keyHint == "direction"
+                or keyHint == "lookvector"
+                or keyHint == "dir" then
+                return CFrame.lookAt(val.Position, targetPos)
+            else
+                return CFrame.lookAt(val.Position, targetPos)
+            end
+        elseif t == "Ray" then
+            local origin = val.Origin
+            if config.SA2_BulletTeleport then
+                origin = targetPos - ((targetPos - origin).Unit * 2)
+            end
+            return Ray.new(origin, (targetPos - origin).Unit * 1000)
+        elseif t == "table" then
+            if isVecTable(val) then
+                if keyHint == "hitposition"
+                    or keyHint == "hitpos"
+                    or keyHint == "endposition" then
+                    return makeVecTable(val, targetPos)
+                elseif keyHint == "direction"
+                    or keyHint == "lookvector"
+                    or keyHint == "dir" then
+                    local originVec = Vector3.new(
+                        rawget(val, "X") or rawget(val, "x"),
+                        rawget(val, "Y") or rawget(val, "y"),
+                        rawget(val, "Z") or rawget(val, "z")
+                    )
+                    return makeVecTable(val, (targetPos - originVec).Unit)
+                elseif keyHint == "origin"
+                    or keyHint == "start"
+                    or keyHint == "startposition" then
+                    local originVec = Vector3.new(
+                        rawget(val, "X") or rawget(val, "x"),
+                        rawget(val, "Y") or rawget(val, "y"),
+                        rawget(val, "Z") or rawget(val, "z")
+                    )
+                    if config.SA2_BulletTeleport then
+                        return makeVecTable(val, targetPos - ((targetPos - originVec).Unit * 2))
+                    end
+                    return val
+                end
+                return val
+            end
+            local newT = {}
+            for k, v in pairs(val) do
+                local lk = type(k) == "string" and string.lower(k) or k
+                newT[k] = rewriteValue(v, lk)
+            end
+            local hasDir = false
+            local hasHitPos = false
+            local hasHitPart = false
+            for k in pairs(newT) do
+                local lk = type(k) == "string" and string.lower(k) or k
+                if lk == "direction" or lk == "lookvector" or lk == "dir" then
+                    hasDir = true
+                elseif lk == "hitposition" or lk == "hitpos" or lk == "endposition" then
+                    hasHitPos = true
+                elseif lk == "hitpart" or lk == "target" then
+                    hasHitPart = true
+                end
+            end
+            if hasDir and not hasHitPos then
+                for k in pairs(val) do
+                    if type(k) == "string"
+                        and (string.lower(k) == "direction"
+                            or string.lower(k) == "lookvector") then
+                        newT["hitPosition"] = targetPos
+                        break
+                    end
+                end
+            end
+            if hasDir and not hasHitPart then
+                for k in pairs(val) do
+                    if type(k) == "string"
+                        and (string.lower(k) == "direction"
+                            or string.lower(k) == "lookvector") then
+                        newT["hitPart"] = HitPart
+                        break
+                    end
+                end
+            end
+            return newT
+        else
+            return val
+        end
+    end
+    for i = 1, #newArgs do
+        local arg = newArgs[i]
+        local t = typeof(arg)
+        if t == "table" then
+            local keyHints = {}
+            for k in pairs(arg) do
+                if type(k) == "string" then
+                    keyHints[string.lower(k)] = k
+                end
+            end
+            if keyHints["direction"] or keyHints["lookvector"]
+                or keyHints["origin"] or keyHints["hitposition"] then
+                newArgs[i] = rewriteValue(arg, nil)
+            else
+                newArgs[i] = rewriteValue(arg, nil)
+            end
+        elseif t == "Vector3" or t == "CFrame" or t == "Ray" then
+            newArgs[i] = rewriteValue(arg, "direction")
+        end
+    end
+    if config.SA2_Wallbang then
+        for i = 1, #newArgs do
+            local arg = newArgs[i]
+            if type(arg) == "table" then
+                for k in pairs(arg) do
+                    local lk = type(k) == "string" and string.lower(k) or k
+                    if lk == "hitthroughwall"
+                        or lk == "ignorewalls"
+                        or lk == "wallbang"
+                        or lk == "penetrate" then
+                        arg[k] = true
+                    end
+                end
             end
         end
     end
-    
-    if newArgs then
-        for i = 1, #Arguments do
-            if newArgs[i] == nil then
-                newArgs[i] = Arguments[i]
-            end
-        end
-        return OldNamecall(self, unpack(newArgs))
-    end
-    
-    return OldNamecall(...)
+    return OldNamecall(unpack(newArgs))
 end))
 
-ScreenGui.Name = "FOVSys"
+ScreenGui.Name = "48621826482727_83638_73763826382"
 ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
 CircleFrame.Name = "FOVCircle"
@@ -6382,7 +6545,7 @@ local function ineednextgenrep(state)
         char:MoveTo(hiddenPos)
         task.wait()
         config.desyncSeat = Instance.new("Seat")
-        config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+        config.desyncSeat.Name = "392726368382828288_292873738_392827_" .. math.random(10000, 99999)
         config.desyncSeat.Anchored = false
         config.desyncSeat.CanCollide = false
         config.desyncSeat.Transparency = 1
@@ -6423,7 +6586,7 @@ local function ineednextgenrep(state)
         if config.desyncCleanupLoop then
             config.desyncCleanupLoop:Disconnect()
         end
-        config.desyncCleanupLoop = task.spawn(function()
+        config.desyncCleanupLoop = task.defer(function()
             while config.desyncActive do
                 task.wait(0.5)
                 if config.desyncActive and (not config.desyncSeat or not config.desyncSeat.Parent) then
@@ -6434,7 +6597,7 @@ local function ineednextgenrep(state)
                     if not root or not torso then continue end
                     
                     config.desyncSeat = Instance.new("Seat")
-                    config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+                    config.desyncSeat.Name = "392726368382828288_292873738_392827_" .. math.random(10000, 99999)
                     config.desyncSeat.Anchored = false
                     config.desyncSeat.CanCollide = false
                     config.desyncSeat.Transparency = 1
@@ -6515,7 +6678,7 @@ local function gonextgenrep()
     char:MoveTo(hiddenPos)
     task.wait()
     config.desyncSeat = Instance.new("Seat")
-    config.desyncSeat.Name = "DesyncSeat_" .. math.random(10000, 99999)
+    config.desyncSeat.Name = "392726368382828288_292873738_392827_" .. math.random(10000, 99999)
     config.desyncSeat.Anchored = false
     config.desyncSeat.CanCollide = false
     config.desyncSeat.Transparency = 1
@@ -6543,7 +6706,7 @@ local function nextgenrepre()
     
     config.desyncRespawnConnection = LocalPlayer.CharacterAdded:Connect(function(char)
         if config.desyncActive then
-            task.spawn(gonextgenrep)
+            task.defer(gonextgenrep)
         end
     end)
 end
@@ -6590,19 +6753,18 @@ local function updateTeamTargetModes()
     end
 
     if config.espMasterEnabled then
-        local targetsToRemove = {}
         for target, _ in pairs(config.espData) do
-            table.insert(targetsToRemove, target)
+            table.insert(config.varibz.targetsToRemove, target)
         end
-        for _, target in ipairs(targetsToRemove) do
+        for _, target in ipairs(config.varibz.targetsToRemove) do
             removeESPLabel(target)
         end
         
-        local targetsToRemoveHigh = {}
+        
         for target, _ in pairs(config.highlightData) do
-            table.insert(targetsToRemoveHigh, target)
+            table.insert(config.varibz.targetsToRemoveHigh, target)
         end
-        for _, target in ipairs(targetsToRemoveHigh) do
+        for _, target in ipairs(config.varibz.targetsToRemoveHigh) do
             removeHighlightESP(target)
         end
         
@@ -6661,13 +6823,6 @@ local function applyESPMaster(state)
                 end
             end
         end
-        
-        task.spawn(function()
-            task.wait(0.1)
-            updateLineESP()
-            updateESPColors()
-        end)
-
         config.espon = config.prefTextESP
         config.highlightesp = config.prefHighlightESP
     end
@@ -6683,34 +6838,6 @@ excusemesir.RunService.Heartbeat:Connect(function()
     end
 end)
 
-local function pc()
-    local plr = excusemesir.Players.LocalPlayer
-    task.spawn(function()
-        while true do
-            pcall(function()
-                plr.ReplicationFocus = workspace
-                plr.MaximumSimulationRadius = math.huge
-                plr.SimulationRadius = config.gp
-            end)
-            task.wait(0.1)
-        end
-    end)
-end
-
-local function pc2()
-    local plr = excusemesir.Players.LocalPlayer
-    task.spawn(function()
-        while true do
-            pcall(function()
-                plr.ReplicationFocus = workspace
-                plr.MaximumSimulationRadius = math.huge
-                plr.SimulationRadius = config.gp2
-            end)
-            task.wait(0.1)
-        end
-    end)
-end
-
 local function isNPCModel(model)
     if not model or not model:IsA("Model") then return false end
     if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
@@ -6725,64 +6852,30 @@ end
 
 local function getAllTargets(getTargetSeen)
     local targets = {}
-
-    if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
-            if pl ~= localPlayer then
-                if getTargetSeen then
-                    local char = getTargetCharacter(pl)
-                    if char then
-                        local head = char:FindFirstChild("Head")
-                        local root = char:FindFirstChild("HumanoidRootPart")
-                        local targetPos = (head or root) and (head or root).Position
-                        
-                        if targetPos then
-                            local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                            if onScreen and screenPos.Z > 0 then
-                                local center = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-                                local screenVec = Vector2.new(screenPos.X, screenPos.Y)
-                                local distPx = (screenVec - center).Magnitude
-                                
-                                local fovSize = config.masterGetTarget == "TargetSeen" and config.fovsize or config.aimbotFOVSize
-                                if distPx <= fovSize then
-                                    table.insert(targets, pl)
-                                end
-                            end
-                        end
-                    end
-                else
-                    table.insert(targets, pl)
+    local now = tick()
+    if now - config.varibz.npcCache.lastRefresh > 1 then
+        config.varibz.npcCache.lastRefresh = now
+        local newCache = {}
+        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if obj:IsA("Model") and isNPCModel(obj) then
+                    table.insert(newCache, obj)
                 end
             end
         end
+        config.varibz.npcCache.list = newCache
     end
-
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            if pl ~= localPlayer then
+                table.insert(targets, pl)
+            end
+        end
+    end
     if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-        for _, obj in ipairs(Workspace:GetDescendants()) do
-            if obj:IsA("Model") and isNPCModel(obj) then
-                if not excusemesir.Players:GetPlayerFromCharacter(obj) then
-                    if getTargetSeen then
-                        local head = obj:FindFirstChild("Head")
-                        local root = obj:FindFirstChild("HumanoidRootPart")
-                        local targetPos = (head or root) and (head or root).Position
-                        
-                        if targetPos then
-                            local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                            if onScreen and screenPos.Z > 0 then
-                                local center = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-                                local screenVec = Vector2.new(screenPos.X, screenPos.Y)
-                                local distPx = (screenVec - center).Magnitude
-                                
-                                local fovSize = config.masterGetTarget == "TargetSeen" and config.fovsize or config.aimbotFOVSize
-                                if distPx <= fovSize then
-                                    table.insert(targets, obj)
-                                end
-                            end
-                        end
-                    else
-                        table.insert(targets, obj)
-                    end
-                end
+        for _, npc in ipairs(config.varibz.npcCache.list) do
+            if npc.Parent and isNPCModel(npc) then
+                table.insert(targets, npc)
             end
         end
     end
@@ -6981,8 +7074,8 @@ local function getValidAutoFarmTargets()
     
     if not localRoot then return validTargets end
     
-    local candidates = getAllTargets()
-    for _, t in ipairs(candidates) do
+    config.varibz.candidates = getAllTargets()
+    for _, t in ipairs(config.varibz.candidates) do
         if t ~= localPlayer and plralive(t) then
             local shouldTarget = false
             if config.specificTeamTarget and #config.targetedTeams > 0 then
@@ -7158,7 +7251,6 @@ local function autoFarmProcess()
 
             if not config.autoFarmPartClaimStarted then
                 config.autoFarmPartClaimStarted = true
-                pcall(pc)
             else
                 if tick() - (config.autoFarmLastRefresh or 0) > 2 then
                     config.autoFarmLastRefresh = tick()
@@ -7973,7 +8065,7 @@ local function makeesp(targetPlayer)
     end
 
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "ESP_" .. getTargetName(targetPlayer)
+    screenGui.Name = "84726272747372737_93727363737_937272_" .. getTargetName(targetPlayer)
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.IgnoreGuiInset = true
@@ -8049,10 +8141,15 @@ local function makeesp(targetPlayer)
     headDot.BackgroundColor3 = isTargeted and config.esptargetc or config.espc
     local function startUpdater()
         if config.espData[targetPlayer] and config.espData[targetPlayer].connection then
-            pcall(function() config.espData[targetPlayer].connection:Disconnect() end)
+            config.espData[targetPlayer].connection:Disconnect()
         end
-
-        local conn = excusemesir.RunService.Heartbeat:Connect(function()
+        local conn = excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
+            local hz = 1 / math.max(config.esphertz or 100, 1)
+            config.varibz.espstuff = config.varibz.espstuff + deltaTime
+            if config.varibz.espstuff < hz then
+                return
+            end
+            config.varibz.espstuff = 0
             local currentCamera = workspace.CurrentCamera
             if not currentCamera then
                 if label then label.Visible = false end
@@ -8267,11 +8364,12 @@ local function updateESPColors()
                 local tchar = getTargetCharacter(targetPlayer)
                 local humanoid = tchar and tchar:FindFirstChildOfClass("Humanoid")
                 local hpColor = (humanoid and config.prefColorByHealth) and healthColor(humanoid) or nil
-                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
-                local isTargetedByRegular = config.currentTarget == targetPlayer
-                local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
+                local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
+                local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+                local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
                 local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
-                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
+                local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
+
                 if isTargeted then
                     data.label.TextColor3 = Color3.fromRGB(255, 255, 0)
                 elseif hpColor then
@@ -8279,6 +8377,7 @@ local function updateESPColors()
                 else
                     data.label.TextColor3 = config.espc
                 end
+
                 if data.boxOutline then
                     if isTargeted then
                         data.boxOutline.Color = Color3.fromRGB(255, 255, 0)
@@ -8286,6 +8385,7 @@ local function updateESPColors()
                         data.boxOutline.Color = hpColor or config.espc
                     end
                 end
+
                 if isTargeted then
                     data.headDot.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
                 elseif hpColor then
@@ -8300,6 +8400,7 @@ local function updateESPColors()
     for _, targetPlayer in ipairs(toRemove) do
         config.espData[targetPlayer] = nil
     end
+
     local toRemoveHighlights = {}
     for targetPlayer, highlight in pairs(config.highlightData) do
         if not targetPlayer or not highlight or not highlight.Parent then
@@ -8308,12 +8409,12 @@ local function updateESPColors()
             if not addesp(targetPlayer) then
                 table.insert(toRemoveHighlights, targetPlayer)
             else
-                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
-                local isTargetedByRegular = config.currentTarget == targetPlayer
-                local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
+                local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
+                local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+                local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
                 local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
-                local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
-                
+                local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
+
                 if isTargeted then
                     highlight.FillColor = Color3.fromRGB(255, 255, 0)
                 else
@@ -8330,6 +8431,16 @@ local function updateESPColors()
     if config.espMasterEnabled and config.lineESPEnabled then
         updateLineESP()
     end
+    
+    if config.aimbotFOVRing and config.aimbotFOVRing.RingStroke then
+        if config.aimbotEnabled and not config.aimbot360Enabled then
+            if config.aimbotCurrentTarget then
+                config.aimbotFOVRing.RingStroke.Color = config.aimbotFOVTargetColor or Color3.fromRGB(255, 255, 0)
+            else
+                config.aimbotFOVRing.RingStroke.Color = config.aimbotFOVColor or Color3.fromRGB(255, 0, 0)
+            end
+        end
+    end
 end
 local function toggleHighlightESP(enabled)
     config.prefHighlightESP = enabled
@@ -8342,11 +8453,10 @@ local function toggleHighlightESP(enabled)
             end
         end
     else
-        local targetsToRemove = {}
         for targetPlayer, _ in pairs(config.highlightData) do
-            table.insert(targetsToRemove, targetPlayer)
+            table.insert(config.varibz.targetsToRemove, targetPlayer)
         end
-        for _, targetPlayer in ipairs(targetsToRemove) do
+        for _, targetPlayer in ipairs(config.varibz.targetsToRemove) do
             removeHighlightESP(targetPlayer)
         end
     end
@@ -8363,11 +8473,10 @@ local function toggleTextESP(enabled)
             end
         end
     else
-        local targetsToRemove = {}
         for targetPlayer, _ in pairs(config.espData) do
-            table.insert(targetsToRemove, targetPlayer)
+            table.insert(config.varibz.targetsToRemove, targetPlayer)
         end
-        for _, targetPlayer in ipairs(targetsToRemove) do
+        for _, targetPlayer in ipairs(config.varibz.targetsToRemove) do
             removeESPLabel(targetPlayer)
         end
     end
@@ -8385,11 +8494,10 @@ local function toggleBoxESP(enabled)
         end
         updateESPColors()
     else
-        local targetsToRemove = {}
         for targetPlayer, _ in pairs(config.espData) do
-            table.insert(targetsToRemove, targetPlayer)
+            table.insert(config.varibz.targetsToRemove, targetPlayer)
         end
-        for _, targetPlayer in ipairs(targetsToRemove) do
+        for _, targetPlayer in ipairs(config.varibz.targetsToRemove) do
             removeESPLabel(targetPlayer)
         end
     end
@@ -8406,92 +8514,6 @@ local function toggleHealthESP(enabled)
             end
         end
         updateESPColors()
-    end
-end
-local function updateLineESP()
-    if not config.espMasterEnabled or not config.lineESPEnabled then
-        for targetPlayer, data in pairs(config.lineESPData) do
-            if data.drawing then
-                data.drawing.Visible = false
-            end
-        end
-        return
-    end
-    
-    for _, target in ipairs(getAllTargets()) do
-        if addesp(target) and plralive(target) then
-            local char = getTargetCharacter(target)
-            if char then
-                local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head")
-                if root then
-                    local pos, onScreen = camera:WorldToViewportPoint(root.Position)
-                    
-                    if onScreen and pos.Z > 0 then
-                        local screenPos = Vector2.new(pos.X, pos.Y)
-                        local shouldDrawLine = false
-                        
-                        if config.lineESPOnlyTarget then
-                            local isTargeted = isPlayerBeingTargeted(target)
-                            shouldDrawLine = isTargeted
-                        else
-                            shouldDrawLine = true
-                        end
-                        
-                        if shouldDrawLine then
-                            local lineData = config.lineESPData[target]
-                            if not lineData then
-                                createLineESP(target)
-                                lineData = config.lineESPData[target]
-                            end
-                            
-                            if lineData and lineData.drawing then
-                                local line = lineData.drawing
-                                
-                                line.From = getLineStartPosition()
-                                line.To = screenPos
-                                line.Visible = true
-                                line.Thickness = config.lineThickness
-                                local isTargeted = isPlayerBeingTargeted(target)
-                                if isTargeted then
-                                    line.Color = Color3.fromRGB(255, 255, 0)
-                                else
-                                    line.Color = config.lineColor
-                                end
-                            end
-                        else
-                            local lineData = config.lineESPData[target]
-                            if lineData and lineData.drawing then
-                                lineData.drawing.Visible = false
-                            end
-                        end
-                    else
-                        local lineData = config.lineESPData[target]
-                        if lineData and lineData.drawing then
-                            lineData.drawing.Visible = false
-                        end
-                    end
-                end
-            end
-        else
-            removeLineESP(target)
-        end
-    end
-    local toRemove = {}
-    for targetPlayer, _ in pairs(config.lineESPData) do
-        local found = false
-        for _, target in ipairs(getAllTargets()) do
-            if target == targetPlayer then
-                found = true
-                break
-            end
-        end
-        if not found then
-            table.insert(toRemove, targetPlayer)
-        end
-    end
-    
-    for _, targetPlayer in ipairs(toRemove) do
-        removeLineESP(targetPlayer)
     end
 end
 local function d()
@@ -8588,7 +8610,6 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     local char = getTargetCharacter(targetPlayer)
     if not char or targetPlayer == localPlayer then return end
     if not plralive(targetPlayer) then return end
-
     local part = chosenPart
     local partName = nil
     if not part then
@@ -8596,7 +8617,27 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     else
         partName = part.Name
     end
-    if not part then return end
+
+    if not part or not part.Parent then return end
+    if config.hitboxEnabled then
+        local pName = part.Name
+        if pName == "Torso" or pName == "UpperTorso" or pName == "LowerTorso" then
+            local fallback = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+            if not fallback then return end
+            if fallback.Name == "Torso" or fallback.Name == "UpperTorso" or fallback.Name == "LowerTorso" then
+                return
+            end
+            part = fallback
+            partName = part.Name
+            if config.originalSizes[targetPlayer] and
+               (config.originalSizes[targetPlayer].partName == "Torso" or
+                config.originalSizes[targetPlayer].partName == "UpperTorso" or
+                config.originalSizes[targetPlayer].partName == "LowerTorso") then
+                config.originalSizes[targetPlayer].partName = part.Name
+                config.originalSizes[targetPlayer].size = part.Size
+            end
+        end
+    end
     if not config.originalSizes[targetPlayer] then
         config.originalSizes[targetPlayer] = {
             partName = part.Name,
@@ -8607,13 +8648,18 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         local expectedPart = config._selectedPartForTarget[targetPlayer]
         if part.Name ~= expectedPart then
             local correctPart = char:FindFirstChild(expectedPart)
-            if correctPart then
-                part = correctPart
-                partName = expectedPart
+            if correctPart and correctPart.Parent then
+                if not (config.hitboxEnabled and
+                       (correctPart.Name == "Torso" or
+                        correctPart.Name == "UpperTorso" or
+                        correctPart.Name == "LowerTorso")) then
+                    part = correctPart
+                    partName = expectedPart
+                end
             end
         end
     end
-
+    if not part or not part.Parent then return end
     local expansionSize = Vector3.new(
         targetDiameter,
         targetDiameter,
@@ -8642,7 +8688,6 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
             end
         end
     end
-    
     local useExpanded = true
     local chance = math.clamp(tonumber(config.hitchance) or 100, 0, 100)
     if chance <= 0 then
@@ -8656,7 +8701,6 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     else
         useExpanded = true
     end
-
     if useExpanded then
         config.targethbSizes[targetPlayer] = expansionSize
     else
@@ -8667,10 +8711,9 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
             config.targethbSizes[targetPlayer] = part.Size
         end
     end
-
     config.activeApplied[targetPlayer] = true
     local targetSize = config.targethbSizes[targetPlayer]
-    if targetSize and part and part.Parent then
+    if targetSize and typeof(targetSize) == "Vector3" and part and part.Parent then
         pcall(function()
             part.Size = targetSize
             part.Transparency = config.hbtrans or 0.5
@@ -8679,6 +8722,9 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
                 part.Massless = true
             end
         end)
+    else
+        config.targethbSizes[targetPlayer] = nil
+        config.activeApplied[targetPlayer] = nil
     end
 end
 local function restorePartForPlayer(targetPlayer)
@@ -8734,7 +8780,7 @@ local function proxyhb(targetPlayer)
     end
     
     local proxyPart = Instance.new("Part")
-    proxyPart.Name = "idk" .. tostring(math.random(10000, 99999))
+    proxyPart.Name = "3827636473772_83737377_339_" .. tostring(math.random(10000, 99999))
     proxyPart.Anchored = false
     proxyPart.CanCollide = false
     proxyPart.Massless = true
@@ -8806,36 +8852,6 @@ local function updateproxyhb(targetPlayer)
         proxyPart.Shape = Enum.PartType.Ball
     else
         proxyPart.Shape = Enum.PartType.Block
-    end
-end
-
-local function updateeveryproxyeva()
-    if not config.hitboxVisualizer.enabled then
-        for player, proxy in pairs(config.proxyHitboxes) do
-            if proxy and proxy.Parent then
-                proxy:Destroy()
-            end
-        end
-        config.proxyHitboxes = {}
-        return
-    end
-    for _, target in ipairs(getAllTargets()) do
-        if target ~= localPlayer and targethb(target) then
-            updateproxyhb(target)
-        end
-    end
-    local toRemove = {}
-    for player, proxy in pairs(config.proxyHitboxes) do
-        if not targethb(player) or not getTargetCharacter(player) then
-            table.insert(toRemove, player)
-        end
-    end
-    
-    for _, player in ipairs(toRemove) do
-        if config.proxyHitboxes[player] then
-            config.proxyHitboxes[player]:Destroy()
-            config.proxyHitboxes[player] = nil
-        end
     end
 end
 
@@ -8939,12 +8955,11 @@ local function restoreTorso(targetPlayer)
 end
 
 local function updateHitboxes()
-    if not config.hitboxEnabled then  
-        local targetsToRemove = {}
+    if not config.hitboxEnabled then
         for player, _ in pairs(config.hitboxExpandedParts) do  
-            table.insert(targetsToRemove, player)
+            table.insert(config.varibz.targetsToRemove, player)
         end
-        for _, player in ipairs(targetsToRemove) do
+        for _, player in ipairs(config.varibz.targetsToRemove) do
             restoreTorso(player)
         end
         
@@ -8958,15 +8973,13 @@ local function updateHitboxes()
         end
         return  
     end
-
-    local targetsToRemove = {}
     for player, data in pairs(config.hitboxExpandedParts) do
         if not player or not getTargetCharacter(player) then
-            table.insert(targetsToRemove, player)
+            table.insert(config.varibz.targetsToRemove, player)
         else
             if not plralive(player) then
                 restoreTorso(player)
-                table.insert(targetsToRemove, player)
+                table.insert(config.varibz.targetsToRemove, player)
             else
                 local torso = getTargetCharacter(player):FindFirstChild("Torso") or getTargetCharacter(player):FindFirstChild("UpperTorso")
                 if torso and data.targetSize then
@@ -8985,13 +8998,13 @@ local function updateHitboxes()
                         updateproxyhb(player)
                     end
                 else
-                    table.insert(targetsToRemove, player)
+                    table.insert(config.varibz.targetsToRemove, player)
                 end
             end
         end
     end
     
-    for _, player in ipairs(targetsToRemove) do
+    for _, player in ipairs(config.varibz.targetsToRemove) do
         restoreTorso(player)
         if config.proxyHitboxes[player] then
             config.proxyHitboxes[player]:Destroy()
@@ -9080,7 +9093,7 @@ function disconnectHB(player)
     end
 end
 
-function hookPlayer(player)
+function oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
     if player == localPlayer then
         return
     end
@@ -9119,6 +9132,36 @@ function hookPlayer(player)
     end
 end
 
+local function updateeveryproxyeva()
+    if not config.hitboxVisualizer.enabled then
+        for player, proxy in pairs(config.proxyHitboxes) do
+            if proxy and proxy.Parent then
+                proxy:Destroy()
+            end
+        end
+        config.proxyHitboxes = {}
+        return
+    end
+    for _, target in ipairs(getAllTargets()) do
+        if target ~= localPlayer and targethb(target) then
+            updateproxyhb(target)
+        end
+    end
+    local toRemove = {}
+    for player, proxy in pairs(config.proxyHitboxes) do
+        if not targethb(player) or not getTargetCharacter(player) then
+            table.insert(toRemove, player)
+        end
+    end
+    
+    for _, player in ipairs(toRemove) do
+        if config.proxyHitboxes[player] then
+            config.proxyHitboxes[player]:Destroy()
+            config.proxyHitboxes[player] = nil
+        end
+    end
+end
+
 local function applyhb()
     if not config.hitboxEnabled then
         for player in pairs(config.hitboxExpandedParts) do
@@ -9129,15 +9172,25 @@ local function applyhb()
 
     for _, player in ipairs(getAllTargets()) do
         if not hbConnections[player] then
-            hookPlayer(player)
+            oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
         end
 
         updateHitbox(player)
     end
 end
 local function hb()
-    local targetsToRemove = {}
+    local toProcess = {}
     for playerObj, targetSize in pairs(config.targethbSizes) do
+        table.insert(toProcess, {playerObj = playerObj, targetSize = targetSize})
+    end
+    for _, data in ipairs(toProcess) do
+        local playerObj = data.playerObj
+        local targetSize = data.targetSize
+        if not targetSize or typeof(targetSize) ~= "Vector3" then
+            table.insert(config.varibz.targetsToRemove, playerObj)
+            continue
+        end
+
         if playerObj and playerObj ~= localPlayer and getTargetCharacter(playerObj) and plralive(playerObj) then
             local part = getTargetCharacter(playerObj):FindFirstChild(config.originalSizes[playerObj] and config.originalSizes[playerObj].partName) 
                          or getTargetCharacter(playerObj):FindFirstChild(config.bodypart) 
@@ -9150,34 +9203,41 @@ local function hb()
 
             if part then
                 local currentSize = part.Size
-                math.clamp(tonumber(1) or 1, 0, 1)
-                local newSize = currentSize:Lerp(targetSize, lerpAlpha)
+                if currentSize and typeof(currentSize) == "Vector3" then
+                    local lerpAlpha = 1
+                    local newSize = currentSize:Lerp(targetSize, lerpAlpha)
 
-                pcall(function()
-                    part.Size = newSize
-                    part.Transparency = config.hbtrans
-                    part.CanCollide = false
-                    if part.Name == "Head" then
-                        part.Massless = true
-                    elseif part.Name == "HumanoidRootPart" then
-                        part.Massless = false
-                    end
-                end)
+                    pcall(function()
+                        part.Size = newSize
+                        part.Transparency = config.hbtrans
+                        part.CanCollide = false
+                        if part.Name == "Head" then
+                            part.Massless = true
+                        elseif part.Name == "HumanoidRootPart" then
+                            part.Massless = false
+                        end
+                    end)
+                else
+                    table.insert(config.varibz.targetsToRemove, playerObj)
+                end
+            else
+                table.insert(config.varibz.targetsToRemove, playerObj)
             end
         else
             if playerObj ~= localPlayer then
-                table.insert(targetsToRemove, playerObj)
+                table.insert(config.varibz.targetsToRemove, playerObj)
             end
         end
     end
-    
-    for _, playerObj in ipairs(targetsToRemove) do
-        restorePartForPlayer(playerObj)
+    for _, playerObj in ipairs(config.varibz.targetsToRemove) do
+        if playerObj ~= localPlayer then
+            restorePartForPlayer(playerObj)
+            config.targethbSizes[playerObj] = nil 
+        end
     end
-    
+    table.clear(config.varibz.targetsToRemove)
     updateHitboxes()
 end
-
 local function handleHitboxForRespawnedPlayer(player)
     if not config.hitboxEnabled then return end
     
@@ -9499,15 +9559,20 @@ local function aimbotUpdate()
     end
 end
 local function aimbotfov()
+    if config.aimbotFOVRing and config.aimbotFOVRing.ScreenGui 
+       and config.aimbotFOVRing.ScreenGui.Parent 
+       and config.aimbotFOVRing.LastSize == config.aimbotFOVSize then
+        return config.aimbotFOVRing
+    end
     if config.aimbotFOVRing and config.aimbotFOVRing.ScreenGui and config.aimbotFOVRing.ScreenGui.Parent then
         config.aimbotFOVRing.ScreenGui:Destroy()
     end
     
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "AimbotFOVRing"
+    screenGui.Name = "37276227227277_383728736478_393828"
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+    screenGui.Parent = excusemesir.CoreGui
     
     local ringFrame = Instance.new("Frame")
     ringFrame.Name = "RingFrame"
@@ -9567,7 +9632,7 @@ local function aimbot360UpdateLoop()
     end
 
     config.varibz.aimbot360LoopRunning = true
-    config.varibz.aimbot360LoopTask = task.spawn(function()
+    config.varibz.aimbot360LoopTask = task.defer(function()
         while config.varibz.aimbot360LoopRunning and config.aimbotEnabled and config.aimbot360Enabled do
             aimbotUpdate()
             task.wait(0.1)
@@ -9639,7 +9704,7 @@ local function aimbot360UpdateLoop()
 
     config.varibz.aimbot360LoopRunning = true
 
-    config.varibz.aimbot360LoopTask = task.spawn(function()
+    config.varibz.aimbot360LoopTask = task.defer(function()
         while config.varibz.aimbot360LoopRunning do
             if config.aimbotEnabled and config.aimbot360Enabled then
                 aimbotUpdate()
@@ -9680,7 +9745,6 @@ local function triggerBotUpdate()
     local targets = getAllTargets()
     local bestTarget = nil
     local bestDist = math.huge
-    local targetsInFOV = {}
     
     for _, target in ipairs(targets) do
         if target ~= localPlayer then
@@ -9756,7 +9820,7 @@ local function triggerBotUpdate()
                 
                 local chance = math.random(1, 100)
                 if chance <= config.tbot.hitChance then
-                    table.insert(targetsInFOV, {
+                    table.insert(config.varibz.targetsInFOV, {
                         target = target,
                         dist = distPx,
                         part = targetPart,
@@ -9850,10 +9914,10 @@ local function createTriggerBotFOV()
     end
     
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "TriggerBotFOV"
+    screenGui.Name = "927172638798_392817637282_3846151648"
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+    screenGui.Parent = excusemesir.CoreGui
     
     local ringFrame = Instance.new("Frame")
     ringFrame.Name = "TriggerFOVRing"
@@ -10118,7 +10182,6 @@ local function burgerking(deltaTime)
     if not config.varibz.patcher then
         return
     end
-    table.clear(candidates)
     if config.aimbotEnabled then
         aimbotUpdate()
     end
@@ -10136,6 +10199,12 @@ local function burgerking(deltaTime)
         antiAimUpdate()
     end
 end
+task.defer(function()
+    while config.espMasterEnabled do
+        updateESPColors()
+        task.wait(1 / math.max(config.esphertz or 100, 1))
+    end
+end)
 local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
 local function isMobileDevice()
     local ok, val = pcall(function() return excusemesir.UserInputService.TouchEnabled end)
@@ -10152,10 +10221,10 @@ local function CreateQT()
     if gui.mobileGui and gui.mobileGui.ScreenGui and gui.mobileGui.ScreenGui.Parent then return end
     
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "GravelQT"
+    screenGui.Name = "2918736637167_9373727372872_9372763"
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+    screenGui.Parent = excusemesir.CoreGui
 
     local container = Instance.new("Frame")
     container.Name = "QTContainer"
@@ -10288,11 +10357,10 @@ local function CreateQT()
                 elseif name == "AntiAim" then
                     returnToOriginalPosition()
                 elseif name == "Hitbox" then
-                    local targetsToRemove = {}
                     for pl, _ in pairs(config.hitboxExpandedParts) do
-                        table.insert(targetsToRemove, pl)
+                        table.insert(config.varibz.targetsToRemove, pl)
                     end
-                    for _, pl in ipairs(targetsToRemove) do
+                    for _, pl in ipairs(config.varibz.targetsToRemove) do
                         restoreTorso(pl)
                     end
                 elseif name == "ESP" then
@@ -10582,7 +10650,10 @@ local function UpdateQT()
         end
     end
 end
+
 local function onRenderStep()
+    config.varibz.sa1dump.rs = config.varibz.sa1dump.rs + 1
+    if config.varibz.sa1dump.rs % 5 ~= 0 then return end
     if not camera or not camera.Parent then
         camera = workspace.CurrentCamera
         if not camera then return end
@@ -10605,8 +10676,6 @@ local function onRenderStep()
         local currentSize = gui.RingHolder.AbsoluteSize and gui.RingHolder.AbsoluteSize.X or (config.fovsize * 2)
         radiusPx = currentSize / 2
     end
-    local candidates = {}
-    local allTargetsInFOV = {}
     for _, pl in ipairs(getAllTargets()) do
         local bodyPart, chosenName = chooseBodyPartInstance(pl)
         local humanoid = nil
@@ -10674,7 +10743,7 @@ local function onRenderStep()
                     local screenVec = Vector2.new(screenPos3.X, screenPos3.Y)
                     local distPx = (screenVec - center).Magnitude
 
-                    table.insert(allTargetsInFOV, {
+                    table.insert(config.varibz.allTargetsInFOV, {
                         player = pl,
                         part = bodyPart,
                         partName = chosenName,
@@ -10689,7 +10758,7 @@ local function onRenderStep()
                     if distPx <= radiusPx then
                         local targetPos = bodyPart.Position
                         if wallCheck(targetPos, camPos) then
-                            table.insert(candidates, {
+                            table.insert(config.varibz.candidates, {
                                 player = pl,
                                 part = bodyPart,
                                 partName = chosenName,
@@ -10712,29 +10781,28 @@ local function onRenderStep()
 
     local best = nil
     if config.silentGetTarget == "TargetSeen" then
-        local targetsInFOV = {}
-        for _, target in ipairs(allTargetsInFOV) do
+        for _, target in ipairs(config.varibz.allTargetsInFOV) do
             if target.inFOV then
                 local cameraPos = camera.CFrame.Position
                 local targetPos = target.part.Position
                 if wallCheck(targetPos, cameraPos) then
-                    table.insert(targetsInFOV, target)
+                    table.insert(config.varibz.targetsInFOV, target)
                 end
             end
         end
-        config.targetSeenTargets = targetsInFOV
+        config.targetSeenTargets = config.varibz.targetsInFOV
         
-        if #targetsInFOV > 0 then
+        if #config.varibz.targetsInFOV > 0 then
             local currentTime = tick()
             local switchRate = config.targetSeenSwitchRate or 0.2
             if currentTime - config.lastTargetSwitchTime >= switchRate then
                 config.lastTargetSwitchTime = currentTime
                 if not config.currentTarget then
-                    local randomIndex = math.random(1, #targetsInFOV)
-                    best = targetsInFOV[randomIndex]
+                    local randomIndex = math.random(1, #config.varibz.targetsInFOV)
+                    best = config.varibz.targetsInFOV[randomIndex]
                 else
                     local currentIndex = nil
-                    for i, target in ipairs(targetsInFOV) do
+                    for i, target in ipairs(config.varibz.targetsInFOV) do
                         if target.player == config.currentTarget then
                             currentIndex = i
                             break
@@ -10742,16 +10810,16 @@ local function onRenderStep()
                     end
                     
                     if currentIndex then
-                        local nextIndex = (currentIndex % #targetsInFOV) + 1
-                        best = targetsInFOV[nextIndex]
+                        local nextIndex = (currentIndex % #config.varibz.targetsInFOV) + 1
+                        best = config.varibz.targetsInFOV[nextIndex]
                     else
-                        local randomIndex = math.random(1, #targetsInFOV)
-                        best = targetsInFOV[randomIndex]
+                        local randomIndex = math.random(1, #config.varibz.targetsInFOV)
+                        best = config.varibz.targetsInFOV[randomIndex]
                     end
                 end
             else
                 if config.currentTarget then
-                    for _, target in ipairs(targetsInFOV) do
+                    for _, target in ipairs(config.varibz.targetsInFOV) do
                         if target.player == config.currentTarget then
                             best = target
                             break
@@ -10763,10 +10831,10 @@ local function onRenderStep()
             best = nil
         end
     else
-        if #candidates > 0 then
+        if #config.varibz.candidates > 0 then
             if config.silentGetTarget == "Lowest Health" then
                 local bestHealth = math.huge
-                for _, c in ipairs(candidates) do
+                for _, c in ipairs(config.varibz.candidates) do
                     local h = c.humanoid and c.humanoid.Health or math.huge
                     if best == nil or h < bestHealth then
                         bestHealth = h
@@ -10775,7 +10843,7 @@ local function onRenderStep()
                 end
             else
                 local bestWorldDist = math.huge
-                for _, c in ipairs(candidates) do
+                for _, c in ipairs(config.varibz.candidates) do
                     if c.worldDist < bestWorldDist then
                         bestWorldDist = c.worldDist
                         best = c
@@ -10795,7 +10863,6 @@ local function onRenderStep()
         updateESPColors()
     end
 
-    local targetsToRemove = {}
     for pl, _ in pairs(config.activeApplied) do
         local shouldRemove = true
         
@@ -10813,10 +10880,10 @@ local function onRenderStep()
         end
         
         if shouldRemove or not plralive(pl) then
-            table.insert(targetsToRemove, pl)
+            table.insert(config.varibz.targetsToRemove, pl)
         end
     end
-    for _, pl in ipairs(targetsToRemove) do
+    for _, pl in ipairs(config.varibz.targetsToRemove) do
         restorePartForPlayer(pl)
     end
     if best and plralive(best.player) then
@@ -11277,7 +11344,7 @@ local function rng4()
         return info
     end
     
-    task.spawn(function()
+    task.defer(function()
         while rng4.tag do
             if not subside_I_I_I_I_I_() then
                 rng4.cursorVisible = not rng4.cursorVisible
@@ -11493,7 +11560,7 @@ local function rng4()
         rng4.isErasing = false
     end
     
-    task.spawn(function()
+    task.defer(function()
         while rng4.tag do
             while subside_I_I_I_I_I_() do
                 task.wait(0.5)
@@ -11609,7 +11676,7 @@ end
 task.wait(0.2)
 uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
 rng4()
-task.spawn(function()
+task.defer(function()
     task.wait(0.5)
     SaveUI:autoLoad()
     BMG:autoLoad()
@@ -11701,7 +11768,7 @@ local teamDropdown = MainTab:Dropdown({
         config.targetedTeams = selected or {}
     end
 })
-task.spawn(function()
+task.defer(function()
     while true do
         task.wait(5)
         local teamNames = getTeamNames()
@@ -12032,38 +12099,6 @@ MainTab:Keybind({
         end
     })
     
-    MainTab:Button({
-        Title = "Partclaim",
-        Desc = "Use if NPC mode isn't working well (May Lag)",
-        Callback = function()
-            pc()
-            n({
-                Title = "Gravel.cc",
-                Content = "Refreshed",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255)
-            })
-        end
-    })
-
-    MainTab:Button({
-        Title = "Clear Partclaim",
-        Desc = "Reduce Lag :p",
-        Callback = function()
-            pc2()
-            n({
-                Title = "Gravel.cc",
-                Content = "Cleared",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 170, 255)
-            })
-        end
-    })
-    
     MainTab:Dropdown({
         Title = "Align Part (Autofarm)",
         Desc = "Part to align with crosshair",
@@ -12072,21 +12107,6 @@ MainTab:Keybind({
         Multi = false,
         Callback = function(Option)
             config.autoFarmTargetPart = Option
-        end
-    })
-    
-    MainTab:Slider({
-        Title = "GetPart (Partclaim)",
-        Desc = "Part replication distance",
-        IsTextbox = true,
-        Step = 10,
-        Value = {
-            Min = 0,
-            Max = 1000,
-            Default = config.gp or 200
-        },
-        Callback = function(value)
-            config.gp = value
         end
     })
     
@@ -12252,16 +12272,6 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
             config.varibz.lowpatcher = v
         end
     })
-    
-    MainTab:Toggle({
-        Title = "Low Render",
-        Desc = "-1 graphics",
-        Value = config.LowRender or false,
-        Callback = function(v)
-            config.LowRender = v
-        end
-    })
-
 MainTab:Toggle({
     Title = "Errors",
     Desc = "captures errors",
@@ -12415,7 +12425,7 @@ config.varibz.savesParagraph = MainTab:Paragraph({
     Desc = savePara() .. "\nBLLEHH >:P",
     Color = config.Gradow.uicolor.darkGray
 })
-task.spawn(function()
+task.defer(function()
     while true do
         task.wait(1)
         if Window and Window.UIElements and Window.UIElements.Main then
@@ -12437,7 +12447,7 @@ config.varibz.autoloadParagraph = MainTab:Paragraph({
     Desc = "Loading...",
     Color = config.Gradow.uicolor.darkGray
 })
-task.spawn(function()
+task.defer(function()
     while true do
         task.wait(2)
         if Window and Window.UIElements and Window.UIElements.Main then
@@ -12469,28 +12479,17 @@ local VisualsTab = Window:Tab({
     })
 VisualsTab:Slider({
     Title = "ESP Hertz",
-    Desc = "refreshrate basically",
+    Desc = "fps 4 esp basically",
     IsTextbox = true,
-    Step = 0.01,
+    Step = 1,
     Suffix = "Hz",
     Value = {
-        Min = 0,
-        Max = 1,
-        Default = config.espRefreshRate or 0.03
+        Min = 1,
+        Max = 1080,
+        Default = config.esphertz or 100
     },
     Callback = function(value)
-        config.espRefreshRate = value
-        if config.espMasterEnabled then
-            for target, data in pairs(config.espData) do
-                if data and data.connection then
-                    data.connection:Disconnect()
-                    data.connection = nil
-                end
-                if data and data.label then
-                    makeesp(target)
-                end
-            end
-        end
+        config.esphertz = value
     end
 })
     VisualsTab:Space()
@@ -13558,11 +13557,10 @@ local SilentAimTab = Window:Tab({
                 if gui.RingHolder then
                     gui.RingHolder.Visible = false
                 end
-                local targetsToRemove = {}
                 for pl, _ in pairs(config.activeApplied) do
-                    table.insert(targetsToRemove, pl)
+                    table.insert(config.varibz.targetsToRemove, pl)
                 end
-                for _, pl in ipairs(targetsToRemove) do
+                for _, pl in ipairs(config.varibz.targetsToRemove) do
                     restorePartForPlayer(pl)
                 end
                 n({
@@ -13635,11 +13633,10 @@ local SilentAimTab = Window:Tab({
         Value = config.bodypart or "Head",
         Multi = false,
         Callback = function(Option)
-            local targetsToRemove = {}
             for pl, _ in pairs(config.activeApplied) do
-                table.insert(targetsToRemove, pl)
+                table.insert(config.varibz.targetsToRemove, pl)
             end
-            for _, pl in ipairs(targetsToRemove) do
+            for _, pl in ipairs(config.varibz.targetsToRemove) do
                 restorePartForPlayer(pl)
             end
             config.bodypart = Option
@@ -13931,7 +13928,7 @@ config.varibz.remotespara = SilentAimTab2:Paragraph({
     Color = config.Gradow.uicolor.darkGray
 })
 
-task.spawn(function()
+task.defer(function()
     while true do
         if subside_I_I_I_I_I_() then
             task.wait(0.5)
@@ -14033,7 +14030,7 @@ local HitboxTab = Window:Tab({
     })
 HitboxTab:Paragraph({
     Title = "Hitbox Visualizer",
-    Desc = "make za Hitbox visible and eye pleasing type shi",
+    Desc = "make za Hitbox visible and eye pleasing type shi also h8s rthro shi",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -14677,7 +14674,7 @@ ClientTab:Slider({
                 config.trussPart.Size = Vector3.new(2, 10, 2)
                 config.trussPart.Parent = workspace
                 config.trussPart.CanCollide = true
-                config.trussPart.Name = "TrussPart_" .. tostring(math.random(10000, 99999))
+                config.trussPart.Name = "498372737377_83727737_837272_" .. tostring(math.random(10000, 99999))
                 
                 config.trussConnection = game:GetService("RunService").Heartbeat:Connect(function()
                     if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
@@ -14760,7 +14757,7 @@ ClientTab:Slider({
                 config.airwalkPart.Parent = workspace
                 config.airwalkPart.CanCollide = true
                 config.airwalkPart.Anchored = true
-                config.airwalkPart.Name = "AirwalkPlatform_" .. tostring(math.random(10000, 99999))
+                config.airwalkPart.Name = "487362637488_393872738_392887_" .. tostring(math.random(10000, 99999))
                 
                 if config.airwalkConnection then
                     config.airwalkConnection:Disconnect()
@@ -16146,6 +16143,11 @@ InfoTab:Space()
         Desc = "other stuff & lag fixes\nAdded: Remote Gestalt in SilentAimTab (HK)\nAdded: MORE QOL!1!1!\nUpdated: Loader & Closer\nBugs Fixed: 5",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (12/09/2026)",
+        Desc = "totally didn't code overnight\nFixed: FireServer & InvokeServer in SilentAimTab (HK)\nFixed: Hitbox conflict\nFixed: Esp Hertz\nBugs Fixed: 12",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -16158,10 +16160,10 @@ end
 ]]
 
 local fovScreenGui = Instance.new("ScreenGui")
-fovScreenGui.Name = "FOVToggleGui_Modern"
+fovScreenGui.Name = "391716637363627_836263736_3762627_"
 fovScreenGui.ResetOnSpawn = false
 fovScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-fovScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+fovScreenGui.Parent = excusemesir.CoreGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
@@ -16294,11 +16296,10 @@ local function initKeybinds()
                 
                 if not config.startsa and gui.RingHolder then
                     gui.RingHolder.Visible = false
-                    local targetsToRemove = {}
                     for pl, _ in pairs(config.activeApplied) do
-                        table.insert(targetsToRemove, pl)
+                        table.insert(config.varibz.targetsToRemove, pl)
                     end
-                    for _, pl in ipairs(targetsToRemove) do
+                    for _, pl in ipairs(config.varibz.targetsToRemove) do
                         restorePartForPlayer(pl)
                     end
                 elseif config.startsa and gui.RingHolder then
@@ -16498,7 +16499,7 @@ local function init()
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
             if config.hitboxEnabled and targethb(pl) then
-                task.spawn(function()
+                task.defer(function()
                     task.wait(0.5)
                     expandhb(pl, config.hitboxSize)
                 end)
@@ -16582,38 +16583,14 @@ local function clearTargetCache()
     table.clear(config.autoFarmTargets)
     table.clear(config.autoFarmCompleted)
 end
-task.spawn(function()
+task.defer(function()
     while config.varibz.lowpatcher do
         clearTargetCache()
         task.wait(config.varibz.lowpatcherwait)
     end
 end)
 
-local function LowRender()
-    if config and config.LowRender then
-        pcall(function()
-            pc2()
-            settings().Physics.AllowSleep = true
-            settings().Rendering.QualityLevel = 1
-            settings().Rendering.EagerBulkExecution = true
-            settings().Rendering.EnableFRM = true
-            settings().Rendering.MeshPartDetailLevel = 1
-            game:GetService("Lighting").GlobalShadows = false
-            game:GetService("Lighting").Technology = Enum.Technology.Legacy
-            for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
-                if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
-                    v.Enabled = false
-                end
-            end
-        end)
-    else
-        pcall(function()
-           
-        end)
-    end
-end
-
-task.spawn(function()
+task.defer(function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
         local localPlayer = excusemesir.Players.LocalPlayer
@@ -16630,15 +16607,15 @@ task.spawn(function()
             end
         end
         if isRespawning then
-            table.clear(targetsInFOV)
-            table.clear(candidates)
+            table.clear(config.varibz.targetsInFOV)
+            table.clear(config.varibz.candidates)
+            table.clear(config.varibz.allTargetsInFOV)
             UpdateQT()
             d()
             espRefresher()
             applyhb()
             aimbotfov()
             updateAimbotFOVRing()
-            LowRender()
             updateeveryproxyeva()
             local toRemove = {}
             for player, data in pairs(config.hitboxExpandedParts) do
@@ -16653,7 +16630,6 @@ task.spawn(function()
                 restoreTorso(player)
             end
             
-            local lineToRemove = {}
             for player, _ in pairs(config.lineESPData) do
                 local found = false
                 for _, target in ipairs(getAllTargets()) do
@@ -16663,11 +16639,11 @@ task.spawn(function()
                     end
                 end
                 if not found then
-                    table.insert(lineToRemove, player)
+                    table.insert(config.varibz.lineToRemove, player)
                 end
             end
             
-            for _, player in ipairs(lineToRemove) do
+            for _, player in ipairs(config.varibz.lineToRemove) do
                 removeLineESP(player)
             end
         end
@@ -16956,12 +16932,12 @@ local function buhbyegravellllllll________()
             getgenv().destroyInitGui()
         end
         for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and (gui.Name == "FOVSys" or gui.Name == "AimbotFOVRing" or gui.Name == "GravelQT" or gui.Name == "TriggerBotFOV" or gui.Name == "FOVToggleGui_Modern" or gui.Name == "ESP_" or string.find(gui.Name, "ESP_") or string.find(gui.Name, "FOVToggleGui")) then
+            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
                 gui:Destroy()
             end
         end
         for _, part in ipairs(excusemesir.Workspace:GetChildren()) do
-            if part:IsA("BasePart") and (string.find(part.Name, "TrussPart_") or string.find(part.Name, "AirwalkPlatform_") or string.find(part.Name, "idk") or string.find(part.Name, "DesyncSeat_") or string.find(part.Name, "ProxyHitbox_")) then
+            if part:IsA("BasePart") and (string.find(part.Name, "498372737377_83727737_837272_") or string.find(part.Name, "487362637488_393872738_392887_") or string.find(part.Name, "3827636473772_83737377_339_") or string.find(part.Name, "392726368382828288_292873738_392827_") or string.find(part.Name, "3827636473772_83737377_339_")) then
                 part:Destroy()
             end
         end
@@ -16998,8 +16974,8 @@ local function buhbyegravellllllll________()
         table.clear(config.playerConnections)
         table.clear(config.characterConnections)
         table.clear(config.hitboxLastSize)
-        table.clear(candidates)
-        table.clear(targetsInFOV)
+        table.clear(config.varibz.candidates)
+        table.clear(config.varibz.targetsInFOV)
     end)
 end
 Window:OnDestroy(function()
