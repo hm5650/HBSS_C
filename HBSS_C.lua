@@ -2314,6 +2314,7 @@ local config = {
         sa2thing = 0,
         sa2stuff = 0.5,
         espstuff = 0,
+        sa1stuff = 0.5,
         sa2this = false,
         sa2alot = 0,
         sa2dump = {
@@ -3694,6 +3695,7 @@ local function saveConfig(saveName)
             SA2_GetTarget = config.SA2_GetTarget,
             customRemoteNames = table.clone(config.customRemoteNames),
             sa2stuff = config.varibz.sa2stuff,
+            sa1stuff = config.varibz.sa1stuff,
             hitboxEnabled = config.hitboxEnabled,
             hitboxTeamTarget = config.hitboxTeamTarget,
             hitboxSize = config.hitboxSize,
@@ -4567,6 +4569,7 @@ local function loadSave(saveName)
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
     if cfg.esphertz then config.esphertz = cfg.esphertz end
     if cfg.sa2stuff then config.varibz.sa2stuff = cfg.sa2stuff end
+    if cfg.sa1stuff then config.varibz.sa1stuff = cfg.sa1stuff end
     if cfg.sa_hb_target_range then config.sa_hb_target_range = cfg.sa_hb_target_range end
     if cfg.sa_hb_headshot_chance then config.sa_hb_headshot_chance = cfg.sa_hb_headshot_chance end
     if cfg.espc then
@@ -10700,7 +10703,7 @@ end
 
 local function onRenderStep()
     config.varibz.sa1dump.rs = config.varibz.sa1dump.rs + 1
-    if config.varibz.sa1dump.rs % 5 ~= 0 then return end
+    if config.varibz.sa1dump.rs % config.varibz.sa1stuff ~= 0 then return end
     if not camera or not camera.Parent then
         camera = workspace.CurrentCamera
         if not camera then return end
@@ -13724,6 +13727,21 @@ SilentAimTab:Slider({
     },
     Callback = function(value)
         config.sa_hb_headshot_chance = value
+    end
+})
+
+SilentAimTab:Slider({
+    Title = "Responsiveness",
+    Desc = "Higher = More Performance\nLower = More Responsiveness",
+    Step = 0.01,
+    Suffix = "s",
+    Value = {
+        Min = 0.01,
+        Max = 2,
+        Default = config.varibz.sa1stuff or 0.5
+    },
+    Callback = function(value)
+        config.varibz.sa1stuff = value
     end
 })
     SilentAimTab:Slider({
