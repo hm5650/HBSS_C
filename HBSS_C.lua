@@ -581,6 +581,43 @@ local config = {
                 "D:",
             },
             {
+                typesp = "1.5",
+                mode = "2",
+                "Unfortunately, i am",
+                "",
+                "My own dog, my own fur companion",
+                "My own old lady on a forum",
+                "Who types in glittery decorum",
+                "",
+                "Unfortunately, i take",
+                "Myself out walking every day and",
+                "I hand my legs to the feet and",
+                "I give my head to the leash",
+                "",
+                "Every other day, I'm wondering",
+                "''What's a human being gotta be like?''",
+                "''What's a way to just be competent?''",
+                "These sweet instincts\nruin my life",
+                "",
+                "Every other day, I'm wondering",
+                "''Was it a mistake to try and define\nWhat I'm certain's mad incompetence?''",
+                "These sweet instincts ruin my life",
+                "",
+                "I can't smell well, or tell the time",
+                "Not K through 8, nor K dash 9",
+                "For human, grossly underqualified",
+                "For canine, grossly overqualified",
+                "I don't blend in at PetSmart",
+                "And that truth remains\nfor the Walmart",
+                "'Cause in either case, they say to me",
+                "''What the fuck is lost in aisle three?''",
+                "",
+                "Every other day, I'm wondering",
+                "''What's a human being gotta be like?''",
+                "''What's a way to just be competent?''",
+                "These sweet instincts\nruin my life",
+            },
+            {
                 "We're all brothers in a ''perfect'' world",
                 "In a ''perfect'' world there is uniformity",
                 "We're all brothers in a ''perfect'' world",
@@ -612,6 +649,11 @@ local config = {
                 "Guys he's hacking REPORT",
                 "EVERYBODY SPAM REPORT HIM",
                 "HACKER REPORTTT",
+            },
+            {
+                "if you see Gpssickle in-game",
+                "that's not me it's always fake",
+                "always btw :p",
             },
             {
                 "steam",
@@ -6093,30 +6135,6 @@ function sa2_________________()
         if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
     end
 end
-local ExpectedArguments = {
-    Raycast = {
-        ArgCountRequired = 3,
-        Args = {
-            "Instance", "Vector3", "Vector3", "RaycastParams"
-        }
-    }
-}
-
-local function validate_args(Args, RayMethod)
-    if not RayMethod then return false end
-    if not Args then return false end
-    
-    local Matches = 0
-    if #Args < RayMethod.ArgCountRequired then
-        return false
-    end
-    for Pos, Argument in next, Args do
-        if typeof(Argument) == RayMethod.Args[Pos] then
-            Matches = Matches + 1
-        end
-    end
-    return Matches >= RayMethod.ArgCountRequired
-end
 
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     if not config.varibz.patcher then
@@ -8852,20 +8870,6 @@ local function updateproxyhb(targetPlayer)
         proxyPart.Shape = Enum.PartType.Ball
     else
         proxyPart.Shape = Enum.PartType.Block
-    end
-end
-
-local function tnormalsize(targetPlayer)
-    local char = getTargetCharacter(targetPlayer)
-    if not char then return end  
-
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-
-    if torso and not config.hitboxOriginalSizes[targetPlayer] then
-        config.hitboxOriginalSizes[targetPlayer] = {
-            part = torso,
-            size = torso.Size
-        }
     end
 end
 
