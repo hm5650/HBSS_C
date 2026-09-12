@@ -294,7 +294,6 @@ local config = {
     autoFarmMinRange = 0,
     autoFarmMaxRange = 50,
     autoFarmOriginalPositions = {}, 
-    autoFarmWallCheck = false,
     aimbot360Enabled = false,
     aimbot360OriginalFOV = 100,
     aimbotTargetRange = 500,
@@ -579,6 +578,12 @@ local config = {
                 "the file size is 600kb..",
                 "I'm fr",
                 "D:",
+            },
+            {
+                "I'm not a hack client i swear",
+                "like I'm a exploit tho",
+                "im not a mod menu",
+                "Soo I'm not a hack client",
             },
             {
                 typesp = "1.5",
@@ -2276,10 +2281,16 @@ local config = {
             "Enrique.cc",
             "Adrian.cc",
         },
+        raycats = {
+            raycat = nil,
+            rayuwu = nil,
+            rayowo = nil,
+            raykitty = nil,
+            ihazrays = nil,
+        },
         savesParagraph = nil,
         remotespara = nil,
         remotesInput = nil,
-        raycat = nil,
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -3458,7 +3469,6 @@ local function saveConfig(saveName)
             targetSeenSwitchRate = config.targetSeenSwitchRate,
             ignoreForcefield = config.ignoreForcefield,
             autoFarmEnabled = config.autoFarmEnabled,
-            autoFarmWallCheck = config.autoFarmWallCheck,
             autoFarmDistance = config.autoFarmDistance,
             autoFarmMaxRange = config.autoFarmMaxRange,
             autoFarmVerticalOffset = config.autoFarmVerticalOffset,
@@ -4441,7 +4451,6 @@ local function loadSave(saveName)
     if cfg.targetSeenSwitchRate then config.targetSeenSwitchRate = cfg.targetSeenSwitchRate end
     if cfg.targetSeenMode then config.targetSeenMode = cfg.targetSeenMode end
     if cfg.autoFarmEnabled ~= nil then config.autoFarmEnabled = cfg.autoFarmEnabled end
-    if cfg.autoFarmWallCheck ~= nil then config.autoFarmWallCheck = cfg.autoFarmWallCheck end
     if cfg.autoFarmDistance then config.autoFarmDistance = cfg.autoFarmDistance end
     if cfg.autoFarmMaxRange then config.autoFarmMaxRange = cfg.autoFarmMaxRange end
     if cfg.autoFarmVerticalOffset then config.autoFarmVerticalOffset = cfg.autoFarmVerticalOffset end
@@ -5698,9 +5707,22 @@ local function syncSilentAimWithMaster()
     end
 end
 
-config.varibz.raycat = RaycastParams.new()
-config.varibz.raycat.FilterType = Enum.RaycastFilterType.Blacklist
-config.varibz.raycat.IgnoreWater = true
+--raycats
+config.varibz.raycats.raycat = RaycastParams.new()
+config.varibz.raycats.raycat.FilterType = Enum.RaycastFilterType.Exclude
+config.varibz.raycats.raycat.IgnoreWater = true
+config.varibz.raycats.raykitty = RaycastParams.new()
+config.varibz.raycats.raykitty.FilterType = Enum.RaycastFilterType.Exclude
+config.varibz.raycats.raykitty.IgnoreWater = true
+config.varibz.raycats.rayuwu = RaycastParams.new()
+config.varibz.raycats.rayuwu.FilterType = Enum.RaycastFilterType.Exclude
+config.varibz.raycats.rayuwu.IgnoreWater = true
+config.varibz.raycats.rayowo = RaycastParams.new()
+config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
+config.varibz.raycats.rayowo.IgnoreWater = true
+config.varibz.raycats.ihazrays = RaycastParams.new()
+config.varibz.raycats.ihazrays.FilterType = Enum.RaycastFilterType.Exclude
+config.varibz.raycats.ihazrays.IgnoreWater = true
 
 local function IsPlayerVisible(player, maxDistance)
     local PlayerCharacter = player.Character
@@ -5732,13 +5754,13 @@ local function IsPlayerVisible(player, maxDistance)
         config.varibz.sa2dump.flist = list
         config.varibz.sa2dump.flt = now
     end
-    if not config.varibz.raycat then
-        config.varibz.raycat = RaycastParams.new()
-        config.varibz.raycat.FilterType = Enum.RaycastFilterType.Blacklist
-        config.varibz.raycat.IgnoreWater = true
+    if not config.varibz.raycats.raycat then
+        config.varibz.raycats.raycat = RaycastParams.new()
+        config.varibz.raycats.raycat.FilterType = Enum.RaycastFilterType.Exclude
+        config.varibz.raycats.raycat.IgnoreWater = true
     end
-    config.varibz.raycat.FilterDescendantsInstances = config.varibz.sa2dump.flist
-    local result = workspace:Raycast(origin, dir.Unit * distance, config.varibz.raycat)
+    config.varibz.raycats.raycat.FilterDescendantsInstances = config.varibz.sa2dump.flist
+    local result = workspace:Raycast(origin, dir.Unit * distance, config.varibz.raycats.raycat)
     if not result then return true end
     local hitParent = result.Instance.Parent
     if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
@@ -7049,43 +7071,6 @@ local function restoreTargetOriginalPosition(target)
     end
 end
 
-local function canSeeTarget(target)
-    if not config.autoFarmWallCheck then
-        return true
-    end
-    
-    local targetChar = getTargetCharacter(target)
-    if not targetChar or not localPlayer.Character then return false end
-    
-    local targetRoot = targetChar:FindFirstChild("HumanoidRootPart") or targetChar:FindFirstChild("Head")
-    local localRoot = localPlayer.Character:FindFirstChild("HumanoidRootPart") or localPlayer.Character:FindFirstChild("Head")
-    
-    if not targetRoot or not localRoot then return false end
-    
-    local sourcePos = localRoot.Position
-    local targetPos = targetRoot.Position
-    local rayDirection = (targetPos - sourcePos)
-    local ray = Ray.new(sourcePos, rayDirection.Unit * rayDirection.Magnitude)
-    local ignoreList = ignorethisandthat({targetChar})
-
-    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-    
-    if hit then
-        local hitParent = hit.Parent
-        local isTarget = hitParent == targetChar or hitParent.Parent == targetChar
-        
-        if not isTarget then
-            local distanceToHit = (position - sourcePos).Magnitude
-            local distanceToTarget = rayDirection.Magnitude
-            
-            if distanceToHit < distanceToTarget - 2 then
-                return false
-            end
-        end
-    end
-    
-    return true
-end
 local function getValidAutoFarmTargets()
     local validTargets = {}
     local localRoot = localPlayer.Character and (localPlayer.Character:FindFirstChild("HumanoidRootPart") or localPlayer.Character:FindFirstChild("Head"))
@@ -7155,12 +7140,8 @@ local function getValidAutoFarmTargets()
                             if config.autoFarmMaxRange > 0 and distance > config.autoFarmMaxRange then
                                 withinRange = false
                             end
-                            local isVisible = true
-                            if config.autoFarmWallCheck then
-                                isVisible = canSeeTarget(t)
-                            end
                             
-                            if withinRange and isVisible then
+                            if withinRange then
                                 table.insert(validTargets, t)
                             end
                         end
@@ -7199,9 +7180,6 @@ local function tptocrossWithAlignment(target)
     local targetHead = targetChar:FindFirstChild("Head")
     local localRoot = localPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not targetRoot or not localRoot then return false end
-    if not canSeeTarget(target) then
-        return false
-    end
     local distance = (localRoot.Position - targetRoot.Position).Magnitude
     if config.autoFarmMinRange > 0 and distance < config.autoFarmMinRange then
         return false
@@ -7350,11 +7328,6 @@ local function teleportTargetToLocalPlayerFront(target)
     local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
     local localRoot = localPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not targetRoot or not localRoot then return false end
-    
-    if not canSeeTarget(target) then
-        return false
-    end
-    
     local distance = (localRoot.Position - targetRoot.Position).Magnitude
     
     if config.autoFarmMinRange > 0 and distance < config.autoFarmMinRange then
@@ -7403,18 +7376,21 @@ local function raycastFromPlayer(player)
     local lookVector = head.CFrame.LookVector
     local rayOrigin = head.Position
     local rayDirection = lookVector * 1000
-    local ray = Ray.new(rayOrigin, rayDirection)
+    if not config.varibz.raycats.raykitty then
+        config.varibz.raycats.raykitty = RaycastParams.new()
+        config.varibz.raycats.raykitty.FilterType = Enum.RaycastFilterType.Exclude
+        config.varibz.raycats.raykitty.IgnoreWater = true
+    end
+    config.varibz.raycats.raykitty.FilterDescendantsInstances = ignoreList
+    local result = Workspace:Raycast(rayOrigin, rayDirection, config.varibz.raycats.raykitty)
     
-    local ignoreList = {character}
-    
-    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-    
-    if hit then
-        local hitParent = hit.Parent
+    if result then
+        local hitInstance = result.Instance
+        local hitParent = hitInstance.Parent
         if hitParent and hitParent:IsA("Model") then
             local hitPlayer = Players:GetPlayerFromCharacter(hitParent)
             if hitPlayer == localPlayer then
-                return true, position, lookVector
+                return true, result.Position, lookVector
             end
         end
     end
@@ -7803,10 +7779,10 @@ local function wallCheck(targetPos, sourcePos)
         return true
     end
     if (targetPos - sourcePos).Magnitude <= 0 then return true end
-    if not config._wallCheckParams then
-        config._wallCheckParams = RaycastParams.new()
-        config._wallCheckParams.FilterType = Enum.RaycastFilterType.Blacklist
-        config._wallCheckParams.IgnoreWater = true
+    if not config.varibz.raycats.rayuwu then
+        config.varibz.raycats.rayuwu = RaycastParams.new()
+        config.varibz.raycats.rayuwu.FilterType = Enum.RaycastFilterType.Exclude
+        config.varibz.raycats.rayuwu.IgnoreWater = true
     end
     local ignoreList = {}
     if localPlayer and localPlayer.Character then
@@ -7829,14 +7805,14 @@ local function wallCheck(targetPos, sourcePos)
         end
     end
 
-    config._wallCheckParams.FilterDescendantsInstances = ignoreList
+    config.varibz.raycats.rayuwu.FilterDescendantsInstances = ignoreList
 
     local rayDirection = (targetPos - sourcePos)
     local distance = rayDirection.Magnitude
     
     if distance < 0.1 then return true end
     
-    local result = workspace:Raycast(sourcePos, rayDirection.Unit * distance, config._wallCheckParams)
+    local result = workspace:Raycast(sourcePos, rayDirection.Unit * distance, config.varibz.raycats.rayuwu)
     
     if not result then
         return true
@@ -9335,7 +9311,6 @@ local function aimbotWallCheck(targetPos, sourcePos)
         return cached.visible
     end
     local rayDirection = (targetPos - sourcePos)
-    local ray = Ray.new(sourcePos, rayDirection.Unit * distance)
     local ignoreList = {}
     if localPlayer and localPlayer.Character then
         for _, part in ipairs(localPlayer.Character:GetDescendants()) do
@@ -9344,20 +9319,27 @@ local function aimbotWallCheck(targetPos, sourcePos)
             end
         end
     end
-    local hit, position = Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+    if not config.varibz.raycats.ihazrays then
+        config.varibz.raycats.ihazrays = RaycastParams.new()
+        config.varibz.raycats.ihazrays.FilterType = Enum.RaycastFilterType.Exclude
+        config.varibz.raycats.ihazrays.IgnoreWater = true
+    end
+    config.varibz.raycats.ihazrays.FilterDescendantsInstances = ignoreList
+    local result = Workspace:Raycast(sourcePos, rayDirection.Unit * distance, config.varibz.raycats.ihazrays)
     local visible = true
-    if hit and position then
-        local hitParent = hit.Parent
+    if result then
+        local hitInstance = result.Instance
+        local hitParent = hitInstance.Parent
         if hitParent and hitParent:IsA("Model") then
             local hitPlayer = excusemesir.Players:GetPlayerFromCharacter(hitParent)
             if hitPlayer and hitPlayer ~= localPlayer then
                 visible = true
             else
-                local distanceToHit = (position - sourcePos).Magnitude
+                local distanceToHit = (result.Position - sourcePos).Magnitude
                 visible = distanceToHit >= (distance - 2)
             end
         else
-            local distanceToHit = (position - sourcePos).Magnitude
+            local distanceToHit = (result.Position - sourcePos).Magnitude
             visible = distanceToHit >= (distance - 2)
         end
     end
@@ -9814,11 +9796,23 @@ local function triggerBotUpdate()
             local distPx = (screenVec - center).Magnitude
             if distPx <= fovRadius then
                 if config.tbot.wallCheck then
-                    local ray = Ray.new(camera.CFrame.Position, (targetPart.Position - camera.CFrame.Position).Unit * (targetPart.Position - camera.CFrame.Position).Magnitude)
+                    local origin = camera.CFrame.Position
+                    local dir = (targetPart.Position - origin)
+                    local dist = dir.Magnitude
                     local ignoreList = ignorethisandthat({char})
-                    local hit, pos = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-                    if hit and hit.Parent ~= char and hit.Parent.Parent ~= char then
-                        continue
+                    if not config.varibz.raycats.rayowo then
+                        config.varibz.raycats.rayowo = RaycastParams.new()
+                        config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
+                        config.varibz.raycats.rayowo.IgnoreWater = true
+                    end
+                    config.varibz.raycats.rayowo.FilterDescendantsInstances = ignoreList
+                    local result = workspace:Raycast(origin, dir.Unit * dist, config.varibz.raycats.rayowo)
+                    if result then
+                        local hitInstance = result.Instance
+                        local hitParent = hitInstance.Parent
+                        if hitParent ~= char and (not hitParent or hitParent.Parent ~= char) then
+                            continue
+                        end
                     end
                 end
                 
@@ -12091,15 +12085,6 @@ MainTab:Keybind({
                     BarColor = Color3.fromRGB(255, 0, 0)
                 })
             end
-        end
-    })
-
-    MainTab:Toggle({
-        Title = "Autofarm Wall Check",
-        Desc = "idk a filler button basically",
-        Value = config.autoFarmWallCheck or false,
-        Callback = function(v)
-            config.autoFarmWallCheck = v
         end
     })
     
