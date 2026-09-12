@@ -2746,11 +2746,6 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
             config.Gradow.uianimate.windowStroke.Transparency = windowTransparency
         end
     end)
-    
-    task.wait(0.1)
-    if not config.Gradow.uianimate.connection or not config.Gradow.uianimate.connection.Connected then
-        lo2l()
-    end
 end
 _ = print
 local function cmods()
@@ -6159,6 +6154,7 @@ function sa2_________________()
     end
 end
 
+local cachedTarget
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     if not config.varibz.patcher then
         return
@@ -7785,6 +7781,7 @@ local function wallCheck(targetPos, sourcePos)
         config.varibz.raycats.rayuwu.FilterType = Enum.RaycastFilterType.Exclude
         config.varibz.raycats.rayuwu.IgnoreWater = true
     end
+    local ignoreList = {}
     if localPlayer and localPlayer.Character then
         table.insert(ignoreList, localPlayer.Character)
     end
@@ -9311,6 +9308,7 @@ local function aimbotWallCheck(targetPos, sourcePos)
         return cached.visible
     end
     local rayDirection = (targetPos - sourcePos)
+    local ignoreList = {}
     if localPlayer and localPlayer.Character then
         for _, part in ipairs(localPlayer.Character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -10203,7 +10201,7 @@ task.defer(function()
     end
 end)
 local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
-local function isMobileDevice()
+local function touchdevice()
     local ok, val = pcall(function() return excusemesir.UserInputService.TouchEnabled end)
     return ok and val
 end
@@ -10591,7 +10589,7 @@ local function KillQT()
     gui.mobileGui = nil
 end
 local function UpdateQT()
-    if not isMobileDevice() then
+    if not touchdevice() then
         if gui.mobileGui and gui.mobileGui.ScreenGui then
             gui.mobileGui.ScreenGui.Enabled = false
         end
