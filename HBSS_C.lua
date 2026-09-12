@@ -1,24 +1,37 @@
 print([[
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡉⠳⣄⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡟⠉⠻⣦⡈⠳⣄⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣇⠀⠀⠈⢻⣦⣼⠇
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠋⣹⡷⠶⠶⠟⠁⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠋⣠⠞⠋⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠋⣠⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠋⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⡴⠷⣄⠀⢀⣠⡴⠋⣠⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⢀⣴⠋⠀⠀⢈⣿⠟⠙⢷⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⣾⠁⠀⠀⠀⣿⡁⢀⣴⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢸⡇⠀⠀⠀⠀⠈⠛⠛⠁⠈⢳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠈⢷⣄⣀⣀⣀⣀⣤⡴⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-
+         
+                                              +####+               
+                                            +###++###+             
+                                            +##+  .+##++           
+                                            +###+   -###+-         
+                                          +#######+   +###+        
+                                         ####- .+###++###+.        
+                                       +###+   +#######+.          
+                                     +###+.  +###+. ..             
+                                   +###+.  +###+-                  
+                                 +###+    ####-                    
+                               +###+.   ####-                      
+                  +##+       +###+-   +###+                        
+                +######+    ####-   +###+.                         
+              +###+..+###+#######++###+.                           
+            +####-    -+####-..+####+.                             
+           +##+-      +###+   +###+.                               
+          +##+       +##+.  +###+.                                 
+         +##+       +##+  +#####+-                                 
+         ###.       +##+#####-+###+                                
+        +##+        +####++.   .+###+                              
+        +##+                    +###+                              
+        +##+                  +###+.                               
+        +##+                +###+-                                 
+        -##+              +####-                                   
+         +##+++      +++####+-                                     
+         .+##############+-.                                       
+             .--+++---.                                            
+                                                                   
 
            “i think I got addicted to redliner a lil” 
                                            
-                               - Gpssickle
+                                    - Gpssickle
 ]])
 
 -- Gravel.cc (or HBSS :v)
@@ -77,15 +90,14 @@ local UICorner = Instance.new("UICorner")
 --                        ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
 getgenv().HttpUrlz_ = {
     --hbss completely random useless & useful modules :]
-    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    hbsscloser = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_Closer" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    hbsshandlecorpses = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_DeathHandler" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/GUIs/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbsscloser = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/GUIs/HBSS_Closer" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/SA2/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/SA2/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
@@ -123,12 +135,6 @@ function getgist_(url, how, sigma)
 end
 
 local lp_info = loadstring(getgist_(getgenv().HttpUrlz_.showmyipadress_jk))()
-print(lp_info.lp_username)
-print(lp_info.lp_displayname)
-print(lp_info.lp_id)
-print(lp_info.lp_accountage)
-print(lp_info.lp_retroslopscore)
-print(lp_info.lp_isitretroslop)
 -- unprofessionalism professionist 🥀
 loadstring(getgist_(getgenv().HttpUrlz_.hbssloader))()
 local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
@@ -441,34 +447,34 @@ local config = {
     },
     varibz = {
         btntitle = {
-            "hey y close me",
-            "Gui size decreases",
-            "dude",
-            "yh",
-            lp_info.lp_displayname,
-            "how graveling of u",
-            "rock solid ui",
-            "what",
-            "version: idk",
+            "3:",
+            ";3",
+            ":l",
+            "<:D",
+            ":^",
+            ":d",
+            ":J",
+            ":0",
+            ";w;",
+            ":°",
             "D:",
-            "unclose me NOW!!! D:",
-            "just simply cheat through it",
-            "bowl",
-            "gta 6 when?",
-            "holy cow",
-            "open4robuc",
-            "me want to be open",
-            "gravel is not sand",
-            "is gravel just sand",
-            "gl",
-            "not full ban-proof",
-            "bleh :p",
+            ":2",
+            "><",
+            "CX",
+            ":›",
+            ":D",
+            "c:",
+            ":s",
+            ":1",
+            ":7",
+            ":/",
+            ":b",
             ":3",
             ":o",
             ";]",
-            "error code: 6967420",
-            "🥀💔✌️🫩",
-            "brochacho",
+            ":p",
+            ":C",
+            ":v",
         },
 --[[
             {
@@ -2104,7 +2110,7 @@ local config = {
                 "aim-ster",
             },
             Hitbox = {
-                "it's hitbox not HURTBOX D:<",
+                "it's hitbox not HURTBOX!1!",
                 "size matters",
                 "make em bigger",
                 "expansion pack",
@@ -2391,6 +2397,20 @@ local config = {
             windowStroke = nil,
             windowGradient = nil
         },
+        eyecon = {
+            normal = "rbxassetid://96858797315175",
+            icons = {
+                {id = "rbxassetid://79878962686159",  weight = 40},
+                {id = "rbxassetid://130118718765636",  weight = 30},
+                {id = "rbxassetid://115464622813151",  weight = 20},
+                {id = "rbxassetid://101803223741734",  weight = 15},
+                {id = "rbxassetid://128965675644964",  weight = 5},
+            },
+            pool = {},
+            lbl = nil,
+            glitching = false,
+            active = true,
+        },
         uicolor = {
             lightGreen = Color3.fromRGB(144, 238, 144),
             darkGray = Color3.fromRGB(40, 40, 40),
@@ -2403,7 +2423,7 @@ local config = {
             mobile = UDim2.fromOffset(650, 79),
             tablet = UDim2.fromOffset(600, 80),
             pc = UDim2.fromOffset(800, 70)
-        }
+        },
     },
 }
 local rng_s = {
@@ -2744,6 +2764,71 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
             config.Gradow.uianimate.windowStroke.Thickness = windowThickness
             local windowTransparency = 0.1 + (windowPulseValue * 0.3)
             config.Gradow.uianimate.windowStroke.Transparency = windowTransparency
+        end
+    end)
+end
+local function eye_con()
+    for _, entry in ipairs(config.Gradow.eyecon.icons) do
+        for _ = 1, entry.weight do
+            table.insert(config.Gradow.eyecon.pool, entry.id)
+        end
+    end
+    task.defer(function()
+        local lbl
+        while config.Gradow.eyecon.active and not lbl do
+            if Window and Window.UIElements and Window.UIElements.Main then
+                for _, d in ipairs(Window.UIElements.Main:GetDescendants()) do
+                    if d:IsA("ImageLabel") and d.Image == config.Gradow.eyecon.normal then
+                        lbl = d
+                        break
+                    end
+                end
+            end
+            if not lbl then task.wait(0.25) end
+        end
+        if not lbl then return end
+        config.Gradow.eyecon.lbl = lbl
+        lbl:GetPropertyChangedSignal("Image"):Connect(function()
+            if lbl.Image ~= config.Gradow.eyecon.normal
+                and lbl.Image ~= config.Gradow.eyecon.normal
+                and not config.Gradow.eyecon.glitching
+                and not table.find(config.Gradow.eyecon.pool, lbl.Image)
+            then
+                task.defer(function()
+                    for _, d in ipairs(Window.UIElements.Main:GetDescendants()) do
+                        if d:IsA("ImageLabel") and d.Image == config.Gradow.eyecon.normal then
+                            lbl = d
+                            config.Gradow.eyecon.lbl = d
+                            break
+                        end
+                    end
+                end)
+            end
+        end)
+        while config.Gradow.eyecon.active and config.Gradow.eyecon.lbl and config.Gradow.eyecon.lbl.Parent do
+            if subside_I_I_I_I_I_() then
+                if config.Gradow.eyecon.lbl.Image ~= config.Gradow.eyecon.normal then
+                    config.Gradow.eyecon.lbl.Image = config.Gradow.eyecon.normal
+                end
+                task.wait(0.2)
+            else
+                if config.Gradow.eyecon.lbl.Image == config.Gradow.eyecon.normal then
+                    config.Gradow.eyecon.lbl.Image = config.Gradow.eyecon.normal
+                end
+                if not config.Gradow.eyecon.glitching then
+                    config.Gradow.eyecon.glitching = true
+                    local bursts = math.random(1, 3)
+                    for _ = 1, bursts do
+                        config.Gradow.eyecon.lbl.Image = config.Gradow.eyecon.pool[math.random(1, #config.Gradow.eyecon.pool)]
+                        task.wait(math.random(3, 8) / 100)
+                    end
+                    if config.Gradow.eyecon.lbl and config.Gradow.eyecon.lbl.Parent and not subside_I_I_I_I_I_() then
+                        config.Gradow.eyecon.lbl.Image = config.Gradow.eyecon.normal
+                    end
+                    config.Gradow.eyecon.glitching = false
+                end
+                task.wait(math.random(3, 10) / 10)
+            end
         end
     end)
 end
@@ -9384,83 +9469,50 @@ local function aimbotUpdate()
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local cameraPos = camera.CFrame.Position
     local localPlayer = excusemesir.Players.LocalPlayer
-    local allPlayers = excusemesir.Players:GetPlayers()
-    if #allPlayers <= 1 then 
+    local allTargets = getAllTargets()
+    if #allTargets <= 0 then 
         config.aimbotCurrentTarget = nil 
         return 
     end
+    
     local potentialTargets = {}
     
-    for _, target in ipairs(allPlayers) do
+    for _, target in ipairs(allTargets) do
         if target ~= localPlayer then
-            if not target.Character then continue end
-            local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+            local char = getTargetCharacter(target)
+            if not char then continue end
+            
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then continue end
-            if config.ignoreForcefield and hasForcefield(target.Character) then continue end
-            if config.specificTeamTarget and #config.targetedTeams > 0 then
-                local team = target.Team
-                local isTargeted = false
-                if team then
-                    for _, teamName in ipairs(config.targetedTeams) do
-                        if team.Name == teamName then
-                            isTargeted = true
-                            break
-                        end
-                    end
-                end
-                if not isTargeted then
-                    continue
-                end
-            else
-                if config.masterTeamTarget == "Enemies" and isTeammate(target) then 
-                    continue 
-                end
-                if config.masterTeamTarget == "Teams" and not isTeammate(target) then 
-                    continue 
-                end
-            end
+            if config.ignoreForcefield and hasForcefield(char) then continue end
+            if not shouldTargetAimbot(target) then continue end
             
             local targetPart = nil
             if config.aimbotTargetPart == "Head" then
-                targetPart = target.Character:FindFirstChild("Head")
+                targetPart = char:FindFirstChild("Head")
             elseif config.aimbotTargetPart == "HumanoidRootPart" then
-                targetPart = target.Character:FindFirstChild("HumanoidRootPart")
+                targetPart = char:FindFirstChild("HumanoidRootPart")
             else
-                targetPart = target.Character:FindFirstChild("Head") or target.Character:FindFirstChild("HumanoidRootPart")
+                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
             
             if not targetPart then continue end
             local worldDist = (targetPart.Position - cameraPos).Magnitude
             if worldDist > config.aimbotTargetRange then continue end
+            
             if config.aimbot360Enabled then
-                local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
-                if not onScreen or screenPos.Z <= 0 then 
-                    if config.aimbotWallCheck then
-                        local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
-                        if not isVisible then continue end
-                    end
-                    
-                    table.insert(potentialTargets, {
-                        target = target,
-                        part = targetPart,
-                        worldDist = worldDist,
-                        humanoid = humanoid,
-                        health = humanoid.Health
-                    })
-                else
-                    if config.aimbotWallCheck then
-                        local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
-                        if not isVisible then continue end
-                    end
-                    
-                    table.insert(potentialTargets, {
-                        target = target,
-                        part = targetPart,
-                        worldDist = worldDist,
-                        humanoid = humanoid,
-                        health = humanoid.Health
-                    })
+                if config.aimbotWallCheck then
+                    local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
+                    if not isVisible then continue end
                 end
+                
+                table.insert(potentialTargets, {
+                    target = target,
+                    part = targetPart,
+                    worldDist = worldDist,
+                    humanoid = humanoid,
+                    health = humanoid.Health
+                })
             else
                 local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
                 if not onScreen or screenPos.Z <= 0 then continue end
@@ -11670,6 +11722,7 @@ local function rng2()
 end
 task.wait(0.2)
 uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+eye_con()
 rng4()
 task.defer(function()
     task.wait(0.5)
@@ -16642,7 +16695,6 @@ local function buhbyegravellllllll________()
     loadstring(getgist_(getgenv().HttpUrlz_.hbsscloser))()
     pcall(function()
         excusemesir.RunService:UnbindFromRenderStep("FOVhbUpdater_Modern")
-        excusemesir.RunService:UnbindFromRenderStep("ESPUpdater")
         stopAutoFarm()
         KillQT()
         config.varibz.aimbot360LoopRunning = false
@@ -16978,7 +17030,6 @@ if autoloadSuccess then
 end
 task.wait(2.5)
 _(cos(1))
-loadstring(getgist_(getgenv().HttpUrlz_.hbsshandlecorpses))()
 return config
 end)
 
