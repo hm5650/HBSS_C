@@ -164,6 +164,7 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local clone_ref = cloneref or function(v) return v end
+local cachedTarget
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
 getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
@@ -6248,9 +6249,15 @@ function sa2_________________()
         end
         if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
     end
+    if cachedTarget then
+        local ok = pcall(function()
+            return cachedTarget and cachedTarget.Parent
+        end)
+        if not ok or not cachedTarget.Parent then
+            cachedTarget = nil
+        end
+    end
 end
-
-local cachedTarget
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     if not config.varibz.patcher then
         return
@@ -15954,7 +15961,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an AIO semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
         Color = config.Gradow.uicolor.Black
     })
 InfoTab:Space()
