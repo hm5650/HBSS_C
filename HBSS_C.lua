@@ -164,7 +164,7 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local clone_ref = cloneref or function(v) return v end
-local cachedTarget
+local folkenstein______
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
 getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
@@ -6249,12 +6249,12 @@ function sa2_________________()
         end
         if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
     end
-    if cachedTarget then
+    if folkenstein______ then
         local ok = pcall(function()
-            return cachedTarget and cachedTarget.Parent
+            return folkenstein______ and folkenstein______.Parent
         end)
-        if not ok or not cachedTarget.Parent then
-            cachedTarget = nil
+        if not ok or not folkenstein______.Parent then
+            folkenstein______ = nil
         end
     end
 end
@@ -6268,7 +6268,7 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
         config.varibz.sa2thing = 0
         if config.SA2_Enabled then
             config.varibz.sa2this = true
-            cachedTarget = GetClosestPlayer()
+            folkenstein______ = GetClosestPlayer()
             config.varibz.sa2this = false
         end
     end
@@ -6325,7 +6325,7 @@ OldIndex = hookmetamethod(game, "__index", newcclosure(function(self, key)
         return OldIndex(self, key)
     end
 
-    local cached = cachedTarget
+    local cached = folkenstein______
     if not cached or not cached.Parent then
         return OldIndex(self, key)
     end
@@ -6445,7 +6445,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         return OldNamecall(...)
     end
     
-    local HitPart = cachedTarget
+    local HitPart = folkenstein______
     if not HitPart or not HitPart.Parent then
         config.SA2_FovIsTargeted = false
         return OldNamecall(...)
@@ -6696,7 +6696,7 @@ excusemesir.RunService.Heartbeat:Connect(function()
         return
     end
     if config.SA2_Enabled and config.SA2_FovVisible and not config.SA2_ThreeSixtyMode then
-        local currentTarget = cachedTarget
+        local currentTarget = folkenstein______
         CircleFrame.Visible = true
         CircleFrame.Position = UDim2.new(0, screenCenter.X, 0, screenCenter.Y)
         CircleFrame.Size = UDim2.new(0, config.SA2_FovRadius * 2, 0, config.SA2_FovRadius * 2)
