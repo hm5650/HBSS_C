@@ -1,4 +1,4 @@
--- 100% not a redliner inspired intro... totally
+-- 100% not redliner inspired intro... totally
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -143,7 +143,7 @@ UIObject6.TextSize = 10
 UIObject6.Font = Enum.Font.Code
 UIObject6.TextXAlignment = Enum.TextXAlignment.Left
 UIObject6.TextYAlignment = Enum.TextYAlignment.Center
-UIObject6.Text = "[Check]: Waiting..."
+UIObject6.Text = "[Check]: ..."
 UIObject6.Parent = UIObject1
 blurEffect.Size = 0
 blurEffect.Parent = game:GetService("Lighting")
@@ -328,6 +328,47 @@ local function startFastTyping()
         end
     end
 end
+local function checkInjectorSupport()
+    local missing = {}
+    if type(hookmetamethod) ~= "function" then
+        table.insert(missing, "hookmetamethod")
+    end
+    if type(hookfunction) ~= "function" then
+        table.insert(missing, "hookfunction")
+    end
+    if type(isfolder) ~= "function" then
+        table.insert(missing, "isfolder")
+    end
+    if type(makefolder) ~= "function" then
+        table.insert(missing, "makefolder")
+    end
+    if type(listfiles) ~= "function" then
+        table.insert(missing, "listfiles")
+    end
+    return #missing == 0, missing
+end
+local injectorSupported, missingStuff = checkInjectorSupport()
+if not injectorSupported then
+    UIObject6.Text = "[Check]: ur injector sucks to even check stuff"
+    UIObject6.TextColor3 = Color3.fromRGB(255, 80, 80)
+    UIObject5.Text = "[G.cc]: ur injector sucks to even check stuff"
+    UIObject2.Text = "[Files]: skipping checks..."
+    UIObject3.Text = "[                                       ]"
+    UIObject4.Text = "0%"
+    task.wait(1.5)
+    startSound:Destroy()
+    humSound:Destroy()
+    endSound:Destroy()
+    flashSound:Destroy()
+    barSound:Destroy()
+    completionSound:Destroy()
+    for _, sound in ipairs(glitchSounds) do sound:Destroy() end
+    for _, sound in ipairs(bsodGlitchSounds) do sound:Destroy() end
+    for _, sound in ipairs(softGlitchSounds) do sound:Destroy() end
+    gui:Destroy()
+    blurEffect:Destroy()
+    return
+end
 local function checkHookableEnvironment()
     local hasHookMetamethod = type(hookmetamethod) == "function"
     local hasHookFunction = type(hookfunction) == "function"
@@ -354,7 +395,7 @@ local function checkHumanoidCharacters()
     if playerCount >= 2 then
         return 1.0, "Players :>"
     elseif playerCount == 1 then
-        return 0.7, "ur alone :v"
+        return 0.0, "ur alone :v"
     end
     local npcCount = 0
     for _, obj in ipairs(Workspace:GetDescendants()) do
@@ -494,6 +535,54 @@ local function checkToolPresence()
     end
     return 0.0, "No Items :c"
 end
+local function checkMouseMethods()
+    local mouse = Players.LocalPlayer:GetMouse()
+    local results = {}
+    local score = 0
+    local checks = {
+        {name = "Mouse.Target", getter = function() return mouse.Target end, typeName = "Instance?"},
+        {name = "Mouse.Hit", getter = function() return mouse.Hit end, typeName = "CFrame"},
+        {name = "Mouse.UnitRay", getter = function() return mouse.UnitRay end, typeName = "Ray"},
+    }
+    local readableCount = 0
+    local details = {}
+    for _, check in ipairs(checks) do
+        local ok, value = pcall(check.getter)
+        if ok then
+            if value ~= nil then
+                readableCount = readableCount + 1
+                if check.name == "Mouse.Hit" then
+                    details[#details + 1] = string.format("Hit(%.1f,%.1f,%.1f)",
+                        value.X, value.Y, value.Z)
+                elseif check.name == "Mouse.Target" then
+                    details[#details + 1] = "Target:" .. (value.Name or "?")
+                elseif check.name == "Mouse.UnitRay" then
+                    details[#details + 1] = "UnitRay(ok)"
+                end
+            else
+                details[#details + 1] = check.name .. ":nil"
+            end
+        else
+            details[#details + 1] = check.name .. ":err"
+        end
+    end
+    if readableCount >= 3 then
+        score = 1.0
+    elseif readableCount == 2 then
+        score = 0.7
+    elseif readableCount == 1 then
+        score = 0.4
+    else
+        score = 0.0
+    end
+    local label
+    if score == 1.0 then
+        label = "Mouse Objects >:]"
+    elseif score > 0 then
+        label = "No Mousey's :c"
+    end
+    return score, label
+end
 local function playGlitchStartAnimation()
     local blackFrame = Instance.new("Frame")
     UIObject2.Visible = false
@@ -614,6 +703,7 @@ task.spawn(function()
         {name = "Aim Remotes", weight = 20, func = checkAimRemotes, triggerAt = 0.65},
         {name = "Remotes", weight = 10, func = checkRemoteEventPresence, triggerAt = 0.82},
         {name = "Items", weight = 5, func = checkToolPresence, triggerAt = 0.92},
+        {name = "Mouse Methods", weight = 15, func = checkMouseMethods, triggerAt = 0.96},
     }
     local checkIndex = 0
     local checkMaxScore = 0
