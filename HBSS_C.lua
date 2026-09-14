@@ -16151,8 +16151,13 @@ InfoTab:Space()
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
+        Title = "Gravel: Intro/Outro",
+        Desc = "the intro n' outro is inspired by redliner!\nbtw you can check that game out!! :]",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
         Title = "Gravel: Math",
-        Desc = "Mathematicalmatics: my teacher & the other other guy",
+        Desc = "Mathematicalmatics: my teacher & the other other guy & me & internet",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Space()
