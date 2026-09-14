@@ -737,7 +737,7 @@ task.spawn(function()
         UIObject3.Text = "[" .. string.rep("|", totalBars) .. "]"
         UIObject4.Text = "100%"
         UIObject5.Text = "[G.cc]: Game might be compatible!1!1!! :D"
-        UIObject6.Text = "[Check]: " .. math.floor(checkTotalScore) .. "/" .. checkMaxScore .. " HELL YAAAAAAAHHHH"
+        UIObject6.Text = "[Check]: " .. math.floor(checkTotalScore) .. "/" .. checkMaxScore .. " HELL YAAAHHHH"
         finalMemeText = "Game might be compatible :D"
         completionSound:Play()
         local greenFlash = Instance.new("Frame")
@@ -755,35 +755,59 @@ task.spawn(function()
         flashImageLabel.ImageTransparency = 0
         flashImageLabel.ZIndex = 501
         flashImageLabel.Parent = gui
-        local shakeMagnitude = 6
-        local shakeDecayPerSec = 2.4
-        local floatAmplitude = 2
-        local floatSpeedX = 1.6
-        local floatSpeedY = 2.1
+        local shakeMagnitudeImg = 6
+        local shakeMagnitudeUI = 5
+        local shakeDecayPerSecImg = 2.4
+        local shakeDecayPerSecUI = 1.9
+        local floatAmplitudeImg = 2
+        local floatAmplitudeUI = 2.6
+        local floatSpeedXImg = 1.6
+        local floatSpeedYImg = 2.1
+        local floatSpeedXUI = 1.13
+        local floatSpeedYUI = 2.47
         local elapsedFloat = 0
+        local phaseOffsetX = random() * math.pi * 2
+        local phaseOffsetY = random() * math.pi * 2
         local flashConn
         flashConn = RunService.RenderStepped:Connect(function(dt)
             elapsedFloat = elapsedFloat + dt
-            if shakeMagnitude > 0 then
-                shakeMagnitude = shakeMagnitude - shakeDecayPerSec * dt
-                if shakeMagnitude < 0 then shakeMagnitude = 0 end
+            if shakeMagnitudeImg > 0 then
+                shakeMagnitudeImg = shakeMagnitudeImg - shakeDecayPerSecImg * dt
+                if shakeMagnitudeImg < 0 then shakeMagnitudeImg = 0 end
             end
-            local shakeX, shakeY = 0, 0
-            if shakeMagnitude > 0 then
-                shakeX = (random() * 2 - 1) * shakeMagnitude
-                shakeY = (random() * 2 - 1) * shakeMagnitude
+            if shakeMagnitudeUI > 0 then
+                shakeMagnitudeUI = shakeMagnitudeUI - shakeDecayPerSecUI * dt
+                if shakeMagnitudeUI < 0 then shakeMagnitudeUI = 0 end
             end
-            local floatX = math.sin(elapsedFloat * floatSpeedX) * floatAmplitude
-            local floatY = math.cos(elapsedFloat * floatSpeedY) * floatAmplitude
+            local shakeXImg, shakeYImg = 0, 0
+            if shakeMagnitudeImg > 0 then
+                shakeXImg = (random() * 2 - 1) * shakeMagnitudeImg
+                shakeYImg = (random() * 2 - 1) * shakeMagnitudeImg
+            end
+            local floatXImg = math.sin(elapsedFloat * floatSpeedXImg) * floatAmplitudeImg
+            local floatYImg = math.cos(elapsedFloat * floatSpeedYImg) * floatAmplitudeImg
             if flashImageLabel and flashImageLabel.Parent then
                 flashImageLabel.Position = UDim2.new(
-                    0.5, floatX + shakeX,
-                    0.5, floatY + shakeY
+                    0.5, floatXImg + shakeXImg,
+                    0.5, floatYImg + shakeYImg
+                )
+            end
+            local shakeXUI, shakeYUI = 0, 0
+            if shakeMagnitudeUI > 0 then
+                shakeXUI = (random() * 2 - 1) * shakeMagnitudeUI
+                shakeYUI = (random() * 2 - 1) * shakeMagnitudeUI
+            end
+            local floatXUI = math.sin(elapsedFloat * floatSpeedXUI + phaseOffsetX) * floatAmplitudeUI
+            local floatYUI = math.cos(elapsedFloat * floatSpeedYUI + phaseOffsetY) * floatAmplitudeUI
+            if UIObject1 and UIObject1.Parent then
+                UIObject1.Position = UDim2.new(
+                    0.5, floatXUI + shakeXUI,
+                    0.5, floatYUI + shakeYUI
                 )
             end
         end)
         UIObject1.Image = completionImage
-        applyGlitchPositions(0)
+        UIObject1.Position = UDim2.new(0.5, 0, 0.5, 0)
         TweenService:Create(greenFlash, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             BackgroundTransparency = 0
         }):Play()
@@ -801,7 +825,6 @@ task.spawn(function()
         task.wait(0.4)
         greenFlash:Destroy()
         UIObject1.Image = completionImage
-        applyGlitchPositions(0)
         setTextLabelsColor(Color3.fromRGB(0, 255, 0))
         task.wait(0.5)
         for i = 1, 3 do
@@ -821,6 +844,7 @@ task.spawn(function()
             flashImageLabel:Destroy()
             flashImageLabel = nil
         end
+        UIObject1.Position = UDim2.new(0.5, 0, 0.5, 0)
         flashSound:Play()
         local whiteFlash = Instance.new("Frame")
         whiteFlash.Size = UDim2.fromScale(1, 1)
