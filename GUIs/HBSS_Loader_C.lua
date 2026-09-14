@@ -378,7 +378,7 @@ local function checkHumanoidCharacters()
     return 0.0, "No Humanoids D:"
 end
 local function checkAimRemotes()
-    local remoteNames = {"hit", "bullet", "projectile", "hitscan", "ray", "raycast", "damage", "shoot", "fire", "attack", "aim", "target"}
+    local remoteNames = {"hit", "bullet", "projectile", "hitscan", "shot", "pew", "trace", "dmg", "ray", "raycast", "damage", "shoot", "fire", "attack", "aim", "target"}
     local found = {}
     local function search(parent, depth)
         if not parent or depth > 5 then return end
@@ -439,9 +439,9 @@ local function checkRaycastRemotes()
     if count >= 2 then
         return 1.0, "Raycats :3"
     elseif count == 1 then
-        return 0.6, "1 Raycast :1"
+        return 0.6, "1 Raycat :1"
     end
-    return 0.0, "No Raycasts :c"
+    return 0.0, "No Raycats :c"
 end
 local function checkRemoteEventPresence()
     local function hasRemote(parent, depth)
