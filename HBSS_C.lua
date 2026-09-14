@@ -29,7 +29,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “i think I got addicted to redliner a lil” 
+           “My neighbor blamed my gravel for making him fall... but it was his own dumb asphalt.” 
                                            
                                     - Gpssickle
 ]])
@@ -141,9 +141,7 @@ local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
 
 local function n(opts)
     if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
-        pcall(function()
-            Alurt.CreateNode(opts)
-        end)
+        Alurt.CreateNode(opts)
     end
 end
 task.wait(5.7)
@@ -197,7 +195,7 @@ local config = {
     SA2_FovIsTargeted = false,
     SA2_ThreeSixtyMode = false,
     SA2_GetTarget = "Closest",
-    SA2_AimMethod = "Raycast",
+    SA2_AimMethod = {"Raycast"},
     SA2_currentTarget = nil,
     SA2_TArea = 35,
     SA2_TargetRange = 500,
@@ -421,8 +419,7 @@ local config = {
         targetPart = "Head",
         wallCheck = false,
         hitChance = 100,
-        holdToShoot = false,
-        holdKey = "MouseButton1"
+        pressDown = false,
     },
     tbotcurrenttarget = nil,
     tbotTargetted = false,
@@ -450,7 +447,7 @@ local config = {
             "3:",
             ";3",
             ":l",
-            "<:D",
+            ">:D",
             ":^",
             ":d",
             ":J",
@@ -459,7 +456,10 @@ local config = {
             ":°",
             "D:",
             ":2",
-            "><",
+            ">_<",
+            "o.o",
+            "o.0",
+            "',:]",
             "CX",
             ":›",
             ":D",
@@ -537,6 +537,12 @@ local config = {
                 "just a window tag sitting here",
                 "typing text every day",
                 "for eternity",
+            },
+            {
+                "watch Gravel Poot..",
+                "you'll like that animation :3",
+                "it's pretty surreal",
+                "and it's tf2 :7",
             },
             {
                 "my name is rng4",
@@ -2335,6 +2341,10 @@ local config = {
             lclr = 0,
             t = 0.02,
         },
+        tbotdump = {
+            cacheigl = {},
+            stuff = 0,
+        },
         spinbotConnection = nil,
         ViewConnection = nil,
         CameraDistance = 8,
@@ -3693,6 +3703,7 @@ local function saveConfig(saveName)
             SA2_TargetRange = config.SA2_TargetRange,
             SA2_TeamTarget = config.SA2_TeamTarget,
             SA2_GetTarget = config.SA2_GetTarget,
+            SA2_AimMethods = table.clone(config.SA2_AimMethods or {"Raycast"}),
             customRemoteNames = table.clone(config.customRemoteNames),
             sa2stuff = config.varibz.sa2stuff,
             sa1stuff = config.varibz.sa1stuff,
@@ -3737,10 +3748,9 @@ local function saveConfig(saveName)
             tbot_hitChance = config.tbot.hitChance,
             tbot_delay = config.tbot.delay,
             tbot_wallCheck = config.tbot.wallCheck,
-            tbot_holdToShoot = config.tbot.holdToShoot,
-            tbot_holdKey = config.tbot.holdKey,
             tbot_fovTransparency = config.tbot.fovTransparency,
             tbot_fovVisible = config.tbot.fovVisible,
+            tbot_pressDown = config.tbot.pressDown,
             bhop_enabled = config.bhop.enabled,
             antiafk = config.antiafk,
             Viewing = config.Viewing,
@@ -4672,6 +4682,7 @@ local function loadSave(saveName)
     if cfg.SA2_TargetRange then config.SA2_TargetRange = cfg.SA2_TargetRange end
     if cfg.SA2_TeamTarget then config.SA2_TeamTarget = cfg.SA2_TeamTarget end
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
+    if cfg.SA2_AimMethods then config.SA2_AimMethods = cfg.SA2_AimMethods end
     if cfg.customRemoteNames then config.customRemoteNames = cfg.customRemoteNames end
     if cfg.hitboxEnabled ~= nil then config.hitboxEnabled = cfg.hitboxEnabled end
     if cfg.hitboxTeamTarget then config.hitboxTeamTarget = cfg.hitboxTeamTarget end
@@ -4726,10 +4737,9 @@ local function loadSave(saveName)
     if cfg.tbot_hitChance then config.tbot.hitChance = cfg.tbot_hitChance end
     if cfg.tbot_delay then config.tbot.delay = cfg.tbot_delay end
     if cfg.tbot_wallCheck ~= nil then config.tbot.wallCheck = cfg.tbot_wallCheck end
-    if cfg.tbot_holdToShoot ~= nil then config.tbot.holdToShoot = cfg.tbot_holdToShoot end
-    if cfg.tbot_holdKey then config.tbot.holdKey = cfg.tbot_holdKey end
     if cfg.tbot_fovTransparency then config.tbot.fovTransparency = cfg.tbot_fovTransparency end
     if cfg.tbot_fovVisible ~= nil then config.tbot.fovVisible = cfg.tbot_fovVisible end
+    if cfg.tbot_pressDown ~= nil then config.tbot.pressDown = cfg.tbot_pressDown end
     if cfg.bhop_enabled ~= nil then config.bhop.enabled = cfg.bhop_enabled end
     if cfg.antiafk ~= nil then config.antiafk = cfg.antiafk end
     if cfg.Viewing ~= nil then config.Viewing = cfg.Viewing end
@@ -5250,7 +5260,7 @@ local function savePara()
     local saveText = "Available Saves:\n"
     
     if #saves == 0 then
-        saveText = saveText .. "  There isn't any saves 💔🥀"
+        saveText = saveText .. "  There isn't any saves 💔??"
     else
         for i, save in ipairs(saves) do
             local isCurrent = (save == getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave)
@@ -5487,9 +5497,7 @@ function autolaodpara()
     end
     text = text .. "\nhelo :3"
     if config.varibz.autoloadParagraph then
-        pcall(function()
-            config.varibz.autoloadParagraph:SetDesc(text)
-        end)
+        config.varibz.autoloadParagraph:SetDesc(text)
     end
 end
 function startdaautlado_()
@@ -6270,7 +6278,7 @@ local function calc_chance(chance)
 end
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
-local OldNamecall;
+local OldNamecall
 if OldNamecall then
     if not hookmetamethod or not hookfunction then 
         warn("Gravel: Your exploit doesn't support hooking functions")
@@ -6279,6 +6287,82 @@ if OldNamecall then
     hookmetamethod(game, "__namecall", OldNamecall)
     OldNamecall = nil
 end
+local OldIndex
+if OldIndex then
+    if hookmetamethod then
+        hookmetamethod(game, "__index", OldIndex)
+        OldIndex = nil
+    end
+end
+OldIndex = hookmetamethod(game, "__index", newcclosure(function(self, key)
+    if not config.SA2_Enabled then
+        return OldIndex(self, key)
+    end
+    if config.varibz.respawnLock then
+        return OldIndex(self, key)
+    end
+    local mouseEnabled = false
+    for _, method in ipairs(config.SA2_AimMethods or {}) do
+        if method == "Mouse.Hit" then
+            mouseEnabled = true
+            break
+        end
+    end
+    if not mouseEnabled then
+        return OldIndex(self, key)
+    end
+    if checkcaller() then
+        return OldIndex(self, key)
+    end
+    if self ~= plr:GetMouse() then
+        return OldIndex(self, key)
+    end
+
+    local cached = cachedTarget
+    if not cached or not cached.Parent then
+        return OldIndex(self, key)
+    end
+
+    if key == "Hit" then
+        local cam = workspace.CurrentCamera
+        if not cam then
+            return OldIndex(self, key)
+        end
+        local targetPos = cached.Position
+        local dir = (targetPos - cam.CFrame.Position)
+        if dir.Magnitude < 0.001 then
+            return OldIndex(self, key)
+        end
+        return CFrame.lookAt(targetPos, targetPos + dir.Unit)
+    elseif key == "Target" then
+        return cached
+    elseif key == "TargetFilter" then
+        return nil
+    elseif key == "UnitRay" then
+        local cam = workspace.CurrentCamera
+        if not cam then
+            return OldIndex(self, key)
+        end
+        local origin = cam.CFrame.Position
+        local dir = (cached.Position - origin)
+        if dir.Magnitude < 0.001 then
+            return OldIndex(self, key)
+        end
+        return Ray.new(origin, dir.Unit * (dir.Magnitude + 5))
+    elseif key == "X" then
+        local cam = workspace.CurrentCamera
+        if not cam then return OldIndex(self, key) end
+        local sp = cam:WorldToViewportPoint(cached.Position)
+        return sp.X
+    elseif key == "Y" then
+        local cam = workspace.CurrentCamera
+        if not cam then return OldIndex(self, key) end
+        local sp = cam:WorldToViewportPoint(cached.Position)
+        return sp.Y
+    end
+
+    return OldIndex(self, key)
+end))
 OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     if not hookmetamethod or not hookfunction then
         warn("Gravel: Your exploit doesn't support hooking functions")
@@ -6289,23 +6373,41 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     end
     local self = ...
     local method = getnamecallmethod()
-    local raycatism = (method == "Raycast")
+    local rayo = (method == "Raycast")
     local remotebattery = (method == "FireServer" or method == "InvokeServer")
-    if not raycatism and not remotebattery then
+    
+    if not rayo and not remotebattery then
         return OldNamecall(...)
     end
     if checkcaller() then
         return OldNamecall(...)
     end
-    if raycatism and not (config.SA2_AimMethod == "Raycast" or config.SA2_AimMethod == "All") then
+    local raycatism = false
+    local daserverisonfire = false
+    local invokedatserver = false
+    
+    for _, aimMethod in ipairs(config.SA2_AimMethods or {}) do
+        if aimMethod == "Raycast" then
+            raycatism = true
+        elseif aimMethod == "FireServer" then
+            daserverisonfire = true
+        elseif aimMethod == "InvokeServer" then
+            invokedatserver = true
+        end
+    end
+    
+    if rayo and not raycatism then
         return OldNamecall(...)
     end
-    if remotebattery and not (config.SA2_AimMethod == "FireServer"
-        or config.SA2_AimMethod == "InvokeServer"
-        or config.SA2_AimMethod == "All") then
-        return OldNamecall(...)
-    end
+    
     if remotebattery then
+        if method == "FireServer" and not daserverisonfire then
+            return OldNamecall(...)
+        end
+        if method == "InvokeServer" and not invokedatserver then
+            return OldNamecall(...)
+        end
+        
         if typeof(self) ~= "Instance"
             or not (self:IsA("RemoteEvent")
                 or self:IsA("RemoteFunction")
@@ -6325,6 +6427,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             return OldNamecall(...)
         end
     end
+    
     local function rollChance(chance)
         if chance == 100 then return true end
         if chance <= 0 then return false end
@@ -6334,6 +6437,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         config.SA2_FovIsTargeted = false
         return OldNamecall(...)
     end
+    
     local HitPart = cachedTarget
     if not HitPart or not HitPart.Parent then
         config.SA2_FovIsTargeted = false
@@ -6343,7 +6447,8 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local targetPos = HitPart.Position
     local targetCFrame = CFrame.new(targetPos)
     local Arguments = {...}
-    if raycatism then
+    
+    if rayo then
         local Origin = Arguments[2]
         local Direction = Arguments[3]
         if typeof(Origin) ~= "Vector3" or typeof(Direction) ~= "Vector3" then
@@ -6516,6 +6621,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             return val
         end
     end
+    
     for i = 1, #newArgs do
         local arg = newArgs[i]
         local t = typeof(arg)
@@ -6536,6 +6642,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             newArgs[i] = rewriteValue(arg, "direction")
         end
     end
+    
     if config.SA2_Wallbang then
         for i = 1, #newArgs do
             local arg = newArgs[i]
@@ -6554,7 +6661,6 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     end
     return OldNamecall(unpack(newArgs))
 end))
-
 ScreenGui.Name = "48621826482727_83638_73763826382"
 ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
@@ -7149,9 +7255,7 @@ local function restoreTargetOriginalPosition(target)
     
     local savedData = config.autoFarmOriginalPositions[target]
     if savedData then
-        pcall(function()
-            targetRoot.CFrame = savedData.cframe
-        end)
+        targetRoot.CFrame = savedData.cframe
         config.autoFarmOriginalPositions[target] = nil
     end
 end
@@ -7335,12 +7439,6 @@ local function autoFarmProcess()
             else
                 if tick() - (config.autoFarmLastRefresh or 0) > 2 then
                     config.autoFarmLastRefresh = tick()
-                    pcall(function()
-                        if localPlayer then
-                            localPlayer.ReplicationFocus = workspace
-                            localPlayer.SimulationRadius = config.gp
-                        end
-                    end)
                 end
             end
 
@@ -7732,16 +7830,13 @@ local function antiAimUpdate()
                 local newPos = tpos + offset
                 
                 newPos = Vector3.new(newPos.X, math.clamp(newPos.Y, -100, 100), newPos.Z)
-                
-                pcall(function()
-                    local localRoot = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if localRoot then
-                        localRoot.CFrame = CFrame.new(newPos, tpos)
-                    end
-                    if camera and targetPart then
-                        camera.CFrame = CFrame.lookAt(camera.CFrame.Position, targetPart.Position)
-                    end
-                end)
+                local localRoot = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if localRoot then
+                    localRoot.CFrame = CFrame.new(newPos, tpos)
+                end
+                if camera and targetPart then
+                    camera.CFrame = CFrame.lookAt(camera.CFrame.Position, targetPart.Position)
+                end
                 config.isTeleported = true
             end
         else
@@ -7878,6 +7973,11 @@ local function wallCheck(targetPos, sourcePos)
             table.insert(ignoreList, otherPlayer.Character)
         end
     end
+    for _, npc in ipairs(config.varibz.npcCache.list) do
+        if npc and npc.Parent then
+            table.insert(ignoreList, npc)
+        end
+    end
     for _, proxyPart in pairs(config.proxyHitboxes) do
         if proxyPart and proxyPart.Parent then
             table.insert(ignoreList, proxyPart)
@@ -7914,11 +8014,17 @@ local function wallCheck(targetPos, sourcePos)
                 end
             end
         end
+        for _, npc in ipairs(config.varibz.npcCache.list) do
+            if npc and npc.Parent then
+                if npc == hitParent or npc:IsAncestorOf(hitInstance) then
+                    return true
+                end
+            end
+        end
     end
     
     return false
 end
-
 local function high(targetPlayer)
     if not targetPlayer or not getTargetCharacter(targetPlayer) then return end
     if not addesp(targetPlayer) then return end
@@ -8328,13 +8434,11 @@ local function makeesp(targetPlayer)
                 label.Text = text
 
                 local absWidth = 200
-                pcall(function()
-                    if label.TextBounds and label.TextBounds.X and label.TextBounds.X > 0 then
-                        absWidth = label.TextBounds.X + 8
-                    elseif label.AbsoluteSize and label.AbsoluteSize.X and label.AbsoluteSize.X > 0 then
-                        absWidth = label.AbsoluteSize.X
-                    end
-                end)
+                if label.TextBounds and label.TextBounds.X and label.TextBounds.X > 0 then
+                    absWidth = label.TextBounds.X + 8
+                elseif label.AbsoluteSize and label.AbsoluteSize.X and label.AbsoluteSize.X > 0 then
+                    absWidth = label.AbsoluteSize.X
+                end
 
                 label.Size = UDim2.new(0, absWidth, 0, 18)
                 local labelX = math.clamp(centerX, 10, viewportSize.X - 10)
@@ -8793,14 +8897,12 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     config.activeApplied[targetPlayer] = true
     local targetSize = config.targethbSizes[targetPlayer]
     if targetSize and typeof(targetSize) == "Vector3" and part and part.Parent then
-        pcall(function()
-            part.Size = targetSize
-            part.Transparency = config.hbtrans or 0.5
-            part.CanCollide = false
-            if part.Name == "Head" then
-                part.Massless = true
-            end
-        end)
+        part.Size = targetSize
+        part.Transparency = config.hbtrans or 0.5
+        part.CanCollide = false
+        if part.Name == "Head" then
+            part.Massless = true
+        end
     else
         config.targethbSizes[targetPlayer] = nil
         config.activeApplied[targetPlayer] = nil
@@ -8822,20 +8924,18 @@ local function restorePartForPlayer(targetPlayer)
         end
 
         if part and part.Parent then
-            pcall(function()
-                part.Size = original.size
-                if part.Name == "HumanoidRootPart" then
-                    part.Transparency = 1
-                else
-                    part.Transparency = 0
-                end
-                part.CanCollide = false
-                part.Massless = false
-                if part:IsA("BasePart") then
-                    part.Velocity = Vector3.new(0, 0, 0)
-                    part.RotVelocity = Vector3.new(0, 0, 0)
-                end
-            end)
+            part.Size = original.size
+            if part.Name == "HumanoidRootPart" then
+                part.Transparency = 1
+            else
+                part.Transparency = 0
+            end
+            part.CanCollide = false
+            part.Massless = false
+            if part:IsA("BasePart") then
+                part.Velocity = Vector3.new(0, 0, 0)
+                part.RotVelocity = Vector3.new(0, 0, 0)
+            end
         end
     end
     config.activeApplied[targetPlayer] = nil
@@ -8894,6 +8994,20 @@ local function proxyhb(targetPlayer)
     return proxyPart
 end
 
+local function tnormalsize(targetPlayer)
+    local char = getTargetCharacter(targetPlayer)
+    if not char then return end  
+
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+
+    if torso and not config.hitboxOriginalSizes[targetPlayer] then
+        config.hitboxOriginalSizes[targetPlayer] = {
+            part = torso,
+            size = torso.Size
+        }
+    end
+end
+
 local function updateproxyhb(targetPlayer)
     if not targetPlayer then return end
     if not config.hitboxVisualizer.enabled then
@@ -8931,20 +9045,6 @@ local function updateproxyhb(targetPlayer)
         proxyPart.Shape = Enum.PartType.Ball
     else
         proxyPart.Shape = Enum.PartType.Block
-    end
-end
-
-local function tnormalsize(targetPlayer)
-    local char = getTargetCharacter(targetPlayer)
-    if not char then return end  
-
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-
-    if torso and not config.hitboxOriginalSizes[targetPlayer] then
-        config.hitboxOriginalSizes[targetPlayer] = {
-            part = torso,
-            size = torso.Size
-        }
     end
 end
 
@@ -9759,6 +9859,45 @@ local function aimbot360UpdateLoop()
     end)
 end
 
+local function smthsmth(charToInclude)
+    local now = tick()
+    if now - config.varibz.tbotdump.stuff < 0.5 and #config.varibz.tbotdump.cacheigl > 0 then
+        if charToInclude and not table.find(config.varibz.tbotdump.cacheigl, charToInclude) then
+            table.insert(config.varibz.tbotdump.cacheigl, charToInclude)
+        end
+        return config.varibz.tbotdump.cacheigl
+    end
+    
+    config.varibz.tbotdump.cacheigl = {}
+    if localPlayer and localPlayer.Character then
+        table.insert(config.varibz.tbotdump.cacheigl, localPlayer.Character)
+        for _, part in ipairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                table.insert(config.varibz.tbotdump.cacheigl, part)
+            end
+        end
+    end
+    
+    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+        if otherPlayer ~= localPlayer and otherPlayer.Character then
+            table.insert(config.varibz.tbotdump.cacheigl, otherPlayer.Character)
+        end
+    end
+    
+    for _, proxyPart in pairs(config.proxyHitboxes) do
+        if proxyPart and proxyPart.Parent then
+            table.insert(config.varibz.tbotdump.cacheigl, proxyPart)
+        end
+    end
+    for player, data in pairs(config.hitboxExpandedParts) do
+        if data and data.part and data.part.Parent then
+            table.insert(config.varibz.tbotdump.cacheigl, data.part)
+        end
+    end
+    
+    config.varibz.tbotdump.stuff = now
+    return config.varibz.tbotdump.cacheigl
+end
 
 local function triggerBotUpdate()
     if not config.tbot.enabled then return end
@@ -9767,22 +9906,16 @@ local function triggerBotUpdate()
     local viewportSize = camera.ViewportSize
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local fovRadius = config.tbot.fovRadius
+    local fovRadiusSq = fovRadius * fovRadius
     if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
         config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
     end
-    
-    if config.tbot.holdToShoot then
-        local uis = excusemesir.UserInputService
-        local key = Enum.KeyCode[config.tbot.holdKey] or Enum.KeyCode.MouseButton1
-        if not uis:IsKeyDown(key) then
-            config.tbotcurrenttarget = nil
-            config.tbotTargetted = false
-            return
-        end
-    end
+    table.clear(config.varibz.targetsInFOV)
     local targets = getAllTargets()
     local bestTarget = nil
     local bestDist = math.huge
+    local bestPart = nil
+    local bestChar = nil
     
     for _, target in ipairs(targets) do
         if target ~= localPlayer then
@@ -9800,8 +9933,7 @@ local function triggerBotUpdate()
                             end
                         end
                     end
-                end
-                if typeof(target) == "Instance" and target:IsA("Model") then
+                elseif typeof(target) == "Instance" and target:IsA("Model") then
                     local npcTeam = target:FindFirstChild("Team")
                     if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
                         for _, teamName in ipairs(config.targetedTeams) do
@@ -9832,7 +9964,6 @@ local function triggerBotUpdate()
             local humanoid = char:FindFirstChildOfClass("Humanoid")
             if not humanoid or humanoid.Health <= 0 then continue end
             if config.ignoreForcefield and hasForcefield(char) then continue end
-            
             local targetPart = nil
             if config.tbot.targetPart == "Head" then
                 targetPart = char:FindFirstChild("Head")
@@ -9844,47 +9975,47 @@ local function triggerBotUpdate()
             if not targetPart then continue end
             local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
             if not onScreen or screenPos.Z <= 0 then continue end
-            local screenVec = Vector2.new(screenPos.X, screenPos.Y)
-            local distPx = (screenVec - center).Magnitude
-            if distPx <= fovRadius then
-                if config.tbot.wallCheck then
-                    local origin = camera.CFrame.Position
-                    local dir = (targetPart.Position - origin)
-                    local dist = dir.Magnitude
-                    local ignoreList = ignorethisandthat({char})
-                    if not config.varibz.raycats.rayowo then
-                        config.varibz.raycats.rayowo = RaycastParams.new()
-                        config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
-                        config.varibz.raycats.rayowo.IgnoreWater = true
-                    end
-                    config.varibz.raycats.rayowo.FilterDescendantsInstances = ignoreList
-                    local result = workspace:Raycast(origin, dir.Unit * dist, config.varibz.raycats.rayowo)
-                    if result then
-                        local hitInstance = result.Instance
-                        local hitParent = hitInstance.Parent
-                        if hitParent ~= char and (not hitParent or hitParent.Parent ~= char) then
-                            continue
-                        end
+            
+            local dx = screenPos.X - center.X
+            local dy = screenPos.Y - center.Y
+            local distSq = dx * dx + dy * dy
+            if distSq > fovRadiusSq then continue end
+            
+            local distPx = math.sqrt(distSq)
+            if config.tbot.wallCheck then
+                local origin = camera.CFrame.Position
+                local dir = (targetPart.Position - origin)
+                local dist = dir.Magnitude
+                local ignoreList = smthsmth(char)
+                
+                if not config.varibz.raycats.rayowo then
+                    config.varibz.raycats.rayowo = RaycastParams.new()
+                    config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
+                    config.varibz.raycats.rayowo.IgnoreWater = true
+                end
+                config.varibz.raycats.rayowo.FilterDescendantsInstances = ignoreList
+                
+                local result = workspace:Raycast(origin, dir.Unit * dist, config.varibz.raycats.rayowo)
+                if result then
+                    local hitInstance = result.Instance
+                    local hitParent = hitInstance.Parent
+                    if hitParent ~= char and (not hitParent or hitParent.Parent ~= char) then
+                        continue
                     end
                 end
-                
-                local chance = math.random(1, 100)
-                if chance <= config.tbot.hitChance then
-                    table.insert(config.varibz.targetsInFOV, {
-                        target = target,
-                        dist = distPx,
-                        part = targetPart,
-                        char = char
-                    })
-                    
-                    if distPx < bestDist then
-                        bestDist = distPx
-                        bestTarget = target
-                    end
+            end
+            local chance = math.random(1, 100)
+            if chance <= config.tbot.hitChance then
+                if distPx < bestDist then
+                    bestDist = distPx
+                    bestTarget = target
+                    bestPart = targetPart
+                    bestChar = char
                 end
             end
         end
     end
+    
     if bestTarget then
         config.tbotcurrenttarget = bestTarget
         config.tbotTargetted = true
@@ -9892,52 +10023,53 @@ local function triggerBotUpdate()
             config.tbot.fovCircle.RingStroke.Color = config.tbot.fovTargetColor or Color3.fromRGB(255, 255, 0)
         end
         if config.espMasterEnabled and config.prefHighlightESP then
-            local char = getTargetCharacter(bestTarget)
-            if char then
-                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == bestTarget
-                local isTargetedByRegular = config.currentTarget == bestTarget
-                local isTargetedByAimbot = config.aimbotCurrentTarget == bestTarget
-                if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
-                    if config.highlightData[bestTarget] then
-                        config.highlightData[bestTarget].FillColor = Color3.fromRGB(255, 100, 0)
-                    end
-                    if config.espData[bestTarget] and config.espData[bestTarget].label then
-                        config.espData[bestTarget].label.TextColor3 = Color3.fromRGB(255, 100, 0)
-                    end
+            local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == bestTarget
+            local isTargetedByRegular = config.currentTarget == bestTarget
+            local isTargetedByAimbot = config.aimbotCurrentTarget == bestTarget
+            if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
+                if config.highlightData[bestTarget] then
+                    config.highlightData[bestTarget].FillColor = Color3.fromRGB(255, 100, 0)
+                end
+                if config.espData[bestTarget] and config.espData[bestTarget].label then
+                    config.espData[bestTarget].label.TextColor3 = Color3.fromRGB(255, 100, 0)
                 end
             end
         end
-        local char = getTargetCharacter(bestTarget)
-        if char then
-            local targetPart = nil
-            if config.tbot.targetPart == "Head" then
-                targetPart = char:FindFirstChild("Head")
-            elseif config.tbot.targetPart == "HumanoidRootPart" then
-                targetPart = char:FindFirstChild("HumanoidRootPart")
-            else
-                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            end
-            
-            if targetPart then
-                local tool = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Tool")
-                if tool then
-                    pcall(function()
-                        tool:Activate()
-                    end)
+        if bestPart then
+            local tool = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Tool")
+            if tool then
+                if config.tbot.pressDown then
+                    if not config.tbotPressed then
+                        config.tbotPressed = true
+                        pcall(function() tool:Activate() end)
+                    end
                 else
-                    local uis = excusemesir.UserInputService
-                    local VirtualInputManager = excusemesir.VirtualInputManager
-                    pcall(function()
+                    pcall(function() tool:Activate() end)
+                end
+            else
+                local VirtualInputManager = excusemesir.VirtualInputManager
+                if config.tbot.pressDown then
+                    if not config.tbotPressed then
+                        config.tbotPressed = true
                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                        task.wait(config.tbot.delay or 0.1)
-                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                    end)
+                    end
+                else
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                    task.wait(config.tbot.delay or 0.1)
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                 end
             end
         end
     else
         config.tbotcurrenttarget = nil
         config.tbotTargetted = false
+        if config.tbotPressed then
+            config.tbotPressed = false
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            pcall(function()
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+            end)
+        end
         if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
             config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
         end
@@ -10017,6 +10149,11 @@ local function toggleTriggerBot(state)
             config.varibz.triggerBotConnection = excusemesir.RunService.Heartbeat:Connect(triggerBotUpdate)
         end
     else
+        if config.tbotPressed then
+            config.tbotPressed = false
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+        end
         if config.tbot.fovCircle and config.tbot.fovCircle.ScreenGui then
             config.tbot.fovCircle.ScreenGui:Destroy()
             config.tbot.fovCircle = nil
@@ -11732,6 +11869,7 @@ task.defer(function()
     SaveUI:autoLoad()
     BMG:autoLoad()
 end)
+-- Main Tab
 local MainTab = Window:Tab({
     Title = "Main",
     Desc = rng3("Main"),
@@ -11938,7 +12076,7 @@ MainTab:Toggle({
         config.KeybindsEnabled = v
         n({
             Title = "Gravel.cc",
-            Content = "Keybinds" .. (v and "Enabled" or "Disabled"),
+            Content = "Keybinds: " .. (v and "Enabled" or "Disabled"),
             Audio = "rbxassetid://17208361335",
             Length = 2,
             Image = "rbxassetid://4483362458",
@@ -11955,7 +12093,7 @@ MainTab:Toggle({
         config.HoldKeysEnabled = v
         n({
             Title = "Gravel.cc",
-            Content = "HoldKey" .. (v and "Enabled" or "Disabled"),
+            Content = "HoldKey: " .. (v and "Enabled" or "Disabled"),
             Audio = "rbxassetid://17208361335",
             Length = 2,
             Image = "rbxassetid://4483362458",
@@ -12019,8 +12157,8 @@ MainTab:Keybind({
 })
 
 MainTab:Keybind({
-    Title = "Trigger Bot",
-    Desc = "Toggle Trigger Bot",
+    Title = "TriggerBot",
+    Desc = "Toggle TriggerBot",
     Value = config.Keybinds.triggerbot or "X",
     Callback = function(key)
         config.Keybinds.triggerbot = key
@@ -12507,7 +12645,7 @@ task.defer(function()
 end)
 end
 
--- VisualsTab
+-- Visuals Tab
 local VisualsTab = Window:Tab({
     Title = "Visuals",
     Desc = rng3("Visuals"),
@@ -13868,13 +14006,16 @@ SilentAimTab2:Toggle({
     })
     
 SilentAimTab2:Dropdown({
-    Title = "Aim Method",
-    Desc = "where's my raycat & rmeote",
-    Values = {"Raycast", "FireServer", "InvokeServer", "All"},
-    Value = config.SA2_AimMethod or "Raycast",
-    Multi = false,
-    Callback = function(choice)
-        config.SA2_AimMethod = choice
+    Title = "Aim Methods",
+    Desc = "where's my raycat, remote & mousey",
+    Values = {"Raycast", "FireServer", "InvokeServer", "Mouse.Hit"},
+    Value = config.SA2_AimMethods or {"Raycast"},
+    Multi = true,
+    Callback = function(choices)
+        config.SA2_AimMethods = choices or {"Raycast"}
+        if #config.SA2_AimMethods == 0 then
+            config.SA2_AimMethods = {"Raycast"}
+        end
     end
 })
     SilentAimTab2:Slider({
@@ -14087,7 +14228,7 @@ local HitboxTab = Window:Tab({
     })
 HitboxTab:Paragraph({
     Title = "Hitbox Visualizer",
-    Desc = "make za Hitbox visible and eye pleasing type shi also h8s rthro shi",
+    Desc = "make za Hitbox visible and eye pleasing type shi also h8s rthro shi\nor just a... proxy hitbox if u could say <_<",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -14097,20 +14238,20 @@ HitboxTab:Toggle({
     Value = config.hitboxVisualizer.enabled or false,
     Callback = function(v)
         config.hitboxVisualizer.enabled = v
+        n({
+            Title = "Gravel.cc",
+            Content = "HB Visualizer: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
         if v then
             for _, target in ipairs(getAllTargets()) do
                 if targethb(target) then
                     updateproxyhb(target)
                 end
             end
-            n({
-                Title = "Gravel.cc",
-                Content = "Hitbox Visualizer: " .. (v and "Enabled" or "Disabled"),
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            })
         else
             for player, proxy in pairs(config.proxyHitboxes) do
                 if proxy and proxy.Parent then
@@ -14184,7 +14325,7 @@ HitboxTab:Slider({
 })
 end
 
--- ReachTab
+-- Reach Tab
 local ReachTab = Window:Tab({
     Title = "Reach",
     Desc = rng3("Reach"),
@@ -14953,13 +15094,13 @@ local MiscTab = Window:Tab({
     IconColor = config.Gradow.uicolor.lightGray
 }) do
 MiscTab:Paragraph({
-    Title = "Trigger Bot",
+    Title = "TriggerBot",
     Desc = "Automatically shoot when fov is inside target\nNot mobile friendly!",
     Color = config.Gradow.uicolor.lightGreen
 })
 
 MiscTab:Toggle({
-    Title = "Enable TriggerBot",
+    Title = "TriggerBot ('X')",
     Desc = "Toggle triggerbot on/off",
     Value = config.tbot.enabled or false,
     Callback = function(v)
@@ -15042,23 +15183,17 @@ MiscTab:Toggle({
 })
 
 MiscTab:Toggle({
-    Title = "Tbot Hold Key to Shoot",
-    Desc = "''press E to shoot''",
-    Value = config.tbot.holdToShoot or false,
+    Title = "Tbot PressDown",
+    Desc = "press it & keep it like dat :3",
+    Value = config.tbot.pressDown or false,
     Callback = function(v)
-        config.tbot.holdToShoot = v
-    end
-})
-
-MiscTab:Input({
-    Title = "Tbot Hold Key",
-    Desc = "wat key should me press 2 shoot",
-    Placeholder = "MouseButton1",
-    Value = config.tbot.holdKey or "MouseButton1",
-    ClearTextOnFocus = true,
-    Callback = function(text)
-        if text and text ~= "" then
-            config.tbot.holdKey = text
+        config.tbot.pressDown = v
+        if not v and config.tbotPressed then
+            config.tbotPressed = false
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            pcall(function()
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+            end)
         end
     end
 })
@@ -15504,7 +15639,7 @@ MiscTab:Slider({
 })
 end
 
--- BGMTab
+-- BGM Tab
 local BGMTab = Window:Tab({
     Title = "BGM",
     Desc = rng3("BGM"),
@@ -16420,7 +16555,7 @@ local function initKeybinds()
             if shouldTriggerKeybind(config.Keybinds.triggerbot) then
                 toggleTriggerBot(not config.tbot.enabled)
                 WindUI:Notify({
-                    Title = "Trigger Bot",
+                    Title = "TriggerBot",
                     Content = config.tbot.enabled and "Enabled" or "Disabled",
                     Icon = config.tbot.enabled and "check" or "x",
                     Duration = 1
@@ -17012,6 +17147,14 @@ local function buhbyegravellllllll________()
         end
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
         table.clear(getgenv().HttpUrlz_)
+        if OldNamecall then
+            hookmetamethod(game, "__namecall", OldNamecall)
+            OldNamecall = nil
+        end
+        if OldIndex then
+            hookmetamethod(game, "__index", OldIndex)
+            OldIndex = nil
+        end
         task.wait(1)
         getgenv().HttpUrlz_ = nil
         table.clear(config.espData)
