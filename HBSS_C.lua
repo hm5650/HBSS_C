@@ -8530,7 +8530,7 @@ local function makeesp(targetPlayer)
     if char and (char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")) then
         startUpdater()
     else
-        spawn(function()
+        task.spawn(function()
             local c = getTargetCharacter(targetPlayer)
             if c then
                 local okHead = c:WaitForChild("Head", 2)
