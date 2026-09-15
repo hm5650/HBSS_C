@@ -29,7 +29,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “My neighbor blamed my gravel for making him fall... but it was his own dumb asphalt.” 
+           “Gravel likes shovel & Shovel likes Gravel” 
                                            
                                     - Gpssickle
 ]])
@@ -67,7 +67,7 @@ local excusemesir = {
 
 local success, err2 = pcall(function()
 
-repeat wait() until game:IsLoaded()
+repeat task.wait() until game:IsLoaded()
 
 for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
     v:Disable()
@@ -640,6 +640,20 @@ local config = {
                 "''What's a human being gotta be like?''",
                 "''What's a way to just be competent?''",
                 "These sweet instincts\nruin my life",
+            },
+            {
+                "really cool tip",
+                "the intro in gravel checks\ngame compatibility :3",
+                "and uhh",
+                "yeh",
+            },
+            {
+                "animation and scripting",
+                "solely running on adhd,\n3am motivation & caffeine motivation",
+            },
+            {
+                "type ''whats the most humble rock''\nand it's always me",
+                "i swear",
             },
             {
                 "We're all brothers in a ''perfect'' world",
@@ -10325,7 +10339,7 @@ tool.Name = "go invis"
 tool.RequiresHandle = false
 tool.CanBeDropped = false
 tool.Equipped:Connect(function()
-    wait()
+    task.wait()
     if not invisible then
         invis()
         tool.Name = ">:3"
@@ -10336,7 +10350,7 @@ tool.Equipped:Connect(function()
     tool.Parent = excusemesir.Players.LocalPlayer.Backpack
 end)
 excusemesir.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
-    wait()
+    task.wait()
     if invisible and child:IsA("Tool") and child ~= heldTool and child ~= tool then
         heldTool = child
         local lastGrip = heldTool.Grip
@@ -10357,7 +10371,7 @@ excusemesir.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
         end
         
         gripChanged = heldTool:GetPropertyChangedSignal("Grip"):Connect(function()
-            wait()
+            task.wait()
             if not invisible then
                 gripChanged:Disconnect()
             end
