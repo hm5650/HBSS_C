@@ -10414,10 +10414,6 @@ task.defer(function()
     end
 end)
 local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
-local function touchdevice()
-    local ok, val = pcall(function() return excusemesir.UserInputService.TouchEnabled end)
-    return ok and val
-end
 local function CreateQT()
     if gui.mobileGui and gui.mobileGui.ScreenGui and gui.mobileGui.ScreenGui.Parent then
         gui.mobileGui.ScreenGui.Enabled = true
@@ -10802,13 +10798,6 @@ local function KillQT()
     gui.mobileGui = nil
 end
 local function UpdateQT()
-    if not touchdevice() then
-        if gui.mobileGui and gui.mobileGui.ScreenGui then
-            gui.mobileGui.ScreenGui.Enabled = false
-        end
-        return
-    end
-    
     if not config.QuickToggles then
         if gui.mobileGui and gui.mobileGui.ScreenGui then
             gui.mobileGui.ScreenGui.Enabled = false
