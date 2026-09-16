@@ -29,7 +29,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “Gravel likes shovel & Shovel likes Gravel” 
+           “chocolate hazelnut gravel cake :3” 
                                            
                                     - Gpssickle
 ]])
@@ -65,7 +65,7 @@ local excusemesir = {
 }
 
 
-local success, err2 = pcall(function()
+local success, err2 = xpcall(function()
 
 repeat task.wait() until game:IsLoaded()
 
@@ -113,8 +113,10 @@ function getgist_(url, how, sigma)
     local attempts = 0
     local dat1error = nil
     while attempts < how do
-        local success, result = pcall(function()
+        local success, result = xpcall(function()
             return game:HttpGet(url)
+        end, function(err)
+            return debug.traceback("[getgist_] " .. tostring(err), 2)
         end)
         if success then
             return result
@@ -131,7 +133,7 @@ function getgist_(url, how, sigma)
             end
         end
     end
-    error("can't get url :( after " .. how .. " attempts: " .. tostring(dat1error))
+    warn("[Gravel]: can't get url :( after " .. how .. " attempts: " .. tostring(dat1error))
 end
 
 local lp_info = loadstring(getgist_(getgenv().HttpUrlz_.showmyipadress_jk))()
@@ -164,7 +166,9 @@ local humanoid = nil
 local character = nil
 local updateESPColors = function() end
 local clone_ref = cloneref or function(v) return v end
-local folkenstein______
+local folkenstein______ = nil
+local callmyoldname = nil
+local mouseywousey = nil
 -- random stuff lololol
 -- I'm not gonna explain each variable U have to know allat
 getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
@@ -346,6 +350,9 @@ local config = {
     clientModEnabled = false,
     walkspeedEnabled = false,
     walkspeedValue = 16,
+    infjumpEnabled = false,
+    infjumpConnection = nil,
+    infjumpOriginalState = false,
     tpwalkEnabled = false,
     tpwalkSpeed = 1,
     tpwalkConnection = nil,
@@ -570,6 +577,7 @@ local config = {
                 "sand.cc is an larper",
                 "it's a actual gravel larper",
                 "sand larps gravel",
+                "brick larps gravel and sand",
             },
             {
                 "/kill {displayname}",
@@ -592,6 +600,37 @@ local config = {
                 "right?...",
                 "",
                 "let the past be the past :p",
+            },
+            {
+                "at the end of the day...",
+                "it becomes night..",
+                "at the end of the night...",
+                "it becomes day..",
+            },
+            {
+                "ohhh there's exploiters in TikTok?",
+                "let's see!!! :D",
+                "*full of phonk edits & shi*",
+                "ok I'll pass :/",
+            },
+            {
+                "TOP 5 REASONS THAT UR WEIRD",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "insane opinions right",
+            },
+            {
+                "exploiting is the metaverse",
+                "rthro is not a metaverse",
+                "that's just a GTA -1 model",
+            },
+            {
+                "scripting is hard",
+                "too hard",
+                "wayyyy too hard :c",
             },
             {
                 "the file size is 600kb..",
@@ -649,7 +688,12 @@ local config = {
             },
             {
                 "animation and scripting",
-                "solely running on adhd,\n3am motivation & caffeine motivation",
+                "solely running on adhd,\n3am motivation & sleep deprivation",
+            },
+            {
+                "does loving urself means ur gay?",
+                "does hating urself means ur\nhomophobic?",
+                "idk.. im sleep deprived & stupid",
             },
             {
                 "type ''whats the most humble rock''\nand it's always me",
@@ -2298,6 +2342,7 @@ local config = {
         aprilFools = { 
             -- BRO WHAT ARE U LOOKING AT DONT SPOIL THE APRIL FOOLS JOKE D:<
             "Sand.cc",
+            "Brick.cc",
             "Aimware",
             "Neverlose",
             "RIBLOX MOD MENU 🔥🔥🔥",
@@ -2324,6 +2369,7 @@ local config = {
         savesParagraph = nil,
         remotespara = nil,
         remotesInput = nil,
+        hbConnections = {},
         wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
@@ -2343,6 +2389,7 @@ local config = {
             cache = {},
             fcache = {},
             rcache = {},
+            rat = false,
             lclr = 0,
             flist = {},
             flt = 0,
@@ -2482,7 +2529,7 @@ function gestalt_______(state)
     config.antikick = state
     if state then
         if not hookmetamethod or not hookfunction then 
-            warn("Gravel: Your exploit doesn't support hooking functions for antikick")
+            warn("[Gravel]: Your exploit doesn't support hooking functions for antikick")
             config.antikick = false
             return
         end
@@ -2922,6 +2969,29 @@ local function cmods()
         config.tpwalkConnection:Disconnect()
         config.tpwalkConnection = nil
     end
+    if config.infjumpEnabled then
+        if not config.infjumpConnection then
+            local character = player.Character
+            if character then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+                end
+            end
+            config.infjumpConnection = excusemesir.UserInputService.JumpRequest:Connect(function()
+                if not config.infjumpEnabled or not config.clientModEnabled then return end
+                local char = excusemesir.Players.LocalPlayer.Character
+                if not char then return end
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                if hum and hum.Health > 0 then
+                    hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end)
+        end
+    elseif config.infjumpConnection then
+        config.infjumpConnection:Disconnect()
+        config.infjumpConnection = nil
+    end
 end
 local function resetcmods()
     local player = excusemesir.Players.LocalPlayer
@@ -2944,6 +3014,10 @@ local function resetcmods()
     if config.tpwalkConnection then
         config.tpwalkConnection:Disconnect()
         config.tpwalkConnection = nil
+    end
+    if config.infjumpConnection then
+        config.infjumpConnection:Disconnect()
+        config.infjumpConnection = nil
     end
     config.clientModOriginalValues = {}
 end
@@ -3749,6 +3823,7 @@ local function saveConfig(saveName)
             clientModEnabled = config.clientModEnabled,
             walkspeedEnabled = config.walkspeedEnabled,
             walkspeedValue = config.walkspeedValue,
+            infjumpEnabled = config.infjumpEnabled,
             gravityEnabled = config.gravityEnabled,
             gravityValue = config.gravityValue,
             tpwalkEnabled = config.tpwalkEnabled,
@@ -4093,289 +4168,6 @@ local function deleteAllSaves()
 
     showConfirmation()
     return true
-end
-local function applyFeatureAfterLoad(featureName, state, ...)
-    local args = {...}
-    pcall(function()
-        if featureName == "espMaster" then
-            applyESPMaster(state)
-        elseif featureName == "hitbox" then
-            if state then
-                applyhb()
-            else
-                for player, _ in pairs(config.hitboxExpandedParts) do
-                    restoreTorso(player)
-                end
-                config.hitboxExpandedParts = {}
-            end
-        elseif featureName == "autoFarm" then
-            if state then
-                autoFarmProcess()
-            else
-                stopAutoFarm()
-            end
-        elseif featureName == "aimbot" then
-            handleAimbotToggle(state)
-        elseif featureName == "silentAim" then
-            config.startsa = state
-            if gui.RingHolder then
-                gui.RingHolder.Visible = state
-            end
-            if not state then
-                for pl, _ in pairs(config.activeApplied) do
-                    restorePartForPlayer(pl)
-                end
-            end
-        elseif featureName == "antiAim" then
-            config.antiAimEnabled = state
-            if not state then
-                returnToOriginalPosition()
-            end
-        elseif featureName == "triggerBot" then
-            toggleTriggerBot(state)
-        elseif featureName == "bhop" then
-            toggleBHop(state)
-        elseif featureName == "spinbot" then
-            config.spinbot.enabled = state
-            if state then
-                spinbotUpdate()
-            else
-                if config.varibz.spinbotConnection then
-                    config.varibz.spinbotConnection:Disconnect()
-                    config.varibz.spinbotConnection = nil
-                end
-                if localPlayer.Character then
-                    local rootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        local pos = rootPart.Position
-                        rootPart.CFrame = CFrame.new(pos)
-                    end
-                end
-            end
-        elseif featureName == "silentAimHK" then
-            config.SA2_Enabled = state
-        elseif featureName == "viewing" then
-            config.Viewing = state
-            if state then
-                local tempState = config.Viewing
-                config.Viewing = false
-                task.wait(0.05)
-                config.Viewing = tempState
-                pcall(function()
-                    local cb = MiscTab and MiscTab.Callbacks and MiscTab.Callbacks.viewing
-                    if cb then cb(state) end
-                end)
-            end
-        elseif featureName == "tpwalk" then
-            config.tpwalkEnabled = state
-            if config.clientModEnabled then
-                cmods()
-            end
-        elseif featureName == "gravity" then
-            config.gravityEnabled = state
-            if config.clientModEnabled then
-                cmods()
-            end
-        elseif featureName == "camYOffset" then
-            config.camYOffsetEnabled = state
-            if state then
-                if not config.camYOffsetConnection then
-                    config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
-                        if config.camYOffsetEnabled then
-                            local cam = workspace.CurrentCamera
-                            if cam then
-                                if not config.camYOffsetOriginalCFrame then
-                                    config.camYOffsetOriginalCFrame = cam.CFrame
-                                end
-                                local offset = Vector3.new(0, config.camYOffsetValue, 0)
-                                local newCFrame = CFrame.new(
-                                    cam.CFrame.Position + offset,
-                                    cam.CFrame.Position + offset + cam.CFrame.LookVector
-                                )
-                                cam.CFrame = newCFrame
-                            end
-                        end
-                    end)
-                end
-            else
-                if config.camYOffsetConnection then
-                    config.camYOffsetConnection:Disconnect()
-                    config.camYOffsetConnection = nil
-                end
-                config.camYOffsetOriginalCFrame = nil
-            end
-        elseif featureName == "truss" then
-            config.trussEnabled = state
-            if state then
-                local player = excusemesir.Players.LocalPlayer
-                local character = player.Character
-                if character then
-                    local rootPart = character:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        if config.trussPart then
-                            config.trussPart:Destroy()
-                            config.trussPart = nil
-                        end
-                        if config.trussConnection then
-                            config.trussConnection:Disconnect()
-                            config.trussConnection = nil
-                        end
-                        config.trussPart = Instance.new("TrussPart")
-                        config.trussPart.Transparency = 1
-                        config.trussPart.Size = Vector3.new(2, 10, 2)
-                        config.trussPart.Parent = workspace
-                        config.trussPart.CanCollide = true
-                        config.trussPart.Name = "498372737377_83727737_837272_" .. tostring(math.random(10000, 99999))
-                        config.trussConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                            if config.trussEnabled and config.trussPart and rootPart and rootPart.Parent then
-                                config.trussPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -1.5)
-                            else
-                                if config.trussConnection then
-                                    config.trussConnection:Disconnect()
-                                    config.trussConnection = nil
-                                end
-                            end
-                        end)
-                    end
-                end
-            else
-                if config.trussPart then
-                    config.trussPart:Destroy()
-                    config.trussPart = nil
-                end
-                if config.trussConnection then
-                    config.trussConnection:Disconnect()
-                    config.trussConnection = nil
-                end
-            end
-        elseif featureName == "airwalk" then
-            config.airwalkEnabled = state
-            if state then
-                local character = excusemesir.Players.LocalPlayer.Character
-                if character then
-                    local rootPart = character:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        config.airwalkPart = Instance.new("Part")
-                        config.airwalkPart.Transparency = 1
-                        config.airwalkPart.Size = Vector3.new(7, 2, 3)
-                        config.airwalkPart.Parent = workspace
-                        config.airwalkPart.CanCollide = true
-                        config.airwalkPart.Anchored = true
-                        config.airwalkPart.Name = "487362637488_393872738_392887_" .. tostring(math.random(10000, 99999))
-                        if config.airwalkConnection then
-                            config.airwalkConnection:Disconnect()
-                            config.airwalkConnection = nil
-                        end
-                        config.airwalkConnection = excusemesir.RunService.Heartbeat:Connect(function()
-                            if config.airwalkEnabled and config.airwalkPart and rootPart and rootPart.Parent then
-                                config.airwalkPart.CFrame = rootPart.CFrame + Vector3.new(0, -4, 0)
-                            else
-                                if config.airwalkConnection then
-                                    config.airwalkConnection:Disconnect()
-                                    config.airwalkConnection = nil
-                                end
-                            end
-                        end)
-                    end
-                end
-            else
-                if config.airwalkPart then
-                    config.airwalkPart:Destroy()
-                    config.airwalkPart = nil
-                end
-                if config.airwalkConnection then
-                    config.airwalkConnection:Disconnect()
-                    config.airwalkConnection = nil
-                end
-            end
-        elseif featureName == "autorespawn" then
-            config.autorespawnEnabled = state
-            if state then
-                config.autorespawnConnections = config.autorespawnConnections or {}
-                config.autorespawnDeathPosition = nil
-                local player = excusemesir.Players.LocalPlayer
-                local function setupRespawn(character)
-                    local humanoid = character:WaitForChild("Humanoid")
-                    local rootPart = character:WaitForChild("HumanoidRootPart")
-                    if config.autorespawnConnections.died then
-                        config.autorespawnConnections.died:Disconnect()
-                    end
-                    config.autorespawnConnections.died = humanoid.Died:Connect(function()
-                        if config.autorespawnEnabled then
-                            config.autorespawnDeathPosition = rootPart.CFrame
-                        end
-                    end)
-                end
-                local function teleportToDeathPosition(newCharacter)
-                    if config.autorespawnEnabled and config.autorespawnDeathPosition then
-                        local newRoot = newCharacter:WaitForChild("HumanoidRootPart")
-                        newRoot.CFrame = config.autorespawnDeathPosition
-                        config.autorespawnDeathPosition = nil
-                    end
-                end
-                if player.Character then
-                    setupRespawn(player.Character)
-                end
-                if config.autorespawnConnections.characterAdded then
-                    config.autorespawnConnections.characterAdded:Disconnect()
-                end
-                config.autorespawnConnections.characterAdded = player.CharacterAdded:Connect(function(character)
-                    if config.autorespawnEnabled then
-                        character:WaitForChild("Humanoid")
-                        character:WaitForChild("HumanoidRootPart")
-                        teleportToDeathPosition(character)
-                        setupRespawn(character)
-                    end
-                end)
-            else
-                config.autorespawnDeathPosition = nil
-                if config.autorespawnConnections then
-                    for _, connection in pairs(config.autorespawnConnections) do
-                        if connection then
-                            connection:Disconnect()
-                        end
-                    end
-                    config.autorespawnConnections = {}
-                end
-            end
-        elseif featureName == "fullbright" then
-            config.fbenabled = state
-            if state then
-                local lighting = excusemesir.Lighting
-                fullBrightSettings = {
-                    Ambient = lighting.Ambient,
-                    Brightness = lighting.Brightness,
-                    ClockTime = lighting.ClockTime,
-                    FogEnd = lighting.FogEnd,
-                    GlobalShadows = lighting.GlobalShadows,
-                    OutdoorAmbient = lighting.OutdoorAmbient
-                }
-                lighting.Ambient = Color3.fromRGB(255, 255, 255)
-                lighting.Brightness = 2
-                lighting.FogEnd = 100000
-                lighting.GlobalShadows = false
-                lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-                lighting.ClockTime = 14
-            else
-                if fullBrightSettings then
-                    local lighting = excusemesir.Lighting
-                    for property, value in pairs(fullBrightSettings) do
-                        lighting[property] = value
-                    end
-                    fullBrightSettings = nil
-                end
-            end
-        elseif featureName == "quickToggles" then
-            config.QuickToggles = state
-            if state then
-                CreateQT()
-            else
-                KillQT()
-            end
-        elseif featureName == "antiafk" then
-            config.antiafk = state
-        end
-    end)
 end
 
 -- ^_^/
@@ -4738,6 +4530,7 @@ local function loadSave(saveName)
     if cfg.clientModEnabled ~= nil then config.clientModEnabled = cfg.clientModEnabled end
     if cfg.walkspeedEnabled ~= nil then config.walkspeedEnabled = cfg.walkspeedEnabled end
     if cfg.walkspeedValue then config.walkspeedValue = cfg.walkspeedValue end
+    if cfg.infjumpEnabled ~= nil then config.infjumpEnabled = cfg.infjumpEnabled end
     if cfg.gravityEnabled ~= nil then config.gravityEnabled = cfg.gravityEnabled end
     if cfg.gravityValue then config.gravityValue = cfg.gravityValue end
     if cfg.tpwalkEnabled ~= nil then config.tpwalkEnabled = cfg.tpwalkEnabled end
@@ -4778,7 +4571,7 @@ local function loadSave(saveName)
     getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.CurrentSave = saveName
     pcall(function()
         updateTeamTargetModes()
-        syncSilentAimWithMaster()
+        kshakwieudhjs_skjwnejzjs()
     end)
     pcall(function()
         if gui.RingHolder then
@@ -5784,7 +5577,7 @@ local function ShouldTargetPlayer(targetPlayer)
     
     return false
 end
-local function syncSilentAimWithMaster()
+local function kshakwieudhjs_skjwnejzjs()
     if config.masterTeamTarget == "All" then
         config.SA2_TeamTarget = "All"
         config.targetMode = "All"
@@ -5921,7 +5714,7 @@ local function GetClosestPlayer()
     local cam = Camera
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
-    local targetMode = config.masterGetTarget or config.SA2_GetTarget or "Closest"
+    local targetMode = config.masterGetTarget
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
     local maxRangeSq1 = config.SA2_TargetRange * config.SA2_TargetRange
@@ -6243,35 +6036,7 @@ local function GetClosestPlayer()
     
     return nil
 end
-function sa2_________________()
-    local currentTime = tick()
-    local cutoff = currentTime - 1
-    for key, val in pairs(config.varibz.sa2dump.cache) do
-        if not val.time or val.time <= cutoff then
-            config.varibz.sa2dump.cache[key] = nil
-        end
-    end
-    local count = 0
-    for _ in pairs(config.varibz.sa2dump.cache) do count = count + 1 end
-    if count > 30 then
-        local oldestKey, oldestTime = nil, math.huge
-        for key, val in pairs(config.varibz.sa2dump.cache) do
-            if (val.time or 0) < oldestTime then
-                oldestTime = val.time or 0
-                oldestKey = key
-            end
-        end
-        if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
-    end
-    if folkenstein______ then
-        local ok = pcall(function()
-            return folkenstein______ and folkenstein______.Parent
-        end)
-        if not ok or not folkenstein______.Parent then
-            folkenstein______ = nil
-        end
-    end
-end
+
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     if not config.varibz.patcher then
         return
@@ -6299,98 +6064,99 @@ local function calc_chance(chance)
 end
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
-local OldNamecall
-if OldNamecall then
+if callmyoldname then
     if not hookmetamethod or not hookfunction then 
-        warn("Gravel: Your exploit doesn't support hooking functions")
+        warn("[Gravel]: Your exploit doesn't support hooking functions")
         return false
     end
-    hookmetamethod(game, "__namecall", OldNamecall)
-    OldNamecall = nil
+    hookmetamethod(game, "__namecall", callmyoldname)
+    callmyoldname = nil
 end
-local OldIndex
-if OldIndex then
-    if hookmetamethod then
-        hookmetamethod(game, "__index", OldIndex)
-        OldIndex = nil
+-- WILL THIS FIX FREEZE/CRASH ON LOAD... IDK????
+local function mouse()
+    local errrrrr = false
+    if config.SA2_Enabled and not config.varibz.respawnLock then
+        for _, method in ipairs(config.SA2_AimMethods or {}) do
+            if method == "Mouse.Hit" then
+                errrrrr = true
+                break
+            end
+        end
+    end
+    if errrrrr and not config.varibz.sa2dump.rat then
+        config.varibz.sa2dump.rat = true
+        mouseywousey = hookmetamethod(game, "__index", newcclosure(function(self, key)
+            if not config.SA2_Enabled then
+                return mouseywousey(self, key)
+            end
+            if config.varibz.respawnLock then
+                return mouseywousey(self, key)
+            end
+            if checkcaller() then
+                return mouseywousey(self, key)
+            end
+            local localMouse = plr:GetMouse()
+            if self ~= localMouse then
+                return mouseywousey(self, key)
+            end
+            if not folkenstein______ or not folkenstein______.Parent then
+                return mouseywousey(self, key)
+            end
+            if key == "Hit" then
+                local cam = workspace.CurrentCamera
+                if not cam then
+                    return mouseywousey(self, key)
+                end
+                local targetPos = folkenstein______.Position
+                local dir = (targetPos - cam.CFrame.Position)
+                if dir.Magnitude < 0.001 then
+                    return mouseywousey(self, key)
+                end
+                return CFrame.lookAt(targetPos, targetPos + dir.Unit)
+            elseif key == "Target" then
+                return folkenstein______
+            elseif key == "TargetFilter" then
+                return nil
+            elseif key == "UnitRay" then
+                local cam = workspace.CurrentCamera
+                if not cam then
+                    return mouseywousey(self, key)
+                end
+                local origin = cam.CFrame.Position
+                local dir = (folkenstein______.Position - origin)
+                if dir.Magnitude < 0.001 then
+                    return mouseywousey(self, key)
+                end
+                return Ray.new(origin, dir.Unit * (dir.Magnitude + 5))
+            elseif key == "X" then
+                local cam = workspace.CurrentCamera
+                if not cam then return mouseywousey(self, key) end
+                local sp = cam:WorldToViewportPoint(folkenstein______.Position)
+                return sp.X
+            elseif key == "Y" then
+                local cam = workspace.CurrentCamera
+                if not cam then return mouseywousey(self, key) end
+                local sp = cam:WorldToViewportPoint(folkenstein______.Position)
+                return sp.Y
+            end
+
+            return mouseywousey(self, key)
+        end))
+    elseif not errrrrr and config.varibz.sa2dump.rat then
+        config.varibz.sa2dump.rat = false
+        if mouseywousey then
+            hookmetamethod(game, "__index", mouseywousey)
+            mouseywousey = nil
+        end
     end
 end
-OldIndex = hookmetamethod(game, "__index", newcclosure(function(self, key)
-    if not config.SA2_Enabled then
-        return OldIndex(self, key)
-    end
-    if config.varibz.respawnLock then
-        return OldIndex(self, key)
-    end
-    local mouseEnabled = false
-    for _, method in ipairs(config.SA2_AimMethods or {}) do
-        if method == "Mouse.Hit" then
-            mouseEnabled = true
-            break
-        end
-    end
-    if not mouseEnabled then
-        return OldIndex(self, key)
-    end
-    if checkcaller() then
-        return OldIndex(self, key)
-    end
-    if self ~= plr:GetMouse() then
-        return OldIndex(self, key)
-    end
-
-    local cached = folkenstein______
-    if not cached or not cached.Parent then
-        return OldIndex(self, key)
-    end
-
-    if key == "Hit" then
-        local cam = workspace.CurrentCamera
-        if not cam then
-            return OldIndex(self, key)
-        end
-        local targetPos = cached.Position
-        local dir = (targetPos - cam.CFrame.Position)
-        if dir.Magnitude < 0.001 then
-            return OldIndex(self, key)
-        end
-        return CFrame.lookAt(targetPos, targetPos + dir.Unit)
-    elseif key == "Target" then
-        return cached
-    elseif key == "TargetFilter" then
-        return nil
-    elseif key == "UnitRay" then
-        local cam = workspace.CurrentCamera
-        if not cam then
-            return OldIndex(self, key)
-        end
-        local origin = cam.CFrame.Position
-        local dir = (cached.Position - origin)
-        if dir.Magnitude < 0.001 then
-            return OldIndex(self, key)
-        end
-        return Ray.new(origin, dir.Unit * (dir.Magnitude + 5))
-    elseif key == "X" then
-        local cam = workspace.CurrentCamera
-        if not cam then return OldIndex(self, key) end
-        local sp = cam:WorldToViewportPoint(cached.Position)
-        return sp.X
-    elseif key == "Y" then
-        local cam = workspace.CurrentCamera
-        if not cam then return OldIndex(self, key) end
-        local sp = cam:WorldToViewportPoint(cached.Position)
-        return sp.Y
-    end
-
-    return OldIndex(self, key)
-end))
-OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
+callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
     if not hookmetamethod or not hookfunction then
-        warn("Gravel: Your exploit doesn't support hooking functions")
-        return OldNamecall(...)
+        warn("[Gravel]: Your exploit doesn't support hooking functions")
+        return callmyoldname(...)
     end
     if config.varibz.respawnLock or not config.SA2_Enabled then
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     local self = ...
     local method = getnamecallmethod()
@@ -6398,10 +6164,10 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local remotebattery = (method == "FireServer" or method == "InvokeServer")
     
     if not rayo and not remotebattery then
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     if checkcaller() then
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     local raycatism = false
     local daserverisonfire = false
@@ -6418,22 +6184,22 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     end
     
     if rayo and not raycatism then
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     
     if remotebattery then
         if method == "FireServer" and not daserverisonfire then
-            return OldNamecall(...)
+            return callmyoldname(...)
         end
         if method == "InvokeServer" and not invokedatserver then
-            return OldNamecall(...)
+            return callmyoldname(...)
         end
         
         if typeof(self) ~= "Instance"
             or not (self:IsA("RemoteEvent")
                 or self:IsA("RemoteFunction")
                 or self:IsA("UnreliableRemoteEvent")) then
-            return OldNamecall(...)
+            return callmyoldname(...)
         end
         local remoteNames = config.customRemoteNames or {"hit", "bullet", "projectile", "hitscan"}
         local selfName = string.lower(self.Name)
@@ -6445,7 +6211,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             end
         end
         if not matched then
-            return OldNamecall(...)
+            return callmyoldname(...)
         end
     end
     
@@ -6456,13 +6222,13 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     end
     if not config.SA2_ThreeSixtyMode and not rollChance(config.SA2_HitChance) then
         config.SA2_FovIsTargeted = false
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     
     local HitPart = folkenstein______
     if not HitPart or not HitPart.Parent then
         config.SA2_FovIsTargeted = false
-        return OldNamecall(...)
+        return callmyoldname(...)
     end
     config.SA2_FovIsTargeted = true
     local targetPos = HitPart.Position
@@ -6473,7 +6239,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         local Origin = Arguments[2]
         local Direction = Arguments[3]
         if typeof(Origin) ~= "Vector3" or typeof(Direction) ~= "Vector3" then
-            return OldNamecall(...)
+            return callmyoldname(...)
         end
         if config.SA2_BulletTeleport then
             local toTarget = targetPos - Origin
@@ -6482,7 +6248,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
                 local dir = toTarget.Unit
                 Arguments[2] = targetPos - (dir * 2)
                 Arguments[3] = dir * (distance + 2)
-                return OldNamecall(unpack(Arguments))
+                return callmyoldname(unpack(Arguments))
             end
         end
         if config.SA2_Wallbang then
@@ -6497,7 +6263,7 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         end
         local newDir = (targetPos - Origin).Unit
         Arguments[3] = newDir * Direction.Magnitude
-        return OldNamecall(unpack(Arguments))
+        return callmyoldname(unpack(Arguments))
     end
     local newArgs = table.clone(Arguments)
     local function rewriteVector(v)
@@ -6680,8 +6446,37 @@ OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
             end
         end
     end
-    return OldNamecall(unpack(newArgs))
+    return callmyoldname(unpack(newArgs))
 end))
+function sa2_________________()
+    local currentTime = tick()
+    local cutoff = currentTime - 1
+    for key, val in pairs(config.varibz.sa2dump.cache) do
+        if not val.time or val.time <= cutoff then
+            config.varibz.sa2dump.cache[key] = nil
+        end
+    end
+    local count = 0
+    for _ in pairs(config.varibz.sa2dump.cache) do count = count + 1 end
+    if count > 30 then
+        local oldestKey, oldestTime = nil, math.huge
+        for key, val in pairs(config.varibz.sa2dump.cache) do
+            if (val.time or 0) < oldestTime then
+                oldestTime = val.time or 0
+                oldestKey = key
+            end
+        end
+        if oldestKey then config.varibz.sa2dump.cache[oldestKey] = nil end
+    end
+    if folkenstein______ then
+        local ok = pcall(function()
+            return folkenstein______ and folkenstein______.Parent
+        end)
+        if not ok or not folkenstein______.Parent then
+            folkenstein______ = nil
+        end
+    end
+end
 ScreenGui.Name = "48621826482727_83638_73763826382"
 ScreenGui.Parent = excusemesir.CoreGui
 ScreenGui.IgnoreGuiInset = true
@@ -6725,6 +6520,7 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     local currentTime = tick()
     if currentTime - config.varibz.sa2dump.lclr > config.varibz.sa2dump.t then
         sa2_________________()
+        mouse()
         config.varibz.sa2dump.lclr = currentTime
     end
 end)
@@ -8923,6 +8719,10 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         part.CanCollide = false
         if part.Name == "Head" then
             part.Massless = true
+            part.CanCollide = false
+        elseif part.Name == "HumanoidRootPart" then
+            part.Massless = false
+            part.CanCollide = false
         end
     else
         config.targethbSizes[targetPlayer] = nil
@@ -8948,11 +8748,12 @@ local function restorePartForPlayer(targetPlayer)
             part.Size = original.size
             if part.Name == "HumanoidRootPart" then
                 part.Transparency = 1
+                part.Massless = false
             else
                 part.Transparency = 0
+                part.Massless = true
             end
             part.CanCollide = false
-            part.Massless = false
             if part:IsA("BasePart") then
                 part.Velocity = Vector3.new(0, 0, 0)
                 part.RotVelocity = Vector3.new(0, 0, 0)
@@ -9248,9 +9049,7 @@ local function targethb(player)
     return false
 end
 
-local hbConnections = {}
-
-function updateHitbox(player)
+function dbsjhsbsjzhshauwhd_siwjennxjsj(player)
     if not config.hitboxEnabled then
         restoreTorso(player)
         return
@@ -9269,13 +9068,13 @@ function updateHitbox(player)
     end
 end
 
-function disconnectHB(player)
-    local conns = hbConnections[player]
+function dkwbelfhbeqlwvrdganjxkdid_kwhend(player)
+    local conns = config.varibz.hbConnections[player]
     if conns then
         for _, c in ipairs(conns) do
             c:Disconnect()
         end
-        hbConnections[player] = nil
+        config.varibz.hbConnections[player] = nil
     end
 end
 
@@ -9284,17 +9083,17 @@ function oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
         return
     end
 
-    disconnectHB(player)
+    dkwbelfhbeqlwvrdganjxkdid_kwhend(player)
 
-    hbConnections[player] = {}
+    config.varibz.hbConnections[player] = {}
 
     local function setupCharacter(character)
         task.defer(function()
-            updateHitbox(player)
+            dbsjhsbsjzhshauwhd_siwjennxjsj(player)
 
             local hum = character:FindFirstChildOfClass("Humanoid")
             if hum then
-                table.insert(hbConnections[player],
+                table.insert(config.varibz.hbConnections[player],
                     hum.Died:Connect(function()
                         restoreTorso(player)
                     end)
@@ -9303,13 +9102,13 @@ function oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
         end)
     end
 
-    table.insert(hbConnections[player],
+    table.insert(config.varibz.hbConnections[player],
         player.CharacterAdded:Connect(setupCharacter)
     )
 
-    table.insert(hbConnections[player],
+    table.insert(config.varibz.hbConnections[player],
         player:GetPropertyChangedSignal("Team"):Connect(function()
-            updateHitbox(player)
+            dbsjhsbsjzhshauwhd_siwjennxjsj(player)
         end)
     )
 
@@ -9357,11 +9156,11 @@ local function applyhb()
     end
 
     for _, player in ipairs(getAllTargets()) do
-        if not hbConnections[player] then
+        if not config.varibz.hbConnections[player] then
             oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
         end
 
-        updateHitbox(player)
+        dbsjhsbsjzhshauwhd_siwjennxjsj(player)
     end
 end
 local function hb()
@@ -9399,8 +9198,10 @@ local function hb()
                         part.CanCollide = false
                         if part.Name == "Head" then
                             part.Massless = true
+                            part.CanCollide = false
                         elseif part.Name == "HumanoidRootPart" then
                             part.Massless = false
+                            part.CanCollide = false
                         end
                     end)
                 else
@@ -11937,7 +11738,7 @@ MainTab:Dropdown({
             config.antiAimTarget = Option
         end
         updateTeamTargetModes()
-        syncSilentAimWithMaster()
+        kshakwieudhjs_skjwnejzjs()
     end
 })
 local function getTeamNames()
@@ -12002,7 +11803,7 @@ end)
             config.silentGetTarget = Option
             config.antiAimGetTarget = Option
             config.SA2_GetTarget = Option
-            syncSilentAimWithMaster()
+            kshakwieudhjs_skjwnejzjs()
         end
     })
     
@@ -14017,7 +13818,7 @@ SilentAimTab2:Toggle({
     
 SilentAimTab2:Dropdown({
     Title = "Aim Methods",
-    Desc = "where's my raycat, remote & mousey",
+    Desc = "where's my raycat, remote & mousey\n\nbtw mouse.hit might crash/freeze in certain games D:",
     Values = {"Raycast", "FireServer", "InvokeServer", "Mouse.Hit"},
     Value = config.SA2_AimMethods or {"Raycast"},
     Multi = true,
@@ -14729,6 +14530,18 @@ ClientTab:Slider({
     },
     Callback = function(value)
         config.tpwalkSpeed = value
+    end
+})
+
+ClientTab:Toggle({
+    Title = "Enable Infinite Jump",
+    Desc = "fly like a jetpack xd",
+    Value = config.infjumpEnabled or false,
+    Callback = function(v)
+        config.infjumpEnabled = v
+        if config.clientModEnabled then
+            cmods()
+        end
     end
 })
 
@@ -16355,6 +16168,11 @@ InfoTab:Space()
         Desc = "totally didn't code overnight\nFixed: FireServer & InvokeServer in SilentAimTab (HK)\nFixed: Hitbox conflict\nFixed: Esp Hertz\nBugs Fixed: 12",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (16/09/2026)",
+        Desc = "uhhhhh other random bug fixes :p\nBugs Fixed: 6",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -16404,7 +16222,7 @@ gui.RingHolder = ringHolder
 gui.RingStroke = ringStroke
 aimbotfov()
 
-local function SetupRespawnHandler()
+local function sjuwhjwjeeuhdjxoah_iejwendkisj()
     plr.CharacterAdded:Connect(function(character)
         if config.varibz.respawnLock then
             task.wait(1)
@@ -16470,7 +16288,7 @@ if LocalPlayer.Character then
     end
 end
 
-local function initKeybinds()
+local function nanqhsj_wish_nxaiww()
     local holdingModifier = false
     local function shouldTriggerKeybind(keyCode)
         if not config.KeybindsEnabled then
@@ -16685,11 +16503,11 @@ local function initKeybinds()
 end
 
 local function init()
-    SetupRespawnHandler()
-    syncSilentAimWithMaster()
+    sjuwhjwjeeuhdjxoah_iejwendkisj()
+    kshakwieudhjs_skjwnejzjs()
     nextgenrepre()
     recmods()
-    initKeybinds()
+    nanqhsj_wish_nxaiww()
     autolaodbssthing_()
     for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
@@ -17047,6 +16865,11 @@ local function buhbyegravellllllll________()
             autoSwingConnection:Disconnect()
             autoSwingConnection = nil
         end
+        config.infjumpEnabled = false
+        if config.infjumpConnection then
+            config.infjumpConnection:Disconnect()
+            config.infjumpConnection = nil
+        end
         if config.SSEnabled then
             unsetSpawnLocation()
         end
@@ -17113,17 +16936,13 @@ local function buhbyegravellllllll________()
             heartbeatConnection:Disconnect()
             heartbeatConnection = nil
         end
-        if OldNamecall then
-            hookmetamethod(game, "__namecall", OldNamecall)
-            OldNamecall = nil
+        if callmyoldname then
+            hookmetamethod(game, "__namecall", callmyoldname)
+            callmyoldname = nil
         end
-        if OldIndex then
-            hookmetamethod(game, "__index", OldIndex)
-            OldIndex = nil
-        end
-        if OldFunction then
-            hookfunction(LocalPlayer.Kick, OldFunction)
-            OldFunction = nil
+        if mouseywousey then
+            hookmetamethod(game, "__index", mouseywousey)
+            mouseywousey = nil
         end
         for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
             v:Enable()
@@ -17162,14 +16981,6 @@ local function buhbyegravellllllll________()
         end
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
         table.clear(getgenv().HttpUrlz_)
-        if OldNamecall then
-            hookmetamethod(game, "__namecall", OldNamecall)
-            OldNamecall = nil
-        end
-        if OldIndex then
-            hookmetamethod(game, "__index", OldIndex)
-            OldIndex = nil
-        end
         task.wait(1)
         getgenv().HttpUrlz_ = nil
         table.clear(config.espData)
@@ -17207,8 +17018,9 @@ end
 task.wait(2.5)
 _(cos(1))
 return config
+end, function(err)
+    return debug.traceback(err, 2) 
 end)
-
 if not success then
     for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
         v:Enable()
@@ -17217,7 +17029,7 @@ if not success then
         v:Enable()
     end
     getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
-    warn("Gpssickle what kind of error is ts 🥀💔:" .. tostring(err))
+    warn("[Gravel]: Gpssickle what kind of error is ts 🥀💔:\n" .. tostring(err2))
     error(err2)
 end
 -- fin
