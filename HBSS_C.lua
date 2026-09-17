@@ -464,7 +464,7 @@ local config = {
             ":°",
             "D:",
             ":2",
-            ">_<",
+            ">:1",
             "o.o",
             "o.0",
             "',:]",
@@ -528,6 +528,14 @@ local config = {
                 "RAGE.. in the kettle.",
             },
             {
+                "did you know?",
+                "gravel.cc uses a single config table",
+                "holding nearly everything from what ur seeing",
+                "like aimbot, silentaims hitbox, esps",
+                "sooo a table.clear(config)\nwould destory everything",
+                "and yah",
+            },
+            {
                 typesp = "0.6",
                 mode = "2",
                 "BEST. DAY. EV-...",
@@ -551,6 +559,12 @@ local config = {
                 "because shovel is gravel",
                 "and gravel is shovel",
                 "and shovel",
+            },
+            {
+                "if ur a script showcaser say ''meow'' please",
+                "pretty please",
+                "PLEASSSEEEE",
+                "super duper PLEASEE",
             },
             {
                 "watch Gravel Poot..",
@@ -2016,14 +2030,31 @@ local config = {
             "keeping gravel open = inf robux\n2020 NO CLICKBAIT FREE",
             "if u close me I'll leak ur ip which is uhh..\nuhhh which is uhhh\nuhhhhh\nwhats ur ip again????",
             "no closing plz... :c",
+            "one more game please... just one more.. than you can close",
+            "at the end of the day gravel shan't close",
+            "Don't you dare x me out or I'll x'd you out and see how u'll like it",
             "I'm rng6 that's now sitting here for eternity to tell you to not close gravel...\n\nWHICH YOU TOTALLY SHOULDNT",
             "VERY SERIOUS CLOSING MESSAGE THAT SYAS NOT TO CLOSE GRAVEL",
             "plzz don't unload me :(((((((",
+            "closing gravel = -10000 aura",
+            ":c",
+            "CLICK THIS ONE!1!!1\n↓\n↓\n↓",
+            "Close = BAD\nOpen = ALPHA SIGMA MALE\n\nits simple math vro",
+            "I hope ur not like repeatedly clicking on the X button and repeatedly closing this popup just to see new messages everytime\n\nbut still... don't close gravel",
+            "if u close me you'll catch a cold so stay inside!1!1!!",
+            "u has 3 options:\n\n1. cancel\n\n2. cancel\n\n3. cancel\n\nchoose wisely",
+            "that evil ''Close Window'' button is a rickroll so don't press it",
+            "if u close me, I'll tell everyone globally that ur a hacker in Roblox so as david bazooka",
+            "I'll tell david bazooka.... don't test me",
+            "if u close me, you'll have to explain to ur friends why ur aim is trash now.",
+            "use ALT-F4 instead of this random popup :/",
             "pls click cancel... pllssss....  PLSSSSSSSSS",
             "Fine. Go. See if I care. >:c\n\n(i care)",
             "fine. FAWK u too then >:c'",
+            "clicking on that EVIL ''Close Window'' button would... INSTANTLY DELETE ALL OF YOUR SAVE FILES & MEMORY",
             "this is the last straw. I'm telling david bazooka 2 bannn uuuu.",
             "don't unload me... ok",
+            "i just realized a virus would tell you to not close their program...\nso I'm basically larping as them, sorta..\nanyways don't unload me pwease 3:",
             "WHYY don't close meeee 3:",
             "scripts also have families... DONT CLOSE ME PLSSSS",
             "BRO please. I have SO many features. At least TRY the BGM tab.",
@@ -2347,7 +2378,6 @@ local config = {
                 "year of da shovel",
             },
             ["02 14"] = {
-                "Gravel.<3",
                 "will u be my gravel",
                 "gravel iz love",
                 "be my gravel",
@@ -2938,6 +2968,101 @@ local function eye_con()
             end
         end
     end)
+end
+local function isNPCModel(model)
+    if not model or not model:IsA("Model") then return false end
+    if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
+    local humanoid = model:FindFirstChildOfClass("Humanoid")
+    if humanoid and humanoid.Health ~= nil then
+        if model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head") then
+            return true
+        end
+    end
+    return false
+end
+
+local function getAllTargets(getTargetSeen)
+    local targets = {}
+    local now = tick()
+    if now - config.varibz.npcCache.lastRefresh > 1 then
+        config.varibz.npcCache.lastRefresh = now
+        local newCache = {}
+        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if obj:IsA("Model") and isNPCModel(obj) then
+                    table.insert(newCache, obj)
+                end
+            end
+        end
+        config.varibz.npcCache.list = newCache
+    end
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            if pl ~= localPlayer then
+                table.insert(targets, pl)
+            end
+        end
+    end
+    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+        for _, npc in ipairs(config.varibz.npcCache.list) do
+            if npc.Parent and isNPCModel(npc) then
+                table.insert(targets, npc)
+            end
+        end
+    end
+
+    return targets
+end
+
+local function getTargetCharacter(target)
+    if not target then return nil end
+    if typeof(target) == "Instance" then
+        if target:IsA("Player") then
+            return target.Character
+        elseif target:IsA("Model") then
+            return target
+        end
+    end
+    return nil
+end
+
+local function getTargetName(target)
+    if not target then return "Unknown" end
+    if typeof(target) == "Instance" then
+        return target.Name
+    end
+    return tostring(target)
+end
+
+local function isTeammate(p)
+    if not (localPlayer and p) then return false end
+    
+    if config.specificTeamTarget then
+        return isInSpecificTeam(p)
+    end
+    
+    if typeof(p) == "Instance" and p:IsA("Player") then
+        if localPlayer.Team and p.Team then
+            return localPlayer.Team == p.Team
+        end
+    end
+    return false
+end
+
+local function isInTargetedSpecificTeam(player)
+    if not config.specificTeamTarget or #config.targetedTeams == 0 then
+        return true
+    end
+    
+    local team = player.Team
+    if not team then return false end
+    
+    for _, teamName in ipairs(config.targetedTeams) do
+        if team.Name == teamName then
+            return true
+        end
+    end
+    return false
 end
 _ = print
 local function cmods()
@@ -5748,7 +5873,6 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    
     local cam = Camera
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
@@ -5762,7 +5886,6 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    
     local currentTime = tick()
     local shouldSwitch = (currentTime - config.lastTargetSwitchTime) >= config.targetSeenSwitchRate
     local useFOV = not config.SA2_ThreeSixtyMode
@@ -5771,8 +5894,33 @@ local function GetClosestPlayer()
     local bestScore = nil
     local seenTargets = {}
     local lp = plr
-    local players = excusemesir.Players:GetPlayers()
-    if #players <= 1 then
+    local candidates = config.varibz.candidates
+    table.clear(candidates)
+    if config.masterTarget == "Players" or config.masterTarget == "Both" then
+        for _, p in ipairs(excusemesir.Players:GetPlayers()) do
+            if p ~= lp then
+                table.insert(candidates, {type = "player", instance = p})
+            end
+        end
+    end
+    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+        if currentTime - config.varibz.npcCache.lastRefresh > 1 then
+            config.varibz.npcCache.lastRefresh = currentTime
+            local newCache = {}
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if obj:IsA("Model") and isNPCModel(obj) then
+                    table.insert(newCache, obj)
+                end
+            end
+            config.varibz.npcCache.list = newCache
+        end
+        for _, npc in ipairs(config.varibz.npcCache.list) do
+            if npc and npc.Parent and isNPCModel(npc) then
+                table.insert(candidates, {type = "npc", instance = npc})
+            end
+        end
+    end
+    if #candidates == 0 then
         config.SA2_currentTarget = nil
         return nil
     end
@@ -5787,7 +5935,6 @@ local function GetClosestPlayer()
                 newData[key] = val
             end
         end
-        
         for key, val in pairs(oldWall) do
             if val.time and val.time > cutoff then
                 newWall[key] = val
@@ -5796,30 +5943,18 @@ local function GetClosestPlayer()
         config.varibz.sa2dump.data = newData
         config.varibz.sa2dump.cache = newWall
         config.varibz.sa2dump.lclr = currentTime
-        local dataCount = 0
-        for _ in pairs(config.varibz.sa2dump.data) do
-            dataCount = dataCount + 1
-            if dataCount > 100 then break end
-        end
-        if dataCount > 100 then
-            local sorted = {}
-            for key, val in pairs(config.varibz.sa2dump.data) do
-                table.insert(sorted, {key = key, time = val.time or 0})
-            end
-            table.sort(sorted, function(a, b) return a.time > b.time end)
-            local newLimited = {}
-            for i = 1, math.min(100, #sorted) do
-                if config.varibz.sa2dump.data[sorted[i].key] then
-                    newLimited[sorted[i].key] = config.varibz.sa2dump.data[sorted[i].key]
-                end
-            end
-            config.varibz.sa2dump.data = newLimited
-        end
     end
-    local validPlayers = {}
+    local validPlayers = config.varibz.sa2dump.validPlayers
+    if not validPlayers then
+        validPlayers = {}
+        config.varibz.sa2dump.validPlayers = validPlayers
+    end
+    table.clear(validPlayers)
     local playerCount = 0
-    for _, p in ipairs(players) do
-        if p ~= lp then
+    for _, candidate in ipairs(candidates) do
+        local p = candidate.instance
+        local isPlayer = (candidate.type == "player")
+        if isPlayer then
             if config.specificTeamTarget and #config.targetedTeams > 0 then
                 local team = p.Team
                 local isTargeted = false
@@ -5839,9 +5974,9 @@ local function GetClosestPlayer()
                 if config.SA2_TeamTarget ~= "All" then
                     local targetTeam = p.Team
                     if not localTeam or not targetTeam then
-                        if config.SA2_TeamTarget == "Teams" then 
+                        if config.SA2_TeamTarget == "Teams" then
                             validPlayers[p] = false
-                            continue 
+                            continue
                         end
                     elseif config.SA2_TeamTarget == "Enemies" and localTeam == targetTeam then
                         validPlayers[p] = false
@@ -5852,126 +5987,146 @@ local function GetClosestPlayer()
                     end
                 end
             end
-            
-            local char = p.Character
-            if char then
-                local humanoid = char:FindFirstChildOfClass("Humanoid")
-                if humanoid and humanoid.Health > 0 then
-                    if config.ignoreForcefield and hasForcefield(char) then
-                        validPlayers[p] = false
-                        continue
+        else
+            if config.specificTeamTarget and #config.targetedTeams > 0 then
+                local npcTeam = p:FindFirstChild("Team")
+                local isTargeted = false
+                if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                    for _, teamName in ipairs(config.targetedTeams) do
+                        if npcTeam.Value.Name == teamName then
+                            isTargeted = true
+                            break
+                        end
                     end
-                    local rootPart = char:FindFirstChild("HumanoidRootPart")
-                    if rootPart then
-                        local dx = rootPart.Position.X - localRoot.Position.X
-                        local dy = rootPart.Position.Y - localRoot.Position.Y
-                        local dz = rootPart.Position.Z - localRoot.Position.Z
-                        local distSq = dx * dx + dy * dy + dz * dz
-                        if distSq <= maxRangeSq1 then
-                            local part = nil
-                            local targetPartStr = config.SA2_TargetPart
-                            if targetPartStr == "Random" then
-                                if math.random(1, 100) <= config.SA2_HeadshotChance then
-                                    part = char:FindFirstChild("Head")
+                end
+                if not isTargeted then
+                    validPlayers[p] = false
+                    continue
+                end
+            end
+        end
+        local char = getTargetCharacter(p)
+        if char then
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.Health > 0 then
+                if config.ignoreForcefield and hasForcefield(char) then
+                    validPlayers[p] = false
+                    continue
+                end
+                local rootPart = char:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    local dx = rootPart.Position.X - localRoot.Position.X
+                    local dy = rootPart.Position.Y - localRoot.Position.Y
+                    local dz = rootPart.Position.Z - localRoot.Position.Z
+                    local distSq = dx * dx + dy * dy + dz * dz
+                    if distSq <= maxRangeSq1 then
+                        local part = nil
+                        local targetPartStr = config.SA2_TargetPart
+                        if targetPartStr == "Random" then
+                            if math.random(1, 100) <= config.SA2_HeadshotChance then
+                                part = char:FindFirstChild("Head")
+                            end
+                            if not part then
+                                part = char:FindFirstChild("HumanoidRootPart")
+                            end
+                            if not part then
+                                part = char:FindFirstChild("Head")
+                            end
+                        else
+                            part = char:FindFirstChild(targetPartStr)
+                            if not part then
+                                part = char:FindFirstChild("Head")
+                            end
+                        end
+                        if part then
+                            if config.SA2_Wallcheck then
+                                local cacheKey
+                                if isPlayer then
+                                    cacheKey = "player_" .. tostring(p.UserId) .. "_" .. tostring(config.SA2_TargetRange)
+                                else
+                                    cacheKey = "npc_" .. tostring(p) .. "_" .. tostring(config.SA2_TargetRange)
                                 end
-                                if not part then
-                                    part = char:FindFirstChild("HumanoidRootPart")
+                                local cached = config.varibz.sa2dump.cache[cacheKey]
+                                local visible = false
+                                if cached and (currentTime - cached.time) < 0.2 then
+                                    visible = cached.visible
+                                else
+                                    if isPlayer then
+                                        visible = IsPlayerVisible(p, config.SA2_TargetRange)
+                                    else
+                                        local dir = part.Position - camPos
+                                        local dist = dir.Magnitude
+                                        local rayParams = config.varibz.raycats.raycat
+                                        rayParams.FilterDescendantsInstances = {character, char}
+                                        local result = workspace:Raycast(camPos, dir.Unit * dist, rayParams)
+                                        visible = (result == nil)
+                                    end
+                                    config.varibz.sa2dump.cache[cacheKey] = {
+                                        visible = visible,
+                                        time = currentTime
+                                    }
                                 end
-                                if not part then
-                                    part = char:FindFirstChild("Head")
-                                end
-                            else
-                                part = char:FindFirstChild(targetPartStr)
-                                if not part then
-                                    part = char:FindFirstChild("Head")
+                                if not visible then
+                                    validPlayers[p] = false
+                                    continue
                                 end
                             end
-                            
-                            if part then
-                                if config.SA2_Wallcheck then
-                                    local targetId = "player_" .. tostring(p.UserId)
-                                    local cacheKey = targetId .. "_" .. tostring(config.SA2_TargetRange)
-                                    local cached = config.varibz.sa2dump.cache[cacheKey]
-                                    local visible = false
-                                    if cached and (currentTime - cached.time) < 0.2 then
-                                        visible = cached.visible
-                                    else
-                                        visible = IsPlayerVisible(p, config.SA2_TargetRange)
-                                        config.varibz.sa2dump.cache[cacheKey] = {
-                                            visible = visible,
-                                            time = currentTime
-                                        }
-                                    end
-                                    
-                                    if not visible then
-                                        validPlayers[p] = false
-                                        continue
-                                    end
-                                end
-                                
-                                validPlayers[p] = true
-                                playerCount = playerCount + 1
-                                seenTargets[p] = true
-                                local worldDist = math.sqrt(distSq)
-                                local inFOV = false
-                                local screenDist = 0
-                                
-                                if useFOV then
-                                    local targetPos = part.Position
-                                    local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
-                                    if onScreen and screenPos.Z > 0 then
-                                        local distX = screenPos.X - center.X
-                                        local distY = screenPos.Y - center.Y
-                                        screenDist = distX * distX + distY * distY
-                                        inFOV = screenDist <= fovRadiusSq
-                                    end
-                                else
-                                    inFOV = true
-                                end
-                                
-                                if inFOV then
-                                    local score
-                                    if targetMode == "Closest" then
-                                        score = worldDist
-                                    elseif targetMode == "Lowest Health" then
-                                        score = humanoid.Health
-                                    elseif targetMode == "TargetSeen" then
-                                        if p == config.SA2_currentTarget then
-                                            score = -1
-                                        else
-                                            score = screenDist > 0 and math.sqrt(screenDist) or worldDist
-                                        end
-                                    else
-                                        score = worldDist
-                                    end
-                                    
-                                    if bestTarget == nil then
-                                        bestTarget = p
-                                        bestScore = score
-                                    else
-                                        local isBetter = false
-                                        if targetMode == "Closest" then
-                                            isBetter = score < bestScore
-                                        elseif targetMode == "Lowest Health" then
-                                            isBetter = score < bestScore
-                                        elseif targetMode == "TargetSeen" then
-                                            if score == -1 then
-                                                isBetter = false
-                                            elseif bestScore == -1 then
-                                                isBetter = false
-                                            else
-                                                isBetter = score < bestScore
-                                            end
-                                        end
-                                        
-                                        if isBetter then
-                                            bestTarget = p
-                                            bestScore = score
-                                        end
-                                    end
+                            validPlayers[p] = true
+                            playerCount = playerCount + 1
+                            seenTargets[p] = true
+                            local worldDist = math.sqrt(distSq)
+                            local inFOV = false
+                            local screenDist = 0
+                            if useFOV then
+                                local targetPos = part.Position
+                                local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
+                                if onScreen and screenPos.Z > 0 then
+                                    local distX = screenPos.X - center.X
+                                    local distY = screenPos.Y - center.Y
+                                    screenDist = distX * distX + distY * distY
+                                    inFOV = screenDist <= fovRadiusSq
                                 end
                             else
-                                validPlayers[p] = false
+                                inFOV = true
+                            end
+                            if inFOV then
+                                local score
+                                if targetMode == "Closest" then
+                                    score = worldDist
+                                elseif targetMode == "Lowest Health" then
+                                    score = humanoid.Health
+                                elseif targetMode == "TargetSeen" then
+                                    if p == config.SA2_currentTarget then
+                                        score = -1
+                                    else
+                                        score = screenDist > 0 and math.sqrt(screenDist) or worldDist
+                                    end
+                                else
+                                    score = worldDist
+                                end
+                                if bestTarget == nil then
+                                    bestTarget = p
+                                    bestScore = score
+                                else
+                                    local isBetter = false
+                                    if targetMode == "Closest" then
+                                        isBetter = score < bestScore
+                                    elseif targetMode == "Lowest Health" then
+                                        isBetter = score < bestScore
+                                    elseif targetMode == "TargetSeen" then
+                                        if score == -1 then
+                                            isBetter = false
+                                        elseif bestScore == -1 then
+                                            isBetter = false
+                                        else
+                                            isBetter = score < bestScore
+                                        end
+                                    end
+                                    if isBetter then
+                                        bestTarget = p
+                                        bestScore = score
+                                    end
+                                end
                             end
                         else
                             validPlayers[p] = false
@@ -5985,6 +6140,8 @@ local function GetClosestPlayer()
             else
                 validPlayers[p] = false
             end
+        else
+            validPlayers[p] = false
         end
     end
     if playerCount == 0 then
@@ -5992,7 +6149,7 @@ local function GetClosestPlayer()
         return nil
     end
     local toRemove = {}
-    for cacheKey, cacheData in pairs(config.varibz.sa2dump.data) do
+    for cacheKey in pairs(config.varibz.sa2dump.data) do
         local playerId = cacheKey:match("player_(%d+)")
         if playerId then
             playerId = tonumber(playerId)
@@ -6011,8 +6168,9 @@ local function GetClosestPlayer()
     for _, key in ipairs(toRemove) do
         config.varibz.sa2dump.data[key] = nil
     end
-    local wallToRemove = {}
-    for cacheKey, cacheData in pairs(config.varibz.sa2dump.cache) do
+    table.clear(toRemove)
+    local wallToRemove = toRemove
+    for cacheKey in pairs(config.varibz.sa2dump.cache) do
         local playerId = cacheKey:match("player_(%d+)")
         if playerId then
             playerId = tonumber(playerId)
@@ -6031,7 +6189,7 @@ local function GetClosestPlayer()
     for _, key in ipairs(wallToRemove) do
         config.varibz.sa2dump.cache[key] = nil
     end
-    
+    table.clear(wallToRemove)
     if bestTarget then
         if targetMode == "TargetSeen" and bestTarget ~= config.SA2_currentTarget then
             if shouldSwitch or not config.SA2_currentTarget then
@@ -6039,7 +6197,7 @@ local function GetClosestPlayer()
                 config.SA2_currentTarget = bestTarget
             else
                 local currentStillValid = false
-                for p, _ in pairs(seenTargets) do
+                for p in pairs(seenTargets) do
                     if p == config.SA2_currentTarget then
                         currentStillValid = true
                         break
@@ -6053,7 +6211,7 @@ local function GetClosestPlayer()
         else
             config.SA2_currentTarget = bestTarget
         end
-        local char = bestTarget.Character
+        local char = getTargetCharacter(bestTarget)
         if char then
             local part = char:FindFirstChild(config.SA2_TargetPart)
             if not part then
@@ -6071,10 +6229,8 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
-    
     return nil
 end
-
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     if not config.varibz.patcher then
         return
@@ -6962,102 +7118,6 @@ excusemesir.RunService.Heartbeat:Connect(function()
         updateESPColors()
     end
 end)
-
-local function isNPCModel(model)
-    if not model or not model:IsA("Model") then return false end
-    if excusemesir.Players:GetPlayerFromCharacter(model) then return false end
-    local humanoid = model:FindFirstChildOfClass("Humanoid")
-    if humanoid and humanoid.Health ~= nil then
-        if model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head") then
-            return true
-        end
-    end
-    return false
-end
-
-local function getAllTargets(getTargetSeen)
-    local targets = {}
-    local now = tick()
-    if now - config.varibz.npcCache.lastRefresh > 1 then
-        config.varibz.npcCache.lastRefresh = now
-        local newCache = {}
-        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-            for _, obj in ipairs(Workspace:GetDescendants()) do
-                if obj:IsA("Model") and isNPCModel(obj) then
-                    table.insert(newCache, obj)
-                end
-            end
-        end
-        config.varibz.npcCache.list = newCache
-    end
-    if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
-            if pl ~= localPlayer then
-                table.insert(targets, pl)
-            end
-        end
-    end
-    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-        for _, npc in ipairs(config.varibz.npcCache.list) do
-            if npc.Parent and isNPCModel(npc) then
-                table.insert(targets, npc)
-            end
-        end
-    end
-
-    return targets
-end
-
-local function getTargetCharacter(target)
-    if not target then return nil end
-    if typeof(target) == "Instance" then
-        if target:IsA("Player") then
-            return target.Character
-        elseif target:IsA("Model") then
-            return target
-        end
-    end
-    return nil
-end
-
-local function getTargetName(target)
-    if not target then return "Unknown" end
-    if typeof(target) == "Instance" then
-        return target.Name
-    end
-    return tostring(target)
-end
-
-local function isTeammate(p)
-    if not (localPlayer and p) then return false end
-    
-    if config.specificTeamTarget then
-        return isInSpecificTeam(p)
-    end
-    
-    if typeof(p) == "Instance" and p:IsA("Player") then
-        if localPlayer.Team and p.Team then
-            return localPlayer.Team == p.Team
-        end
-    end
-    return false
-end
-
-local function isInTargetedSpecificTeam(player)
-    if not config.specificTeamTarget or #config.targetedTeams == 0 then
-        return true
-    end
-    
-    local team = player.Team
-    if not team then return false end
-    
-    for _, teamName in ipairs(config.targetedTeams) do
-        if team.Name == teamName then
-            return true
-        end
-    end
-    return false
-end
 
 local function addesp(targetPlayer)
     if not targetPlayer then return false end
@@ -12655,8 +12715,13 @@ local VisualsTab = Window:Tab({
     IconColor = config.Gradow.uicolor.lightGray
 }) do
     VisualsTab:Paragraph({
+        Title = "Gravel",
+        Desc = "uhhh tbh if ur injector can't handle esp that would hint that it's in a deathbed",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    VisualsTab:Paragraph({
         Title = "ESP",
-        Desc = "ESP features",
+        Desc = "ESP features n stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
 VisualsTab:Slider({
@@ -13942,7 +14007,7 @@ local SilentAimTab2 = Window:Tab({
 }) do
     SilentAimTab2:Paragraph({
         Title = "Gravel",
-        Desc = "[ Hooked Based ]\n[ Ban risk ]\n[ NPCs aren't supported ]\n[ Bad Injectors aren't supported ]",
+        Desc = "[ Hooked Based ]\n[ Ban risk ]\n[ Bad Injectors aren't supported ]",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -17200,6 +17265,12 @@ local function buhbyegravellllllll________()
             end)
             config.varibz.rng4.tag = nil
         end
+        if config.varibz.rng6connection then
+            pcall(function() config.varibz.rng6connection:Disconnect() end)
+            config.varibz.rng6connection = nil
+        end
+        config.varibz.rng6lastindex = nil
+        config.varibz.rng6label = nil
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
         table.clear(getgenv().HttpUrlz_)
         task.wait(1)
