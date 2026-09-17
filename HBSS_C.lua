@@ -16237,7 +16237,7 @@ InfoTab:Paragraph({
 
 InfoTab:Paragraph({
     Title = "Guide: Known Limitations",
-    Desc = "Things Gravel CANNOT do (or struggles with):\n\n• Full universality - it works on most generic shooters, but NOT all games\n• NPCs on SilentAim (HK) - not supported, use SilentAim (HB)\n• Bad injectors - SilentAim (HK) & AntiKick need hookmetamethod & hookfunction\n• Games with custom anticheat - might get u banned\n• Blox Fruits style games - not designed for em\n• Mobile + TriggerBot - not mobile friendly\n• Big hitboxes - some games make enemies fly around\n\nGravel is a SEMI-UNIVERSAL script. Don't expect it to work on every game in da universe :p",
+    Desc = "Things Gravel CANNOT do (or struggles with):\n\n• Full universality - it works on most generic shooters, but NOT all games\n• Bad injectors - SilentAim (HK) & AntiKick need hookmetamethod & hookfunction\n• Games with custom anticheat - might get u banned\n• Grow A Garden style games - not designed for em\n• Mobile + TriggerBot - not mobile friendly\n• Big hitboxes - some games make enemies fly around\n\nGravel is a SEMI-UNIVERSAL script. Don't expect it to work on every game in da universe :p",
     Color = config.Gradow.uicolor.darkGray
 })
 InfoTab:Space()
