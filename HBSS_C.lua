@@ -156,7 +156,6 @@ task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
 local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
-local mouse = plr:GetMouse()
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
 local GetPlayers = excusemesir.Players.GetPlayers
@@ -2000,6 +1999,32 @@ local config = {
             "why is there ai slop on my TikTok fyp....",
             ":3 >:3 ›:3 :3",
         },
+        rng6popz = {
+            "DONT YOU DARE CLICK ON\nTHAT ''CLOSE WINDOW'' BUTTON",
+            "Do you REALLY want to close Gravel.cc? Gravel is crying right now :c",
+            "Gravel doesn't want to leave! He just learned how to aimbot :(",
+            "English or Spanish\n\n\nwho ever moves first is gay",
+            "Close Gravel? That's a skill issue tbh...",
+            "closing gravel wouldn't improve ur aim",
+            "keeping gravel open = inf robux\n2020 NO CLICKBAIT FREE",
+            "if u close me I'll leak ur ip which is uhh..\nuhhh which is uhhh\nuhhhhh\nwhats ur ip again????",
+            "no closing plz... :c",
+            "I'm rng6 that's now sitting here for eternity to tell you to not close gravel...\n\nWHICH YOU TOTALLY SHOULDNT",
+            "VERY SERIOUS CLOSING MESSAGE THAT SYAS NOT TO CLOSE GRAVEL",
+            "plzz don't unload me :(((((((",
+            "pls click cancel... pllssss....  PLSSSSSSSSS",
+            "Fine. Go. See if I care. >:c\n\n(i care)",
+            "fine. FAWK u too then >:c'",
+            "this is the last straw. I'm telling david bazooka 2 bannn uuuu.",
+            "don't unload me... ok",
+            "WHYY don't close meeee 3:",
+            "scripts also have families... DONT CLOSE ME PLSSSS",
+            "BRO please. I have SO many features. At least TRY the BGM tab.",
+            "y close me?.... WHYYY????",
+        },
+        rng6lastindex = nil,
+        rng6label = nil,
+        rng6connection = nil,
         tinf = {
             "bombastic side eye",
             "oh shiddings nott gud D:",
@@ -2215,9 +2240,11 @@ local config = {
                 "I'm in a sugar rush",
                 "due to my gaming chair",
                 "client the client of client",
+                "localscript tab",
+                "MOD MENU APK 2026!! 🔥🔥🔥",
             },
             Miscellaneous = {
-                "random bs go!!!🔥🔥??🔥",
+                "random bs go!!!🔥🔥🔥",
                 "the leftovers",
                 "extra stuff",
                 "bruh stuff",
@@ -11274,6 +11301,97 @@ local Window = WindUI:CreateWindow({
 })
 loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
+local function rng6()
+    if config.varibz.rng6connection then
+        pcall(function() config.varibz.rng6connection:Disconnect() end)
+        config.varibz.rng6connection = nil
+    end
+    config.varibz.rng6lastindex = nil
+    local targetTitle = "Do you want to close this window? You will not be able to open it again."
+    local CoreGui = excusemesir.CoreGui
+    local function pickRandomConvo()
+        local pool = config.varibz.rng6popz
+        if not pool or #pool == 0 then return targetTitle end
+        local idx = math.random(1, #pool)
+        if #pool > 1 and idx == config.varibz.rng6lastindex then
+            idx = (idx % #pool) + 1
+        end
+        config.varibz.rng6lastindex = idx
+        return pool[idx]
+    end
+    local function attachToLabel(label)
+        if config.varibz.rng6label == label then return end
+        config.varibz.rng6label = label
+        task.defer(function()
+            if label and label.Parent and label.Text == targetTitle then
+                label.Text = pickRandomConvo()
+            end
+        end)
+        local textConn = label:GetPropertyChangedSignal("Text"):Connect(function()
+            if label.Text == targetTitle then
+                task.defer(function()
+                    if label and label.Parent and label.Text == targetTitle then
+                        label.Text = pickRandomConvo()
+                    end
+                end)
+            end
+        end)
+        local ancestryConn = label.AncestryChanged:Connect(function(_, parent)
+            if not parent then
+                pcall(function() textConn:Disconnect() end)
+                pcall(function() ancestryConn:Disconnect() end)
+                if config.varibz.rng6label == label then
+                    config.varibz.rng6label = nil
+                end
+            end
+        end)
+        config.varibz.rng6connection = {
+            Disconnect = function()
+                pcall(function() textConn:Disconnect() end)
+                pcall(function() ancestryConn:Disconnect() end)
+                if config.varibz.rng6label == label then
+                    config.varibz.rng6label = nil
+                end
+            end
+        }
+    end
+    local function scanOnce()
+        for _, d in ipairs(CoreGui:GetDescendants()) do
+            if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text == targetTitle then
+                attachToLabel(d)
+                return true
+            end
+        end
+        return false
+    end
+    if scanOnce() then return end
+    local descConn = CoreGui.DescendantAdded:Connect(function(d)
+        if (d:IsA("TextLabel") or d:IsA("TextButton")) then
+            if d.Text == targetTitle then
+                attachToLabel(d)
+            else
+                local onceConn
+                onceConn = d:GetPropertyChangedSignal("Text"):Connect(function()
+                    if d.Text == targetTitle then
+                        pcall(function() onceConn:Disconnect() end)
+                        attachToLabel(d)
+                    end
+                end)
+                task.delay(3, function()
+                    if onceConn then pcall(function() onceConn:Disconnect() end) end
+                end)
+            end
+        end
+    end)
+    local prevConn = config.varibz.rng6connection
+    config.varibz.rng6connection = {
+        Disconnect = function()
+            pcall(function() descConn:Disconnect() end)
+            if prevConn then pcall(function() prevConn:Disconnect() end) end
+            config.varibz.rng6label = nil
+        end
+    }
+end
 local function rng4()
     if not config.varibz.rng4 then
         config.varibz.rng4 = {
@@ -11675,6 +11793,7 @@ task.wait(0.2)
 uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
 eye_con()
 rng4()
+rng6()
 task.defer(function()
     task.wait(0.5)
     SaveUI:autoLoad()
