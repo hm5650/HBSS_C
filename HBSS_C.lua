@@ -201,10 +201,10 @@ local config = {
     SA2_GetTarget = "Closest",
     SA2_AimMethod = {"Raycast"},
     SA2_currentTarget = nil,
-    SA2_TArea = 35,
     SA2_TargetRange = 500,
     SA2_Wallbang = false,
     SA2_BulletTeleport = false,
+    SA2_Prediction = 0,
     customRemoteNames = {"hit", "bullet", "projectile", "hitscan"},
     detectedRemotes = {},
     currentTarget = nil,
@@ -250,6 +250,7 @@ local config = {
     aimbotStrength = 0.5,
     aimbotWallCheck = false,
     aimbotTargetPart = "Head",
+    aimbotPrediction = 0,
     aimbotTeamTarget = "Enemies",
     aimbotCurrentTarget = nil,
     aimbotFOVRing = nil,
@@ -544,6 +545,12 @@ local config = {
                 "just a window tag sitting here",
                 "typing text every day",
                 "for eternity",
+            },
+            {
+                "gravel likes shovel",
+                "because shovel is gravel",
+                "and gravel is shovel",
+                "and shovel",
             },
             {
                 "watch Gravel Poot..",
@@ -3792,6 +3799,7 @@ local function saveConfig(saveName)
             aimbot360Enabled = config.aimbot360Enabled,
             aimbotTargetPart = config.aimbotTargetPart,
             aimbotTargetRange = config.aimbotTargetRange or 500,
+            aimbotPrediction = config.aimbotPrediction,
             aimbotStrength = config.aimbotStrength,
             aimbotFOVSize = config.aimbotFOVSize,
             aimbotGetTarget = config.aimbotGetTarget,
@@ -3816,6 +3824,7 @@ local function saveConfig(saveName)
             SA2_HitChance = config.SA2_HitChance,
             SA2_FovRadius = config.SA2_FovRadius,
             SA2_HeadshotChance = config.SA2_HeadshotChance,
+            SA2_Prediction = config.SA2_Prediction,
             SA2_TargetRange = config.SA2_TargetRange,
             SA2_TeamTarget = config.SA2_TeamTarget,
             SA2_GetTarget = config.SA2_GetTarget,
@@ -4490,6 +4499,7 @@ local function loadSave(saveName)
     if cfg.aimbotWallCheck ~= nil then config.aimbotWallCheck = cfg.aimbotWallCheck end
     if cfg.aimbot360Enabled ~= nil then config.aimbot360Enabled = cfg.aimbot360Enabled end
     if cfg.aimbotTargetRange then config.aimbotTargetRange = cfg.aimbotTargetRange end
+    if cfg.aimbotPrediction then config.aimbotPrediction = cfg.aimbotPrediction end
     if cfg.aimbotTargetPart then config.aimbotTargetPart = cfg.aimbotTargetPart end
     if cfg.aimbotStrength then config.aimbotStrength = cfg.aimbotStrength end
     if cfg.aimbotFOVSize then config.aimbotFOVSize = cfg.aimbotFOVSize end
@@ -4513,6 +4523,7 @@ local function loadSave(saveName)
     if cfg.SA2_HitChance then config.SA2_HitChance = cfg.SA2_HitChance end
     if cfg.SA2_FovRadius then config.SA2_FovRadius = cfg.SA2_FovRadius end
     if cfg.SA2_HeadshotChance then config.SA2_HeadshotChance = cfg.SA2_HeadshotChance end
+    if cfg.SA2_Prediction then config.SA2_Prediction = cfg.SA2_Prediction end
     if cfg.SA2_TargetRange then config.SA2_TargetRange = cfg.SA2_TargetRange end
     if cfg.SA2_TeamTarget then config.SA2_TeamTarget = cfg.SA2_TeamTarget end
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
@@ -6080,6 +6091,31 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     end
 end)
 
+local function predictthatpos(targetPart, velocityOverride)
+    if not targetPart or not targetPart.Parent then
+        return targetPart and targetPart.Position or nil
+    end
+
+    local predTime = tonumber(config.SA2_Prediction) or 0
+    if predTime <= 0 then
+        return targetPart.Position
+    end
+
+    local velocity = velocityOverride
+    if not velocity then
+        local ok, vel = pcall(function() return targetPart.Velocity end)
+        if not ok or not vel then
+            velocity = Vector3.new(0, 0, 0)
+        else
+            velocity = vel
+        end
+    end
+    local maxPredict = 0.5
+    local clampedTime = math.clamp(predTime, 0, maxPredict)
+
+    return targetPart.Position + (velocity * clampedTime)
+end
+
 local function calc_chance(chance)
     if chance == 100 then
         return true
@@ -6134,7 +6170,10 @@ local function mouse()
                 if not cam then
                     return mouseywousey(self, key)
                 end
-                local targetPos = folkenstein______.Position
+                local targetPos = predictthatpos(folkenstein______)
+                if not targetPos then
+                    return mouseywousey(self, key)
+                end
                 local dir = (targetPos - cam.CFrame.Position)
                 if dir.Magnitude < 0.001 then
                     return mouseywousey(self, key)
@@ -6150,7 +6189,11 @@ local function mouse()
                     return mouseywousey(self, key)
                 end
                 local origin = cam.CFrame.Position
-                local dir = (folkenstein______.Position - origin)
+                local predPos = predictthatpos(folkenstein______)
+                if not predPos then
+                    return mouseywousey(self, key)
+                end
+                local dir = (predPos - origin)
                 if dir.Magnitude < 0.001 then
                     return mouseywousey(self, key)
                 end
@@ -6158,12 +6201,16 @@ local function mouse()
             elseif key == "X" then
                 local cam = workspace.CurrentCamera
                 if not cam then return mouseywousey(self, key) end
-                local sp = cam:WorldToViewportPoint(folkenstein______.Position)
+                local predPos = predictthatpos(folkenstein______)
+                if not predPos then return mouseywousey(self, key) end
+                local sp = cam:WorldToViewportPoint(predPos)
                 return sp.X
             elseif key == "Y" then
                 local cam = workspace.CurrentCamera
                 if not cam then return mouseywousey(self, key) end
-                local sp = cam:WorldToViewportPoint(folkenstein______.Position)
+                local predPos = predictthatpos(folkenstein______)
+                if not predPos then return mouseywousey(self, key) end
+                local sp = cam:WorldToViewportPoint(predPos)
                 return sp.Y
             end
 
@@ -6189,7 +6236,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local method = getnamecallmethod()
     local rayo = (method == "Raycast")
     local remotebattery = (method == "FireServer" or method == "InvokeServer")
-    
+
     if not rayo and not remotebattery then
         return callmyoldname(...)
     end
@@ -6199,7 +6246,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local raycatism = false
     local daserverisonfire = false
     local invokedatserver = false
-    
+
     for _, aimMethod in ipairs(config.SA2_AimMethods or {}) do
         if aimMethod == "Raycast" then
             raycatism = true
@@ -6209,11 +6256,11 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
             invokedatserver = true
         end
     end
-    
+
     if rayo and not raycatism then
         return callmyoldname(...)
     end
-    
+
     if remotebattery then
         if method == "FireServer" and not daserverisonfire then
             return callmyoldname(...)
@@ -6221,7 +6268,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
         if method == "InvokeServer" and not invokedatserver then
             return callmyoldname(...)
         end
-        
+
         if typeof(self) ~= "Instance"
             or not (self:IsA("RemoteEvent")
                 or self:IsA("RemoteFunction")
@@ -6241,7 +6288,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
             return callmyoldname(...)
         end
     end
-    
+
     local function rollChance(chance)
         if chance == 100 then return true end
         if chance <= 0 then return false end
@@ -6251,17 +6298,20 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
         config.SA2_FovIsTargeted = false
         return callmyoldname(...)
     end
-    
+
     local HitPart = folkenstein______
     if not HitPart or not HitPart.Parent then
         config.SA2_FovIsTargeted = false
         return callmyoldname(...)
     end
     config.SA2_FovIsTargeted = true
-    local targetPos = HitPart.Position
+    local targetPos = predictthatpos(HitPart)
+    if not targetPos then
+        return callmyoldname(...)
+    end
     local targetCFrame = CFrame.new(targetPos)
     local Arguments = {...}
-    
+
     if rayo then
         local Origin = Arguments[2]
         local Direction = Arguments[3]
@@ -6435,7 +6485,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
             return val
         end
     end
-    
+
     for i = 1, #newArgs do
         local arg = newArgs[i]
         local t = typeof(arg)
@@ -6456,7 +6506,7 @@ callmyoldname = hookmetamethod(game, "__namecall", newcclosure(function(...)
             newArgs[i] = rewriteValue(arg, "direction")
         end
     end
-    
+
     if config.SA2_Wallbang then
         for i = 1, #newArgs do
             local arg = newArgs[i]
@@ -9406,6 +9456,26 @@ local function smoothAim(currentCFrame, targetCFrame, strength)
     return currentCFrame:Lerp(targetCFrame, strength)
 end
 
+local function predictthatposagain(targetPart)
+    if not targetPart or not targetPart.Parent then
+        return targetPart and targetPart.Position or nil
+    end
+
+    local predTime = tonumber(config.aimbotPrediction) or 0
+    if predTime <= 0 then
+        return targetPart.Position
+    end
+
+    local ok, vel = pcall(function() return targetPart.Velocity end)
+    if not ok or not vel then
+        vel = Vector3.new(0, 0, 0)
+    end
+    local maxPredict = 0.5
+    local clampedTime = math.clamp(predTime, 0, maxPredict)
+
+    return targetPart.Position + (vel * clampedTime)
+end
+
 local function aimbotUpdate()
     if not config.aimbotEnabled then
         if config.aimbotCurrentTarget then
@@ -9532,19 +9602,21 @@ local function aimbotUpdate()
     if bestTarget.part and localPlayer.Character then
         local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
         if humanoid and humanoid.Health > 0 then
-            local targetPosition = bestTarget.part.Position
+            local targetPosition = predictthatposagain(bestTarget.part)
+            if not targetPosition then
+                targetPosition = bestTarget.part.Position
+            end
             local currentCFrame = camera.CFrame
             local targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
-            
             local strength = math.clamp(config.aimbotStrength, 0, 1)
             if strength < 1 then
                 targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
             end
-            
             camera.CFrame = targetCFrame
         end
     end
 end
+
 local function aimbotfov()
     if config.aimbotFOVRing and config.aimbotFOVRing.ScreenGui 
        and config.aimbotFOVRing.ScreenGui.Parent 
@@ -11912,7 +11984,7 @@ end)
     
     MainTab:Dropdown({
         Title = "GetTarget",
-        Desc = "Target selection method",
+        Desc = "uhhhhh priority shi",
         Values = {"Closest", "Lowest Health", "TargetSeen"},
         Value = config.masterGetTarget or "Closest",
         Multi = false,
@@ -13605,6 +13677,21 @@ local AimbotTab = Window:Tab({
             config.aimbotStrength = value
         end
     })
+
+AimbotTab:Slider({
+    Title = "Prediction",
+    Desc = "predict da future lols",
+    Step = 0.01,
+    Suffix = "s",
+    Value = {
+        Min = 0,
+        Max = 0.5,
+        Default = config.aimbotPrediction or 0
+    },
+    Callback = function(value)
+        config.aimbotPrediction = value
+    end
+})
     
     AimbotTab:Slider({
         Title = "FOV Radius",
@@ -13975,6 +14062,21 @@ SilentAimTab2:Slider({
     },
     Callback = function(value)
         config.SA2_HeadshotChance = value
+    end
+})
+
+SilentAimTab2:Slider({
+    Title = "Prediction",
+    Desc = "predict da future",
+    Step = 0.01,
+    Suffix = "s",
+    Value = {
+        Min = 0,
+        Max = 0.5,
+        Default = config.SA2_Prediction or 0
+    },
+    Callback = function(value)
+        config.SA2_Prediction = value
     end
 })
 
@@ -15980,7 +16082,7 @@ InfoTab:Space()
 
     InfoTab:Paragraph({
         Title = "BotTab",
-        Desc = "Deleted due to 200 variable limit & uselessness",
+        Desc = "Deleted due to 200 variable limit & uselessness\nand I'm not gonna add it anyway cuz I'm tooo lazy",
         Color = config.Gradow.uicolor.Red
     })
 InfoTab:Space()
