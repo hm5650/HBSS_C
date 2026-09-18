@@ -586,6 +586,15 @@ local config = {
                 "prolly nothing ;p",
             },
             {
+                "tbh I have no idea on what to say",
+                "so I'm gonna say that",
+                "saying that is that",
+                "and say say",
+                "just to say to be said",
+                "and then said after them",
+                "to be said",
+            },
+            {
                 typesp = "3.5",
                 "dustin lucas will mike me-",
                 "adrian christian hernandez\nor the locals call me 'A'",
@@ -5790,9 +5799,18 @@ config.varibz.raycats.ihazrays.FilterType = Enum.RaycastFilterType.Exclude
 config.varibz.raycats.ihazrays.IgnoreWater = true
 
 local function IsPlayerVisible(player, maxDistance)
-    local PlayerCharacter = player.Character
+    local isPlayer = typeof(player) == "Instance" and player:IsA("Player")
+    local isModel = typeof(player) == "Instance" and player:IsA("Model")
+    if not isPlayer and not isModel then return false end
+    local PlayerCharacter
+    if isPlayer then
+        PlayerCharacter = player.Character
+    else
+        PlayerCharacter = player
+    end
+    if not PlayerCharacter then return false end
     local LocalPlayerCharacter = plr.Character
-    if not (PlayerCharacter and LocalPlayerCharacter) then return false end
+    if not LocalPlayerCharacter then return false end
     local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
     if not PlayerRoot then return false end
     local LocalRoot = LocalPlayerCharacter:FindFirstChild("Head") or LocalPlayerCharacter:FindFirstChild("HumanoidRootPart")
@@ -5827,8 +5845,12 @@ local function IsPlayerVisible(player, maxDistance)
     config.varibz.raycats.raycat.FilterDescendantsInstances = config.varibz.sa2dump.flist
     local result = workspace:Raycast(origin, dir.Unit * distance, config.varibz.raycats.raycat)
     if not result then return true end
-    local hitParent = result.Instance.Parent
+    local hitInstance = result.Instance
+    local hitParent = hitInstance and hitInstance.Parent
     if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
+        return true
+    end
+    if hitInstance == PlayerCharacter then
         return true
     end
     return false
@@ -6053,16 +6075,7 @@ local function GetClosestPlayer()
                                 if cached and (currentTime - cached.time) < 0.2 then
                                     visible = cached.visible
                                 else
-                                    if isPlayer then
-                                        visible = IsPlayerVisible(p, config.SA2_TargetRange)
-                                    else
-                                        local dir = part.Position - camPos
-                                        local dist = dir.Magnitude
-                                        local rayParams = config.varibz.raycats.raycat
-                                        rayParams.FilterDescendantsInstances = {character, char}
-                                        local result = workspace:Raycast(camPos, dir.Unit * dist, rayParams)
-                                        visible = (result == nil)
-                                    end
+                                    visible = IsPlayerVisible(p, config.SA2_TargetRange)
                                     config.varibz.sa2dump.cache[cacheKey] = {
                                         visible = visible,
                                         time = currentTime
