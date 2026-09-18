@@ -32,6 +32,7 @@ print([[
            “chocolate hazelnut gravel cake :3” 
                                            
                                     - Gpssickle
+
 ]])
 
 -- Gravel.cc (or HBSS :v)
@@ -2454,6 +2455,7 @@ local config = {
             fcache = {},
             rcache = {},
             rat = false,
+            validPlayers = {},
             lclr = 0,
             flist = {},
             flt = 0,
@@ -6734,7 +6736,6 @@ excusemesir.RunService.Heartbeat:Connect(function()
     local screenCenter = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     
     if config.varibz.respawnLock then
-        CircleFrame.Visible = false
         return
     end
     if config.SA2_Enabled and config.SA2_FovVisible and not config.SA2_ThreeSixtyMode then
@@ -16511,7 +16512,6 @@ aimbotfov()
 local function sjuwhjwjeeuhdjxoah_iejwendkisj()
     plr.CharacterAdded:Connect(function(character)
         if config.varibz.respawnLock then
-            task.wait(1)
             
             local humanoid = character:WaitForChild("Humanoid", 5)
             if humanoid and humanoid.Health > 0 then
@@ -16555,7 +16555,7 @@ local function sjuwhjwjeeuhdjxoah_iejwendkisj()
     end
     
     plr.CharacterAdded:Connect(function()
-        task.wait(0.3)
+        task.wait(0.02)
         trackHumanoidDeath()
     end)
 end
