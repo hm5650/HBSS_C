@@ -108,7 +108,7 @@ getgenv().HttpUrlz_ = {
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
 }
-function getgist_(url, how, sigma)
+local function getgist_(url, how, sigma)
     how = how or 10
     sigma = sigma or 1
     local attempts = 0
@@ -159,7 +159,6 @@ local gui = {}
 local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
-local GetPlayers = excusemesir.Players.GetPlayers
 local lastCharacter = nil
 local camera = workspace.CurrentCamera
 local humanoid = nil
@@ -309,7 +308,6 @@ local config = {
     aimbotTargetRange = 500,
     customFOVEnabled = false,
     customFOVValue = 70,
-    fbenabled = false,
     targetSeenSwitchRate = 0.2,
     lastTargetSwitchTime = 0,
     targetSeenTargets = {},
@@ -385,6 +383,19 @@ local config = {
     camYOffsetValue = 0,
     camYOffsetOriginalCFrame = nil,
     camYOffsetConnection = nil,
+    fullbrightValue = 0,
+    clockTimeValue = 0,
+    skyboxValue = "0",
+    originalSkybox = nil,
+    desyncActive = false,
+    desyncSeat = nil,
+    desyncWeld = nil,
+    desyncLoop = nil,
+    desyncCleanupLoop = nil,
+    desyncRespawnConnection = nil,
+    desyncSavedCFrame = nil,
+    desyncHiddenPos = nil,
+    desyncTransparency = 0.5,
     spinbot = {
         enabled = false,
         speed = 50,
@@ -2444,7 +2455,6 @@ local config = {
         remotespara = nil,
         remotesInput = nil,
         hbConnections = {},
-        wasEnabledBeforeDeath = false,
         wasESPEnabledBeforeDeath = false,
         respawnLock = false,
         aimbot360LoopRunning = false,
@@ -2495,6 +2505,10 @@ local config = {
         Rng5stuff = nil,
         Rng3dis = {},
         orgfov = nil,
+        lastFullbright = nil,
+        lastClockTime = nil,
+        lastSkybox = nil,
+        fullBrightSettings = nil,
         autoloadParagraph = nil,
         autoloadMemoryFile = "Gravel_Saves/assets/memory.json",
         candidates = {},
@@ -2543,7 +2557,7 @@ local config = {
             openStroke = nil,
             openGradient = nil,
             windowStroke = nil,
-            windowGradient = nil
+            windowGradient = nil,
         },
         eyecon = {
             normal = "rbxassetid://96858797315175",
@@ -2593,14 +2607,14 @@ n({
     BarColor = Color3.fromRGB(0, 170, 255)
 })
 
-subside_I_I_I_I_I_ = function()
+local subside_I_I_I_I_I_ = function()
     if not Window or not Window.UIElements or not Window.UIElements.Main then return true end
     local sizeY = Window.UIElements.Main.Size.Y.Offset
     if sizeY < 50 then return true end
     return false
 end
 
-function gestalt_______(state)
+local function gestalt_______(state)
     config.antikick = state
     if state then
         if not hookmetamethod or not hookfunction then 
@@ -2725,7 +2739,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+local function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -3864,7 +3878,6 @@ local function saveConfig(saveName)
                 G = config.lineColor.G,
                 B = config.lineColor.B
             },
-            fbenabled = config.fbenabled,
             fovc = {
                 R = config.fovc.R,
                 G = config.fovc.G,
@@ -3916,6 +3929,9 @@ local function saveConfig(saveName)
                 G = config.visualizer.color.G,
                 B = config.visualizer.color.B
             },
+            fullbrightValue = config.fullbrightValue,
+            clockTimeValue = config.clockTimeValue,
+            skyboxValue = config.skyboxValue or "0",
             antiAimEnabled = config.antiAimEnabled,
             raycastAntiAim = config.raycastAntiAim,
             antiAimAbovePlayer = config.antiAimAbovePlayer,
@@ -4015,7 +4031,6 @@ local function saveConfig(saveName)
             tbot_pressDown = config.tbot.pressDown,
             bhop_enabled = config.bhop.enabled,
             antiafk = config.antiafk,
-            Viewing = config.Viewing,
             camYOffsetEnabled = config.camYOffsetEnabled,
             camYOffsetValue = config.camYOffsetValue,
             Keybinds = config.Keybinds,
@@ -4479,25 +4494,12 @@ local function loadSave(saveName)
             end
             config.autorespawnConnections = {}
         end
-        config.Viewing = false
-        if config.varibz.ViewConnection then
-            config.varibz.ViewConnection:Disconnect()
-            config.varibz.ViewConnection = nil
-        end
         config.camYOffsetEnabled = false
         if config.camYOffsetConnection then
             config.camYOffsetConnection:Disconnect()
             config.camYOffsetConnection = nil
         end
         config.camYOffsetOriginalCFrame = nil
-        config.fbenabled = false
-        if fullBrightSettings then
-            local lighting = excusemesir.Lighting
-            for property, value in pairs(fullBrightSettings) do
-                lighting[property] = value
-            end
-            fullBrightSettings = nil
-        end
         config.QuickToggles = false
         KillQT()
         config.antiafk = false
@@ -4546,6 +4548,9 @@ local function loadSave(saveName)
             gui.mobileGui.UpdateLayout()
         end
     end
+    if cfg.fullbrightValue then config.fullbrightValue = cfg.fullbrightValue end
+    if cfg.clockTimeValue then config.clockTimeValue = cfg.clockTimeValue end
+    if cfg.skyboxValue then config.skyboxValue = cfg.skyboxValue end
     if cfg.espMasterEnabled ~= nil then config.espMasterEnabled = cfg.espMasterEnabled end
     if cfg.prefHighlightESP ~= nil then config.prefHighlightESP = cfg.prefHighlightESP end
     if cfg.prefTextESP ~= nil then config.prefTextESP = cfg.prefTextESP end
@@ -4573,7 +4578,6 @@ local function loadSave(saveName)
     if cfg.lineColor then
         config.lineColor = Color3.new(cfg.lineColor.R or 1, cfg.lineColor.G or 1, cfg.lineColor.B or 1)
     end
-    if cfg.fbenabled ~= nil then config.fbenabled = cfg.fbenabled end
     if cfg.fovc then
         config.fovc = Color3.new(cfg.fovc.R or 0.39, cfg.fovc.G or 0, cfg.fovc.B or 0)
     end
@@ -4724,7 +4728,6 @@ local function loadSave(saveName)
     if cfg.tbot_pressDown ~= nil then config.tbot.pressDown = cfg.tbot_pressDown end
     if cfg.bhop_enabled ~= nil then config.bhop.enabled = cfg.bhop_enabled end
     if cfg.antiafk ~= nil then config.antiafk = cfg.antiafk end
-    if cfg.Viewing ~= nil then config.Viewing = cfg.Viewing end
     if cfg.camYOffsetEnabled ~= nil then config.camYOffsetEnabled = cfg.camYOffsetEnabled end
     if cfg.camYOffsetValue then config.camYOffsetValue = cfg.camYOffsetValue end
     if cfg.Keybinds then
@@ -4859,191 +4862,6 @@ local function loadSave(saveName)
         end
     end)
     pcall(function()
-        if config.Viewing then
-            local Players = excusemesir.Players
-            local RunService = excusemesir.RunService
-            local Camera = workspace.CurrentCamera
-            if config.varibz.ViewConnection then
-                config.varibz.ViewConnection:Disconnect()
-                config.varibz.ViewConnection = nil
-            end
-            local function isEnemy(player)
-                if not player or player == Players.LocalPlayer then return false end
-                local localTeam = Players.LocalPlayer.Team
-                local targetTeam = player.Team
-                if config.masterTeamTarget == "All" then
-                    return true
-                elseif config.masterTeamTarget == "Enemies" then
-                    if localTeam and targetTeam then
-                        return localTeam ~= targetTeam
-                    end
-                    return true
-                elseif config.masterTeamTarget == "Teams" then
-                    if localTeam and targetTeam then
-                        return localTeam == targetTeam
-                    end
-                    return false
-                end
-                return true
-            end
-            local function isNPCEnemy(model)
-                if not model or not model:IsA("Model") then return false end
-                if Players:GetPlayerFromCharacter(model) then return false end
-                local humanoid = model:FindFirstChildOfClass("Humanoid")
-                if not humanoid or humanoid.Health <= 0 then return false end
-                if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
-                if config.masterTeamTarget == "All" then
-                    return true
-                elseif config.masterTeamTarget == "Enemies" then
-                    return true
-                elseif config.masterTeamTarget == "Teams" then
-                    return false
-                end
-                return true
-            end
-            local function GetNearestTarget()
-                local localPlayer = Players.LocalPlayer
-                local localChar = localPlayer.Character
-                if not localChar then return nil end
-                local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
-                if not localRoot then return nil end
-                local nearestTarget = nil
-                local nearestDistance = math.huge
-                local masterTarget = config.masterTarget or "Players"
-                if masterTarget == "Players" or masterTarget == "Both" then
-                    for _, plr in ipairs(Players:GetPlayers()) do
-                        if plr ~= localPlayer
-                            and plr.Character
-                            and plr.Character:FindFirstChild("HumanoidRootPart")
-                            and isEnemy(plr)
-                        then
-                            local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-                            if humanoid and humanoid.Health > 0 then
-                                if not config.ignoreForcefield or not hasForcefield(plr.Character) then
-                                    local targetRoot = plr.Character:FindFirstChild("HumanoidRootPart")
-                                    if targetRoot then
-                                        local distance = (localRoot.Position - targetRoot.Position).Magnitude
-                                        if distance < nearestDistance then
-                                            nearestDistance = distance
-                                            nearestTarget = {
-                                                type = "player",
-                                                instance = plr,
-                                                character = plr.Character
-                                            }
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-                if masterTarget == "NPCs" or masterTarget == "Both" then
-                    for _, obj in ipairs(workspace:GetDescendants()) do
-                        if obj:IsA("Model") and isNPCEnemy(obj) then
-                            local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
-                            if rootPart then
-                                local humanoid = obj:FindFirstChildOfClass("Humanoid")
-                                if humanoid and humanoid.Health > 0 then
-                                    if not config.ignoreForcefield or not hasForcefield(obj) then
-                                        local distance = (localRoot.Position - rootPart.Position).Magnitude
-                                        if distance < nearestDistance then
-                                            nearestDistance = distance
-                                            nearestTarget = {
-                                                type = "npc",
-                                                instance = obj,
-                                                character = obj,
-                                                rootPart = rootPart
-                                            }
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-                return nearestTarget
-            end
-            local function FindTargetWithLoop(maxAttempts)
-                local attempts = 0
-                local target = nil
-                while attempts < (maxAttempts or 50) do
-                    target = GetNearestTarget()
-                    if target then
-                        return target
-                    end
-                    attempts = attempts + 1
-                    task.wait(0.1)
-                end
-                return nil
-            end
-            local Target = FindTargetWithLoop(30)
-            if not Target then
-                config.Viewing = false
-                n({
-                    Title = "Gravel.cc",
-                    Content = "where da robloxians",
-                    Audio = "rbxassetid://17208361335",
-                    Length = 2,
-                    Image = "rbxassetid://4483362458",
-                    BarColor = Color3.fromRGB(255, 0, 0)
-                })
-                return
-            end
-            Camera.CameraType = Enum.CameraType.Scriptable
-            local retryCounter = 0
-            config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
-                if not config.Viewing then
-                    return
-                end
-                local isValid = false
-                if Target.type == "player" then
-                    isValid = Target.instance
-                        and Target.instance.Character
-                        and Target.instance.Character:FindFirstChild("HumanoidRootPart")
-                        and isEnemy(Target.instance)
-                        and Target.instance.Character:FindFirstChildOfClass("Humanoid")
-                        and Target.instance.Character:FindFirstChildOfClass("Humanoid").Health > 0
-                elseif Target.type == "npc" then
-                    isValid = Target.instance
-                        and Target.instance.Parent
-                        and Target.instance:FindFirstChild("HumanoidRootPart")
-                        and isNPCEnemy(Target.instance)
-                        and Target.instance:FindFirstChildOfClass("Humanoid")
-                        and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
-                end
-                if not isValid then
-                    retryCounter = retryCounter + 1
-                    local newTarget = FindTargetWithLoop(20)
-                    if newTarget then
-                        Target = newTarget
-                        retryCounter = 0
-                        return
-                    end
-                    if retryCounter > 100000 then
-                        config.Viewing = false
-                        Camera.CameraType = Enum.CameraType.Custom
-                        return
-                    end
-                    task.wait(0.1)
-                    return
-                else
-                    retryCounter = 0
-                end
-                local HRP = nil
-                if Target.type == "player" then
-                    HRP = Target.instance.Character.HumanoidRootPart
-                elseif Target.type == "npc" then
-                    HRP = Target.instance.HumanoidRootPart
-                end
-                if not HRP then
-                    return
-                end
-                local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
-                Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
-            end)
-        end
-    end)
-    pcall(function()
         if config.camYOffsetEnabled then
             if not config.camYOffsetConnection then
                 config.camYOffsetConnection = excusemesir.RunService.RenderStepped:Connect(function()
@@ -5171,25 +4989,6 @@ local function loadSave(saveName)
         end
     end)
     pcall(function()
-        if config.fbenabled then
-            local lighting = excusemesir.Lighting
-            fullBrightSettings = {
-                Ambient = lighting.Ambient,
-                Brightness = lighting.Brightness,
-                ClockTime = lighting.ClockTime,
-                FogEnd = lighting.FogEnd,
-                GlobalShadows = lighting.GlobalShadows,
-                OutdoorAmbient = lighting.OutdoorAmbient
-            }
-            lighting.Ambient = Color3.fromRGB(255, 255, 255)
-            lighting.Brightness = 2
-            lighting.FogEnd = 100000
-            lighting.GlobalShadows = false
-            lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-            lighting.ClockTime = 14
-        end
-    end)
-    pcall(function()
         if config.QuickToggles then
             CreateQT()
         end
@@ -5253,12 +5052,12 @@ local function savePara()
     return saveText
 end
 
-function ineedassetfolderrr_()
+local function ineedassetfolderrr_()
     if not isfolder("Gravel_Saves/assets") then
         pcall(function() makefolder("Gravel_Saves/assets") end)
     end
 end
-function raedmahbrain_()
+local function raedmahbrain_()
     ineedassetfolderrr_()
     if not isfile(config.varibz.autoloadMemoryFile) then
         return {}
@@ -5278,7 +5077,7 @@ function raedmahbrain_()
     
     return success and decoded or {}
 end
-function writehaxsandstuff_(memoryData)
+local function writehaxsandstuff_(memoryData)
     ineedassetfolderrr_()
     local success, encoded = pcall(function()
         return game:GetService("HttpService"):JSONEncode(memoryData)
@@ -5307,7 +5106,7 @@ function ineedgaemforaotu_()
     end
     return "Unknown Game"
 end
-function SETDAAUTOLAOD_(saveName)
+local function SETDAAUTOLAOD_(saveName)
     if not saveName or saveName == "" then
         n({
             Title = "Gravel.cc",
@@ -5390,7 +5189,7 @@ function SETDAAUTOLAOD_(saveName)
         return false
     end
 end
-function nullifymahfilez_()
+local function nullifymahfilez_()
     local gameId = tostring(getdagaem_())
     local gameName = ineedgaemforaotu_()
     
@@ -5436,7 +5235,7 @@ function nullifymahfilez_()
     end
 end
 
-function autolaodbssthing_()
+local function autolaodbssthing_()
     local memory = raedmahbrain_()
     local modified = false
     local removedCount = 0
@@ -5462,7 +5261,7 @@ function autolaodbssthing_()
     return removedCount
 end
 
-function autolaodpara()
+local function autolaodpara()
     local memory = raedmahbrain_()
     local text = "Autoload Settings:\n"
     local hasEntries = false
@@ -5482,7 +5281,7 @@ function autolaodpara()
         config.varibz.autoloadParagraph:SetDesc(text)
     end
 end
-function startdaautlado_()
+local function startdaautlado_()
     local gameId = tostring(getdagaem_())
     local memory = raedmahbrain_()
     autolaodbssthing_()
@@ -5854,15 +5653,6 @@ local function IsPlayerVisible(player, maxDistance)
         return true
     end
     return false
-end
-local function getVis(target, maxDistance)
-    local targetId = ""
-    if typeof(target) == "Instance" then
-        if target:IsA("Player") then
-            targetId = "player_" .. tostring(target.UserId)
-        end
-    end
-    return targetId .. "_" .. tostring(maxDistance)
 end
 local function isTargetVisible(target, maxDistance)
     local now = tick()
@@ -6835,7 +6625,7 @@ local function ineednextgenrep(state)
             return false
         end
         config.desyncSavedCFrame = root.CFrame
-        local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 50000, root.Position.Z)
+        local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 0, root.Position.Z)
         config.desyncHiddenPos = hiddenPos
         char:MoveTo(hiddenPos)
         task.wait()
@@ -6968,7 +6758,7 @@ local function gonextgenrep()
     local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
     if not root or not torso then return end
     config.desyncSavedCFrame = root.CFrame
-    local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 50000, root.Position.Z)
+    local hiddenPos = Vector3.new(root.Position.X, root.Position.Y + 0, root.Position.Z)
     config.desyncHiddenPos = hiddenPos
     char:MoveTo(hiddenPos)
     task.wait()
@@ -9822,38 +9612,6 @@ local function handleAimbotToggle(state)
     updateAimbotFOVRing()
 end
 
-local function aimbot360UpdateLoop()
-    if config.varibz.aimbot360LoopRunning then
-        return
-    end
-
-    if not config.aimbotEnabled then
-        return
-    end
-
-    if not config.aimbot360Enabled then
-        config.aimbot360Enabled = true
-    end
-
-    config.varibz.aimbot360LoopRunning = true
-
-    config.varibz.aimbot360LoopTask = task.defer(function()
-        while config.varibz.aimbot360LoopRunning do
-            if config.aimbotEnabled and config.aimbot360Enabled then
-                aimbotUpdate()
-            else
-                config.varibz.aimbot360LoopRunning = false
-                break
-            end
-
-            task.wait(0.1)
-        end
-
-        config.varibz.aimbot360LoopRunning = false
-        config.varibz.aimbot360LoopTask = nil
-    end)
-end
-
 local function smthsmth(charToInclude)
     local now = tick()
     if now - config.varibz.tbotdump.stuff < 0.5 and #config.varibz.tbotdump.cacheigl > 0 then
@@ -11163,36 +10921,6 @@ local function onRenderStep()
         end
     end
 end
-local function getClosestVictim()
-    if not Options.TargetPart.Value then return end
-    local Closest
-    local DistanceToMouse
-    for _, Player in next, GetPlayers(Players) do
-        if Player == LocalPlayer then continue end
-        if Toggles.TeamCheck.Value and Player.Team == LocalPlayer.Team then continue end
-
-        local Character = Player.Character
-        if not Character then continue end
-        
-        if config.ignoreForcefield and hasForcefield(Character) then continue end
-        
-        if Toggles.VisibleCheck.Value and not IsPlayerVisible(Player) then continue end
-
-        local HumanoidRootPart = FindFirstChild(Character, "HumanoidRootPart")
-        local Humanoid = FindFirstChild(Character, "Humanoid")
-        if not HumanoidRootPart or not Humanoid or Humanoid and Humanoid.Health <= 0 then continue end
-
-        local ScreenPosition, OnScreen = getPositionOnScreen(HumanoidRootPart.Position)
-        if not OnScreen then continue end
-
-        local Distance = (getMousePosition() - ScreenPosition).Magnitude
-        if Distance <= (DistanceToMouse or Options.Radius.Value or 2000) then
-            Closest = ((Options.TargetPart.Value == "Random" and Character[ValidTargetParts[math.random(1, #ValidTargetParts)]]) or Character[Options.TargetPart.Value])
-            DistanceToMouse = Distance
-        end
-    end
-    return Closest
-end
 local function cos(input)
     if not input then return nil end
     local function proc(data)
@@ -11954,7 +11682,7 @@ local MainTab = Window:Tab({
 }) do
     MainTab:Paragraph({
         Title = "MainTab Settings",
-        Desc = "Global settings for targeting and utilities",
+        Desc = "Global settings for targeting and utilities :°",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -11968,7 +11696,7 @@ MainTab:Toggle({
 })
     MainTab:Paragraph({
         Title = "Global",
-        Desc = "Global configurations",
+        Desc = "Global stuff and stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -12315,7 +12043,7 @@ MainTab:Keybind({
     
     MainTab:Paragraph({
         Title = "Utilities",
-        Desc = "AutoFarm and utility features",
+        Desc = "AutoFarm and uhhh stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -12357,7 +12085,7 @@ MainTab:Keybind({
     
     MainTab:Dropdown({
         Title = "Align Part (Autofarm)",
-        Desc = "Part to align with crosshair",
+        Desc = "align to dat crosshair lole",
         Values = {"Head", "HumanoidRootPart"},
         Value = config.autoFarmTargetPart or "Head",
         Multi = false,
@@ -12368,7 +12096,7 @@ MainTab:Keybind({
     
     MainTab:Slider({
         Title = "TP Max Range (Autofarm)",
-        Desc = "Maximum distance to teleport targets",
+        Desc = "eyesight²",
         IsTextbox = true,
         Step = 50,
         Value = {
@@ -12383,7 +12111,7 @@ MainTab:Keybind({
     
     MainTab:Slider({
         Title = "TP Distance (Autofarm)",
-        Desc = "Teleport distance for autofarm",
+        Desc = "arms",
         IsTextbox = true,
         Step = 1,
         Value = {
@@ -12398,7 +12126,7 @@ MainTab:Keybind({
     
     MainTab:Slider({
         Title = "Vertical Offset (Autofarm)",
-        Desc = "Vertical offset for autofarm",
+        Desc = "uhhhh to upwards or downwards",
         IsTextbox = true,
         Step = 1,
         Value = {
@@ -12413,13 +12141,13 @@ MainTab:Keybind({
     
     MainTab:Paragraph({
         Title = "Optimization",
-        Desc = "Performance optimization settings",
+        Desc = "optimize this optimize that",
         Color = config.Gradow.uicolor.lightGreen
     })
     
     MainTab:Paragraph({
         Title = "Optimization",
-        Desc = "Copy and execute optimization code",
+        Desc = "Copy and execute optimization code :3",
         Color = config.Gradow.uicolor.darkGray,
         Buttons = {
             {
@@ -12483,7 +12211,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
     
     MainTab:Slider({
         Title = "Updaters speed",
-        Desc = "Increase performance when increased costs Accuracy",
+        Desc = "Increase performance when increased costs Accuracy & shi",
         IsTextbox = true,
         Step = 0.1,
         Value = {
@@ -12498,7 +12226,7 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
     
     MainTab:Toggle({
         Title = "Updaters",
-        Desc = "Stops other Updaters when disabled Increases performance\nCause features to not work",
+        Desc = "Stops other Updaters when disabled Increases performance\nCause features to not work D:",
         Value = config.varibz.patcher or true,
         Callback = function(v)
             config.varibz.patcher = v
@@ -12570,7 +12298,7 @@ MainTab:Toggle({
 
 MainTab:Paragraph({
     Title = "Save/Load",
-    Desc = "Save and load your configuration settings\n\n[some features won't be saved mb :< ]",
+    Desc = "Save and load your configuration settings\n\nalso if you see a ''(Incomp with S/L)'' it means;\n''it's not compatible with save/load'' ;p",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -12773,7 +12501,7 @@ VisualsTab:Slider({
     
     VisualsTab:Paragraph({
         Title = "ESP Components",
-        Desc = "Individual ESP component settings",
+        Desc = "Individual ESP people",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -12883,60 +12611,44 @@ VisualsTab:Slider({
     })
     VisualsTab:Space()
 
-VisualsTab:Toggle({
-    Title = "FullBright",
-    Desc = "night vision ig",
-    Value = false,
-    Callback = function(v)
-        config.fbenabled = v
-        if v then
-            local lighting = game:GetService("Lighting")
-            fullBrightSettings = {
-                Ambient = lighting.Ambient,
-                Brightness = lighting.Brightness,
-                ClockTime = lighting.ClockTime,
-                FogEnd = lighting.FogEnd,
-                GlobalShadows = lighting.GlobalShadows,
-                OutdoorAmbient = lighting.OutdoorAmbient
-            }
-
-            lighting.Ambient = Color3.fromRGB(255, 255, 255)
-            lighting.Brightness = 2
-            lighting.FogEnd = 100000
-            lighting.GlobalShadows = false
-            lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-            
-            lighting.ClockTime = 14
-            
-            n({
-                Title = "Gravel.cc",
-                Content = "FullBright: Enabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
-            })
-        else
-            if fullBrightSettings then
-                local lighting = game:GetService("Lighting")
-                for property, value in pairs(fullBrightSettings) do
-                    lighting[property] = value
-                end
-                fullBrightSettings = nil
-            end
-            
-            n({
-                Title = "Gravel.cc",
-                Content = "FullBright: Disabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(255, 0, 0)
-            })
-        end
+VisualsTab:Slider({
+    Title = "Brightness",
+    Desc = "atmospheric flashbang strength slider",
+    Step = 0.1,
+    Value = {
+        Min = 0,
+        Max = 10,
+        Default = config.fullbrightValue or 0
+    },
+    Callback = function(value)
+        config.fullbrightValue = value
     end
 })
 
+VisualsTab:Slider({
+    Title = "ClockTime",
+    Desc = "is it day or night... idk",
+    Step = 0.1,
+    Value = {
+        Min = 0,
+        Max = 24,
+        Default = config.clockTimeValue or 0
+    },
+    Callback = function(value)
+        config.clockTimeValue = value
+    end
+})
+
+VisualsTab:Input({
+    Title = "Skybox Changer",
+    Desc = "put ur skybox asset id here...\ndon't add ''rbxassetid://'' or u get stitches",
+    Placeholder = "0",
+    Value = config.skyboxValue or "0",
+    ClearTextOnFocus = false,
+    Callback = function(text)
+        config.skyboxValue = text
+    end
+})
 VisualsTab:Button({
     Title = "Kill Lighting",
     Desc = "get rid of lighting it's useless :/",
@@ -13009,7 +12721,7 @@ VisualsTab:Slider({
 VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "ESP Colors",
-    Desc = "Customize ESP colors",
+    Desc = "make the esp look pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -13379,7 +13091,7 @@ local AntiAimTab = Window:Tab({
 
     AntiAimTab:Paragraph({
         Title = "AntiAim Master",
-        Desc = "Master control for AntiAim features",
+        Desc = "Master control for AntiAim stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -13486,7 +13198,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Paragraph({
         Title = "AntiAim Settings",
-        Desc = "Configuration for AntiAim modes",
+        Desc = "sliders... a bunch of get away sliders",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -13642,11 +13354,19 @@ AntiAimTab:Slider({
 })
 
 AntiAimTab:Toggle({
-    Title = "Toggle Desync",
-    Desc = "(not compatible with save/load)",
+    Title = "Desync",
+    Desc = "it's not raknet desync it's uhhh smth-smth that still desyncs u\n\n(Incomp with S/L)",
     Value = false,
     Callback = function(v)
         ineednextgenrep(v)
+        n({
+            Title = "Gravel.cc",
+            Content = "Desync: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 8,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
     end
 })
 
@@ -13687,7 +13407,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Paragraph({
         Title = "Aimbot Master",
-        Desc = "Master control for aimbot features",
+        Desc = "Master control for aimbot stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
     AimbotTab:Space()
@@ -13710,7 +13430,7 @@ local AimbotTab = Window:Tab({
     
     AimbotTab:Paragraph({
         Title = "Aimbot Settings",
-        Desc = "Configuration for aimbot behavior",
+        Desc = "make the aimbot do smth",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -13819,7 +13539,7 @@ local SilentAimTab = Window:Tab({
 
     SilentAimTab:Paragraph({
         Title = "SilentAim Master",
-        Desc = "Master control for hitbox silent aim",
+        Desc = "Master control for hitbox silentaim",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -13865,7 +13585,7 @@ local SilentAimTab = Window:Tab({
     SilentAimTab:Space()
     SilentAimTab:Paragraph({
         Title = "SilentAim Settings",
-        Desc = "Configuration for silent aim behavior",
+        Desc = "make this silentaim do stuff",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14027,7 +13747,7 @@ local SilentAimTab2 = Window:Tab({
     
     SilentAimTab2:Paragraph({
         Title = "SilentAim Master",
-        Desc = "Master control for hook-based silent aim",
+        Desc = "Master control for hook-based silentaim",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14050,7 +13770,7 @@ local SilentAimTab2 = Window:Tab({
     SilentAimTab2:Space()
     SilentAimTab2:Paragraph({
         Title = "SilentAim Settings",
-        Desc = "Configuration for hook-based silent aim",
+        Desc = "make this cooler silentaim do cool things",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14205,7 +13925,7 @@ SilentAimTab2:Slider({
 SilentAimTab2:Space()
     SilentAimTab2:Paragraph({
         Title = "Remote Interceptor",
-        Desc = "Change remote interception for InvokeServer & FireServer",
+        Desc = "Change remote interception for InvokeServer & FireServer & David Bazucki",
         Color = config.Gradow.uicolor.lightGreen
     })
 config.varibz.remotesInput = SilentAimTab2:Input({
@@ -14268,7 +13988,7 @@ local HitboxTab = Window:Tab({
     
     HitboxTab:Paragraph({
         Title = "Hitbox Master",
-        Desc = "Master control for hitbox expansion",
+        Desc = "Master control for bigblob expansion",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14307,7 +14027,7 @@ local HitboxTab = Window:Tab({
     HitboxTab:Space()
     HitboxTab:Paragraph({
         Title = "Hitbox Settings",
-        Desc = "Configuration for hitbox expansion",
+        Desc = "there's literally only 1 setting -_-",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14451,7 +14171,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Paragraph({
         Title = "Reach Master",
-        Desc = "Master control for extended reach",
+        Desc = "Master control for extended arms",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14493,7 +14213,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Paragraph({
         Title = "Reach Settings",
-        Desc = "Configuration for extended reach",
+        Desc = "make reach do the reach",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14524,7 +14244,7 @@ local ReachTab = Window:Tab({
     
     ReachTab:Paragraph({
         Title = "Visuals",
-        Desc = "Visual settings for reach indicator",
+        Desc = "visualizers the visuals and vision",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -14736,7 +14456,7 @@ local ClientTab = Window:Tab({
 
     ClientTab:Paragraph({
         Title = "Client Modification",
-        Desc = "Modify client-side movement properties",
+        Desc = "the client toggle thing",
         Color = config.Gradow.uicolor.lightGreen
     })
     ClientTab:Toggle({
@@ -14770,7 +14490,7 @@ local ClientTab = Window:Tab({
     })
     ClientTab:Paragraph({
         Title = "Client Modifiers",
-        Desc = "Modify da modifiers",
+        Desc = "Walkspeed override thingamajigs",
         Color = config.Gradow.uicolor.lightGreen
     })
 
@@ -15218,7 +14938,7 @@ local MiscTab = Window:Tab({
 }) do
 MiscTab:Paragraph({
     Title = "TriggerBot",
-    Desc = "Automatically shoot when fov is inside target\nNot mobile friendly!",
+    Desc = "Automatically shoot when fov is inside target\nNot mobile friendly! :(",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -15323,7 +15043,7 @@ MiscTab:Toggle({
     
     MiscTab:Paragraph({
         Title = "Other",
-        Desc = "Additional miscellaneous features",
+        Desc = "Additional miscellaneous features >:]",
         Color = config.Gradow.uicolor.lightGreen
     })
 
@@ -15450,7 +15170,7 @@ MiscTab:Toggle({
     })
 MiscTab:Toggle({
     Title = "Cframe View",
-    Desc = "view randos with cframe view & kill em >:]",
+    Desc = "view randos with cframe view & kill em >:]\n\n(Incomp with S/L)",
     Value = config.wallc or false,
     Callback = function(v)
         n({
@@ -16473,6 +16193,11 @@ InfoTab:Space()
         Desc = "uhhhhh other random bug fixes :p\nBugs Fixed: 6",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (19/09/2026)",
+        Desc = "removed stale code & fix'd sum bugs :1\nAdded: Skybox Changer & Clocktime to VisualsTab\nUpgraded: FullBright toggle to Brightness slider\nBugs Fixed: 8",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -16907,13 +16632,105 @@ local function clearTargetCache()
     table.clear(config.autoFarmTargets)
     table.clear(config.autoFarmCompleted)
 end
+
+--updaters
 task.defer(function()
     while config.varibz.lowpatcher do
         clearTargetCache()
         task.wait(config.varibz.lowpatcherwait)
     end
 end)
-
+task.defer(function()
+    while config.varibz.patcher do
+        task.wait(config.varibz.patcherwait)
+        if config.fullbrightValue ~= config.varibz.lastFullbright then
+            config.varibz.lastFullbright = config.fullbrightValue
+            local lighting = game:GetService("Lighting")
+            
+            if config.fullbrightValue > 0 then
+                if not config.varibz.fullBrightSettings then
+                    config.varibz.fullBrightSettings = {
+                        Ambient = lighting.Ambient,
+                        Brightness = lighting.Brightness,
+                        ClockTime = lighting.ClockTime,
+                        FogEnd = lighting.FogEnd,
+                        GlobalShadows = lighting.GlobalShadows,
+                        OutdoorAmbient = lighting.OutdoorAmbient
+                    }
+                end
+                lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                lighting.Brightness = config.fullbrightValue
+                lighting.FogEnd = 100000
+                lighting.GlobalShadows = false
+                lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+            else
+                if config.varibz.fullBrightSettings then
+                    for property, value in pairs(config.varibz.fullBrightSettings) do
+                        lighting[property] = value
+                    end
+                    config.varibz.fullBrightSettings = nil
+                end
+            end
+        end
+        if config.clockTimeValue ~= config.varibz.lastClockTime then
+            config.varibz.lastClockTime = config.clockTimeValue
+            local lighting = game:GetService("Lighting")
+            
+            if config.clockTimeValue > 0 then
+                if not config.originalClockTime then
+                    config.originalClockTime = lighting.ClockTime
+                end
+                lighting.ClockTime = config.clockTimeValue
+            else
+                if config.originalClockTime then
+                    lighting.ClockTime = config.originalClockTime
+                    config.originalClockTime = nil
+                end
+            end
+        end
+        if config.skyboxValue ~= config.varibz.lastSkybox then
+            config.varibz.lastSkybox = config.skyboxValue
+            local lighting = game:GetService("Lighting")
+            local skyboxInput = tostring(config.skyboxValue or ""):gsub("%s+", "")
+            local existingSky = lighting:FindFirstChildOfClass("Sky")
+            if config.originalSkybox == nil then
+                if existingSky then
+                    config.originalSkybox = existingSky:Clone()
+                else
+                    config.originalSkybox = "none"
+                end
+            end
+            local isDefault = (skyboxInput == "" or skyboxInput == "0" or skyboxInput:upper() == "NAN")
+            if isDefault then
+                if existingSky then
+                    existingSky:Destroy()
+                end
+                if config.originalSkybox and config.originalSkybox ~= "none" and typeof(config.originalSkybox) == "Instance" then
+                    config.originalSkybox:Clone().Parent = lighting
+                end
+            else
+                local assetId = skyboxInput:gsub("rbxassetid://", ""):gsub("rbxasset://", "")
+                local idNum = tonumber(assetId)
+                
+                if idNum then
+                    if existingSky then
+                        existingSky:Destroy()
+                    end
+                    local newSky = Instance.new("Sky")
+                    newSky.Name = "9272623829911_938388_8382282_"
+                    local skyAsset = "rbxassetid://" .. tostring(idNum)
+                    newSky.SkyboxBk = skyAsset
+                    newSky.SkyboxDn = skyAsset
+                    newSky.SkyboxFt = skyAsset
+                    newSky.SkyboxLf = skyAsset
+                    newSky.SkyboxRt = skyAsset
+                    newSky.SkyboxUp = skyAsset
+                    newSky.Parent = lighting
+                end
+            end
+        end
+    end
+end)
 task.defer(function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
@@ -17077,14 +16894,6 @@ local function buhbyegravellllllll________()
         config.originalSizes = {}
         config.targethbSizes = {}
         config.centerLocked = {}
-        config.fbenabled = false
-        if fullBrightSettings then
-            local lighting = excusemesir.Lighting
-            for property, value in pairs(fullBrightSettings) do
-                lighting[property] = value
-            end
-            fullBrightSettings = nil
-        end
         config.Viewing = false
         if config.varibz.ViewConnection then
             config.varibz.ViewConnection:Disconnect()
@@ -17143,14 +16952,49 @@ local function buhbyegravellllllll________()
         if config.desyncCleanupLoop then
             config.desyncCleanupLoop = nil
         end
-        if config.desyncSeat then
-            config.desyncSeat:Destroy()
-            config.desyncSeat = nil
-        end
         config.desyncActive = false
         for i = 1, 5 do
             BMG:cleanup()
         end
+        pcall(function()
+            local lighting = game:GetService("Lighting")
+            if config.varibz.fullBrightSettings then
+                for property, value in pairs(config.varibz.fullBrightSettings) do
+                    pcall(function()
+                        lighting[property] = value
+                    end)
+                end
+                config.varibz.fullBrightSettings = nil
+            end
+            config.fullbrightValue = 0
+            config.varibz.lastFullbright = 0
+            if config.originalClockTime then
+                pcall(function()
+                    lighting.ClockTime = config.originalClockTime
+                end)
+                config.originalClockTime = nil
+            end
+            config.clockTimeValue = 0
+            config.varibz.lastClockTime = 0
+            local existingSky = lighting:FindFirstChildOfClass("Sky")
+            if config.originalSkybox == nil or config.originalSkybox == "none" then
+                if existingSky then
+                    existingSky:Destroy()
+                end
+            else
+                if existingSky then
+                    existingSky:Destroy()
+                end
+                if typeof(config.originalSkybox) == "Instance" then
+                    local cloned = config.originalSkybox:Clone()
+                    cloned.Name = "Sky"
+                    cloned.Parent = lighting
+                end
+            end
+            config.originalSkybox = nil
+            config.skyboxValue = "0"
+            config.varibz.lastSkybox = nil
+        end)
         for player, proxy in pairs(config.proxyHitboxes) do
             if proxy and proxy.Parent then
                 proxy:Destroy()
@@ -17214,7 +17058,6 @@ local function buhbyegravellllllll________()
         config.bhop.enabled = false
         config.spinbot.enabled = false
         config.QuickToggles = false
-        config.fbenabled = false
         config.Viewing = false
         config.camYOffsetEnabled = false
         config.trussEnabled = false
