@@ -250,12 +250,14 @@ local config = {
     aimbotStrength = 0.5,
     aimbotWallCheck = false,
     aimbotTargetPart = "Head",
+    aimbotAimMethod = "CFrame",
     aimbotPrediction = 0,
     aimbotTeamTarget = "Enemies",
     aimbotCurrentTarget = nil,
     aimbotFOVRing = nil,
     aimbotFOVColor = Color3.fromRGB(255, 0, 0),
     aimbotFOVTargetColor = Color3.fromRGB(255, 255, 0),
+    aimhertz = 100,
     hitboxEnabled = false,
     hitboxSize = 10,
     hitboxTeamTarget = "Enemies",
@@ -3950,12 +3952,14 @@ local function saveConfig(saveName)
             aimbotWallCheck = config.aimbotWallCheck,
             aimbot360Enabled = config.aimbot360Enabled,
             aimbotTargetPart = config.aimbotTargetPart,
+            aimbotAimMethod = config.aimbotAimMethod,
             aimbotTargetRange = config.aimbotTargetRange or 500,
             aimbotPrediction = config.aimbotPrediction,
             aimbotStrength = config.aimbotStrength,
             aimbotFOVSize = config.aimbotFOVSize,
             aimbotGetTarget = config.aimbotGetTarget,
             aimbotTeamTarget = config.aimbotTeamTarget,
+            aimhertz = config.aimhertz,
             startsa = config.startsa,
             wallc = config.wallc,
             scaleToScreen = config.scaleToScreen,
@@ -4639,12 +4643,14 @@ local function loadSave(saveName)
     if cfg.aimbotWallCheck ~= nil then config.aimbotWallCheck = cfg.aimbotWallCheck end
     if cfg.aimbot360Enabled ~= nil then config.aimbot360Enabled = cfg.aimbot360Enabled end
     if cfg.aimbotTargetRange then config.aimbotTargetRange = cfg.aimbotTargetRange end
+    if cfg.aimbotAimMethod then config.aimbotAimMethod = cfg.aimbotAimMethod end
     if cfg.aimbotPrediction then config.aimbotPrediction = cfg.aimbotPrediction end
     if cfg.aimbotTargetPart then config.aimbotTargetPart = cfg.aimbotTargetPart end
     if cfg.aimbotStrength then config.aimbotStrength = cfg.aimbotStrength end
     if cfg.aimbotFOVSize then config.aimbotFOVSize = cfg.aimbotFOVSize end
     if cfg.aimbotGetTarget then config.aimbotGetTarget = cfg.aimbotGetTarget end
     if cfg.aimbotTeamTarget then config.aimbotTeamTarget = cfg.aimbotTeamTarget end
+    if cfg.aimhertz then config.aimhertz = cfg.aimhertz end
     if cfg.startsa ~= nil then config.startsa = cfg.startsa end
     if cfg.wallc ~= nil then config.wallc = cfg.wallc end
     if cfg.scaleToScreen ~= nil then config.scaleToScreen = cfg.scaleToScreen end
@@ -9470,13 +9476,40 @@ local function aimbotUpdate()
             if not targetPosition then
                 targetPosition = bestTarget.part.Position
             end
+            local aimMethod = config.aimbotAimMethod or "CFrame"
+            local strength = math.clamp(config.aimbotStrength, 0, 1)
             local currentCFrame = camera.CFrame
             local targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
-            local strength = math.clamp(config.aimbotStrength, 0, 1)
-            if strength < 1 then
-                targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
+            if aimMethod == "CFrame" then
+                if strength < 1 then
+                    targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
+                end
+                camera.CFrame = targetCFrame
+            elseif aimMethod == "MouseMoveRel" then
+                if strength < 1 then
+                    targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
+                end
+                local deltaCFrame = currentCFrame:ToObjectSpace(targetCFrame)
+                local sensitivity = 1
+                mousemoverel(deltaCFrame.X * sensitivity, deltaCFrame.Y * sensitivity)
+            elseif aimMethod == "Camera" then
+                if strength < 1 then
+                    targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
+                end
+                camera.CFrame = targetCFrame
+            elseif aimMethod == "MouseMove" then
+                if strength < 1 then
+                    targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
+                end
+                camera.CFrame = targetCFrame
+                local screenPos = camera:WorldToViewportPoint(targetPosition)
+                mousemoverel(
+                    screenPos.X - camera.ViewportSize.X / 2,
+                    screenPos.Y - camera.ViewportSize.Y / 2
+                )
+            elseif aimMethod == "Teleport" then
+                camera.CFrame = targetCFrame
             end
-            camera.CFrame = targetCFrame
         end
     end
 end
@@ -10123,7 +10156,12 @@ local function burgerking(deltaTime)
         return
     end
     if config.aimbotEnabled then
-        aimbotUpdate()
+        config.varibz.aimbotdump.accum = (config.varibz.aimbotdump.accum or 0) + deltaTime
+        local interval = 1 / math.max(config.aimhertz or 100, 1)
+        if config.varibz.aimbotdump.accum >= interval then
+            config.varibz.aimbotdump.accum = 0
+            aimbotUpdate()
+        end
     end
     updateLineESP()
     if config.hitboxEnabled then
@@ -12474,7 +12512,7 @@ VisualsTab:Slider({
     Suffix = "Hz",
     Value = {
         Min = 1,
-        Max = 1080,
+        Max = 500,
         Default = config.esphertz or 100
     },
     Callback = function(value)
@@ -13463,6 +13501,16 @@ local AimbotTab = Window:Tab({
         end
     })
     
+AimbotTab:Dropdown({
+    Title = "Aim Method",
+    Desc = "how should da aimbot aim??",
+    Values = {"CFrame", "MouseMoveRel", "Camera", "MouseMove", "Teleport"},
+    Value = config.aimbotAimMethod or "CFrame",
+    Multi = false,
+    Callback = function(Option)
+        config.aimbotAimMethod = Option
+    end
+})
     AimbotTab:Slider({
         Title = "Aim Strength",
         Desc = "aim powa",
@@ -13492,6 +13540,21 @@ AimbotTab:Slider({
     end
 })
     
+AimbotTab:Slider({
+    Title = "Aimbot Hertz",
+    Desc = "fps 4 aimbot basically",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "Hz",
+    Value = {
+        Min = 1,
+        Max = 500,
+        Default = config.aimhertz or 100
+    },
+    Callback = function(value)
+        config.aimhertz = value
+    end
+})
     AimbotTab:Slider({
         Title = "FOV Radius",
         Desc = "eyesight",
