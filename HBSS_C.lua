@@ -759,7 +759,7 @@ local config = {
                 "D:",
             },
             {
-                "HOA is just legal maifas :p",
+                "HOA is just legal mafias :p",
                 "and if u don't want\nur house to be stolen",
                 "don't live in hoa c:",
                 "or have a lawyer and a gun :3",
@@ -14136,7 +14136,7 @@ local SilentAimTab2 = Window:Tab({
     })
     
     SilentAimTab2:Toggle({
-        Title = "WallCheck ('T')",
+        Title = "WallCheck ('U')",
         Desc = "wallchecker 9001 (Might lag)",
         Value = config.SA2_Wallcheck or false,
         Callback = function(v)
@@ -15321,6 +15321,15 @@ MiscTab:Toggle({
     end
 })
 
+MiscTab:Toggle({
+    Title = "Tbot Wall Check ('Y')",
+    Desc = "wallchecker 9999",
+    Value = config.tbot.wallCheck or false,
+    Callback = function(v)
+        config.tbot.wallCheck = v
+    end
+})
+
 MiscTab:Dropdown({
     Title = "Tbot Target Part",
     Desc = "wat part",
@@ -15375,15 +15384,6 @@ MiscTab:Slider({
     },
     Callback = function(value)
         config.tbot.delay = value
-    end
-})
-
-MiscTab:Toggle({
-    Title = "Tbot Wall Check ('Y')",
-    Desc = "wallchecker 9999",
-    Value = config.tbot.wallCheck or false,
-    Callback = function(v)
-        config.tbot.wallCheck = v
     end
 })
 
