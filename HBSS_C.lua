@@ -222,6 +222,7 @@ local config = {
     prefBoxESP = false,
     prefHealthESP = false,
     prefColorByHealth = false,
+    scope = {"Humanoids"},
     espMasterEnabled = false,
     prefHeadDotESP = false,
     lineESPEnabled = false,
@@ -542,6 +543,13 @@ local config = {
                 "RAGE.. in the kettle.",
             },
             {
+                "i-im not a tsun-tsundere dere!,\ni-i have a jello heart",
+                "I'm not that mean!!",
+                "I'm not blushing!",
+                "i was just rushing",
+                "wtf am i writing 🥀",
+            },
+            {
                 "did you know?",
                 "gravel.cc uses a single config table",
                 "holding nearly everything from what ur seeing",
@@ -623,6 +631,59 @@ local config = {
                 "brick larps gravel and sand",
             },
             {
+                "if ur opponent can predict ur move",
+                "then don't move",
+                "",
+                "to confuse a oppnent",
+                "you'll need to confuse urself",
+            },
+            {
+                "you ever want to be entertained",
+                "drive a yellow car",
+                "and then look at the pavement",
+                "you'll see a random tiktoker\nand they say: ''look it's a yellow car!''",
+                "then they'll violently punch their friend",
+            },
+            {
+                "never buy no weed from\nthe gas station bro",
+                "if they aint giving you contacts",
+                "don't never go to the gas station bro",
+                "i went up there at 11 o'clock last night",
+                "trying to give me sum weed\nbro i smoked that shi",
+                "my mfing eye was right here\nand my other eye is still right here",
+                "explain bro, i got to look for this guy bro",
+                "wtf did you sell me bro look at me bro\nim hideous",
+            },
+            {
+                typesp = "2.69",
+                "don't think the carrot big\nbecause carrot big leaf",
+                "because small leaf carrot big\nnot leaf big size",
+                "",
+                "some time... on way to successful",
+                "first of steps of all of the steps\nto being successful steps",
+                "are hardest of all of the steps\nto successing",
+                "steps.",
+                "",
+                "just because everyone going in\none directional way",
+                "does not meaning you are going\nto the directional direction",
+                "which every person which is going in",
+                "go in your own independent\nin which way you are going in",
+                "",
+                "sometime in life everything pencil\nand everything smoothly",
+                "with pencil is going smoothly",
+                "but then... unexpected happening\nit is happening unexpectedly",
+                "in life",
+                "the importance thing to do\nis to make solution to problem",
+                "so problem is solutioned\nproblem solution problem",
+                "",
+                "🪑\nchair.",
+                "",
+                "the more you know are knowing\nwhat you are knowing",
+                "and more your brain size\nin your head size big",
+                "the less you need to say\nto talk in argument",
+                "with other peoples with\nsmaller brain head shouting",
+            },
+            {
                 "/kill {displayname}",
                 "did it work????",
                 "oh it's Roblox..",
@@ -679,6 +740,12 @@ local config = {
                 "the file size is 600kb..",
                 "I'm fr",
                 "D:",
+            },
+            {
+                "HOA is just legal maifas :p",
+                "and if u don't want\nur house to be stolen",
+                "don't live in hoa c:",
+                "or have a lawyer and a gun :3",
             },
             {
                 "I'm not a hack client i swear",
@@ -2464,6 +2531,7 @@ local config = {
         lastTargetUpdate = 0,
         triggerBotConnection = nil,
         npcCache = { list = {}, lastRefresh = 0 },
+        scopeCache = { list = {}, lastRefresh = 0 },
         sa2thing = 0,
         sa2stuff = 0.5,
         espstuff = 0,
@@ -3008,32 +3076,90 @@ local function isNPCModel(model)
     return false
 end
 
+function Zenzizenzizenzic_iwjwneku_wkwn(obj)
+    if not obj or not obj:IsA("BasePart") then return false end
+    return obj:FindFirstChildOfClass("ClickDetector") ~= nil
+end
+
+function skbwrkishwkbzhsks_owjwnkr_iebedkiwh_iwb(obj)
+    if not obj or not obj:IsA("BasePart") then return false end
+    return obj:FindFirstChildOfClass("ProximityPrompt") ~= nil
+end
+
+function kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(obj)
+    if not obj or not obj:IsA("BasePart") then return false end
+    if not getconnections then return false end
+    local ok, conns = pcall(function() return getconnections(obj.Touched) end)
+    if not ok or not conns then return false end
+    return #conns > 0
+end
+
+function toooooolskjwmekrj_roolrjhendrofflksnetool_ksne(obj)
+    if not obj then return false end
+    return obj:IsA("Tool") or obj:IsA("HopperBin")
+end
+
 local function getAllTargets(getTargetSeen)
     local targets = {}
     local now = tick()
-    if now - config.varibz.npcCache.lastRefresh > 1 then
-        config.varibz.npcCache.lastRefresh = now
-        local newCache = {}
-        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-            for _, obj in ipairs(Workspace:GetDescendants()) do
-                if obj:IsA("Model") and isNPCModel(obj) then
-                    table.insert(newCache, obj)
+    local scope = config.scope or {"Humanoids"}
+    local includeHumanoids = table.find(scope, "Humanoids") ~= nil
+
+    if includeHumanoids then
+        if now - config.varibz.npcCache.lastRefresh > 1 then
+            config.varibz.npcCache.lastRefresh = now
+            local newCache = {}
+            if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+                for _, obj in ipairs(Workspace:GetDescendants()) do
+                    if obj:IsA("Model") and isNPCModel(obj) then
+                        table.insert(newCache, obj)
+                    end
+                end
+            end
+            config.varibz.npcCache.list = newCache
+        end
+        if config.masterTarget == "Players" or config.masterTarget == "Both" then
+            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+                if pl ~= localPlayer then
+                    table.insert(targets, pl)
                 end
             end
         end
-        config.varibz.npcCache.list = newCache
-    end
-    if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
-            if pl ~= localPlayer then
-                table.insert(targets, pl)
+        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
+            for _, npc in ipairs(config.varibz.npcCache.list) do
+                if npc.Parent and isNPCModel(npc) then
+                    table.insert(targets, npc)
+                end
             end
         end
     end
-    if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-        for _, npc in ipairs(config.varibz.npcCache.list) do
-            if npc.Parent and isNPCModel(npc) then
-                table.insert(targets, npc)
+
+    local scanClick  = table.find(scope, "ClickDetectors") ~= nil
+    local scanTouch  = table.find(scope, "FireTouchInterest") ~= nil
+    local scanPrompt = table.find(scope, "ProximityPrompts") ~= nil
+    local scanTools  = table.find(scope, "Tools") ~= nil
+
+    if scanClick or scanTouch or scanPrompt or scanTools then
+        local cache = config.varibz.scopeCache
+        if now - cache.lastRefresh > 1 then
+            cache.lastRefresh = now
+            local newCache = {}
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if scanTools and toooooolskjwmekrj_roolrjhendrofflksnetool_ksne(obj) then
+                    table.insert(newCache, obj)
+                elseif scanClick and Zenzizenzizenzic_iwjwneku_wkwn(obj) then
+                    table.insert(newCache, obj)
+                elseif scanPrompt and skbwrkishwkbzhsks_owjwnkr_iebedkiwh_iwb(obj) then
+                    table.insert(newCache, obj)
+                elseif scanTouch and kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(obj) then
+                    table.insert(newCache, obj)
+                end
+            end
+            cache.list = newCache
+        end
+        for _, obj in ipairs(cache.list) do
+            if obj and obj.Parent then
+                table.insert(targets, obj)
             end
         end
     end
@@ -3048,9 +3174,35 @@ local function getTargetCharacter(target)
             return target.Character
         elseif target:IsA("Model") then
             return target
+        elseif target:IsA("BasePart") then
+            return target
+        elseif target:IsA("Tool") or target:IsA("HopperBin") then
+            return target
         end
     end
     return nil
+end
+
+local function plralive(target)
+    if not target then return false end
+    if typeof(target) == "Instance" and (target:IsA("BasePart") or target:IsA("Tool") or target:IsA("HopperBin")) then
+        return target.Parent ~= nil
+    end
+    if typeof(target) == "Instance" and target:IsA("Player") then
+        local character = target.Character
+        if not character then return false end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return false end
+        return humanoid.Health > 0
+    end
+
+    if typeof(target) == "Instance" and target:IsA("Model") then
+        local humanoid = target:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return false end
+        return humanoid.Health > 0
+    end
+
+    return false
 end
 
 local function getTargetName(target)
@@ -3850,6 +4002,7 @@ local function saveConfig(saveName)
             QTDrag = config.QTDrag,
             selectedQuickToggles = table.clone(config.selectedQuickToggles),
             espMasterEnabled = config.espMasterEnabled,
+            scope = table.clone(config.scope or {"Humanoids"}),
             prefHighlightESP = config.prefHighlightESP,
             prefTextESP = config.prefTextESP,
             prefBoxESP = config.prefBoxESP,
@@ -4556,6 +4709,16 @@ local function loadSave(saveName)
     if cfg.clockTimeValue then config.clockTimeValue = cfg.clockTimeValue end
     if cfg.skyboxValue then config.skyboxValue = cfg.skyboxValue end
     if cfg.espMasterEnabled ~= nil then config.espMasterEnabled = cfg.espMasterEnabled end
+    if cfg.scope ~= nil then
+        config.scope = cfg.scope
+        if #config.scope == 0 then
+            config.scope = {"Humanoids"}
+        end
+        if config.varibz.scopeCache then
+            config.varibz.scopeCache.lastRefresh = 0
+            config.varibz.scopeCache.list = {}
+        end
+    end
     if cfg.prefHighlightESP ~= nil then config.prefHighlightESP = cfg.prefHighlightESP end
     if cfg.prefTextESP ~= nil then config.prefTextESP = cfg.prefTextESP end
     if cfg.prefBoxESP ~= nil then config.prefBoxESP = cfg.prefBoxESP end
@@ -6878,23 +7041,21 @@ local function updateTeamTargetModes()
     updateESPColors()
 end
 
-
 local function applyESPMaster(state)
     config.espMasterEnabled = state
-
     if not state then
         for target in pairs(config.espData) do
             removeESPLabel(target)
         end
-
         for target in pairs(config.highlightData) do
             removeHighlightESP(target)
         end
-        
         for target in pairs(config.lineESPData) do
             removeLineESP(target)
         end
-
+        config.espData = {}
+        config.highlightData = {}
+        config.lineESPData = {}
         config.espon = false
         config.highlightesp = false
     else
@@ -6905,7 +7066,6 @@ local function applyESPMaster(state)
                 end
             end
         end
-
         if config.prefTextESP or config.prefBoxESP or
            config.prefHealthESP or config.prefHeadDotESP then
             for _, target in ipairs(getAllTargets()) do
@@ -6914,13 +7074,18 @@ local function applyESPMaster(state)
                 end
             end
         end
+        if config.lineESPEnabled then
+            for _, target in ipairs(getAllTargets()) do
+                if addesp(target) and plralive(target) then
+                    createLineESP(target)
+                end
+            end
+        end
         config.espon = config.prefTextESP
         config.highlightesp = config.prefHighlightESP
     end
-
     updateESPColors()
 end
-
 excusemesir.RunService.Heartbeat:Connect(function()
     local currentTime = tick()
     if currentTime - config.varibz.lastTargetUpdate > 0.6 then
@@ -6931,6 +7096,25 @@ end)
 
 local function addesp(targetPlayer)
     if not targetPlayer then return false end
+
+    if typeof(targetPlayer) == "Instance" and
+       (targetPlayer:IsA("BasePart") or targetPlayer:IsA("Tool") or targetPlayer:IsA("HopperBin")) then
+        local scope = config.scope or {"Humanoids"}
+        if toooooolskjwmekrj_roolrjhendrofflksnetool_ksne(targetPlayer) then
+            return table.find(scope, "Tools") ~= nil
+        end
+        if table.find(scope, "ClickDetectors") and Zenzizenzizenzic_iwjwneku_wkwn(targetPlayer) then
+            return true
+        end
+        if table.find(scope, "ProximityPrompts") and skbwrkishwkbzhsks_owjwnkr_iebedkiwh_iwb(targetPlayer) then
+            return true
+        end
+        if table.find(scope, "FireTouchInterest") and kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(targetPlayer) then
+            return true
+        end
+        return false
+    end
+
     if config.specificTeamTarget and #config.targetedTeams > 0 then
         if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Player") then
             local team = targetPlayer.Team
@@ -6976,25 +7160,6 @@ local function addesp(targetPlayer)
         end
     end
     
-    return false
-end
-local function plralive(target)
-    if not target then return false end
-
-    if typeof(target) == "Instance" and target:IsA("Player") then
-        local character = target.Character
-        if not character then return false end
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return false end
-        return humanoid.Health > 0
-    end
-
-    if typeof(target) == "Instance" and target:IsA("Model") then
-        local humanoid = target:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return false end
-        return humanoid.Health > 0
-    end
-
     return false
 end
 
@@ -7790,38 +7955,40 @@ local function wallCheck(targetPos, sourcePos)
     return false
 end
 local function high(targetPlayer)
-    if not targetPlayer or not getTargetCharacter(targetPlayer) then return end
+    if not targetPlayer then return end
+    if not config.espMasterEnabled or not config.prefHighlightESP then return end
     if not addesp(targetPlayer) then return end
-
-    if config.highlightData[targetPlayer] then
-        local existing = config.highlightData[targetPlayer]
-        if existing and existing.Parent then
-            if targetPlayer == config.currentTarget or targetPlayer == config.aimbotCurrentTarget or (config.SA2_Enabled and config.SA2_currentTarget == targetPlayer) then
-                existing.FillColor = config.esptargetc
-            else
-                existing.FillColor = config.espc
-            end
-            return
-        else
-            config.highlightData[targetPlayer] = nil
-        end
-    end
 
     local character = getTargetCharacter(targetPlayer)
     if not character then return end
-
+    local existingHighlight = config.highlightData[targetPlayer]
+    if existingHighlight and existingHighlight.Parent then
+        local isTargeted = isPlayerBeingTargeted(targetPlayer)
+        if isTargeted then
+            existingHighlight.FillColor = config.esptargetc
+        else
+            existingHighlight.FillColor = config.espc
+        end
+        return
+    end
+    if existingHighlight then
+        config.highlightData[targetPlayer] = nil
+    end
+    local highlightParent = character
+    if character:IsA("Tool") or character:IsA("HopperBin") then
+        highlightParent = character:FindFirstChild("Handle") or character
+    end
+    if not highlightParent or not highlightParent.Parent then return end
     local highlight = Instance.new("Highlight")
     highlight.Name = "PlayerHighlight"
     highlight.FillColor = config.espc
     highlight.FillTransparency = 0.5
     highlight.OutlineColor = Color3.new(1, 1, 1)
     highlight.OutlineTransparency = 0
-    local okDepth, _ = pcall(function() highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop end)
-    if not okDepth then
-    end
-    highlight.Parent = character
-
-    if targetPlayer == config.currentTarget or targetPlayer == config.aimbotCurrentTarget or (config.SA2_Enabled and config.SA2_currentTarget == targetPlayer) then
+    pcall(function() highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop end)
+    highlight.Parent = highlightParent
+    local isTargeted = isPlayerBeingTargeted(targetPlayer)
+    if isTargeted then
         highlight.FillColor = config.esptargetc
     else
         highlight.FillColor = config.espc
@@ -7891,7 +8058,14 @@ local function updateLineESP()
         if addesp(target) and plralive(target) then
             local char = getTargetCharacter(target)
             if char then
-                local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head")
+                local root
+                if char:IsA("BasePart") then
+                    root = char
+                elseif char:IsA("Tool") or char:IsA("HopperBin") then
+                    root = char:FindFirstChild("Handle") or char:FindFirstChildWhichIsA("BasePart")
+                else
+                    root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head")
+                end
                 if root then
                     local pos, onScreen = camera:WorldToViewportPoint(root.Position)
                     
@@ -7965,14 +8139,17 @@ local function updateLineESP()
     end
 end
 
-
 local function removeHighlightESP(targetPlayer)
     if not targetPlayer then return end
     local h = config.highlightData[targetPlayer]
-    if h and h.Parent then
-        pcall(function() h:Destroy() end)
+    if h then
+        pcall(function()
+            if h.Parent then
+                h:Destroy()
+            end
+        end)
+        config.highlightData[targetPlayer] = nil
     end
-    config.highlightData[targetPlayer] = nil
 end
 
 local function removeESPLabel(targetPlayer)
@@ -8011,6 +8188,7 @@ local function makeesp(targetPlayer)
         if oldData.screenGui and oldData.screenGui.Parent then
             pcall(function() oldData.screenGui:Destroy() end)
         end
+        config.espData[targetPlayer] = nil
     end
 
     local screenGui = Instance.new("ScreenGui")
@@ -8122,8 +8300,15 @@ local function makeesp(targetPlayer)
             local root = tchar:FindFirstChild("HumanoidRootPart")
                 or tchar:FindFirstChild("Torso")
                 or tchar:FindFirstChild("UpperTorso")
-
-            if not head or not root then
+            if tchar:IsA("BasePart") then
+                head = tchar
+                root = tchar
+            elseif tchar:IsA("Tool") or tchar:IsA("HopperBin") then
+                local handle = tchar:FindFirstChild("Handle") or tchar:FindFirstChildWhichIsA("BasePart")
+                head = handle
+                root = handle
+            end
+            if not head or not root or not head:IsA("BasePart") then
                 if label then label.Visible = false end
                 if boxFrame then boxFrame.Visible = false end
                 if healthBg then healthBg.Visible = false end
@@ -8131,8 +8316,17 @@ local function makeesp(targetPlayer)
                 return
             end
             local viewportSize = currentCamera.ViewportSize
-            local topPos = head.Position + Vector3.new(0, 0.4, 0)
-            local bottomPos = root.Position - Vector3.new(0, 1, 0)
+            local topPos, bottomPos
+            if tchar:IsA("BasePart") or tchar:IsA("Tool") or tchar:IsA("HopperBin") then
+                local partSize = head.Size
+                local halfH = math.max(partSize.Y, 0.5) / 2
+                topPos = head.Position + Vector3.new(0, halfH + 0.3, 0)
+                bottomPos = head.Position - Vector3.new(0, halfH + 0.3, 0)
+            else
+                topPos = head.Position + Vector3.new(0, 0.4, 0)
+                bottomPos = root.Position - Vector3.new(0, 1, 0)
+            end
+
             local midPos = (topPos + bottomPos) * 0.5
             local topV3, topOn = currentCamera:WorldToViewportPoint(topPos)
             local bottomV3, bottomOn = currentCamera:WorldToViewportPoint(bottomPos)
@@ -8194,9 +8388,13 @@ local function makeesp(targetPlayer)
             local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
             local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
             if config.espMasterEnabled and config.prefTextESP then
-                local text = string.format("%s [%d]", getTargetName(targetPlayer), humanoid and math.floor(humanoid.Health) or 0)
+                local text
+                if humanoid then
+                    text = string.format("%s [%d]", getTargetName(targetPlayer), math.floor(humanoid.Health))
+                else
+                    text = getTargetName(targetPlayer)
+                end
                 label.Text = text
-
                 local absWidth = 200
                 if label.TextBounds and label.TextBounds.X and label.TextBounds.X > 0 then
                     absWidth = label.TextBounds.X + 8
@@ -8283,8 +8481,17 @@ local function makeesp(targetPlayer)
             headDot = headDot
         }
     end
+
     local char = getTargetCharacter(targetPlayer)
-    if char and (char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")) then
+    if not char then
+        if screenGui and screenGui.Parent then
+            screenGui:Destroy()
+        end
+        return
+    end
+    if char:IsA("BasePart") or char:IsA("Tool") or char:IsA("HopperBin") then
+        startUpdater()
+    elseif char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso") then
         startUpdater()
     else
         task.spawn(function()
@@ -8294,45 +8501,49 @@ local function makeesp(targetPlayer)
                 local okRoot = c:FindFirstChild("HumanoidRootPart") or c:FindFirstChild("Torso") or c:FindFirstChild("UpperTorso")
                 if okHead or okRoot then
                     startUpdater()
+                    return
                 end
+            end
+            if screenGui and screenGui.Parent then
+                screenGui:Destroy()
             end
         end)
     end
 end
 local function updateESPColors()
-    local toRemove = {}
+    local toRemoveLabels = {}
     for targetPlayer, data in pairs(config.espData) do
-        if (not targetPlayer) or (not data) or (not data.label) then
-            table.insert(toRemove, targetPlayer)
+        if not targetPlayer or not data or not data.label or not data.label.Parent then
+            table.insert(toRemoveLabels, targetPlayer)
+        elseif not addesp(targetPlayer) or not plralive(targetPlayer) then
+            table.insert(toRemoveLabels, targetPlayer)
         else
-            if not addesp(targetPlayer) then
-                table.insert(toRemove, targetPlayer)
+            local tchar = getTargetCharacter(targetPlayer)
+            local humanoid = tchar and tchar:FindFirstChildOfClass("Humanoid")
+            local hpColor = (humanoid and config.prefColorByHealth) and healthColor(humanoid) or nil
+            local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
+            local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+            local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
+            local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+            local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
+
+            if isTargeted then
+                data.label.TextColor3 = Color3.fromRGB(255, 255, 0)
+            elseif hpColor then
+                data.label.TextColor3 = hpColor
             else
-                local tchar = getTargetCharacter(targetPlayer)
-                local humanoid = tchar and tchar:FindFirstChildOfClass("Humanoid")
-                local hpColor = (humanoid and config.prefColorByHealth) and healthColor(humanoid) or nil
-                local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
-                local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
-                local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
-                local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
-                local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
+                data.label.TextColor3 = config.espc
+            end
 
+            if data.boxOutline then
                 if isTargeted then
-                    data.label.TextColor3 = Color3.fromRGB(255, 255, 0)
-                elseif hpColor then
-                    data.label.TextColor3 = hpColor
+                    data.boxOutline.Color = Color3.fromRGB(255, 255, 0)
                 else
-                    data.label.TextColor3 = config.espc
+                    data.boxOutline.Color = hpColor or config.espc
                 end
+            end
 
-                if data.boxOutline then
-                    if isTargeted then
-                        data.boxOutline.Color = Color3.fromRGB(255, 255, 0)
-                    else
-                        data.boxOutline.Color = hpColor or config.espc
-                    end
-                end
-
+            if data.headDot then
                 if isTargeted then
                     data.headDot.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
                 elseif hpColor then
@@ -8344,41 +8555,36 @@ local function updateESPColors()
         end
     end
 
-    for _, targetPlayer in ipairs(toRemove) do
-        config.espData[targetPlayer] = nil
+    for _, targetPlayer in ipairs(toRemoveLabels) do
+        removeESPLabel(targetPlayer)
     end
-
     local toRemoveHighlights = {}
     for targetPlayer, highlight in pairs(config.highlightData) do
         if not targetPlayer or not highlight or not highlight.Parent then
             table.insert(toRemoveHighlights, targetPlayer)
+        elseif not addesp(targetPlayer) or not plralive(targetPlayer) then
+            table.insert(toRemoveHighlights, targetPlayer)
         else
-            if not addesp(targetPlayer) then
-                table.insert(toRemoveHighlights, targetPlayer)
-            else
-                local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
-                local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
-                local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
-                local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
-                local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
+            local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
+            local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+            local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
+            local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
+            local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
 
-                if isTargeted then
-                    highlight.FillColor = Color3.fromRGB(255, 255, 0)
-                else
-                    highlight.FillColor = config.espc
-                end
+            if isTargeted then
+                highlight.FillColor = Color3.fromRGB(255, 255, 0)
+            else
+                highlight.FillColor = config.espc
             end
         end
     end
 
     for _, targetPlayer in ipairs(toRemoveHighlights) do
-        config.highlightData[targetPlayer] = nil
+        removeHighlightESP(targetPlayer)
     end
-    
     if config.espMasterEnabled and config.lineESPEnabled then
         updateLineESP()
     end
-    
     if config.aimbotFOVRing and config.aimbotFOVRing.RingStroke then
         if config.aimbotEnabled and not config.aimbot360Enabled then
             if config.aimbotCurrentTarget then
@@ -8392,7 +8598,6 @@ end
 local function toggleHighlightESP(enabled)
     config.prefHighlightESP = enabled
     config.highlightesp = enabled and config.espMasterEnabled or false
-
     if config.espMasterEnabled and enabled then
         for _, target in ipairs(getAllTargets()) do
             if addesp(target) and getTargetCharacter(target) then
@@ -8401,14 +8606,12 @@ local function toggleHighlightESP(enabled)
         end
     else
         for targetPlayer, _ in pairs(config.highlightData) do
-            table.insert(config.varibz.targetsToRemove, targetPlayer)
-        end
-        for _, targetPlayer in ipairs(config.varibz.targetsToRemove) do
             removeHighlightESP(targetPlayer)
         end
+        config.highlightData = {}
     end
+    updateESPColors()
 end
-
 local function toggleTextESP(enabled)
     config.prefTextESP = enabled
     config.espon = enabled and config.espMasterEnabled or false
@@ -8469,28 +8672,50 @@ local function d()
     end
 end
 local function espRefresher()
-    if not config.espMasterEnabled then return end
-    
-    local currentESPData = {}
-    for target, data in pairs(config.espData) do
-        currentESPData[target] = true
+    if not config.espMasterEnabled then 
+        for target, _ in pairs(config.espData) do
+            removeESPLabel(target)
+        end
+        for target, _ in pairs(config.highlightData) do
+            removeHighlightESP(target)
+        end
+        for target, _ in pairs(config.lineESPData) do
+            removeLineESP(target)
+        end
+        config.espData = {}
+        config.highlightData = {}
+        config.lineESPData = {}
+        return 
     end
     
+    local validTargets = {}
     for _, target in ipairs(getAllTargets()) do
-        if addesp(target) then
-            if not currentESPData[target] then
-                if config.prefTextESP or config.prefBoxESP or config.prefHealthESP or config.prefHeadDotESP then
-                    makeesp(target)
-                end
-                if config.prefHighlightESP and getTargetCharacter(target) then
-                    high(target)
-                end
+        if addesp(target) and plralive(target) then
+            validTargets[target] = true
+            if (config.prefTextESP or config.prefBoxESP or config.prefHealthESP or config.prefHeadDotESP) 
+               and not config.espData[target] then
+                makeesp(target)
             end
-        else
-            if currentESPData[target] then
-                removeESPLabel(target)
-                removeHighlightESP(target)
+            if config.prefHighlightESP and not config.highlightData[target] then
+                high(target)
             end
+            if config.lineESPEnabled and not config.lineESPData[target] then
+                createLineESP(target)
+            end
+        end
+    end
+    for target, _ in pairs(config.espData) do
+        if not validTargets[target] then
+            removeESPLabel(target)
+        end
+    end
+    for target, _ in pairs(config.highlightData) do
+        if not validTargets[target] then
+            removeHighlightESP(target)
+        end
+    end
+    for target, _ in pairs(config.lineESPData) do
+        if not validTargets[target] then
             removeLineESP(target)
         end
     end
@@ -11159,7 +11384,10 @@ local function safeGetCharacter()
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     return character, humanoid, rootPart
 end
-
+local autoloadSuccess = startdaautlado_()
+if autoloadSuccess then
+    print("autoloaded on dis gaem :3")
+end
 --[[
      _      ___         ____  ______
     | | /| / (_)__  ___/ / / / /  _/
@@ -12500,26 +12728,10 @@ local VisualsTab = Window:Tab({
         Color = config.Gradow.uicolor.darkGray
     })
     VisualsTab:Paragraph({
-        Title = "ESP",
-        Desc = "ESP features n stuff",
+        Title = "ESP Master",
+        Desc = "big esp starter thing magic",
         Color = config.Gradow.uicolor.lightGreen
     })
-VisualsTab:Slider({
-    Title = "ESP Hertz",
-    Desc = "fps 4 esp basically",
-    IsTextbox = true,
-    Step = 1,
-    Suffix = "Hz",
-    Value = {
-        Min = 1,
-        Max = 500,
-        Default = config.esphertz or 100
-    },
-    Callback = function(value)
-        config.esphertz = value
-    end
-})
-    VisualsTab:Space()
     VisualsTab:Toggle({
         Title = "Toggle ESP ('Z')",
         Desc = "Enable/disable all ESP features",
@@ -12536,7 +12748,102 @@ VisualsTab:Slider({
             })
         end
     })
+
+VisualsTab:Space()
+    VisualsTab:Paragraph({
+        Title = "Esp Settings",
+        Desc = "esp tweaker stuffers",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+
+VisualsTab:Slider({
+    Title = "ESP Hertz",
+    Desc = "fps 4 esp basically",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "Hz",
+    Value = {
+        Min = 1,
+        Max = 500,
+        Default = config.esphertz or 100
+    },
+    Callback = function(value)
+        config.esphertz = value
+    end
+})
+
+VisualsTab:Dropdown({
+    Title = "Scoper",
+    Desc = "what should ESP scan for??",
+    Values = {"Humanoids", "ClickDetectors", "FireTouchInterest", "ProximityPrompts", "Tools"},
+    Value = config.scope or {"Humanoids"},
+    Multi = true,
+    Callback = function(selected)
+        config.scope = selected or {"Humanoids"}
+        if #config.scope == 0 then
+            config.scope = {"Humanoids"}
+        end
+        if config.varibz.scopeCache then
+            config.varibz.scopeCache.lastRefresh = 0
+            config.varibz.scopeCache.list = {}
+        end
+        if config.espMasterEnabled then
+            local validTargets = {}
+            for _, t in ipairs(getAllTargets()) do
+                validTargets[t] = true
+            end
+            for target, _ in pairs(config.espData) do
+                if not validTargets[target] or not addesp(target) then
+                    removeESPLabel(target)
+                end
+            end
+            for target, _ in pairs(config.highlightData) do
+                if not validTargets[target] or not addesp(target) then
+                    removeHighlightESP(target)
+                end
+            end
+            for target, _ in pairs(config.lineESPData) do
+                if not validTargets[target] or not addesp(target) then
+                    removeLineESP(target)
+                end
+            end
+            espRefresher()
+        end
+    end
+})
+
+    VisualsTab:Dropdown({
+        Title = "Tracer Start Position",
+        Desc = "Wheres lines pos?",
+        Values = {"Center", "Bottom", "Top", "BottomLeft", "BottomRight", "TopLeft", "TopRight"},
+        Value = config.lineStartPosition or "Center",
+        Multi = false,
+        Callback = function(Option)
+            config.lineStartPosition = Option
+        end
+    })
+
+    VisualsTab:Toggle({
+        Title = "Tracer ESP Only Targets",
+        Desc = "only target da targetted",
+        Value = config.lineESPOnlyTarget or false,
+        Callback = function(v)
+            config.lineESPOnlyTarget = v
+            espRefresher()
+        end
+    })
     
+    VisualsTab:Toggle({
+        Title = "ESP Colour Based On Health",
+        Desc = "waht colr",
+        Value = config.prefColorByHealth or false,
+        Callback = function(v)
+            config.prefColorByHealth = v
+            updateESPColors()
+            espRefresher()
+        end
+    })
+    VisualsTab:Space()
     VisualsTab:Paragraph({
         Title = "ESP Components",
         Desc = "Individual ESP people",
@@ -12615,39 +12922,14 @@ VisualsTab:Slider({
             espRefresher()
         end
     })
-    
-    VisualsTab:Toggle({
-        Title = "Tracer ESP Only Targets",
-        Desc = "only target da targetted",
-        Value = config.lineESPOnlyTarget or false,
-        Callback = function(v)
-            config.lineESPOnlyTarget = v
-            espRefresher()
-        end
-    })
-    
-    VisualsTab:Dropdown({
-        Title = "Tracer Start Position",
-        Desc = "Wheres lines pos?",
-        Values = {"Center", "Bottom", "Top", "BottomLeft", "BottomRight", "TopLeft", "TopRight"},
-        Value = config.lineStartPosition or "Center",
-        Multi = false,
-        Callback = function(Option)
-            config.lineStartPosition = Option
-        end
-    })
-    
-    VisualsTab:Toggle({
-        Title = "ESP Colour Based On Health",
-        Desc = "waht colr",
-        Value = config.prefColorByHealth or false,
-        Callback = function(v)
-            config.prefColorByHealth = v
-            updateESPColors()
-            espRefresher()
-        end
-    })
+   
     VisualsTab:Space()
+
+    VisualsTab:Paragraph({
+        Title = "Scene",
+        Desc = "uhhhh env and lighting n stuff",
+        Color = config.Gradow.uicolor.lightGreen
+    })
 
 VisualsTab:Slider({
     Title = "Brightness",
@@ -14551,6 +14833,7 @@ local ClientTab = Window:Tab({
             end
         end
     })
+    ClientTab:Space()
     ClientTab:Paragraph({
         Title = "Client Modifiers",
         Desc = "Walkspeed override thingamajigs",
@@ -15103,7 +15386,7 @@ MiscTab:Toggle({
         end
     end
 })
-    
+    MiscTab:Space()
     MiscTab:Paragraph({
         Title = "Other",
         Desc = "Additional miscellaneous features >:]",
@@ -16261,6 +16544,11 @@ InfoTab:Space()
         Desc = "removed stale code & fix'd sum bugs :1\nAdded: Skybox Changer & Clocktime to VisualsTab\nUpgraded: FullBright toggle to Brightness slider\nBugs Fixed: 8",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (20/09/2026)",
+        Desc = "uhh I want to see through walls better\nAdded: Scoper to VisualsTab\nUpdated: VisualsTab is more organized ig..\nAdded: Aimmethod drop-down & Aim Hertz slider to AimbotTab\nBugs Fixed: sum",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -17222,10 +17510,6 @@ end)
 getgenv().destroyInitGui()
 rng()
 rng2()
-local autoloadSuccess = startdaautlado_()
-if autoloadSuccess then
-    print("autoloaded on dis gaem :3")
-end
 task.wait(2.5)
 _(cos(1))
 return config
