@@ -7974,11 +7974,10 @@ local function high(targetPlayer)
     if existingHighlight then
         config.highlightData[targetPlayer] = nil
     end
-    local highlightParent = character
     if character:IsA("Tool") or character:IsA("HopperBin") then
-        highlightParent = character:FindFirstChild("Handle") or character
+        character = character:FindFirstChild("Handle") or character
     end
-    if not highlightParent or not highlightParent.Parent then return end
+    if not character or not character.Parent then return end
     local highlight = Instance.new("Highlight")
     highlight.Name = "PlayerHighlight"
     highlight.FillColor = config.espc
@@ -7986,7 +7985,7 @@ local function high(targetPlayer)
     highlight.OutlineColor = Color3.new(1, 1, 1)
     highlight.OutlineTransparency = 0
     pcall(function() highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop end)
-    highlight.Parent = highlightParent
+    highlight.Parent = character
     local isTargeted = isPlayerBeingTargeted(targetPlayer)
     if isTargeted then
         highlight.FillColor = config.esptargetc
