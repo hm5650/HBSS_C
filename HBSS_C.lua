@@ -159,7 +159,6 @@ local gui = {}
 local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
 local Camera = workspace.CurrentCamera
 local FindFirstChild = game.FindFirstChild
-local lastCharacter = nil
 local camera = workspace.CurrentCamera
 local humanoid = nil
 local character = nil
@@ -212,7 +211,6 @@ local config = {
     esptargetc = Color3.fromRGB(255, 255, 0),
     espteamc = Color3.fromRGB(0, 255, 0),
     rfd = false,
-    eme = true,
     wallc = false,
     bodypart = "Head",
     espon = false,
@@ -532,6 +530,11 @@ local config = {
             {
                 "I don't do tutorials\ni suck at teaching others :/",
                 "if u want an tutorial\nwatch 100 seconds of lua or smth",
+            },
+            {
+                "wanna know what ''ACH'' means",
+                "it means....................",
+                "''adrian christian hernandez\nor as the locals call me ''A''",
             },
             {
                 "HE WAS WHIPPING UP ANGER\nIN A KETTLE",
@@ -1175,7 +1178,7 @@ local config = {
                 "I got a question",
                 "''I know about million things''",
                 "Well that's great!",
-                "''I'll do EVERYTHING!",
+                "''I'll do EVERYTHING!''",
                 "Alright!",
                 "What's the capital of france?",
                 "''Oh oui oui oui''",
@@ -9379,19 +9382,16 @@ local function hb()
                 if currentSize and typeof(currentSize) == "Vector3" then
                     local lerpAlpha = 1
                     local newSize = currentSize:Lerp(targetSize, lerpAlpha)
-
-                    pcall(function()
-                        part.Size = newSize
-                        part.Transparency = config.hbtrans
+                    part.Size = newSize
+                    part.Transparency = config.hbtrans
+                    part.CanCollide = false
+                    if part.Name == "Head" then
+                        part.Massless = true
                         part.CanCollide = false
-                        if part.Name == "Head" then
-                            part.Massless = true
-                            part.CanCollide = false
-                        elseif part.Name == "HumanoidRootPart" then
-                            part.Massless = false
-                            part.CanCollide = false
-                        end
-                    end)
+                    elseif part.Name == "HumanoidRootPart" then
+                        part.Massless = false
+                        part.CanCollide = false
+                    end
                 else
                     table.insert(config.varibz.targetsToRemove, playerObj)
                 end
@@ -16327,7 +16327,7 @@ InfoTab:Paragraph({
 
 InfoTab:Paragraph({
     Title = "Guide: Troubleshooting",
-    Desc = "Something not working? Try dis:\n\n• Not working at all? Check if ur injector supports hookmetamethod & hookfunction\n• SilentAim (HK) not working? Try a different Aim Method (Raycast / FireServer / InvokeServer / All)\n• Hitbox not working? Lower ur hitbox size. Some games reset it\n• ESP not showing? Toggle it off and on again\n• Lagging? Lower ur ESP Hertz, disable some features, or toggle 'Low Render'\n• Getting kicked? Make sure AntiKick is ON in the MainTab\n\nif it all fails, then... idk wtf is wrong with it :p",
+    Desc = "Something not working? Try dis:\n\n• Not working at all? Check if ur injector supports hookmetamethod & hookfunction\n• SilentAim (HK) not working? Try a different Aim Method (Raycast / FireServer / InvokeServer / Mouse.hit)\n• Hitbox not working? Lower ur hitbox size. Some games reset it\n• ESP not showing? Toggle it off and on again\n• Lagging? Lower ur ESP Hertz, disable some features\n• Getting kicked? Make sure AntiKick is ON in the MainTab\n\nif it all fails, then... idk wtf is wrong with it :p",
     Color = config.Gradow.uicolor.darkGray
 })
 
