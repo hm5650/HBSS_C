@@ -29,7 +29,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “chocolate hazelnut gravel cake :3” 
+           “gravel bread :3” 
                                            
                                     - Gpssickle
 
@@ -335,6 +335,7 @@ local config = {
         SilentAimHK = true,
         AutoFarm = true,
         BHop = true,
+        Desync = true,
     },
     availableQuickToggles = {
         "SilentAim",
@@ -346,6 +347,7 @@ local config = {
         "SilentAimHK",
         "AutoFarm",
         "BHop",
+        "Desync",
     },
     clientModEnabled = false,
     walkspeedEnabled = false,
@@ -361,6 +363,17 @@ local config = {
     originalGravity = nil,
     jumppowerEnabled = false,
     jumppowerValue = 50,
+    noclipEnabled = false,
+    noclipConnection = nil,
+    flightEnabled = false,
+    flightSpeed = 50,
+    flightConnection = nil,
+    flightAttachedRoot = nil,
+    flightCharacterAddedConnection = nil,
+    flightBodyGyro = nil,
+    flightBodyVelocity = nil,
+    clientModConnections = {},
+    clientModOriginalValues = {},
     hipHeightEnabled = false,
     hipHeightValue = 0,
     clientModConnections = {},
@@ -388,6 +401,8 @@ local config = {
     clockTimeValue = 0,
     skyboxValue = "0",
     originalSkybox = nil,
+    desync = false,
+    cframeView = false,
     desyncActive = false,
     desyncSeat = nil,
     desyncWeld = nil,
@@ -444,6 +459,17 @@ local config = {
     },
     tbotcurrenttarget = nil,
     tbotTargetted = false,
+    indicator = {
+        enabled = false,
+        draggable = true,
+        visible = false,
+        alwaysVisible = false,
+        si = -0.2,
+        lastHealth = nil,
+        lastTarget = nil,
+        flashUntil = 0,
+        heartbeat = nil,
+    },
     KeybindsEnabled = true,
     HoldKeysEnabled = false,
     Keybinds = {
@@ -462,9 +488,11 @@ local config = {
         triggerbot = "X",
         bhop = "V",
         tbotwallcheck = "Y",
+        desync = "J",
     },
     varibz = {
         btntitle = {
+            "G.cc",
             "3:",
             ";3",
             ":l",
@@ -474,13 +502,29 @@ local config = {
             ":J",
             ":0",
             ";w;",
+            ";_;",
             ":°",
             "D:",
             ":2",
             ">:1",
             "o.o",
             "o.0",
+            ":T",
             "',:]",
+            ":x",
+            ":9",
+            "-_-;",
+            "n_n",
+            "^_^/",
+            "^-^",
+            "^u^",
+            "^v^",
+            "^w^",
+            "^o^",
+            ">_>",
+            "=_=",
+            "o_o",
+            "o_0",
             "CX",
             ":›",
             ":D",
@@ -546,6 +590,12 @@ local config = {
                 "RAGE.. in the kettle.",
             },
             {
+                "These r js jokes",
+                "if get mad about it",
+                "then I'll repeatedly send",
+                "100 gifs of ''jokes files over your head''",
+            },
+            {
                 "ik ur using gravel for ur ego",
                 "tbh it's pretty common\nthey're always opportunistic :p",
                 "but fr.. are you tho???",
@@ -561,6 +611,37 @@ local config = {
                 "I'm not blushing!",
                 "i was just rushing",
                 "wtf am i writing 🥀",
+            },
+            {
+                typesp = "2",
+                "again & again & again & again.",
+                "Do it again, do it again",
+                "again & again & again & again.",
+                "Do it again, do it again",
+                "Again & again.",
+            },
+            {
+                "Castaways.. We are Castaways.\nAhoy there, ahoy, we are Castaways",
+                "We're stuck where we are\nWith no house, no car",
+                "Castaways, ahoy, we are Castaways",
+            },
+            {
+                "Shape and beats is\njust Geometry dash",
+                "Bits & Bops is just Geometry dash",
+                "Geometry dash is\njust Vib-Ribbon",
+                "Vib-Ribbon is\njust sine waves",
+                "sine waves is\njust math",
+            },
+            {
+                typesp = "3",
+                mode = "2",
+                "RUN",
+                "TO",
+                "ME",
+                "con-   -fess your love\natleast just say!",
+                "confess your love\nand hear me say!",
+                "'fess your love and\nown thoughts so-",
+                "confess your love\nand tell me say...",
             },
             {
                 "did you know?",
@@ -1324,7 +1405,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 17000+ lines long :(",
+                "Bro ts code is 18000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1748,7 +1829,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*17000+ lines later*",
+                "*18000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -2019,7 +2100,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 15000+ and now 17000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 15000+ and now 18000+ lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -2039,7 +2120,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 17000 o_o",
+            "da script reached 8000 lines to 18000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2598,6 +2679,9 @@ local config = {
         lastFullbright = nil,
         lastClockTime = nil,
         lastSkybox = nil,
+        lastDesync = nil,
+        cframeViewTarget = nil,
+        lastCframeView = nil,
         fullBrightSettings = nil,
         autoloadParagraph = nil,
         autoloadMemoryFile = "Gravel_Saves/assets/memory.json",
@@ -2704,7 +2788,7 @@ local subside_I_I_I_I_I_ = function()
     return false
 end
 
-local function gestalt_______(state)
+local function localscripts_are_wayy_too_gullible__(state)
     config.antikick = state
     if state then
         if not hookmetamethod or not hookfunction then 
@@ -2829,7 +2913,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-local function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -3350,7 +3434,152 @@ local function cmods()
         config.infjumpConnection:Disconnect()
         config.infjumpConnection = nil
     end
+    if config.noclipEnabled and config.clientModEnabled then
+        if not config.noclipConnection then
+            config.noclipConnection = excusemesir.RunService.Stepped:Connect(function()
+                if not config.noclipEnabled or not config.clientModEnabled then return end
+                local c = excusemesir.Players.LocalPlayer.Character
+                if not c then return end
+                for _, part in ipairs(c:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end)
+        end
+    elseif config.noclipConnection then
+        config.noclipConnection:Disconnect()
+        config.noclipConnection = nil
+        local c = excusemesir.Players.LocalPlayer.Character
+        if c then
+            for _, part in ipairs(c:GetDescendants()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+    if config.flightEnabled and config.clientModEnabled then
+        if not config.flightCharacterAddedConnection then
+            config.flightCharacterAddedConnection =
+                excusemesir.Players.LocalPlayer.CharacterAdded:Connect(function(newChar)
+                    if not config.flightEnabled or not config.clientModEnabled then return end
+                    local newRoot = newChar:WaitForChild("HumanoidRootPart", 5)
+                    local newHum  = newChar:WaitForChild("Humanoid", 5)
+                    if not newRoot or not newHum then return end
+                    if not config.flightEnabled or not config.clientModEnabled then return end
+                    if config.flightBodyGyro then config.flightBodyGyro:Destroy() end
+                    if config.flightBodyVelocity then config.flightBodyVelocity:Destroy() end
+                    config.flightBodyGyro = nil
+                    config.flightBodyVelocity = nil
+                    config.flightAttachedRoot = nil
+                    newHum.PlatformStand = true
+                end)
+        end
+        if not config.flightConnection then
+            config.flightConnection = excusemesir.RunService.Heartbeat:Connect(function()
+                if not config.flightEnabled or not config.clientModEnabled then return end
+                local ch = excusemesir.Players.LocalPlayer.Character
+                if not ch then return end
+                local h = ch:FindFirstChildOfClass("Humanoid")
+                local root = ch:FindFirstChild("HumanoidRootPart")
+                if not h or not root or h.Health <= 0 then return end
+                if config.flightAttachedRoot and config.flightAttachedRoot ~= root then
+                    if config.flightBodyGyro then config.flightBodyGyro:Destroy() end
+                    if config.flightBodyVelocity then config.flightBodyVelocity:Destroy() end
+                    config.flightBodyGyro = nil
+                    config.flightBodyVelocity = nil
+                end
+                if not config.flightBodyGyro
+                   or not config.flightBodyGyro.Parent
+                   or not config.flightBodyVelocity
+                   or not config.flightBodyVelocity.Parent then
+                    if config.flightBodyGyro then config.flightBodyGyro:Destroy() end
+                    if config.flightBodyVelocity then config.flightBodyVelocity:Destroy() end
+                    local bg = Instance.new("BodyGyro")
+                    bg.P = 9e4
+                    bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+                    bg.CFrame = root.CFrame
+                    bg.Parent = root
+                    local bv = Instance.new("BodyVelocity")
+                    bv.Velocity = Vector3.new(0, 0, 0)
+                    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                    bv.Parent = root
+                    config.flightBodyGyro = bg
+                    config.flightBodyVelocity = bv
+                    config.flightAttachedRoot = root
+                end
+                h.PlatformStand = true
+                local cam = workspace.CurrentCamera
+                if not cam then return end
+                local spd = config.flightSpeed or 50
+                local md = h.MoveDirection
+                if md.Magnitude > 0.01 then
+                    local camCF = cam.CFrame
+                    local camLook = camCF.LookVector
+                    local camLookFlat  = Vector3.new(camLook.X, 0, camLook.Z)
+                    local camRightFlat = Vector3.new(camCF.RightVector.X, 0, camCF.RightVector.Z)
+                    if camLookFlat.Magnitude < 0.001 then
+                        camLookFlat = Vector3.new(0, 0, -1)
+                    else
+                        camLookFlat = camLookFlat.Unit
+                    end
+                    if camRightFlat.Magnitude < 0.001 then
+                        camRightFlat = Vector3.new(1, 0, 0)
+                    else
+                        camRightFlat = camRightFlat.Unit
+                    end
+                    local forwardAmt = md:Dot(camLookFlat)
+                    local rightAmt   = md:Dot(camRightFlat)
+                    local dir = (camLook * forwardAmt) + (camRightFlat * rightAmt)
+                    local vInput = (excusemesir.UserInputService:IsKeyDown(Enum.KeyCode.Space) and 1)
+                                or (excusemesir.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) and -1)
+                                or 0
+                    if vInput ~= 0 then
+                        dir = dir + Vector3.new(0, vInput, 0)
+                    end
+                    if dir.Magnitude > 0.001 then
+                        config.flightBodyVelocity.Velocity = dir.Unit * spd
+                    else
+                        config.flightBodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                    end
+                else
+                    local vInput = (excusemesir.UserInputService:IsKeyDown(Enum.KeyCode.Space) and 1)
+                                or (excusemesir.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) and -1)
+                                or 0
+                    if vInput ~= 0 then
+                        config.flightBodyVelocity.Velocity = Vector3.new(0, vInput * spd, 0)
+                    else
+                        config.flightBodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                    end
+                end
+                config.flightBodyGyro.CFrame = cam.CFrame
+            end)
+        end
+    else
+        if config.flightConnection then
+            config.flightConnection:Disconnect()
+            config.flightConnection = nil
+        end
+        if config.flightCharacterAddedConnection then
+            config.flightCharacterAddedConnection:Disconnect()
+            config.flightCharacterAddedConnection = nil
+        end
+        if config.flightBodyGyro then
+            config.flightBodyGyro:Destroy()
+            config.flightBodyGyro = nil
+        end
+        if config.flightBodyVelocity then
+            config.flightBodyVelocity:Destroy()
+            config.flightBodyVelocity = nil
+        end
+        config.flightAttachedRoot = nil
+        if humanoid then
+            humanoid.PlatformStand = false
+        end
+    end
 end
+
 local function resetcmods()
     local player = excusemesir.Players.LocalPlayer
     local character = player.Character
@@ -3376,6 +3605,33 @@ local function resetcmods()
     if config.infjumpConnection then
         config.infjumpConnection:Disconnect()
         config.infjumpConnection = nil
+    end
+    if config.noclipConnection then
+        config.noclipConnection:Disconnect()
+        config.noclipConnection = nil
+    end
+    if config.flightConnection then
+        config.flightConnection:Disconnect()
+        config.flightConnection = nil
+    end
+    if config.flightCharacterAddedConnection then
+        config.flightCharacterAddedConnection:Disconnect()
+        config.flightCharacterAddedConnection = nil
+    end
+    if config.flightBodyGyro then
+        config.flightBodyGyro:Destroy()
+        config.flightBodyGyro = nil
+    end
+    if config.flightBodyVelocity then
+        config.flightBodyVelocity:Destroy()
+        config.flightBodyVelocity = nil
+    end
+    config.flightAttachedRoot = nil
+    humanoid.PlatformStand = false
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+            part.CanCollide = true
+        end
     end
     config.clientModOriginalValues = {}
 end
@@ -3540,7 +3796,7 @@ local function fuzzymatch(inputName)
         end
     end
     if exactMatch then
-        return inputName, nil
+        return similarMatches[1] or inputName, nil
     end
     
     if #similarMatches > 1 then
@@ -4133,6 +4389,8 @@ local function saveConfig(saveName)
             aimbotGetTarget = config.aimbotGetTarget,
             aimbotTeamTarget = config.aimbotTeamTarget,
             aimhertz = config.aimhertz,
+            desync = config.desync,
+            cframeView = config.cframeView,
             startsa = config.startsa,
             wallc = config.wallc,
             scaleToScreen = config.scaleToScreen,
@@ -4193,6 +4451,9 @@ local function saveConfig(saveName)
             gravityValue = config.gravityValue,
             tpwalkEnabled = config.tpwalkEnabled,
             tpwalkSpeed = config.tpwalkSpeed,
+            noclipEnabled = config.noclipEnabled,
+            flightEnabled = config.flightEnabled,
+            flightSpeed = config.flightSpeed,
             jumppowerEnabled = config.jumppowerEnabled,
             jumppowerValue = config.jumppowerValue,
             hipHeightEnabled = config.hipHeightEnabled,
@@ -4217,6 +4478,9 @@ local function saveConfig(saveName)
             varibz_CameraDistance = config.varibz.CameraDistance,
             customFOVEnabled = config.customFOVEnabled,
             customFOVValue = config.customFOVValue,
+            indicator_enabled = config.indicator.enabled,
+            indicator_draggable = config.indicator.draggable,
+            indicator_alwaysVisible = config.indicator.alwaysVisible,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -4696,7 +4960,7 @@ local function loadSave(saveName)
     if cfg.antikick ~= nil then 
         config.antikick = cfg.antikick
         if config.antikick then
-            gestalt_______(true)
+            localscripts_are_wayy_too_gullible__(true)
         end
     end
     if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
@@ -4897,6 +5161,9 @@ local function loadSave(saveName)
     if cfg.clientModEnabled ~= nil then config.clientModEnabled = cfg.clientModEnabled end
     if cfg.walkspeedEnabled ~= nil then config.walkspeedEnabled = cfg.walkspeedEnabled end
     if cfg.walkspeedValue then config.walkspeedValue = cfg.walkspeedValue end
+    if cfg.noclipEnabled ~= nil then config.noclipEnabled = cfg.noclipEnabled end
+    if cfg.flightEnabled ~= nil then config.flightEnabled = cfg.flightEnabled end
+    if cfg.flightSpeed then config.flightSpeed = cfg.flightSpeed end
     if cfg.infjumpEnabled ~= nil then config.infjumpEnabled = cfg.infjumpEnabled end
     if cfg.gravityEnabled ~= nil then config.gravityEnabled = cfg.gravityEnabled end
     if cfg.gravityValue then config.gravityValue = cfg.gravityValue end
@@ -4906,6 +5173,8 @@ local function loadSave(saveName)
     if cfg.jumppowerValue then config.jumppowerValue = cfg.jumppowerValue end
     if cfg.hipHeightEnabled ~= nil then config.hipHeightEnabled = cfg.hipHeightEnabled end
     if cfg.hipHeightValue then config.hipHeightValue = cfg.hipHeightValue end
+    if cfg.desync ~= nil then config.desync = cfg.desync end
+    if cfg.cframeView ~= nil then config.cframeView = cfg.cframeView end
     if cfg.tbot_enabled ~= nil then config.tbot.enabled = cfg.tbot_enabled end
     if cfg.tbot_targetPart then config.tbot.targetPart = cfg.tbot_targetPart end
     if cfg.tbot_fovRadius then config.tbot.fovRadius = cfg.tbot_fovRadius end
@@ -4919,6 +5188,15 @@ local function loadSave(saveName)
     if cfg.antiafk ~= nil then config.antiafk = cfg.antiafk end
     if cfg.camYOffsetEnabled ~= nil then config.camYOffsetEnabled = cfg.camYOffsetEnabled end
     if cfg.camYOffsetValue then config.camYOffsetValue = cfg.camYOffsetValue end
+    if cfg.indicator_draggable ~= nil then
+        config.indicator.draggable = cfg.indicator_draggable
+    end
+    if cfg.indicator_alwaysVisible ~= nil then
+        config.indicator.alwaysVisible = cfg.indicator_alwaysVisible
+    end
+    if cfg.indicator_enabled ~= nil then
+        config.indicator.enabled = cfg.indicator_enabled
+    end
     if cfg.Keybinds then
         for key, value in pairs(cfg.Keybinds) do
             config.Keybinds[key] = value
@@ -4948,7 +5226,6 @@ local function loadSave(saveName)
             gui.RingStroke.Color = config.fovc
         end
     end)
-    
     pcall(function()
         if config.aimbotFOVRing and config.aimbotFOVRing.RingFrame then
             config.aimbotFOVRing.RingFrame.Size = UDim2.new(0, config.aimbotFOVSize * 2, 0, config.aimbotFOVSize * 2)
@@ -4959,7 +5236,7 @@ local function loadSave(saveName)
             end
         end
     end)
-    task.wait(0.1)
+    task.wait(0.1) --reapply
     pcall(function()
         if config.espMasterEnabled then
             applyESPMaster(true)
@@ -4974,6 +5251,11 @@ local function loadSave(saveName)
                 end
             end
             updateESPColors()
+        end
+    end)
+    pcall(function()
+        if gui and gui.indicator then
+            enablethecoolindicator(config.indicator.enabled)
         end
     end)
     pcall(function()
@@ -5225,6 +5507,18 @@ local function loadSave(saveName)
     
     return true
 end
+function uhhhhgetnamesbetter(saveName)
+    if not saveName or saveName == "" then return nil end
+    local saves = getSaveList()
+    for _, s in ipairs(saves) do
+        if s == saveName then return s end
+    end
+    local lower = string.lower(saveName)
+    for _, s in ipairs(saves) do
+        if string.lower(s) == lower then return s end
+    end
+    return nil
+end
 local function savePara()
     local saves = getSaveList()
     local saveText = "Available Saves:\n"
@@ -5241,12 +5535,12 @@ local function savePara()
     return saveText
 end
 
-local function ineedassetfolderrr_()
+function ineedassetfolderrr_()
     if not isfolder("Gravel_Saves/assets") then
         pcall(function() makefolder("Gravel_Saves/assets") end)
     end
 end
-local function raedmahbrain_()
+function raedmahbrain_()
     ineedassetfolderrr_()
     if not isfile(config.varibz.autoloadMemoryFile) then
         return {}
@@ -5266,7 +5560,7 @@ local function raedmahbrain_()
     
     return success and decoded or {}
 end
-local function writehaxsandstuff_(memoryData)
+function writehaxsandstuff_(memoryData)
     ineedassetfolderrr_()
     local success, encoded = pcall(function()
         return game:GetService("HttpService"):JSONEncode(memoryData)
@@ -5319,10 +5613,10 @@ local function SETDAAUTOLAOD_(saveName)
         })
         return false
     end
-    
+
     saveName = exactMatch or saveName
-    local path = getSavePath(saveName)
-    if not isfile(path) then
+    local actualName = uhhhhgetnamesbetter(saveName)
+    if not actualName then
         n({
             Title = "Gravel.cc",
             Content = "Save '" .. saveName .. "' does not exist!",
@@ -5333,7 +5627,7 @@ local function SETDAAUTOLAOD_(saveName)
         })
         return false
     end
-    
+    saveName = actualName
     local gameId = tostring(getdagaem_())
     local gameName = ineedgaemforaotu_()
     
@@ -5428,25 +5722,32 @@ local function autolaodbssthing_()
     local memory = raedmahbrain_()
     local modified = false
     local removedCount = 0
-    
+
     for gameId, data in pairs(memory) do
-        if data.saveName then
-            local path = getSavePath(data.saveName)
-            if not isfile(path) then
+        if type(data) ~= "table" or not data.saveName then
+            memory[gameId] = nil
+            modified = true
+            removedCount = removedCount + 1
+        else
+            local actualName = uhhhhgetnamesbetter(data.saveName)
+            if not actualName then
                 memory[gameId] = nil
                 modified = true
                 removedCount = removedCount + 1
+            elseif actualName ~= data.saveName then
+                data.saveName = actualName
+                modified = true
             end
         end
     end
-    
+
     if modified then
         writehaxsandstuff_(memory)
         if removedCount > 0 then
             autolaodpara()
         end
     end
-    
+
     return removedCount
 end
 
@@ -5454,44 +5755,62 @@ local function autolaodpara()
     local memory = raedmahbrain_()
     local text = "Autoload Settings:\n"
     local hasEntries = false
-    
+
     for gameId, data in pairs(memory) do
-        hasEntries = true
-        local gameName = data.gameName or "Unknown Game"
-        local saveName = data.saveName or "Unknown Save"
-        local isCurrentGame = (gameId == tostring(getdagaem_()))
-        text = text .. (isCurrentGame and "✓ " or "> ") .. gameName .. " → " .. saveName .. (isCurrentGame and "!" or "") .. "\n"
+        if type(data) == "table" and data.saveName then
+            hasEntries = true
+            local gameName = data.gameName or "Unknown Game"
+            local saveName = data.saveName
+            local isCurrentGame = (gameId == tostring(getdagaem_()))
+            text = text .. (isCurrentGame and "✓ " or "> ") .. gameName .. " → " .. saveName .. (isCurrentGame and "!" or "") .. "\n"
+        end
     end
+
     if not hasEntries then
         text = text .. "  No autoloads set. Use 'Autoload on Game' to add one."
     end
+
     text = text .. "\nhelo :3"
+
     if config.varibz.autoloadParagraph then
         config.varibz.autoloadParagraph:SetDesc(text)
     end
 end
 local function startdaautlado_()
     local gameId = tostring(getdagaem_())
-    local memory = raedmahbrain_()
     autolaodbssthing_()
-    
-    if memory[gameId] then
-        local saveName = memory[gameId].saveName
-        local gameName = memory[gameId].gameName or "Unknown Game"
-        local path = getSavePath(saveName)
-        if not isfile(path) then
-            memory[gameId] = nil
-            writehaxsandstuff_(memory)
-            autolaodpara()
-            return false
-        end
-        task.wait(1)
-        
-        local success = loadSave(saveName)
-        return success
+
+    local memory = raedmahbrain_()
+    local entry = memory[gameId]
+    if not entry or not entry.saveName then
+        return false
     end
-    
-    return false
+    local actualName = uhhhhgetnamesbetter(entry.saveName)
+    if not actualName then
+        memory[gameId] = nil
+        writehaxsandstuff_(memory)
+        autolaodpara()
+        return false
+    end
+
+    if actualName ~= entry.saveName then
+        entry.saveName = actualName
+        writehaxsandstuff_(memory)
+        autolaodpara()
+    end
+
+    local saveName = actualName
+    local path = getSavePath(saveName)
+    if not isfile(path) then
+        memory[gameId] = nil
+        writehaxsandstuff_(memory)
+        autolaodpara()
+        return false
+    end
+
+    task.wait(1)
+    local success = loadSave(saveName)
+    return success
 end
 SaveUI:init(WindUI, config)
 BMG:init(WindUI, config)
@@ -6784,6 +7103,236 @@ game:GetService('Players').LocalPlayer.Idled:Connect(function()
     end
 end)
 
+local function dothethangcframe()
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local Camera = workspace.CurrentCamera
+    local Teams = game:GetService("Teams")
+
+    config.Viewing = true
+    config.varibz.cframeViewTarget = nil
+
+    if config.varibz.ViewConnection then
+        config.varibz.ViewConnection:Disconnect()
+        config.varibz.ViewConnection = nil
+    end
+
+    local function isEnemy(player)
+        if not player or player == Players.LocalPlayer then return false end
+        if config.specificTeamTarget then
+            return isInSpecificTeam(player)
+        end
+        local localTeam = Players.LocalPlayer.Team
+        local targetTeam = player.Team
+        if config.masterTeamTarget == "All" then
+            return true
+        elseif config.masterTeamTarget == "Enemies" then
+            if localTeam and targetTeam then
+                return localTeam ~= targetTeam
+            end
+            return true
+        elseif config.masterTeamTarget == "Teams" then
+            if localTeam and targetTeam then
+                return localTeam == targetTeam
+            end
+            return false
+        end
+        return true
+    end
+
+    local function isNPCEnemy(model)
+        if not model or not model:IsA("Model") then return false end
+        if Players:GetPlayerFromCharacter(model) then return false end
+        local humanoid = model:FindFirstChildOfClass("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then return false end
+        if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
+        if config.specificTeamTarget then
+            return isInSpecificTeam(model)
+        end
+        if config.masterTeamTarget == "All" then
+            return true
+        elseif config.masterTeamTarget == "Enemies" then
+            return true
+        elseif config.masterTeamTarget == "Teams" then
+            local npcTeam = model:FindFirstChild("Team")
+            if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                local localTeam = excusemesir.Players.LocalPlayer.Team
+                if localTeam then
+                    return localTeam == npcTeam.Value
+                end
+            end
+            return false
+        end
+        return true
+    end
+
+    local function GetNearestTarget()
+        local localPlayer = Players.LocalPlayer
+        local localChar = localPlayer.Character
+        if not localChar then return nil end
+
+        local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
+        if not localRoot then return nil end
+
+        local nearestTarget = nil
+        local nearestDistance = math.huge
+        local masterTarget = config.masterTarget or "Players"
+        if masterTarget == "Players" or masterTarget == "Both" then
+            for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
+                if plr ~= localPlayer
+                    and plr.Character
+                    and plr.Character:FindFirstChild("HumanoidRootPart")
+                    and isEnemy(plr)
+                then
+                    local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if not config.ignoreForcefield or not hasForcefield(plr.Character) then
+                            local targetRoot = plr.Character:FindFirstChild("HumanoidRootPart")
+                            if targetRoot then
+                                local distance = (localRoot.Position - targetRoot.Position).Magnitude
+                                if distance < nearestDistance then
+                                    nearestDistance = distance
+                                    nearestTarget = {
+                                        type = "player",
+                                        instance = plr,
+                                        character = plr.Character
+                                    }
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        if masterTarget == "NPCs" or masterTarget == "Both" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("Model") and isNPCEnemy(obj) then
+                    local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
+                    if rootPart then
+                        local humanoid = obj:FindFirstChildOfClass("Humanoid")
+                        if humanoid and humanoid.Health > 0 then
+                            if not config.ignoreForcefield or not hasForcefield(obj) then
+                                local distance = (localRoot.Position - rootPart.Position).Magnitude
+                                if distance < nearestDistance then
+                                    nearestDistance = distance
+                                    nearestTarget = {
+                                        type = "npc",
+                                        instance = obj,
+                                        character = obj,
+                                        rootPart = rootPart
+                                    }
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        return nearestTarget
+    end
+
+    local function FindTargetWithLoop(maxAttempts)
+        local attempts = 0
+        local target = nil
+
+        while attempts < (maxAttempts or 50) do
+            target = GetNearestTarget()
+            if target then
+                return target
+            end
+            attempts = attempts + 1
+            task.wait(0.1)
+        end
+
+        return nil
+    end
+
+    local Target = FindTargetWithLoop(30)
+    if not Target then
+        n({
+            Title = "Gravel.cc",
+            Content = "where da robloxians",
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = Color3.fromRGB(255, 0, 0)
+        })
+        config.cframeView = false
+        config.varibz.cframeViewTarget = nil
+        return
+    end
+    config.varibz.cframeViewTarget = Target.instance
+    Camera.CameraType = Enum.CameraType.Scriptable
+    local retryCounter = 0
+    config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
+        if not config.Viewing then
+            return
+        end
+
+        local isValid = false
+        if Target.type == "player" then
+            isValid = Target.instance
+                and Target.instance.Character
+                and Target.instance.Character:FindFirstChild("HumanoidRootPart")
+                and isEnemy(Target.instance)
+                and Target.instance.Character:FindFirstChildOfClass("Humanoid")
+                and Target.instance.Character:FindFirstChildOfClass("Humanoid").Health > 0
+        elseif Target.type == "npc" then
+            isValid = Target.instance
+                and Target.instance.Parent
+                and Target.instance:FindFirstChild("HumanoidRootPart")
+                and isNPCEnemy(Target.instance)
+                and Target.instance:FindFirstChildOfClass("Humanoid")
+                and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
+        end
+        if not isValid then
+            retryCounter = retryCounter + 1
+            local newTarget = FindTargetWithLoop(20)
+
+            if newTarget then
+                Target = newTarget
+                config.varibz.cframeViewTarget = Target.instance
+                retryCounter = 0
+                return
+            end
+            if retryCounter > 100000 then
+                config.Viewing = false
+                config.cframeView = false
+                config.varibz.cframeViewTarget = nil
+                Camera.CameraType = Enum.CameraType.Custom
+                return
+            end
+            task.wait(0.1)
+            return
+        else
+            retryCounter = 0
+        end
+
+        local HRP = nil
+        if Target.type == "player" then
+            HRP = Target.instance.Character.HumanoidRootPart
+        elseif Target.type == "npc" then
+            HRP = Target.instance.HumanoidRootPart
+        end
+
+        if not HRP then
+            return
+        end
+
+        local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
+        Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
+    end)
+
+    n({
+        Title = "Gravel.cc",
+        Content = "Viewing " .. (Target.type == "player" and Target.instance.Name or "NPC"),
+        Audio = "rbxassetid://17208361335",
+        Length = 2,
+        Image = "rbxassetid://4483362458",
+        BarColor = Color3.fromRGB(0, 170, 255)
+    })
+end
 local function ineednextgenrep(state)
     if state then
         local char = LocalPlayer.Character
@@ -6836,7 +7385,9 @@ local function ineednextgenrep(state)
         local trans = config.desyncTransparency or 0.5
         for _, part in pairs(char:GetDescendants()) do
             if part:IsA("BasePart") or part:IsA("Decal") then
-                pcall(function() part.Transparency = trans end)
+                if part.Name ~= "HumanoidRootPart" then
+                    pcall(function() part.Transparency = trans end)
+                end
             end
         end
         if config.desyncLoop then
@@ -6848,7 +7399,7 @@ local function ineednextgenrep(state)
                 local c = LocalPlayer.Character
                 if c then
                     for _, part in pairs(c:GetDescendants()) do
-                        if part:IsA("BasePart") or part:IsA("Decal") then
+                        if (part:IsA("BasePart") or part:IsA("Decal")) and part.Name ~= "HumanoidRootPart" then
                             if part.Transparency < (config.desyncTransparency or 0.5) - 0.05 then
                                 pcall(function() part.Transparency = config.desyncTransparency or 0.5 end)
                             end
@@ -6919,7 +7470,9 @@ local function ineednextgenrep(state)
         if char then
             for _, part in pairs(char:GetDescendants()) do
                 if part:IsA("BasePart") or part:IsA("Decal") then
-                    pcall(function() part.Transparency = 0 end)
+                    if part.Name ~= "HumanoidRootPart" then
+                        pcall(function() part.Transparency = 0 end)
+                    end
                 end
             end
         end
@@ -6940,7 +7493,7 @@ local function ineednextgenrep(state)
 end
 local function gonextgenrep()
     if not config.desyncActive then return end
-    task.wait(1.5)
+    task.wait()
     local char = LocalPlayer.Character
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
@@ -6969,7 +7522,9 @@ local function gonextgenrep()
     local trans = config.desyncTransparency or 0.5
     for _, part in pairs(char:GetDescendants()) do
         if part:IsA("BasePart") or part:IsA("Decal") then
-            pcall(function() part.Transparency = trans end)
+            if part.Name ~= "HumanoidRootPart" then
+                pcall(function() part.Transparency = trans end)
+            end
         end
     end
 end
@@ -10557,6 +11112,8 @@ local function CreateQT()
                     config.SA2_Enabled = true
                 elseif name == "BHop" then
                     toggleBHop(true)
+                elseif name == "Desync" then
+                    ineednextgenrep(true)
                 end
             else
                 toggleOff()
@@ -10586,9 +11143,10 @@ local function CreateQT()
                     config.SA2_Enabled = false
                 elseif name == "BHop" then
                     toggleBHop(false)
+                elseif name == "Desync" then
+                    ineednextgenrep(false)
                 end
             end
-            
             label.Text = getter() and name .. "<" or name
         end
         
@@ -10772,7 +11330,18 @@ local function CreateQT()
         BHop = {
             getter = function() return config.bhop.enabled end,
             setter = function(v) toggleBHop(v) end
-        }
+        },
+        Desync = {
+            getter = function() return config.desync end,
+            setter = function(v) 
+                config.desync = v
+                if v then
+                    ineednextgenrep(true)
+                else
+                    ineednextgenrep(false)
+                end
+            end
+        },
     }
     local index = 0
     for name, cfg in pairs(toggleConfigs) do
@@ -10838,7 +11407,8 @@ local function UpdateQT()
             Hitbox = config.hitboxEnabled,
             ESP = config.espMasterEnabled,
             SilentAimHK = config.SA2_Enabled,
-            BHop = config.bhop.enabled
+            BHop = config.bhop.enabled,
+            Desync = config.desync,
         }
         
         for buttonName, isEnabled in pairs(buttonStates) do
@@ -11400,6 +11970,518 @@ local function safeGetCharacter()
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     return character, humanoid, rootPart
 end
+
+-- i had to use sun random gui creator for ts 🥀🥀🥀🥀
+function coolzestyuithing_diehedijsi_iwhwked()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "indit"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.IgnoreGuiInset = true
+    ScreenGui.Parent = excusemesir.CoreGui
+
+    local UIObject1 = Instance.new("ImageLabel")
+    UIObject1.Name = "ImageLabel"
+    UIObject1.ImageColor3 = Color3.fromRGB(255,255,255)
+    UIObject1.BorderMode = Enum.BorderMode.Outline
+    UIObject1.AnchorPoint = Vector2.new(0,0)
+    UIObject1.Image = "rbxassetid://125957552249539"
+    UIObject1.ImageRectSize = Vector2.new(0,0)
+    UIObject1.ZIndex = 1
+    UIObject1.BorderSizePixel = 0
+    UIObject1.Size = UDim2.new(0,250,0,142)
+    UIObject1.ScaleType = Enum.ScaleType.Fit
+    UIObject1.ClipsDescendants = true
+    UIObject1.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject1.AutomaticSize = Enum.AutomaticSize.None
+    UIObject1.LayoutOrder = 0
+    UIObject1.Rotation = 0
+    UIObject1.ResampleMode = Enum.ResamplerMode.Default
+    UIObject1.BackgroundTransparency = 1
+    UIObject1.Position = UDim2.new(0,459,0,5)
+    UIObject1.Visible = false
+    UIObject1.ImageRectOffset = Vector2.new(0,0)
+    UIObject1.ImageTransparency = 1
+    UIObject1.BackgroundColor3 = Color3.fromRGB(246,247,249)
+    UIObject1.Parent = ScreenGui
+
+    local UIObject2 = Instance.new("TextLabel")
+    UIObject2.Name = "HealthBar"
+    UIObject2.Visible = true
+    UIObject2.TextWrapped = true
+    UIObject2.BorderMode = Enum.BorderMode.Outline
+    UIObject2.TextTransparency = 0
+    UIObject2.TextStrokeTransparency = 1
+    UIObject2.AnchorPoint = Vector2.new(0,0)
+    UIObject2.AutomaticSize = Enum.AutomaticSize.None
+    UIObject2.ClipsDescendants = false
+    UIObject2.LayoutOrder = 0
+    UIObject2.ZIndex = 1
+    UIObject2.BorderSizePixel = 0
+    UIObject2.Size = UDim2.new(0,181,0,25)
+    UIObject2.Selectable = false
+    UIObject2.RichText = false
+    UIObject2.Active = true
+    UIObject2.TextColor3 = Color3.fromRGB(255,255,255)
+    UIObject2.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject2.Text = "[" .. string.rep(" ", 43) .. "]"
+    UIObject2.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+    UIObject2.TextSize = 8
+    UIObject2.Rotation = 0
+    UIObject2.Font = Enum.Font.Code
+    UIObject2.BackgroundTransparency = 1
+    UIObject2.Position = UDim2.new(0,58,0,104)
+    UIObject2.TextXAlignment = Enum.TextXAlignment.Left
+    UIObject2.TextYAlignment = Enum.TextYAlignment.Center
+    UIObject2.TextScaled = false
+    UIObject2.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    UIObject2.Parent = UIObject1
+
+    local UIObject4 = Instance.new("TextLabel")
+    UIObject4.Name = "Healthlabel"
+    UIObject4.Visible = true
+    UIObject4.TextWrapped = true
+    UIObject4.BorderMode = Enum.BorderMode.Outline
+    UIObject4.TextTransparency = 0
+    UIObject4.TextStrokeTransparency = 1
+    UIObject4.AnchorPoint = Vector2.new(0,0)
+    UIObject4.AutomaticSize = Enum.AutomaticSize.None
+    UIObject4.ClipsDescendants = false
+    UIObject4.LayoutOrder = 0
+    UIObject4.ZIndex = 1
+    UIObject4.BorderSizePixel = 0
+    UIObject4.Size = UDim2.new(0,67,0,35)
+    UIObject4.Selectable = false
+    UIObject4.RichText = false
+    UIObject4.Active = true
+    UIObject4.TextColor3 = Color3.fromRGB(255,255,255)
+    UIObject4.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject4.Text = "Health"
+    UIObject4.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+    UIObject4.TextSize = 10
+    UIObject4.Rotation = 0
+    UIObject4.Font = Enum.Font.Code
+    UIObject4.BackgroundTransparency = 1
+    UIObject4.Position = UDim2.new(0,118,0,88)
+    UIObject4.TextXAlignment = Enum.TextXAlignment.Center
+    UIObject4.TextYAlignment = Enum.TextYAlignment.Center
+    UIObject4.TextScaled = false
+    UIObject4.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    UIObject4.Parent = UIObject1
+
+    local UIObject5 = Instance.new("ImageLabel")
+    UIObject5.Name = "profile"
+    UIObject5.ImageColor3 = Color3.fromRGB(255,255,255)
+    UIObject5.BorderMode = Enum.BorderMode.Outline
+    UIObject5.AnchorPoint = Vector2.new(0,0)
+    UIObject5.Image = "rbxassetid://88211070293372"
+    UIObject5.ImageRectSize = Vector2.new(0,0)
+    UIObject5.ZIndex = 1
+    UIObject5.BorderSizePixel = 0
+    UIObject5.Size = UDim2.new(0,41,0,40)
+    UIObject5.ScaleType = Enum.ScaleType.Stretch
+    UIObject5.ClipsDescendants = false
+    UIObject5.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject5.AutomaticSize = Enum.AutomaticSize.None
+    UIObject5.LayoutOrder = 0
+    UIObject5.Rotation = 0
+    UIObject5.ResampleMode = Enum.ResamplerMode.Default
+    UIObject5.BackgroundTransparency = 1
+    UIObject5.Position = UDim2.new(0,20,0,22)
+    UIObject5.Visible = true
+    UIObject5.ImageRectOffset = Vector2.new(0,0)
+    UIObject5.ImageTransparency = 0.2
+    UIObject5.BackgroundColor3 = Color3.fromRGB(246,247,249)
+    UIObject5.Parent = UIObject1
+
+    local UIObject6 = Instance.new("UICorner")
+    UIObject6.Name = "UICorner"
+    UIObject6.CornerRadius = UDim.new(0,10)
+    UIObject6.Parent = UIObject5
+
+    local UIObject7 = Instance.new("TextLabel")
+    UIObject7.Name = "name label"
+    UIObject7.Visible = true
+    UIObject7.TextWrapped = true
+    UIObject7.BorderMode = Enum.BorderMode.Outline
+    UIObject7.TextTransparency = 0
+    UIObject7.TextStrokeTransparency = 1
+    UIObject7.AnchorPoint = Vector2.new(0,0)
+    UIObject7.AutomaticSize = Enum.AutomaticSize.None
+    UIObject7.ClipsDescendants = false
+    UIObject7.LayoutOrder = 0
+    UIObject7.ZIndex = 1
+    UIObject7.BorderSizePixel = 0
+    UIObject7.Size = UDim2.new(0,147,0,26)
+    UIObject7.Selectable = false
+    UIObject7.RichText = false
+    UIObject7.Active = true
+    UIObject7.TextColor3 = Color3.fromRGB(255,255,255)
+    UIObject7.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject7.Text = "< name"
+    UIObject7.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+    UIObject7.TextSize = 10
+    UIObject7.Rotation = 0
+    UIObject7.Font = Enum.Font.Code
+    UIObject7.BackgroundTransparency = 1
+    UIObject7.Position = UDim2.new(0,61,0,29)
+    UIObject7.TextXAlignment = Enum.TextXAlignment.Center
+    UIObject7.TextYAlignment = Enum.TextYAlignment.Center
+    UIObject7.TextScaled = false
+    UIObject7.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    UIObject7.Parent = UIObject1
+
+    local UIObject8 = Instance.new("TextLabel")
+    UIObject8.Name = "feature label"
+    UIObject8.Visible = true
+    UIObject8.TextWrapped = true
+    UIObject8.BorderMode = Enum.BorderMode.Outline
+    UIObject8.TextTransparency = 0
+    UIObject8.TextStrokeTransparency = 1
+    UIObject8.AnchorPoint = Vector2.new(0,0)
+    UIObject8.AutomaticSize = Enum.AutomaticSize.None
+    UIObject8.ClipsDescendants = false
+    UIObject8.LayoutOrder = 0
+    UIObject8.ZIndex = 1
+    UIObject8.BorderSizePixel = 0
+    UIObject8.Size = UDim2.new(0,147,0,70)
+    UIObject8.Selectable = false
+    UIObject8.RichText = false
+    UIObject8.Active = true
+    UIObject8.TextColor3 = Color3.fromRGB(180, 220, 180)
+    UIObject8.BorderColor3 = Color3.fromRGB(0,0,0)
+    UIObject8.Text = "[ none ]"
+    UIObject8.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+    UIObject8.TextSize = 7
+    UIObject8.Rotation = 0
+    UIObject8.Font = Enum.Font.Code
+    UIObject8.BackgroundTransparency = 1
+    UIObject8.Position = UDim2.new(0,61,0,50)
+    UIObject8.TextXAlignment = Enum.TextXAlignment.Center
+    UIObject8.TextYAlignment = Enum.TextYAlignment.Top
+    UIObject8.TextScaled = false
+    UIObject8.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    UIObject8.Parent = UIObject1
+    local fadeInSound = Instance.new("Sound")
+    fadeInSound.SoundId = "rbxassetid://112754501285226"
+    fadeInSound.Volume = 0.5
+    fadeInSound.Parent = ScreenGui
+    local fadeOutSound = Instance.new("Sound")
+    fadeOutSound.SoundId = "rbxassetid://8968249849"
+    fadeOutSound.Volume = 0.5
+    fadeOutSound.Parent = ScreenGui
+
+    return {
+        ScreenGui = ScreenGui,
+        Frame = UIObject1,
+        HealthBar = UIObject2,
+        HealthLabel = UIObject4,
+        Profile = UIObject5,
+        NameLabel = UIObject7,
+        FeatureLabel = UIObject8,
+        FadeInSound = fadeInSound,
+        FadeOutSound = fadeOutSound,
+    }
+end
+
+local function profolio(target)
+    if not target then return nil end
+    if typeof(target) == "Instance" and target:IsA("Player") then
+        local ok, thumb = pcall(function()
+            return excusemesir.Players:GetUserThumbnailAsync(
+                target.UserId,
+                Enum.ThumbnailType.HeadShot,
+                Enum.ThumbnailSize.Size100x100
+            )
+        end)
+        if ok and thumb then return thumb end
+    end
+    return "rbxassetid://88211070293372"
+end
+function kxhanwieixuzhw__woejdjks(ratio, totalBars)
+    totalBars = totalBars or 43
+    local filled = math.clamp(math.floor(ratio * totalBars + 0.5), 0, totalBars)
+    return "[" .. string.rep("|", filled) .. string.rep(" ", totalBars - filled) .. "]"
+end
+function ksjweidushnweoidhsgu_aoehd__()
+    local target = nil
+    local features = {}
+
+    if config.aimbotEnabled and config.aimbotCurrentTarget then
+        target = target or config.aimbotCurrentTarget
+        if config.aimbotCurrentTarget == target then
+            table.insert(features, "Aimbot")
+        end
+    end
+    if config.SA2_Enabled and config.SA2_currentTarget then
+        target = target or config.SA2_currentTarget
+        if config.SA2_currentTarget == target then
+            table.insert(features, "SilentAim (HK)")
+        end
+    end
+    if config.startsa and config.currentTarget then
+        target = target or config.currentTarget
+        if config.currentTarget == target then
+            table.insert(features, "SilentAim (HB)")
+        end
+    end
+    if config.tbot.enabled and config.tbotcurrenttarget then
+        target = target or config.tbotcurrenttarget
+        if config.tbotcurrenttarget == target then
+            table.insert(features, "TriggerBot")
+        end
+    end
+    if config.antiAimEnabled and config.currentAntiAimTarget then
+        target = target or config.currentAntiAimTarget
+        if config.currentAntiAimTarget == target then
+            table.insert(features, "AntiAim")
+        end
+    end
+    if config.autoFarmEnabled and config.currentAutoFarmTarget then
+        target = target or config.currentAutoFarmTarget
+        if config.currentAutoFarmTarget == target then
+            table.insert(features, "AutoFarm")
+        end
+    end
+    if config.cframeView and config.varibz.cframeViewTarget then
+        target = target or config.varibz.cframeViewTarget
+        if config.varibz.cframeViewTarget == target then
+            table.insert(features, "CFrame View")
+        end
+    end
+
+    return target, features
+end
+function jdjwhejdijahweki____sidjnww_ieje()
+    local ui = coolzestyuithing_diehedijsi_iwhwked()
+    local function setAllTransparency(value)
+        ui.Frame.ImageTransparency = value
+        ui.HealthBar.TextTransparency = value
+        ui.HealthLabel.TextTransparency = value
+        ui.Profile.ImageTransparency = value
+        ui.NameLabel.TextTransparency = value
+        ui.FeatureLabel.TextTransparency = value
+    end
+    local dragging = false
+    local dragInput = nil
+    local dragStart = nil
+    local startPos = nil
+    local function updateDrag(input)
+        local delta = input.Position - dragStart
+        ui.Frame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+
+    ui.Frame.InputBegan:Connect(function(input)
+        if not config.indicator.draggable then return end
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = ui.Frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    ui.Frame.InputChanged:Connect(function(input)
+        if not config.indicator.draggable then return end
+        if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    excusemesir.UserInputService.InputChanged:Connect(function(input)
+        if not config.indicator.draggable then return end
+        if dragging and input == dragInput then
+            updateDrag(input)
+        end
+    end)
+    local function fadeIn()
+        if config.indicator.visible then return end
+        config.indicator.visible = true
+        ui.Frame.Visible = true
+        pcall(function() ui.FadeInSound:Play() end)
+        local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 0.2}):Play()
+        excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 0}):Play()
+        excusemesir.TweenService:Create(ui.HealthLabel, tweenInfo, {TextTransparency = 0}):Play()
+        excusemesir.TweenService:Create(ui.Profile, tweenInfo, {ImageTransparency = 0.2}):Play()
+        excusemesir.TweenService:Create(ui.NameLabel, tweenInfo, {TextTransparency = 0}):Play()
+        excusemesir.TweenService:Create(ui.FeatureLabel, tweenInfo, {TextTransparency = 0}):Play()
+    end
+
+    local function fadeOut()
+        if not config.indicator.visible then return end
+        config.indicator.visible = false
+        pcall(function() ui.FadeOutSound:Play() end)
+        local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 1}):Play()
+        excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 1}):Play()
+        excusemesir.TweenService:Create(ui.HealthLabel, tweenInfo, {TextTransparency = 1}):Play()
+        excusemesir.TweenService:Create(ui.Profile, tweenInfo, {ImageTransparency = 1}):Play()
+        excusemesir.TweenService:Create(ui.NameLabel, tweenInfo, {TextTransparency = 1}):Play()
+        excusemesir.TweenService:Create(ui.FeatureLabel, tweenInfo, {TextTransparency = 1}):Play()
+        task.delay(0.15, function()
+            if not config.indicator.visible then
+                ui.Frame.Visible = false
+            end
+        end)
+    end
+    local function triggerDamageEffect(damage)
+        config.indicator.flashUntil = tick() + 1.5
+        config.indicator.si = math.clamp(damage / 10, 1, 8)
+        ui.Profile.ImageColor3 = Color3.fromRGB(255, 80, 80)
+        ui.NameLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+        task.delay(1.5, function()
+            if tick() >= config.indicator.flashUntil then
+                ui.Profile.ImageColor3 = Color3.fromRGB(255, 255, 255)
+                ui.NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            end
+        end)
+    end
+    local accum = 0
+    config.indicator.heartbeat = excusemesir.RunService.Heartbeat:Connect(function(dt)
+        if not config.indicator.enabled then
+            if config.indicator.visible then fadeOut() end
+            return
+        end
+
+        accum = accum + dt
+        if accum < 0.05 then return end
+        accum = 0
+        local target, features = ksjweidushnweoidhsgu_aoehd__()
+
+        if not target then
+            if config.indicator.alwaysVisible then
+                fadeIn()
+                config.indicator.lastHealth = nil
+                config.indicator.lastTarget = nil
+                ui.Profile.Image = "rbxassetid://88211070293372"
+                ui.NameLabel.Text = "uhhhh"
+                ui.FeatureLabel.Text = "[ water ]"
+                ui.HealthBar.Text = "[" .. string.rep(" ", 43) .. "]"
+                ui.HealthLabel.Text = "Health: N/A"
+                return
+            end
+            if config.indicator.visible then fadeOut() end
+            config.indicator.lastHealth = nil
+            config.indicator.lastTarget = nil
+            return
+        end
+        local char = getTargetCharacter(target)
+        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+        if not char or not humanoid or humanoid.Health <= 0 then
+            if config.indicator.alwaysVisible then
+                fadeIn()
+                config.indicator.lastHealth = nil
+                config.indicator.lastTarget = nil
+                ui.Profile.Image = "rbxassetid://88211070293372"
+                ui.NameLabel.Text = "uhhhh"
+                ui.FeatureLabel.Text = "[ water ]"
+                ui.HealthBar.Text = "[" .. string.rep(" ", 43) .. "]"
+                ui.HealthLabel.Text = "Health: N/A"
+                return
+            end
+            if config.indicator.visible then fadeOut() end
+            return
+        end
+        fadeIn()
+        if config.indicator.lastTarget ~= target then
+            config.indicator.lastTarget = target
+            config.indicator.lastHealth = nil
+            ui.Profile.Image = profolio(target)
+        end
+        if config.indicator.lastHealth and humanoid.Health < config.indicator.lastHealth then
+            local dmg = config.indicator.lastHealth - humanoid.Health
+            if dmg > 0 then
+                triggerDamageEffect(dmg)
+            end
+        end
+        config.indicator.lastHealth = humanoid.Health
+        local displayName = target.Name
+        if typeof(target) == "Instance" and target:IsA("Player") then
+            displayName = target.DisplayName
+        end
+        ui.NameLabel.Text = "folk; " .. displayName
+
+        if #features == 0 then
+            ui.FeatureLabel.Text = "[ none ]"
+        else
+            local lines = {}
+            for _, feat in ipairs(features) do
+                table.insert(lines, "[" .. feat .. "]")
+            end
+            ui.FeatureLabel.Text = table.concat(lines, "\n")
+        end
+        local maxHealth = humanoid.MaxHealth
+        if maxHealth <= 0 then maxHealth = 100 end
+        local ratio = math.clamp(humanoid.Health / maxHealth, 0, 1)
+        ui.HealthBar.Text = kxhanwieixuzhw__woejdjks(ratio, 43)
+        ui.HealthLabel.Text = string.format("Health: %d", math.floor(humanoid.Health))
+        if config.indicator.si > 0 then
+            local shake = config.indicator.si
+            ui.HealthBar.Position = UDim2.new(
+                0, 58 + (math.random() * 2 - 1) * shake,
+                0, 104 + (math.random() * 2 - 1) * shake
+            )
+            config.indicator.si = math.max(0, shake - dt * 20)
+        else
+            ui.HealthBar.Position = UDim2.new(0, 58, 0, 104)
+        end
+    end)
+    excusemesir.Players.PlayerRemoving:Connect(function(plr)
+        if config.indicator.lastTarget == plr then
+            config.indicator.lastTarget = nil
+            config.indicator.lastHealth = nil
+        end
+    end)
+
+    return ui
+end
+
+local function enablethecoolindicator(state)
+    config.indicator.enabled = state
+    if state and config.indicator.alwaysVisible and gui.indicator then
+        local ui = gui.indicator
+        if not config.indicator.visible then
+            config.indicator.visible = true
+            ui.Frame.Visible = true
+            pcall(function() ui.FadeInSound:Play() end)
+            local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 0.2}):Play()
+            excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 0}):Play()
+            excusemesir.TweenService:Create(ui.HealthLabel, tweenInfo, {TextTransparency = 0}):Play()
+            excusemesir.TweenService:Create(ui.Profile, tweenInfo, {ImageTransparency = 0.2}):Play()
+            excusemesir.TweenService:Create(ui.NameLabel, tweenInfo, {TextTransparency = 0}):Play()
+            excusemesir.TweenService:Create(ui.FeatureLabel, tweenInfo, {TextTransparency = 0}):Play()
+        end
+    end
+    if not state and gui.indicator then
+        local ui = gui.indicator
+        if config.indicator.visible then
+            config.indicator.visible = false
+            pcall(function() ui.FadeOutSound:Play() end)
+            local tweenInfo = TweenInfo.new(0.15)
+            excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 1}):Play()
+            excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 1}):Play()
+            excusemesir.TweenService:Create(ui.HealthLabel, tweenInfo, {TextTransparency = 1}):Play()
+            excusemesir.TweenService:Create(ui.Profile, tweenInfo, {ImageTransparency = 1}):Play()
+            excusemesir.TweenService:Create(ui.NameLabel, tweenInfo, {TextTransparency = 1}):Play()
+            excusemesir.TweenService:Create(ui.FeatureLabel, tweenInfo, {TextTransparency = 1}):Play()
+            task.delay(0.15, function()
+                if not config.indicator.visible then
+                    ui.Frame.Visible = false
+                end
+            end)
+        end
+    end
+end
 local autoloadSuccess = startdaautlado_()
 if autoloadSuccess then
     print("autoloaded on dis gaem :3")
@@ -11914,7 +12996,94 @@ local function rng4()
     
     return rng4.tag
 end
+local function rng7()
+    if config.varibz.openbtnconnection then
+        pcall(function() config.varibz.openbtnconnection:Disconnect() end)
+        config.varibz.openbtnconnection = nil
+    end
+    config.varibz.openbtnlastindex = nil
+    config.varibz.openbtnlabel = nil
+    config.varibz.openbtnwasvisible = nil
 
+    local placeholder = "___________"
+    local pool = config.varibz.btntitle
+    if not pool or #pool == 0 then return end
+
+    local function pickRandom()
+        local idx = math.random(1, #pool)
+        if #pool > 1 and idx == config.varibz.openbtnlastindex then
+            idx = (idx % #pool) + 1
+        end
+        config.varibz.openbtnlastindex = idx
+        return pool[idx]
+    end
+
+    local function isActuallyVisible(obj)
+        local current = obj
+        while current do
+            if current:IsA("GuiObject") and not current.Visible then
+                return false
+            end
+            if current:IsA("LayerCollector") and not current.Enabled then
+                return false
+            end
+            current = current.Parent
+        end
+        return true
+    end
+
+    task.spawn(function()
+        local label
+        local attempts = 0
+        while not label and attempts < 100 do
+            attempts = attempts + 1
+            local root = Window and Window.OpenButtonMain and Window.OpenButtonMain.Button
+            if root then
+                for _, d in ipairs(root:GetDescendants()) do
+                    if d:IsA("TextLabel") and d.Text == placeholder then
+                        label = d
+                        break
+                    end
+                end
+            end
+            if not label then task.wait(0.1) end
+        end
+        if not label and Window and Window.OpenButtonMain and Window.OpenButtonMain.Button then
+            for _, d in ipairs(Window.OpenButtonMain.Button:GetDescendants()) do
+                if d:IsA("TextLabel") then
+                    label = d
+                    break
+                end
+            end
+        end
+        if not label then
+            warn("[Gravel]: couldn't find OpenButton label :(")
+            return
+        end
+        config.varibz.openbtnlabel = label
+        label.Text = pickRandom()
+        config.varibz.openbtnwasvisible = isActuallyVisible(label)
+
+        task.spawn(function()
+            while config.varibz.openbtnlabel == label and label.Parent do
+                local nowVisible = isActuallyVisible(label)
+                if nowVisible and not config.varibz.openbtnwasvisible then
+                    label.Text = pickRandom()
+                end
+                config.varibz.openbtnwasvisible = nowVisible
+                task.wait(0.1)
+            end
+        end)
+
+        config.varibz.openbtnconnection = {
+            Disconnect = function()
+                if config.varibz.openbtnlabel == label then
+                    config.varibz.openbtnlabel = nil
+                end
+            end
+        }
+    end)
+end
 local function rng()
     rng_s.Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)]
     rng_s.YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)]
@@ -11950,6 +13119,7 @@ uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
 eye_con()
 rng4()
 rng6()
+rng7()
 task.defer(function()
     task.wait(0.5)
     SaveUI:autoLoad()
@@ -11973,7 +13143,7 @@ MainTab:Toggle({
     Desc = "go away evil localspirit",
     Value = config.antikick or true,
     Callback = function(v)
-        gestalt_______(v)
+        localscripts_are_wayy_too_gullible__(v)
     end
 })
     MainTab:Paragraph({
@@ -12106,6 +13276,32 @@ end)
         end
     })
 MainTab:Space()
+MainTab:Toggle({
+    Title = "Indicator UI",
+    Desc = "uhhh... cool ui that ''indicates'' you",
+    Value = config.indicator.enabled or false,
+    Callback = function(v)
+        enablethecoolindicator(v)
+    end
+})
+
+MainTab:Toggle({
+    Title = "Indicator Draggable",
+    Desc = "move me finger",
+    Value = config.indicator.draggable or true,
+    Callback = function(v)
+        config.indicator.draggable = v
+    end
+})
+
+MainTab:Toggle({
+    Title = "Indicator Always Visible",
+    Desc = "no hide & seek lever",
+    Value = config.indicator.alwaysVisible or false,
+    Callback = function(v)
+        config.indicator.alwaysVisible = v
+    end
+})
     MainTab:Toggle({
         Title = "QuickToggles",
         Desc = "1000x easier for the mobile folks",
@@ -12239,6 +13435,15 @@ MainTab:Keybind({
     Value = config.Keybinds.antiaim or "L",
     Callback = function(key)
         config.Keybinds.antiaim = key
+    end
+})
+
+MainTab:Keybind({
+    Title = "Desync",
+    Desc = "Toggle Desync",
+    Value = config.Keybinds.desync or "J",
+    Callback = function(key)
+        config.Keybinds.desync = key
     end
 })
 
@@ -13691,10 +14896,10 @@ AntiAimTab:Slider({
 
 AntiAimTab:Toggle({
     Title = "Desync",
-    Desc = "it's not raknet desync it's uhhh smth-smth that still desyncs u\n\n(Incomp with S/L)",
-    Value = false,
+    Desc = "it's not raknet desync it's uhhh smth-smth that still desyncs u",
+    Value = config.desync or false,
     Callback = function(v)
-        ineednextgenrep(v)
+        config.desync = v
         n({
             Title = "Gravel.cc",
             Content = "Desync: " .. (v and "Enabled" or "Disabled"),
@@ -13705,7 +14910,6 @@ AntiAimTab:Toggle({
         })
     end
 })
-
 AntiAimTab:Slider({
     Title = "Desync Transparency",
     Desc = "make desync look pretty",
@@ -14856,6 +16060,48 @@ local ClientTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
 
+ClientTab:Toggle({
+    Title = "Noclip",
+    Desc = "ghost and uhh backrooms",
+    Value = config.noclipEnabled or false,
+    Callback = function(v)
+        config.noclipEnabled = v
+        if config.clientModEnabled then
+            cmods()
+        end
+    end
+})
+
+ClientTab:Toggle({
+    Title = "Flight",
+    Desc = "/gamemode @s creative",
+    Value = config.flightEnabled or false,
+    Callback = function(v)
+        config.flightEnabled = v
+        if config.clientModEnabled then
+            cmods()
+        else
+            resetcmods()
+        end
+    end
+})
+
+ClientTab:Slider({
+    Title = "Flight Speed",
+    Desc = "how fast u zoom",
+    IsTextbox = true,
+    Step = 1,
+    Suffix = "studs/s",
+    Value = {
+        Min = 5,
+        Max = 500,
+        Default = config.flightSpeed or 50
+    },
+    Callback = function(value)
+        config.flightSpeed = value
+    end
+})
+
     ClientTab:Toggle({
         Title = "Enable Walkspeed",
         Desc = "flash",
@@ -15532,9 +16778,10 @@ MiscTab:Toggle({
     })
 MiscTab:Toggle({
     Title = "Cframe View",
-    Desc = "view randos with cframe view & kill em >:]\n\n(Incomp with S/L)",
-    Value = config.wallc or false,
+    Desc = "view randos with cframe view & kill em >:]",
+    Value = config.cframeView or false,
     Callback = function(v)
+        config.cframeView = v
         n({
             Title = "Gravel.cc",
             Content = "Cframe View: " .. (v and "Enabled" or "Disabled"),
@@ -15542,232 +16789,6 @@ MiscTab:Toggle({
             Length = 2,
             Image = "rbxassetid://4483362458",
             BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        })
-        local Players = game:GetService("Players")
-        local RunService = game:GetService("RunService")
-        local Camera = workspace.CurrentCamera
-        local Teams = game:GetService("Teams")
-
-        config.Viewing = v
-
-        if config.varibz.ViewConnection then
-            config.varibz.ViewConnection:Disconnect()
-            config.varibz.ViewConnection = nil
-        end
-
-        if not v then
-            Camera.CameraType = Enum.CameraType.Custom
-            return
-        end
-        local function isEnemy(player)
-            if not player or player == Players.LocalPlayer then return false end
-            if config.specificTeamTarget then
-                return isInSpecificTeam(player)
-            end
-            local localTeam = Players.LocalPlayer.Team
-            local targetTeam = player.Team
-            if config.masterTeamTarget == "All" then
-                return true
-            elseif config.masterTeamTarget == "Enemies" then
-                if localTeam and targetTeam then
-                    return localTeam ~= targetTeam
-                end
-                return true
-            elseif config.masterTeamTarget == "Teams" then
-                if localTeam and targetTeam then
-                    return localTeam == targetTeam
-                end
-                return false
-            end
-            return true
-        end
-        local function isNPCEnemy(model)
-            if not model or not model:IsA("Model") then return false end
-            if Players:GetPlayerFromCharacter(model) then return false end
-            local humanoid = model:FindFirstChildOfClass("Humanoid")
-            if not humanoid or humanoid.Health <= 0 then return false end
-            if not (model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")) then return false end
-            if config.specificTeamTarget then
-                return isInSpecificTeam(model)
-            end
-            if config.masterTeamTarget == "All" then
-                return true
-            elseif config.masterTeamTarget == "Enemies" then
-                return true
-            elseif config.masterTeamTarget == "Teams" then
-                local npcTeam = model:FindFirstChild("Team")
-                if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                    local localTeam = excusemesir.Players.LocalPlayer.Team
-                    if localTeam then
-                        return localTeam == npcTeam.Value
-                    end
-                end
-                return false
-            end
-            return true
-        end
-
-        local function GetNearestTarget()
-            local localPlayer = Players.LocalPlayer
-            local localChar = localPlayer.Character
-            if not localChar then return nil end
-            
-            local localRoot = localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Head")
-            if not localRoot then return nil end
-            
-            local nearestTarget = nil
-            local nearestDistance = math.huge
-            local masterTarget = config.masterTarget or "Players"
-            if masterTarget == "Players" or masterTarget == "Both" then
-                for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
-                    if plr ~= localPlayer
-                        and plr.Character
-                        and plr.Character:FindFirstChild("HumanoidRootPart")
-                        and isEnemy(plr)
-                    then
-                        local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-                        if humanoid and humanoid.Health > 0 then
-                            if not config.ignoreForcefield or not hasForcefield(plr.Character) then
-                                local targetRoot = plr.Character:FindFirstChild("HumanoidRootPart")
-                                if targetRoot then
-                                    local distance = (localRoot.Position - targetRoot.Position).Magnitude
-                                    if distance < nearestDistance then
-                                        nearestDistance = distance
-                                        nearestTarget = {
-                                            type = "player",
-                                            instance = plr,
-                                            character = plr.Character
-                                        }
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            if masterTarget == "NPCs" or masterTarget == "Both" then
-                for _, obj in ipairs(workspace:GetDescendants()) do
-                    if obj:IsA("Model") and isNPCEnemy(obj) then
-                        local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head")
-                        if rootPart then
-                            local humanoid = obj:FindFirstChildOfClass("Humanoid")
-                            if humanoid and humanoid.Health > 0 then
-                                if not config.ignoreForcefield or not hasForcefield(obj) then
-                                    local distance = (localRoot.Position - rootPart.Position).Magnitude
-                                    if distance < nearestDistance then
-                                        nearestDistance = distance
-                                        nearestTarget = {
-                                            type = "npc",
-                                            instance = obj,
-                                            character = obj,
-                                            rootPart = rootPart
-                                        }
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-
-            return nearestTarget
-        end
-        
-        local function FindTargetWithLoop(maxAttempts)
-            local attempts = 0
-            local target = nil
-            
-            while attempts < (maxAttempts or 50) do
-                target = GetNearestTarget()
-                if target then
-                    return target
-                end
-                attempts = attempts + 1
-                task.wait(0.1)
-            end
-            
-            return nil
-        end
-
-        local Target = FindTargetWithLoop(30)
-        if not Target then
-            n({
-                Title = "Gravel.cc",
-                Content = "where da robloxians",
-                Audio = "rbxassetid://17208361335",
-                Length = 2,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(255, 0, 0)
-            })
-            return
-        end
-
-        Camera.CameraType = Enum.CameraType.Scriptable
-        local retryCounter = 0
-
-        config.varibz.ViewConnection = RunService.RenderStepped:Connect(function()
-            if not config.Viewing then
-                return
-            end
-            
-            local isValid = false
-            if Target.type == "player" then
-                isValid = Target.instance 
-                    and Target.instance.Character 
-                    and Target.instance.Character:FindFirstChild("HumanoidRootPart")
-                    and isEnemy(Target.instance)
-                    and Target.instance.Character:FindFirstChildOfClass("Humanoid") 
-                    and Target.instance.Character:FindFirstChildOfClass("Humanoid").Health > 0
-            elseif Target.type == "npc" then
-                isValid = Target.instance 
-                    and Target.instance.Parent 
-                    and Target.instance:FindFirstChild("HumanoidRootPart")
-                    and isNPCEnemy(Target.instance)
-                    and Target.instance:FindFirstChildOfClass("Humanoid") 
-                    and Target.instance:FindFirstChildOfClass("Humanoid").Health > 0
-            end
-            if not isValid then
-                retryCounter = retryCounter + 1
-                local newTarget = FindTargetWithLoop(20)
-                
-                if newTarget then
-                    Target = newTarget
-                    retryCounter = 0
-                    return
-                end
-                if retryCounter > 100000 then
-                    config.Viewing = false
-                    Camera.CameraType = Enum.CameraType.Custom
-                    return
-                end
-                task.wait(0.1)
-                return
-            else
-                retryCounter = 0
-            end
-
-            local HRP = nil
-            if Target.type == "player" then
-                HRP = Target.instance.Character.HumanoidRootPart
-            elseif Target.type == "npc" then
-                HRP = Target.instance.HumanoidRootPart
-            end
-            
-            if not HRP then
-                return
-            end
-
-            local CameraPos = HRP.Position - HRP.CFrame.LookVector * config.varibz.CameraDistance + Vector3.new(0, 3, 0)
-            Camera.CFrame = CFrame.lookAt(CameraPos, HRP.Position + Vector3.new(0, 2, 0))
-        end)
-        
-        n({
-            Title = "Gravel.cc",
-            Content = "Viewing " .. (Target.type == "player" and Target.instance.Name or "NPC"),
-            Audio = "rbxassetid://17208361335",
-            Length = 2,
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(0, 170, 255)
         })
     end
 })
@@ -16565,6 +17586,11 @@ InfoTab:Space()
         Desc = "uhh I want to see through walls better\nAdded: Scoper to VisualsTab\nUpdated: VisualsTab is more organized ig..\nAdded: Aimmethod drop-down & Aim Hertz slider to AimbotTab\nBugs Fixed: sum",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (22/09/2026)",
+        Desc = "bug fixes n shi\nAdded: Indicator UI in the MainTab\nUpdated: Desync is available in QuickToggles & Keybinds\nAdded: Flight & Noclip to ClientTab\nImproved: Targeting & S/L\nBugs Fixed: 7",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 
 -- tsu
@@ -16850,6 +17876,22 @@ local function nanqhsj_wish_nxaiww()
                 })
             end
             
+        elseif input.KeyCode == Enum.KeyCode[config.Keybinds.desync] then
+            if shouldTriggerKeybind(config.Keybinds.desync) then
+                config.desync = not config.desync
+                if config.desync then
+                    ineednextgenrep(true)
+                else
+                    ineednextgenrep(false)
+                end
+                WindUI:Notify({
+                    Title = "Desync",
+                    Content = config.desync and "Enabled" or "Disabled",
+                    Icon = config.desync and "check" or "x",
+                    Duration = 1
+                })
+            end
+            
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.silentaimwallcheck] then
             if shouldTriggerKeybind(config.Keybinds.silentaimwallcheck) then
                 config.wallc = not config.wallc
@@ -16900,6 +17942,7 @@ local function init()
     recmods()
     nanqhsj_wish_nxaiww()
     autolaodbssthing_()
+    jdjwhejdijahweki____sidjnww_ieje()
     for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
@@ -17094,6 +18137,31 @@ task.defer(function()
                     newSky.SkyboxUp = skyAsset
                     newSky.Parent = lighting
                 end
+            end
+        end
+        if config.varibz.lastDesync == nil then
+            config.varibz.lastDesync = config.desync
+        elseif config.desync ~= config.varibz.lastDesync then
+            config.varibz.lastDesync = config.desync
+            if config.desync then
+                ineednextgenrep(true)
+            else
+                ineednextgenrep(false)
+            end
+        end
+        if config.varibz.lastCframeView == nil then
+            config.varibz.lastCframeView = config.cframeView
+        elseif config.cframeView ~= config.varibz.lastCframeView then
+            config.varibz.lastCframeView = config.cframeView
+            if config.cframeView then
+                dothethangcframe()
+            else
+                config.Viewing = false
+                if config.varibz.ViewConnection then
+                    config.varibz.ViewConnection:Disconnect()
+                    config.varibz.ViewConnection = nil
+                end
+                workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
             end
         end
     end
@@ -17296,6 +18364,27 @@ local function buhbyegravellllllll________()
         for pl, conn in pairs(config.characterConnections) do
             pcall(function() conn:Disconnect() end)
         end
+        if config.indicator then
+            config.indicator.enabled = false
+            config.indicator.visible = false
+
+            if config.indicator.heartbeat then
+                pcall(function() config.indicator.heartbeat:Disconnect() end)
+                config.indicator.heartbeat = nil
+            end
+
+            if gui.indicator then
+                if gui.indicator.ScreenGui then
+                    pcall(function() gui.indicator.ScreenGui:Destroy() end)
+                end
+                gui.indicator = nil
+            end
+
+            config.indicator.lastHealth = nil
+            config.indicator.lastTarget = nil
+            config.indicator.flashUntil = 0
+            config.indicator.si = 0
+        end
         config.characterConnections = {}
         if config.desyncActive then
             ineednextgenrep(false)
@@ -17323,6 +18412,13 @@ local function buhbyegravellllllll________()
         for i = 1, 5 do
             BMG:cleanup()
         end
+        if config.varibz.openbtnconnection then
+            pcall(function() config.varibz.openbtnconnection:Disconnect() end)
+            config.varibz.openbtnconnection = nil
+        end
+        config.varibz.openbtnlastindex = nil
+        config.varibz.openbtnlabel = nil
+        config.varibz.openbtnwasvisible = nil
         pcall(function()
             local lighting = game:GetService("Lighting")
             if config.varibz.fullBrightSettings then
@@ -17405,6 +18501,35 @@ local function buhbyegravellllllll________()
             config.tpwalkConnection:Disconnect()
             config.tpwalkConnection = nil
         end
+        if config.noclipConnection then
+            pcall(function() config.noclipConnection:Disconnect() end)
+            config.noclipConnection = nil
+        end
+        if config.flightConnection then
+            pcall(function() config.flightConnection:Disconnect() end)
+            config.flightConnection = nil
+        end
+        if config.flightCharacterAddedConnection then
+            pcall(function() config.flightCharacterAddedConnection:Disconnect() end)
+            config.flightCharacterAddedConnection = nil
+        end
+        if config.flightBodyGyro then
+            pcall(function() config.flightBodyGyro:Destroy() end)
+            config.flightBodyGyro = nil
+        end
+        if config.flightBodyVelocity then
+            pcall(function() config.flightBodyVelocity:Destroy() end)
+            config.flightBodyVelocity = nil
+        end
+        config.flightAttachedRoot = nil
+        do
+            local lpC = excusemesir.Players.LocalPlayer
+            local chC = lpC and lpC.Character
+            local humC = chC and chC:FindFirstChildOfClass("Humanoid")
+            if humC then
+                pcall(function() humC.PlatformStand = false end)
+            end
+        end
         config.camYOffsetEnabled = false
         config.camYOffsetValue = 0
         config.currentTarget = nil
@@ -17441,6 +18566,16 @@ local function buhbyegravellllllll________()
         config.desyncSavedCFrame = nil
         config.desyncHiddenPos = nil
         config.desyncTransparency = nil
+        config.desync = false
+        config.cframeView = false
+        config.varibz.lastDesync = nil
+        config.varibz.lastCframeView = nil
+        config.Viewing = false
+        if config.varibz.ViewConnection then
+            config.varibz.ViewConnection:Disconnect()
+            config.varibz.ViewConnection = nil
+        end
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
         if heartbeatConnection then
             heartbeatConnection:Disconnect()
             heartbeatConnection = nil
@@ -17466,7 +18601,7 @@ local function buhbyegravellllllll________()
             getgenv().destroyInitGui()
         end
         for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
+            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "indit" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
                 gui:Destroy()
             end
         end
