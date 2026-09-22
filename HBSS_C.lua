@@ -14907,7 +14907,7 @@ AntiAimTab:Slider({
 })
 
 AntiAimTab:Toggle({
-    Title = "Desync",
+    Title = "Desync ('J')",
     Desc = "it's not raknet desync it's uhhh smth-smth that still desyncs u",
     Value = config.desync or false,
     Callback = function(v)
@@ -17348,7 +17348,7 @@ InfoTab:Paragraph({
 
 InfoTab:Paragraph({
     Title = "Guide: Keybinds",
-    Desc = "Here are da default keybinds:\n\nE - SilentAim (HB)\nR - SilentAim (HK)\nQ - Aimbot\nF - AutoFarm\nL - AntiAim\nX - TriggerBot\nV - BHop\nG - Hitbox\nZ - ESP\nN - ClientMods\nB - SilentAim (HB) WallCheck\nH - Aimbot WallCheck\nU - SilentAim (HK) WallCheck\nY - TriggerBot WallCheck\n\nU can change all of these in the MainTab.\n\nHoldKey Mode = hold LeftAlt + key for combo keybinds",
+    Desc = "Here are da default keybinds:\n\nE - SilentAim (HB)\nR - SilentAim (HK)\nQ - Aimbot\nF - AutoFarm\nL - AntiAim\nJ - Desync\nX - TriggerBot\nV - BHop\nG - Hitbox\nZ - ESP\nN - ClientMods\nB - SilentAim (HB) WallCheck\nH - Aimbot WallCheck\nU - SilentAim (HK) WallCheck\nY - TriggerBot WallCheck\n\nU can change all of these in the MainTab.\n\nHoldKey Mode = hold LeftAlt + key for combo keybinds",
     Color = config.Gradow.uicolor.darkGray
 })
 
