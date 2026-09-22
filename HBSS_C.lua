@@ -11971,10 +11971,10 @@ local function safeGetCharacter()
     return character, humanoid, rootPart
 end
 
--- i had to use sun random gui creator for ts 🥀🥀🥀🥀
+-- i had to use sum random gui creator for ts 🥀🥀🥀🥀
 function coolzestyuithing_diehedijsi_iwhwked()
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "indit"
+    ScreenGui.Name = "9373632872636482919190394736292837_937293984_8372837_38"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.IgnoreGuiInset = true
     ScreenGui.Parent = excusemesir.CoreGui
@@ -12169,6 +12169,10 @@ function coolzestyuithing_diehedijsi_iwhwked()
     fadeOutSound.SoundId = "rbxassetid://8968249849"
     fadeOutSound.Volume = 0.5
     fadeOutSound.Parent = ScreenGui
+    local indicatorSwitchSound = Instance.new("Sound")
+    indicatorSwitchSound.SoundId = "rbxassetid://12222170"
+    indicatorSwitchSound.Volume = 0.5
+    indicatorSwitchSound.Parent = ScreenGui
 
     return {
         ScreenGui = ScreenGui,
@@ -12180,6 +12184,7 @@ function coolzestyuithing_diehedijsi_iwhwked()
         FeatureLabel = UIObject8,
         FadeInSound = fadeInSound,
         FadeOutSound = fadeOutSound,
+        SwitchSound = indicatorSwitchSound,
     }
 end
 
@@ -12334,14 +12339,20 @@ function jdjwhejdijahweki____sidjnww_ieje()
         end)
     end
     local function triggerDamageEffect(damage)
-        config.indicator.flashUntil = tick() + 1.5
+        config.indicator.flashUntil = tick() + 0.1
         config.indicator.si = math.clamp(damage / 10, 1, 8)
-        ui.Profile.ImageColor3 = Color3.fromRGB(255, 80, 80)
-        ui.NameLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
-        task.delay(1.5, function()
+        local redColor = Color3.fromRGB(255, 80, 80)
+        ui.Profile.ImageColor3 = redColor
+        ui.NameLabel.TextColor3 = redColor
+        ui.HealthBar.TextColor3 = redColor
+        ui.HealthLabel.TextColor3 = redColor
+        task.delay(0.1, function()
             if tick() >= config.indicator.flashUntil then
-                ui.Profile.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                ui.NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                local whiteColor = Color3.fromRGB(255, 255, 255)
+                ui.Profile.ImageColor3 = whiteColor
+                ui.NameLabel.TextColor3 = whiteColor
+                ui.HealthBar.TextColor3 = whiteColor
+                ui.HealthLabel.TextColor3 = whiteColor
             end
         end)
     end
@@ -12396,6 +12407,7 @@ function jdjwhejdijahweki____sidjnww_ieje()
             config.indicator.lastTarget = target
             config.indicator.lastHealth = nil
             ui.Profile.Image = profolio(target)
+            pcall(function() ui.SwitchSound:Play() end)
         end
         if config.indicator.lastHealth and humanoid.Health < config.indicator.lastHealth then
             local dmg = config.indicator.lastHealth - humanoid.Health
@@ -18601,7 +18613,7 @@ local function buhbyegravellllllll________()
             getgenv().destroyInitGui()
         end
         for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "indit" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
+            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "9373632872636482919190394736292837_937293984_8372837_38" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
                 gui:Destroy()
             end
         end
