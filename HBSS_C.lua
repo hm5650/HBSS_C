@@ -5661,10 +5661,8 @@ function writehaxsandstuff_(memoryData)
     
     return success
 end
-function getdagaem_()
-    return game.PlaceId
-end
-function ineedgaemforaotu_()
+
+local function ineedgaemforaotu_()
     local success, info = pcall(function()
         return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
     end)
@@ -5713,7 +5711,7 @@ local function SETDAAUTOLAOD_(saveName)
         return false
     end
     saveName = actualName
-    local gameId = tostring(getdagaem_())
+    local gameId = tostring(game.PlaceId)
     local gameName = ineedgaemforaotu_()
     
     local memory = raedmahbrain_()
@@ -5758,7 +5756,7 @@ local function SETDAAUTOLAOD_(saveName)
     end
 end
 local function nullifymahfilez_()
-    local gameId = tostring(getdagaem_())
+    local gameId = tostring(game.PlaceId)
     local gameName = ineedgaemforaotu_()
     
     local memory = raedmahbrain_()
@@ -5846,7 +5844,7 @@ local function autolaodpara()
             hasEntries = true
             local gameName = data.gameName or "Unknown Game"
             local saveName = data.saveName
-            local isCurrentGame = (gameId == tostring(getdagaem_()))
+            local isCurrentGame = (gameId == tostring(game.PlaceId))
             text = text .. (isCurrentGame and "✓ " or "> ") .. gameName .. " → " .. saveName .. (isCurrentGame and "!" or "") .. "\n"
         end
     end
@@ -5862,7 +5860,7 @@ local function autolaodpara()
     end
 end
 local function startdaautlado_()
-    local gameId = tostring(getdagaem_())
+    local gameId = tostring(game.PlaceId)
     autolaodbssthing_()
 
     local memory = raedmahbrain_()
@@ -10667,28 +10665,27 @@ local function aimbotUpdate()
             if not targetPosition then
                 targetPosition = bestTarget.part.Position
             end
-            local aimMethod = config.aimbotAimMethod or "CFrame"
             local strength = math.clamp(config.aimbotStrength, 0, 1)
             local currentCFrame = camera.CFrame
             local targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
-            if aimMethod == "CFrame" then
+            if config.aimbotAimMethod == "CFrame" then
                 if strength < 1 then
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
                 end
                 camera.CFrame = targetCFrame
-            elseif aimMethod == "MouseMoveRel" then
+            elseif config.aimbotAimMethod == "MouseMoveRel" then
                 if strength < 1 then
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
                 end
                 local deltaCFrame = currentCFrame:ToObjectSpace(targetCFrame)
                 local sensitivity = 1
                 mousemoverel(deltaCFrame.X * sensitivity, deltaCFrame.Y * sensitivity)
-            elseif aimMethod == "Camera" then
+            elseif config.aimbotAimMethod == "Camera" then
                 if strength < 1 then
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
                 end
                 camera.CFrame = targetCFrame
-            elseif aimMethod == "MouseMove" then
+            elseif config.aimbotAimMethod == "MouseMove" then
                 if strength < 1 then
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
                 end
@@ -10698,7 +10695,7 @@ local function aimbotUpdate()
                     screenPos.X - camera.ViewportSize.X / 2,
                     screenPos.Y - camera.ViewportSize.Y / 2
                 )
-            elseif aimMethod == "Teleport" then
+            elseif config.aimbotAimMethod == "Teleport" then
                 camera.CFrame = targetCFrame
             end
         end
