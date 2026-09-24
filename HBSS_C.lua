@@ -70,14 +70,6 @@ local success, err2 = xpcall(function()
 
 repeat task.wait() until game:IsLoaded()
 
-for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-    v:Disable()
-end
-
-for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-    v:Disable()
-end
-
 -- spaghetti code yummy :>
 -- or is it???
 local player = excusemesir.Players.LocalPlayer
@@ -325,6 +317,7 @@ local config = {
     ignoreForcefield = true,
     QuickToggles = false,
     QTDrag = true,
+    QTScale = 1,
     selectedQuickToggles = {
         SilentAim = true,
         Hitbox = true,
@@ -412,6 +405,25 @@ local config = {
     desyncSavedCFrame = nil,
     desyncHiddenPos = nil,
     desyncTransparency = 0.5,
+    worldProximityEnabled = false,
+    worldProximityHoldDuration = 0,
+    worldProximityMaxActivation = 100,
+    worldProximityMaxIndicator = 100,
+    worldProximityOriginalValues = {},
+    worldXrayEnabled = false,
+    worldXrayTransparency = 0.5,
+    worldXrayOriginalValues = {},
+    worldXrayConnection = nil,
+    worldXrayBlacklist = {"Humanoids"},
+    worldFireType = {"TouchInterest"},
+    worldLoopFireEnabled = false,
+    worldLoopFireConnection = nil,
+    worldLoopFireInterval = 1,
+    devStats = {
+        running = true,
+        logConnection = nil,
+        updateLoopRunning = true,
+    },
     spinbot = {
         enabled = false,
         speed = 50,
@@ -469,6 +481,7 @@ local config = {
         lastTarget = nil,
         flashUntil = 0,
         heartbeat = nil,
+        size = 1,
     },
     KeybindsEnabled = true,
     HoldKeysEnabled = false,
@@ -838,7 +851,7 @@ local config = {
                 "wayyyy too hard :c",
             },
             {
-                "the file size is 600kb..",
+                "the file size is 700kb..",
                 "I'm fr",
                 "D:",
             },
@@ -855,8 +868,7 @@ local config = {
                 "Soo I'm not a hack client",
             },
             {
-                typesp = "1.5",
-                mode = "2",
+                typesp = "2",
                 "Unfortunately, i am",
                 "",
                 "My own dog, my own fur companion",
@@ -874,7 +886,8 @@ local config = {
                 "These sweet instincts\nruin my life",
                 "",
                 "Every other day, I'm wondering",
-                "''Was it a mistake to try and define\nWhat I'm certain's mad incompetence?''",
+                "''Was it a mistake to try and define''",
+                "''What I'm certain's mad incompetence?''",
                 "These sweet instincts ruin my life",
                 "",
                 "I can't smell well, or tell the time",
@@ -1405,7 +1418,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 18000+ lines long :(",
+                "Bro ts code is 19000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1829,7 +1842,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*18000+ lines later*",
+                "*19000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -2100,7 +2113,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 15000+ and now 18000+ lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 15000+ and 18000+ now 19000 lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -2120,7 +2133,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 18000 o_o",
+            "da script reached 8000 lines to 19000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2472,6 +2485,22 @@ local config = {
                 "localscript tab",
                 "MOD MENU APK 2026!! 🔥🔥🔥",
             },
+            World = {
+                "//wand",
+                "uhh other-worldly world stuff",
+                "helloworld(''print'')",
+                "server authority\ncan't find me right??",
+                "pretty useless and useful stuff",
+                "Misc²",
+                "an tab",
+                "Earth",
+                "Albert Einstein World",
+                "711s",
+                "roadblocks",
+                "thingamasilly",
+                "APK UNLIMITED COIN MOD 🔥🔥💎💎",
+                "yet another misc tab",
+            },
             Miscellaneous = {
                 "random bs go!!!🔥🔥🔥",
                 "the leftovers",
@@ -2509,6 +2538,20 @@ local config = {
                 "nice music taste",
                 ">:P",
                 "me wants music :3",
+            },
+            Developer = {
+                "js shows the console :/",
+                "useless tab so ignore\nbut useful 4 me",
+                "errrrrrooooorrrrs",
+                ">_",
+                "more useless than InfoTab :p",
+                "my tab",
+                "''you're 5 steps away from\nbeing a developer''",
+                "ignore ts🥀",
+                "an tab this useless???",
+                "a tab for errors",
+                "it's not a bash tab",
+                "it's not a shell tab",
             },
             Info = {
                 "show me da papperz",
@@ -2665,6 +2708,7 @@ local config = {
         },
         spinbotConnection = nil,
         ViewConnection = nil,
+        xraystuff = nil,
         CameraDistance = 8,
         lowpatcherwait = 0.03,
         lowpatcher = true,
@@ -2672,7 +2716,6 @@ local config = {
         patcher = true,
         bhopConnection = nil,
         lastJumpTime = 0,
-        errors = true,
         Rng5stuff = nil,
         Rng3dis = {},
         orgfov = nil,
@@ -2680,6 +2723,15 @@ local config = {
         lastClockTime = nil,
         lastSkybox = nil,
         lastDesync = nil,
+        lastWorldProximity = nil,
+        lastWPHold = nil,
+        lastWPActivation = nil,
+        lastWPIndicator = nil,
+        lastWorldXray = nil,
+        lastXrayTrans = nil,
+        lastXrayBlacklist = nil,
+        lastLoopFire = nil,
+        lastLoopFireInterval = nil,
         cframeViewTarget = nil,
         lastCframeView = nil,
         fullBrightSettings = nil,
@@ -2913,7 +2965,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+local function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -3239,7 +3291,7 @@ local function getAllTargets(getTargetSeen)
     end
 
     local scanClick  = table.find(scope, "ClickDetectors") ~= nil
-    local scanTouch  = table.find(scope, "FireTouchInterest") ~= nil
+    local scanTouch  = table.find(scope, "TouchInterests") ~= nil
     local scanPrompt = table.find(scope, "ProximityPrompts") ~= nil
     local scanTools  = table.find(scope, "Tools") ~= nil
 
@@ -4276,6 +4328,7 @@ local function saveConfig(saveName)
             autoFarmMinRange = config.autoFarmMinRange,
             QuickToggles = config.QuickToggles,
             QTDrag = config.QTDrag,
+            QTScale = config.QTScale,
             selectedQuickToggles = table.clone(config.selectedQuickToggles),
             espMasterEnabled = config.espMasterEnabled,
             scope = table.clone(config.scope or {"Humanoids"}),
@@ -4443,6 +4496,16 @@ local function saveConfig(saveName)
             trussEnabled = config.trussEnabled,
             airwalkEnabled = config.airwalkEnabled,
             autorespawnEnabled = config.autorespawnEnabled,
+            worldProximityEnabled = config.worldProximityEnabled,
+            worldProximityHoldDuration = config.worldProximityHoldDuration,
+            worldProximityMaxActivation = config.worldProximityMaxActivation,
+            worldProximityMaxIndicator = config.worldProximityMaxIndicator,
+            worldXrayEnabled = config.worldXrayEnabled,
+            worldXrayTransparency = config.worldXrayTransparency,
+            worldXrayBlacklist = table.clone(config.worldXrayBlacklist or {"Humanoids"}),
+            worldFireType = table.clone(config.worldFireType or {"TouchInterest"}),
+            worldLoopFireEnabled = config.worldLoopFireEnabled,
+            worldLoopFireInterval = config.worldLoopFireInterval,
             clientModEnabled = config.clientModEnabled,
             walkspeedEnabled = config.walkspeedEnabled,
             walkspeedValue = config.walkspeedValue,
@@ -4481,6 +4544,7 @@ local function saveConfig(saveName)
             indicator_enabled = config.indicator.enabled,
             indicator_draggable = config.indicator.draggable,
             indicator_alwaysVisible = config.indicator.alwaysVisible,
+            indicator_size = config.indicator.size,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -4978,6 +5042,7 @@ local function loadSave(saveName)
     if cfg.autoFarmMinRange then config.autoFarmMinRange = cfg.autoFarmMinRange end
     if cfg.QuickToggles ~= nil then config.QuickToggles = cfg.QuickToggles end
     if cfg.QTDrag ~= nil then config.QTDrag = cfg.QTDrag end
+    if cfg.QTScale then config.QTScale = cfg.QTScale end
     if cfg.selectedQuickToggles then
         for name, value in pairs(cfg.selectedQuickToggles) do
             if config.selectedQuickToggles[name] ~= nil then
@@ -5122,6 +5187,16 @@ local function loadSave(saveName)
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
     if cfg.SA2_AimMethods then config.SA2_AimMethods = cfg.SA2_AimMethods end
     if cfg.customRemoteNames then config.customRemoteNames = cfg.customRemoteNames end
+    if cfg.worldProximityEnabled ~= nil then config.worldProximityEnabled = cfg.worldProximityEnabled end
+    if cfg.worldProximityHoldDuration then config.worldProximityHoldDuration = cfg.worldProximityHoldDuration end
+    if cfg.worldProximityMaxActivation then config.worldProximityMaxActivation = cfg.worldProximityMaxActivation end
+    if cfg.worldProximityMaxIndicator then config.worldProximityMaxIndicator = cfg.worldProximityMaxIndicator end
+    if cfg.worldXrayEnabled ~= nil then config.worldXrayEnabled = cfg.worldXrayEnabled end
+    if cfg.worldXrayTransparency then config.worldXrayTransparency = cfg.worldXrayTransparency end
+    if cfg.worldXrayBlacklist then config.worldXrayBlacklist = cfg.worldXrayBlacklist end
+    if cfg.worldFireType then config.worldFireType = cfg.worldFireType end
+    if cfg.worldLoopFireEnabled ~= nil then config.worldLoopFireEnabled = cfg.worldLoopFireEnabled end
+    if cfg.worldLoopFireInterval then config.worldLoopFireInterval = cfg.worldLoopFireInterval end
     if cfg.hitboxEnabled ~= nil then config.hitboxEnabled = cfg.hitboxEnabled end
     if cfg.hitboxTeamTarget then config.hitboxTeamTarget = cfg.hitboxTeamTarget end
     if cfg.hitboxSize then config.hitboxSize = cfg.hitboxSize end
@@ -5197,6 +5272,7 @@ local function loadSave(saveName)
     if cfg.indicator_enabled ~= nil then
         config.indicator.enabled = cfg.indicator_enabled
     end
+    if cfg.indicator_size then config.indicator.size = cfg.indicator_size end
     if cfg.Keybinds then
         for key, value in pairs(cfg.Keybinds) do
             config.Keybinds[key] = value
@@ -5234,6 +5310,14 @@ local function loadSave(saveName)
             else
                 config.aimbotFOVRing.RingFrame.Visible = false
             end
+        end
+    end)
+    pcall(function()
+        if gui.indicator and gui.indicator.UIScale then
+            gui.indicator.UIScale.Scale = config.indicator.size or 1
+        end
+        if gui.mobileGui and gui.mobileGui.UIScale then
+            gui.mobileGui.UIScale.Scale = config.QTScale or 1
         end
     end)
     task.wait(0.1) --reapply
@@ -7409,7 +7493,7 @@ local function ineednextgenrep(state)
             end
         end)
         if config.desyncCleanupLoop then
-            config.desyncCleanupLoop:Disconnect()
+            config.desyncCleanupLoop = nil
         end
         config.desyncCleanupLoop = task.defer(function()
             while config.desyncActive do
@@ -7684,7 +7768,7 @@ local function addesp(targetPlayer)
         if table.find(scope, "ProximityPrompts") and skbwrkishwkbzhsks_owjwnkr_iebedkiwh_iwb(targetPlayer) then
             return true
         end
-        if table.find(scope, "FireTouchInterest") and kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(targetPlayer) then
+        if table.find(scope, "TouchInterests") and kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(targetPlayer) then
             return true
         end
         return false
@@ -8440,6 +8524,316 @@ local function antiAimUpdate()
         end
     end
 end
+
+
+local function ApplyProximityPrompts()
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") then
+            pcall(function()
+                obj.HoldDuration = config.worldProximityHoldDuration or 0
+                obj.MaxActivationDistance = config.worldProximityMaxActivation or 100
+                obj.MaxIndicatorDistance = config.worldProximityMaxIndicator or 100
+            end)
+        end
+    end
+end
+local function ShouldXrayPart(part)
+    if not config.worldXrayBlacklist then
+        config.worldXrayBlacklist = {"Humanoids"}
+    end
+    if table.find(config.worldXrayBlacklist, "Humanoids") then
+        local humanoidModel = nil
+        local parent = part.Parent
+        while parent and parent ~= workspace do
+            if parent:IsA("Model") and parent:FindFirstChildOfClass("Humanoid") then
+                humanoidModel = parent
+                break
+            end
+            parent = parent.Parent
+        end
+        if humanoidModel then
+            local isPlayerChar = excusemesir.Players:GetPlayerFromCharacter(humanoidModel) ~= nil
+            local shouldBlacklist = false
+            if config.masterTarget == "Players" then
+                shouldBlacklist = isPlayerChar
+            elseif config.masterTarget == "NPCs" then
+                shouldBlacklist = not isPlayerChar
+            elseif config.masterTarget == "Both" then
+                shouldBlacklist = true
+            end
+            if shouldBlacklist then
+                return false
+            end
+        end
+    end
+    if table.find(config.worldXrayBlacklist, "TouchInterests") then
+        for _, child in ipairs(part:GetChildren()) do
+            if child:IsA("TouchTransmitter") then
+                return false
+            end
+        end
+    end
+    if table.find(config.worldXrayBlacklist, "ClickDetectors") then
+        for _, child in ipairs(part:GetChildren()) do
+            if child:IsA("ClickDetector") then
+                return false
+            end
+        end
+    end
+    if table.find(config.worldXrayBlacklist, "ProximityPrompts") then
+        for _, child in ipairs(part:GetChildren()) do
+            if child:IsA("ProximityPrompt") then
+                return false
+            end
+        end
+    end
+    if table.find(config.worldXrayBlacklist, "Tools") then
+        local parent = part.Parent
+        while parent and parent ~= workspace do
+            if parent:IsA("Tool") then
+                return false
+            end
+            parent = parent.Parent
+        end
+    end
+    return true
+end
+local function ApplyXray()
+    if not config.worldXrayOriginalValues then
+        config.worldXrayOriginalValues = {}
+    end
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and ShouldXrayPart(obj) then
+            if not config.worldXrayOriginalValues[obj] then
+                config.worldXrayOriginalValues[obj] = obj.Transparency
+            end
+            obj.Transparency = config.worldXrayTransparency or 0.5
+        end
+    end
+end
+local function UpdateXrayTransparency()
+    if not config.worldXrayOriginalValues then return end
+    for obj, _ in pairs(config.worldXrayOriginalValues) do
+        if obj and obj.Parent and ShouldXrayPart(obj) then
+            obj.Transparency = config.worldXrayTransparency or 0.5
+        end
+    end
+end
+local function RestoreXray()
+    if config.worldXrayConnection then
+        config.worldXrayConnection:Disconnect()
+        config.worldXrayConnection = nil
+    end
+    if config.worldXrayOriginalValues then
+        for obj, transparency in pairs(config.worldXrayOriginalValues) do
+            if obj and obj.Parent then
+                pcall(function()
+                    obj.Transparency = transparency
+                end)
+            end
+        end
+    end
+    config.worldXrayOriginalValues = {}
+end
+local function FireInteractions()
+    local fireTypes = config.worldFireType or {"TouchInterest"}
+    if type(fireTypes) == "string" then
+        fireTypes = {fireTypes}
+    end
+    local player = excusemesir.Players.LocalPlayer
+    local character = player.Character
+    if not character then return 0 end
+    local count = 0
+    for _, fireType in ipairs(fireTypes) do
+        if fireType == "TouchInterest" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("BasePart") then
+                    for _, child in ipairs(obj:GetChildren()) do
+                        if child:IsA("TouchTransmitter") then
+                            for _, myPart in ipairs(character:GetDescendants()) do
+                                if myPart:IsA("BasePart") then
+                                    pcall(function()
+                                        firetouchinterest(myPart, obj, 0)
+                                        task.wait()
+                                        firetouchinterest(myPart, obj, 1)
+                                    end)
+                                end
+                            end
+                            count = count + 1
+                        end
+                    end
+                end
+            end
+        elseif fireType == "ClickDetectors" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("ClickDetector") then
+                    pcall(function()
+                        fireclickdetector(obj)
+                    end)
+                    count = count + 1
+                end
+            end
+        elseif fireType == "ProximityPrompts" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("ProximityPrompt") then
+                    pcall(function()
+                        fireproximityprompt(obj)
+                    end)
+                    count = count + 1
+                end
+            end
+        elseif fireType == "Remotes" then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") or obj:IsA("UnreliableRemoteEvent") then
+                    pcall(function()
+                        if obj:IsA("RemoteEvent") or obj:IsA("UnreliableRemoteEvent") then
+                            obj:FireServer()
+                        elseif obj:IsA("RemoteFunction") then
+                            obj:InvokeServer()
+                        end
+                    end)
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return count
+end
+local function StartLoopFire()
+    if config.worldLoopFireConnection then
+        pcall(function() task.cancel(config.worldLoopFireConnection) end)
+        config.worldLoopFireConnection = nil
+    end
+    config.worldLoopFireConnection = task.spawn(function()
+        while config.worldLoopFireEnabled do
+            FireInteractions()
+            task.wait(config.worldLoopFireInterval or 1)
+        end
+        config.worldLoopFireConnection = nil
+    end)
+end
+local function StopLoopFire()
+    config.worldLoopFireEnabled = false
+    if config.worldLoopFireConnection then
+        pcall(function() task.cancel(config.worldLoopFireConnection) end)
+        config.worldLoopFireConnection = nil
+    end
+end
+
+do
+    local visualizer = Instance.new("Part") 
+    visualizer.BrickColor = BrickColor.new(config.visualizer.color)
+    visualizer.Transparency = config.visualizer.transparency
+    visualizer.Anchored = true 
+    visualizer.CanCollide = false 
+    visualizer.Size = Vector3.new(0.5, 0.5, 0.5) 
+    visualizer.BottomSurface = Enum.SurfaceType.Smooth 
+    visualizer.TopSurface = Enum.SurfaceType.Smooth 
+    visualizer.Material = Enum.Material.ForceField
+    config.reach.visualizerPart = visualizer
+    local autoSwingConnection = nil
+    local function onHit(hit, handle)
+        if not config.reach.enabled then return end
+        
+        local hitCharacter = hit.Parent
+        if not hitCharacter then return end
+        
+        local victim = hitCharacter:FindFirstChildOfClass("Humanoid") 
+        if victim and victim.Parent ~= excusemesir.Players.LocalPlayer then
+            pcall(function()
+                firetouchinterest(hit, handle, 0) 
+                firetouchinterest(hit, handle, 1)
+            end)
+        end
+    end
+    
+    local function getTargetsInRange()
+        local targets = {}
+        local character = excusemesir.Players.LocalPlayer.Character
+        if not character then return targets end
+        
+        local tool = character:FindFirstChildOfClass("Tool") 
+        if not tool then return targets end
+        
+        local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildOfClass("Part")
+        if not handle then return targets end
+        
+        for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= excusemesir.Players.LocalPlayer and player.Character then
+                local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local distance = (hrp.Position - handle.Position).Magnitude
+                    if distance <= config.reach.distance then
+                        table.insert(targets, {
+                            player = player,
+                            hrp = hrp,
+                            distance = distance
+                        })
+                    end
+                end
+            end
+        end
+        
+        return targets
+    end
+    
+    if config.reach.renderConnection then
+        pcall(function() config.reach.renderConnection:Disconnect() end)
+    end
+    config.reach.renderConnection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not config.reach.enabled then 
+            visualizer.Parent = nil
+            return 
+        end
+        
+        local character = excusemesir.Players.LocalPlayer.Character
+        if not character then 
+            visualizer.Parent = nil
+            return 
+        end
+        
+        local tool = character:FindFirstChildOfClass("Tool") 
+        if not tool then 
+            visualizer.Parent = nil
+            return 
+        end
+        
+        local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildOfClass("Part")
+        if not handle then 
+            visualizer.Parent = nil
+            return 
+        end
+        
+        if config.visualizer.enabled then 
+            visualizer.Parent = workspace 
+            visualizer.Material = config.materials[config.visualizer.material] or Enum.Material.ForceField
+            
+            if config.reach.type == "Sphere" then
+                visualizer.Shape = Enum.PartType.Ball
+                visualizer.Size = Vector3.new(config.reach.distance, config.reach.distance, config.reach.distance)
+                visualizer.CFrame = handle.CFrame
+            elseif config.reach.type == "Flat" then
+                visualizer.Shape = Enum.PartType.Block
+                visualizer.Size = Vector3.new(config.reach.distance, 0.2, config.reach.distance)
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    visualizer.CFrame = CFrame.new(rootPart.Position) * CFrame.new(0, -2.5, 0)
+                end
+            end
+            
+            visualizer.Color = config.visualizer.color
+        else 
+            visualizer.Parent = nil 
+        end
+        
+        local targets = getTargetsInRange()
+        for _, target in ipairs(targets) do
+            onHit(target.hrp, handle)
+        end
+    end)
+end
+
+
 local function RFD(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
     if not char then return end
@@ -10946,7 +11340,7 @@ excusemesir.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
     end
 end)
 end
--- bk
+-- bgupdater
 local function burgerking(deltaTime)
     if not config.varibz.patcher then
         return
@@ -10971,6 +11365,29 @@ local function burgerking(deltaTime)
     end
     if config.antiAimEnabled then
         antiAimUpdate()
+    end
+    if config.worldXrayEnabled then
+        if config.varibz.xraystuff == nil then
+            config.varibz.xraystuff = config.masterTarget
+        elseif config.masterTarget ~= config.varibz.xraystuff then
+            config.varibz.xraystuff = config.masterTarget
+            RestoreXray()
+            config.worldXrayOriginalValues = {}
+            ApplyXray()
+            if config.worldXrayConnection then
+                config.worldXrayConnection:Disconnect()
+            end
+            config.worldXrayConnection = workspace.DescendantAdded:Connect(function(obj)
+                if config.worldXrayEnabled and obj:IsA("BasePart") and ShouldXrayPart(obj) then
+                    if not config.worldXrayOriginalValues[obj] then
+                        config.worldXrayOriginalValues[obj] = obj.Transparency
+                    end
+                    obj.Transparency = config.worldXrayTransparency or 0.5
+                end
+            end)
+        end
+    else
+        config.varibz.xraystuff = config.masterTarget
     end
 end
 task.defer(function()
@@ -11002,7 +11419,10 @@ local function CreateQT()
     container.Position = UDim2.new(0, 10, 0, 10)
     container.BackgroundTransparency = 1
     container.Parent = screenGui
-
+    local contamination = Instance.new("UIScale")
+    contamination.Name = "pneumonoultramicroscopicsilicovolcanoconiosis"
+    contamination.Scale = config.QTScale or 1
+    contamination.Parent = container
     local function QuickToggle(name, positionX, positionY, getter, setter)
         local main = Instance.new("Frame")
         main.Size = UDim2.new(0, 120, 0, 40)
@@ -11358,7 +11778,8 @@ local function CreateQT()
         ScreenGui = screenGui,
         Buttons = buttons,
         Container = container,
-        UpdateLayout = updateContainerLayout
+        UpdateLayout = updateContainerLayout,
+        UIScale = contamination,
     }
     updateContainerLayout()
     if gui.RingHolder then
@@ -12004,6 +12425,11 @@ function coolzestyuithing_diehedijsi_iwhwked()
     UIObject1.BackgroundColor3 = Color3.fromRGB(246,247,249)
     UIObject1.Parent = ScreenGui
 
+    local UIObject420 = Instance.new("UIScale")
+    UIObject420.Name = "Hippopotomonstrosesquippedaliophobia"
+    UIObject420.Scale = config.indicator.size or 1
+    UIObject420.Parent = UIObject1
+
     local UIObject2 = Instance.new("TextLabel")
     UIObject2.Name = "HealthBar"
     UIObject2.Visible = true
@@ -12185,6 +12611,7 @@ function coolzestyuithing_diehedijsi_iwhwked()
         FadeInSound = fadeInSound,
         FadeOutSound = fadeOutSound,
         SwitchSound = indicatorSwitchSound,
+        UIScale = UIObject420,
     }
 end
 
@@ -12983,29 +13410,32 @@ local function rng4()
         end
     end)
     
-    task.wait(1)
-    local fpsTag = Window:Tag({
-        Title = "FPS: 0",
-        Icon = "clock",
-        Color = Color3.fromHex("#00ff88")
-    })
+    task.wait()
+local sewagetag = Window:Tag({
+    Title = "FPS: 0\nP: 0ms",
+    Icon = "clock",
+    Color = Color3.fromHex("#00ff88")
+})
+
+if sewagetag then
+    local accum = 0
     
-    if fpsTag then
-        local accum = 0
-        
-        excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
-            if subside_I_I_I_I_I_() then return end
-            accum = accum + deltaTime
-            if accum >= 0.3 then
-                local fps = math.round(1 / math.max(deltaTime, 1e-6))
-                if fpsTag.SetTitle then
-                    fpsTag:SetTitle("FPS: " .. fps)
-                end
-                accum = accum - 0.3
+    excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
+        if subside_I_I_I_I_I_() then return end
+        accum = accum + deltaTime
+        if accum >= 0.3 then
+            local fps = math.round(1 / math.max(deltaTime, 1e-6))
+            local ping = 0
+            pcall(function()
+                ping = math.round(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
+            end)
+            if sewagetag.SetTitle then
+                sewagetag:SetTitle("FPS: " .. fps .. "\nP: " .. ping .. "ms")
             end
-        end)
-    end
-    
+            accum = accum - 0.3
+        end
+    end)
+end
     return rng4.tag
 end
 local function rng7()
@@ -13137,6 +13567,9 @@ task.defer(function()
     SaveUI:autoLoad()
     BMG:autoLoad()
 end)
+
+local makeeverysingletabs = function()
+
 -- Main Tab
 local MainTab = Window:Tab({
     Title = "Main",
@@ -13299,7 +13732,7 @@ MainTab:Toggle({
 
 MainTab:Toggle({
     Title = "Indicator Draggable",
-    Desc = "move me finger",
+    Desc = "move me finger or the weird arrow",
     Value = config.indicator.draggable or true,
     Callback = function(v)
         config.indicator.draggable = v
@@ -13308,12 +13741,41 @@ MainTab:Toggle({
 
 MainTab:Toggle({
     Title = "Indicator Always Visible",
-    Desc = "no hide & seek lever",
+    Desc = "no hide & seek lever :7",
     Value = config.indicator.alwaysVisible or false,
     Callback = function(v)
         config.indicator.alwaysVisible = v
     end
 })
+
+MainTab:Slider({
+    Title = "Indicator Size",
+    Desc = "make it big ;3",
+    Step = 0.05,
+    Value = {
+        Min = 0.5,
+        Max = 3,
+        Default = config.indicator.size or 1
+    },
+    Callback = function(value)
+        config.indicator.size = value
+        if gui.indicator and gui.indicator.UIScale then
+            gui.indicator.UIScale.Scale = value
+        end
+    end
+})
+
+MainTab:Button({
+    Title = "Reset Position",
+    Desc = "put the indicator back where it belongs :3",
+    Icon = "rotate-ccw",
+    Callback = function()
+        if gui.indicator and gui.indicator.Frame then
+            gui.indicator.Frame.Position = UDim2.new(0, 459, 0, 5)
+        end
+    end
+})
+MainTab:Space()
     MainTab:Toggle({
         Title = "QuickToggles",
         Desc = "1000x easier for the mobile folks",
@@ -13358,6 +13820,23 @@ MainTab:Toggle({
                     buttonData.main.Draggable = v
                 end
             end
+        end
+    end
+})
+
+MainTab:Slider({
+    Title = "QuickToggles Size",
+    Desc = "turn it to ants or bigger ants",
+    Step = 0.05,
+    Value = {
+        Min = 0.5,
+        Max = 3,
+        Default = config.QTScale or 1
+    },
+    Callback = function(value)
+        config.QTScale = value
+        if gui.mobileGui and gui.mobileGui.UIScale then
+            gui.mobileGui.UIScale.Scale = value
         end
     end
 })
@@ -13755,45 +14234,6 @@ local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/
             config.varibz.lowpatcher = v
         end
     })
-MainTab:Toggle({
-    Title = "Errors",
-    Desc = "captures errors",
-    Value = config.varibz.errors or true,
-    Callback = function(v)
-        config.varibz.errors = v
-        if v then
-            for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-                v:Enable()
-            end
-            for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-                v:Enable()
-            end
-            n({
-                Title = "Gravel.cc",
-                Content = "Error catching enabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
-            })
-        else
-            for _, v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-                v:Disable()
-            end
-            for _, v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-                v:Disable()
-            end
-            n({
-                Title = "Gravel.cc",
-                Content = "Error catching disabled",
-                Audio = "rbxassetid://17208361335",
-                Length = 1,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(255, 0, 0)
-            })
-        end
-    end
-})
 
 MainTab:Paragraph({
     Title = "Save/Load",
@@ -14008,7 +14448,7 @@ VisualsTab:Slider({
 VisualsTab:Dropdown({
     Title = "Scoper",
     Desc = "what should ESP scan for??",
-    Values = {"Humanoids", "ClickDetectors", "FireTouchInterest", "ProximityPrompts", "Tools"},
+    Values = {"Humanoids", "ClickDetectors", "TouchInterests", "ProximityPrompts", "Tools"},
     Value = config.scope or {"Humanoids"},
     Multi = true,
     Callback = function(selected)
@@ -15318,7 +15758,7 @@ local SilentAimTab2 = Window:Tab({
 }) do
     SilentAimTab2:Paragraph({
         Title = "Gravel",
-        Desc = "[ Hooked Based ]\n[ Ban risk ]\n[ Bad Injectors aren't supported ]",
+        Desc = "[ Hooked Based ]\n[ Ban Risk ]\n[ Bad Injectors aren't supported ]",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -15752,31 +16192,12 @@ local ReachTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     
-    local visualizer = Instance.new("Part") 
-    visualizer.BrickColor = BrickColor.new(config.visualizer.color)
-    visualizer.Transparency = config.visualizer.transparency
-    visualizer.Anchored = true 
-    visualizer.CanCollide = false 
-    visualizer.Size = Vector3.new(0.5, 0.5, 0.5) 
-    visualizer.BottomSurface = Enum.SurfaceType.Smooth 
-    visualizer.TopSurface = Enum.SurfaceType.Smooth 
-    visualizer.Material = Enum.Material.ForceField
-    
-    local autoSwingConnection = nil
-
     ReachTab:Toggle({
         Title = "Enable Reach",
         Desc = "longer hurtbox basically",
         Value = config.reach.enabled,
         Callback = function(v)
             config.reach.enabled = v
-            if not v then
-                visualizer.Parent = nil
-                if autoSwingConnection then
-                    autoSwingConnection:Disconnect()
-                    autoSwingConnection = nil
-                end
-            end
             n({
                 Title = "Gravel.cc",
                 Content = "Reach: " .. (v and "Enabled" or "Disabled"),
@@ -15785,6 +16206,13 @@ local ReachTab = Window:Tab({
                 Image = "rbxassetid://4483362458",
                 BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
             })
+            if not v then
+                visualizer.Parent = nil
+                if config.reach.autoSwingConnection then
+                    config.reach.autoSwingConnection:Disconnect()
+                    config.reach.autoSwingConnection = nil
+                end
+            end
         end
     })
     
@@ -15873,11 +16301,11 @@ local ReachTab = Window:Tab({
         Callback = function(v)
             config.reach.autoSwing.enabled = v
             if v then
-                if autoSwingConnection then
-                    autoSwingConnection:Disconnect()
+                if config.reach.autoSwingConnection then
+                    config.reach.autoSwingConnection:Disconnect()
                 end
-                
-                autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
+    
+                config.reach.autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
                     if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
                         local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
                         if tool then
@@ -15888,9 +16316,9 @@ local ReachTab = Window:Tab({
                     end
                 end)
             else
-                if autoSwingConnection then
-                    autoSwingConnection:Disconnect()
-                    autoSwingConnection = nil
+                if config.reach.autoSwingConnection then
+                    config.reach.autoSwingConnection:Disconnect()
+                    config.reach.autoSwingConnection = nil
                 end
             end
         end
@@ -15908,9 +16336,9 @@ local ReachTab = Window:Tab({
         },
         Callback = function(value)
             config.reach.autoSwing.delay = value
-            if autoSwingConnection then
-                autoSwingConnection:Disconnect()
-                autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            if config.reach.autoSwingConnection then
+                config.reach.autoSwingConnection:Disconnect()
+                config.reach.autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
                     if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
                         local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
                         if tool then
@@ -15924,103 +16352,6 @@ local ReachTab = Window:Tab({
             end
         end
     })
-    
-    local function onHit(hit, handle)
-        if not config.reach.enabled then return end
-        
-        local hitCharacter = hit.Parent
-        if not hitCharacter then return end
-        
-        local victim = hitCharacter:FindFirstChildOfClass("Humanoid") 
-        if victim and victim.Parent ~= excusemesir.Players.LocalPlayer then
-            pcall(function()
-                firetouchinterest(hit, handle, 0) 
-                firetouchinterest(hit, handle, 1)
-            end)
-        end
-    end
-    
-    local function getTargetsInRange()
-        local targets = {}
-        local character = excusemesir.Players.LocalPlayer.Character
-        if not character then return targets end
-        
-        local tool = character:FindFirstChildOfClass("Tool") 
-        if not tool then return targets end
-        
-        local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildOfClass("Part")
-        if not handle then return targets end
-        
-        for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= excusemesir.Players.LocalPlayer and player.Character then
-                local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    local distance = (hrp.Position - handle.Position).Magnitude
-                    if distance <= config.reach.distance then
-                        table.insert(targets, {
-                            player = player,
-                            hrp = hrp,
-                            distance = distance
-                        })
-                    end
-                end
-            end
-        end
-        
-        return targets
-    end
-    
-    game:GetService("RunService").RenderStepped:Connect(function()
-        if not config.reach.enabled then 
-            visualizer.Parent = nil
-            return 
-        end
-        
-        local character = excusemesir.Players.LocalPlayer.Character
-        if not character then 
-            visualizer.Parent = nil
-            return 
-        end
-        
-        local tool = character:FindFirstChildOfClass("Tool") 
-        if not tool then 
-            visualizer.Parent = nil
-            return 
-        end
-        
-        local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildOfClass("Part")
-        if not handle then 
-            visualizer.Parent = nil
-            return 
-        end
-        
-        if config.visualizer.enabled then 
-            visualizer.Parent = workspace 
-            visualizer.Material = config.materials[config.visualizer.material] or Enum.Material.ForceField
-            
-            if config.reach.type == "Sphere" then
-                visualizer.Shape = Enum.PartType.Ball
-                visualizer.Size = Vector3.new(config.reach.distance, config.reach.distance, config.reach.distance)
-                visualizer.CFrame = handle.CFrame
-            elseif config.reach.type == "Flat" then
-                visualizer.Shape = Enum.PartType.Block
-                visualizer.Size = Vector3.new(config.reach.distance, 0.2, config.reach.distance)
-                local rootPart = character:FindFirstChild("HumanoidRootPart")
-                if rootPart then
-                    visualizer.CFrame = CFrame.new(rootPart.Position) * CFrame.new(0, -2.5, 0)
-                end
-            end
-            
-            visualizer.Color = config.visualizer.color
-        else 
-            visualizer.Parent = nil 
-        end
-        
-        local targets = getTargetsInRange()
-        for _, target in ipairs(targets) do
-            onHit(target.hrp, handle)
-        end
-    end)
 end
 
 -- Client Tab
@@ -16549,6 +16880,193 @@ ClientTab:Slider({
     })
 end
 
+
+-- World Tab
+local WorldTab = Window:Tab({
+    Title = "World",
+    Desc = rng3("World"),
+    Icon = "globe",
+    IconColor = config.Gradow.uicolor.lightGray
+}) do
+    WorldTab:Paragraph({
+        Title = "Gravel",
+        Desc = "[ Ban Risk ]\n[ This might not work on every game ]",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    WorldTab:Paragraph({
+        Title = "Proximity Prompts",
+        Desc = "annoy the ProximityPrompts vacation",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    WorldTab:Toggle({
+        Title = "ProxPrompts Mods",
+        Desc = "edit dem ''Press 'E' 2 interact prompts''",
+        Value = config.worldProximityEnabled or false,
+        Callback = function(v)
+            config.worldProximityEnabled = v
+            n({
+                Title = "Gravel.cc",
+                Content = "ProxPMods: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    WorldTab:Slider({
+        Title = "Hold Duration",
+        Desc = "uhh how long should I interact :s",
+        Step = 0.1,
+        Value = {
+            Min = 0,
+            Max = 10,
+            Default = config.worldProximityHoldDuration or 0
+        },
+        Callback = function(value)
+            config.worldProximityHoldDuration = value
+        end
+    })
+    WorldTab:Slider({
+        Title = "Max Activation Range",
+        Desc = "i can see it from 1000 studs away :D",
+        IsTextbox = true,
+        Step = 10,
+        Value = {
+            Min = 1,
+            Max = 1000,
+            Default = config.worldProximityMaxActivation or 100
+        },
+        Callback = function(value)
+            config.worldProximityMaxActivation = value
+        end
+    })
+    WorldTab:Slider({
+        Title = "Max Indication Range",
+        Desc = "i can see it from 1000 studs away :D\nbut it's just the indication",
+        IsTextbox = true,
+        Step = 10,
+        Value = {
+            Min = 1,
+            Max = 1000,
+            Default = config.worldProximityMaxIndicator or 100
+        },
+        Callback = function(value)
+            config.worldProximityMaxIndicator = value
+        end
+    })
+    WorldTab:Space()
+    WorldTab:Paragraph({
+        Title = "X-Ray",
+        Desc = "make parts into glass",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    WorldTab:Toggle({
+        Title = "X-Ray",
+        Desc = "turn on Electromagnetic X-Rays",
+        Value = config.worldXrayEnabled or false,
+        Callback = function(v)
+            config.worldXrayEnabled = v
+            n({
+                Title = "Gravel.cc",
+                Content = "X-Ray: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    WorldTab:Slider({
+        Title = "Transparency",
+        Desc = "xray powa",
+        Step = 0.05,
+        Value = {
+            Min = 0,
+            Max = 1,
+            Default = config.worldXrayTransparency or 0.5
+        },
+        Callback = function(value)
+            config.worldXrayTransparency = value
+        end
+    })
+    WorldTab:Dropdown({
+        Title = "X-Ray Blacklist",
+        Desc = "x-ray hates that part drop-down",
+        Values = {"Humanoids", "TouchInterests", "ClickDetectors", "ProximityPrompts", "Tools"},
+        Value = config.worldXrayBlacklist or {"Humanoids"},
+        Multi = true,
+        Callback = function(selected)
+            config.worldXrayBlacklist = selected or {"Humanoids"}
+        end
+    })
+    WorldTab:Space()
+    WorldTab:Paragraph({
+        Title = "Interactions",
+        Desc = "Fire random function interactions",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    WorldTab:Dropdown({
+        Title = "Function 2 Fire",
+        Desc = "fire this fire that fire wifi fire ram",
+        Values = {"TouchInterest", "ClickDetectors", "ProximityPrompts", "Remotes"},
+        Value = config.worldFireType or {"TouchInterest"},
+        Multi = true,
+        Callback = function(selected)
+            if type(selected) == "table" and #selected > 0 then
+                config.worldFireType = selected
+            else
+                config.worldFireType = {"TouchInterest"}
+            end
+        end
+    })
+    WorldTab:Button({
+        Title = "Fire All Once",
+        Desc = "''just this once''",
+        Icon = "zap",
+        Callback = function()
+            local count = FireInteractions()
+            n({
+                Title = "Gravel.cc",
+                Content = "Fired " .. count .. " interactions",
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(0, 255, 0)
+            })
+        end
+    })
+    WorldTab:Toggle({
+        Title = "Loop Fire All",
+        Desc = "minigun fire gun",
+        Value = config.worldLoopFireEnabled or false,
+        Callback = function(v)
+            config.worldLoopFireEnabled = v
+            n({
+                Title = "Gravel.cc",
+                Content = "LoopFire: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+    WorldTab:Slider({
+        Title = "Interval",
+        Desc = "minigun fire gun shoot delay",
+        Step = 0.1,
+        Suffix = "s",
+        Value = {
+            Min = 0.1,
+            Max = 10,
+            Default = config.worldLoopFireInterval or 1
+        },
+        Callback = function(value)
+            config.worldLoopFireInterval = value
+        end
+    })
+end
 -- Misc Tab
 local MiscTab = Window:Tab({
     Title = "Miscellaneous",
@@ -17133,10 +17651,316 @@ local BGMTab = Window:Tab({
     })
 end
 
+-- Dev Tab
+local DevTab = Window:Tab({
+    Title = "Developer",
+    Desc = rng3("Developer"),
+    Icon = "terminal",
+    IconColor = config.Gradow.uicolor.lightGray
+}) do
+    local stats = {
+        errors = 0,
+        warnings = 0,
+        infos = 0,
+        startTime = tick(),
+        lastPing = 0,
+        lastMemory = 0,
+        fpsHistory = {},
+        pingHistory = {},
+        maxHistoryPoints = 60,
+        peakMemory = 0,
+        peakPing = 0,
+    }
+    local statsParagraph = DevTab:Paragraph({
+        Title = "Statistics",
+        Desc = "Gathering data...",
+        Color = config.Gradow.uicolor.Black
+    })
+    local consoleOutput = {}
+    local maxConsoleLines = 30
+    local consoleParagraph = DevTab:Paragraph({
+        Title = "Console Output",
+        Desc = "Waiting for console output...",
+        Color = config.Gradow.uicolor.Black
+    })
+    local filterPrint = true
+    local filterWarn = true
+    local filterError = true
+    local function refreshConsole()
+        local filtered = {}
+        for _, entry in ipairs(consoleOutput) do
+            local show = false
+            if entry.type == "INFO" and filterPrint then show = true
+            elseif entry.type == "WARN" and filterWarn then show = true
+            elseif entry.type == "ERROR" and filterError then show = true
+            end
+            if show then
+                table.insert(filtered, entry.formatted)
+            end
+        end
+        if #filtered == 0 then
+            consoleParagraph:SetDesc("(no matching logs)")
+        else
+            consoleParagraph:SetDesc(table.concat(filtered, "\n"))
+        end
+    end
+    local function addLog(logType, message)
+        local timestamp = os.date("%H:%M:%S")
+        local prefix = "[" .. timestamp .. "] [" .. logType .. "]"
+        local formatted = prefix .. " " .. tostring(message)
+        table.insert(consoleOutput, {
+            type = logType,
+            message = tostring(message),
+            formatted = formatted,
+            time = tick(),
+        })
+        while #consoleOutput > maxConsoleLines do
+            table.remove(consoleOutput, 1)
+        end
+        refreshConsole()
+    end
+    DevTab:Toggle({
+        Title = "Show Prints",
+        Desc = "Show [INFO] logs in console",
+        Value = true,
+        Callback = function(v) filterPrint = v; refreshConsole() end
+    })
+    DevTab:Toggle({
+        Title = "Show Warnings",
+        Desc = "Show [WARN] logs in console",
+        Value = true,
+        Callback = function(v) filterWarn = v; refreshConsole() end
+    })
+    DevTab:Toggle({
+        Title = "Show Errors",
+        Desc = "Show [ERROR] logs in console",
+        Value = true,
+        Callback = function(v) filterError = v; refreshConsole() end
+    })
+    DevTab:Button({
+        Title = "Clear Console",
+        Desc = "Wipes out the console :p",
+        Icon = "trash",
+        Callback = function()
+            consoleOutput = {}
+            refreshConsole()
+        end
+    })
+    config.devStats.logConnection = excusemesir.LogService.MessageOut:Connect(function(message, messageType)
+        if subside_I_I_I_I_I_() then return end
+        if messageType == Enum.MessageType.MessageError then
+            stats.errors = stats.errors + 1
+            addLog("ERROR", message)
+        elseif messageType == Enum.MessageType.MessageWarning then
+            stats.warnings = stats.warnings + 1
+            addLog("WARN", message)
+        else
+            stats.infos = stats.infos + 1
+            addLog("INFO", message)
+        end
+    end)
+    DevTab:Space()
+    local codeInput = ""
+    local outputText = "Output will appear here..."
+    DevTab:Input({
+        Title = "Lua Code",
+        Desc = "yea ig it's a built-in executor :/",
+        Placeholder = "print('hello')",
+        Value = "",
+        ClearTextOnFocus = false,
+        Callback = function(text)
+            codeInput = text
+        end
+    })
+    local outputParagraph = DevTab:Paragraph({
+        Title = "Execution Output",
+        Desc = outputText,
+        Color = config.Gradow.uicolor.Black
+    })
+    DevTab:Button({
+        Title = "Run Code",
+        Desc = "run that random code",
+        Icon = "play",
+        Callback = function()
+            if codeInput == "" then
+                outputParagraph:SetDesc("x No code to run!")
+                return
+            end
+            local success, result = pcall(function()
+                local fn = loadstring(codeInput)
+                if not fn then
+                    error("Failed to compile code (syntax error?)")
+                end
+                return fn()
+            end)
+            if success then
+                if result == nil then
+                    outputParagraph:SetDesc("> Success")
+                    addLog("INFO", "[Dev] Code executed successfully")
+                else
+                    local resultStr = tostring(result)
+                    outputParagraph:SetDesc("> Success:\n" .. resultStr)
+                    addLog("INFO", "[Dev] Code ran: " .. resultStr)
+                end
+            else
+                outputParagraph:SetDesc("x Error:\n" .. tostring(result))
+                addLog("ERROR", "[Dev] " .. tostring(result))
+            end
+        end
+    })
+    DevTab:Button({
+        Title = "Clear Output",
+        Desc = "clear the output stuff",
+        Icon = "trash",
+        Callback = function()
+            outputParagraph:SetDesc("Output will appear here...")
+        end
+    })
+    DevTab:Space()
+    DevTab:Button({
+        Title = "Open Developer Console",
+        Desc = "The built-in Roblox dev console :O",
+        Icon = "terminal",
+        Callback = function()
+            pcall(function()
+                excusemesir.StarterGui:SetCore("DevConsoleVisible", true)
+            end)
+        end
+    })
+    DevTab:Button({
+        Title = "Copy Console Log",
+        Desc = "yes",
+        Icon = "copy",
+        Callback = function()
+            local lines = {}
+            for _, entry in ipairs(consoleOutput) do
+                table.insert(lines, entry.formatted)
+            end
+            setclipboard(table.concat(lines, "\n"))
+            WindUI:Notify({
+                Title = "Dev",
+                Content = "Console copied to clipboard!",
+                Icon = "check",
+                Duration = 2
+            })
+        end
+    })
+    DevTab:Button({
+        Title = "Reset Stats",
+        Desc = "(self explanatory)",
+        Icon = "rotate-ccw",
+        Callback = function()
+            stats.errors = 0
+            stats.warnings = 0
+            stats.infos = 0
+            stats.peakMemory = 0
+            stats.peakPing = 0
+            stats.fpsHistory = {}
+            stats.pingHistory = {}
+        end
+    })
+    DevTab:Button({
+        Title = "Re-hook SilentAim (HK)",
+        Desc = "Re-applies the __namecall hook",
+        Icon = "refresh-cw",
+        Callback = function()
+            if callmyoldname then
+                hookmetamethod(game, "__namecall", callmyoldname)
+                addLog("INFO", "[Dev] SilentAim (HK) hook re-applied")
+            else
+                addLog("WARN", "[Dev] No hook to re-apply (enable SilentAim HK first)")
+            end
+        end
+    })
+    DevTab:Button({
+        Title = "Force Rescan Players",
+        Desc = "rescan da people",
+        Icon = "users",
+        Callback = function()
+            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+                if pl ~= localPlayer then
+                    setupPlayerListeners(pl)
+                end
+            end
+            addLog("INFO", "[Dev] Rescanned all players")
+        end
+    })
+    task.defer(function()
+        local fpsAccum = 0
+        local fpsFrames = 0
+        excusemesir.RunService.Heartbeat:Connect(function(dt)
+            fpsAccum = fpsAccum + dt
+            fpsFrames = fpsFrames + 1
+        end)
+        while config.devStats.updateLoopRunning do
+            task.wait(0.5)
+            if subside_I_I_I_I_I_() then continue end
+            local now = tick()
+            local fps = 0
+            if fpsAccum > 0 then
+                fps = math.floor(fpsFrames / fpsAccum)
+            end
+            fpsAccum = 0
+            fpsFrames = 0
+            local ping = 0
+            pcall(function()
+                ping = math.round(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
+            end)
+            local memory = 0
+            pcall(function()
+                memory = math.round(game:GetService("Stats"):GetTotalMemoryUsageMb())
+            end)
+            table.insert(stats.fpsHistory, fps)
+            table.insert(stats.pingHistory, ping)
+            while #stats.fpsHistory > stats.maxHistoryPoints do
+                table.remove(stats.fpsHistory, 1)
+            end
+            while #stats.pingHistory > stats.maxHistoryPoints do
+                table.remove(stats.pingHistory, 1)
+            end
+            if memory > stats.peakMemory then stats.peakMemory = memory end
+            if ping > stats.peakPing then stats.peakPing = ping end
+            stats.lastPing = ping
+            stats.lastMemory = memory
+            local uptime = math.floor(now - stats.startTime)
+            local hours = math.floor(uptime / 3600)
+            local minutes = math.floor((uptime % 3600) / 60)
+            local seconds = uptime % 60
+            local avgFps = 0
+            if #stats.fpsHistory > 0 then
+                local sum = 0
+                for _, v in ipairs(stats.fpsHistory) do sum = sum + v end
+                avgFps = math.floor(sum / #stats.fpsHistory)
+            end
+            local avgPing = 0
+            if #stats.pingHistory > 0 then
+                local sum = 0
+                for _, v in ipairs(stats.pingHistory) do sum = sum + v end
+                avgPing = math.floor(sum / #stats.pingHistory)
+            end
+            local fpsIcon = ">"
+            if fps < 30 then fpsIcon = "x"
+            elseif fps < 50 then fpsIcon = ";"
+            end
+            local pingIcon = ">"
+            if ping > 150 then pingIcon = "x"
+            elseif ping > 80 then pingIcon = ";"
+            end
+            statsParagraph:SetDesc(
+                fpsIcon .. " FPS: " .. fps .. " (avg " .. avgFps .. ")\n" ..
+                pingIcon .. " Ping: " .. ping .. "ms (avg " .. avgPing .. "ms | peak " .. stats.peakPing .. "ms)\n" ..
+                "! Memory: " .. memory .. " MB (peak " .. stats.peakMemory .. " MB)\n" ..
+                "> Uptime: " .. string.format("%02d:%02d:%02d", hours, minutes, seconds) .. "\n" ..
+                "x Errors: " .. stats.errors .. " | Warnings: " .. stats.warnings
+            )
+        end
+    end)
+end
+
 -- Info Tab
 --               ＼⁠(⁠^⁠o⁠^⁠)⁠／
 local InfoTab = Window:Tab({
-    Title = "Info",
+    Title = "Information",
     Desc = rng3("Info"),
     Icon = "info",
     IconColor = config.Gradow.uicolor.lightGray
@@ -17192,7 +18016,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an AIO semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an monolithic semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
         Color = config.Gradow.uicolor.Black
     })
 InfoTab:Space()
@@ -17257,14 +18081,26 @@ InfoTab:Space()
     })
     
     InfoTab:Paragraph({
+        Title = "WorldTab",
+        Desc = "Fire interactions, modify ProximityPrompts, X-Ray parts & other world/environment stuff",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    
+    InfoTab:Paragraph({
         Title = "MiscTab",
         Desc = "Basically experiment any features that are or aren't related to combating",
         Color = config.Gradow.uicolor.darkGray
     })
     
     InfoTab:Paragraph({
-        Title = "BGM Tab",
+        Title = "BGMTab",
         Desc = "Plays music in the background uses 'rbxassetids' technically a music player",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    
+    InfoTab:Paragraph({
+        Title = "DevTab",
+        Desc = "Shows statistics, console logs, a built-in code runner & other developer utilities",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -17603,8 +18439,13 @@ InfoTab:Space()
         Desc = "bug fixes n shi\nAdded: Indicator UI in the MainTab\nUpdated: Desync is available in QuickToggles & Keybinds\nAdded: Flight & Noclip to ClientTab\nImproved: Targeting & S/L\nBugs Fixed: 7",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (24/09/2026)",
+        Desc = "other stuff :7\nAdded: WorldTab\nAdded: DevTab\nFixed: Cleanup issues\nBugs Fixed: 12",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
-
+end
 -- tsu
 --[[
     InfoTab:Paragraph({
@@ -17954,7 +18795,8 @@ local function init()
     recmods()
     nanqhsj_wish_nxaiww()
     autolaodbssthing_()
-    jdjwhejdijahweki____sidjnww_ieje()
+    makeeverysingletabs()
+    gui.indicator = jdjwhejdijahweki____sidjnww_ieje()
     for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
         if pl ~= localPlayer then
             setupPlayerListeners(pl)
@@ -18175,6 +19017,114 @@ task.defer(function()
                 end
                 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
             end
+        end
+        if config.varibz.lastWorldProximity == nil then
+            config.varibz.lastWorldProximity = config.worldProximityEnabled
+        elseif config.worldProximityEnabled ~= config.varibz.lastWorldProximity then
+            config.varibz.lastWorldProximity = config.worldProximityEnabled
+            if config.worldProximityEnabled then
+                config.worldProximityOriginalValues = {}
+                for _, obj in ipairs(workspace:GetDescendants()) do
+                    if obj:IsA("ProximityPrompt") then
+                        config.worldProximityOriginalValues[obj] = {
+                            HoldDuration = obj.HoldDuration,
+                            MaxActivationDistance = obj.MaxActivationDistance,
+                            MaxIndicatorDistance = obj.MaxIndicatorDistance
+                        }
+                    end
+                end
+                ApplyProximityPrompts()
+                config.varibz.lastWPHold = nil
+                config.varibz.lastWPActivation = nil
+                config.varibz.lastWPIndicator = nil
+            else
+                if config.worldProximityOriginalValues then
+                    for obj, values in pairs(config.worldProximityOriginalValues) do
+                        if obj and obj.Parent then
+                            pcall(function()
+                                obj.HoldDuration = values.HoldDuration
+                                obj.MaxActivationDistance = values.MaxActivationDistance
+                                obj.MaxIndicatorDistance = values.MaxIndicatorDistance
+                            end)
+                        end
+                    end
+                end
+                config.worldProximityOriginalValues = {}
+            end
+        end
+        if config.worldProximityEnabled then
+            if config.varibz.lastWPHold == nil
+               or config.varibz.lastWPHold ~= config.worldProximityHoldDuration
+               or config.varibz.lastWPActivation ~= config.worldProximityMaxActivation
+               or config.varibz.lastWPIndicator ~= config.worldProximityMaxIndicator then
+                config.varibz.lastWPHold = config.worldProximityHoldDuration
+                config.varibz.lastWPActivation = config.worldProximityMaxActivation
+                config.varibz.lastWPIndicator = config.worldProximityMaxIndicator
+                ApplyProximityPrompts()
+            end
+        end
+        if config.varibz.lastWorldXray == nil then
+            config.varibz.lastWorldXray = config.worldXrayEnabled
+        elseif config.worldXrayEnabled ~= config.varibz.lastWorldXray then
+            config.varibz.lastWorldXray = config.worldXrayEnabled
+            if config.worldXrayEnabled then
+                config.worldXrayOriginalValues = {}
+                ApplyXray()
+                if config.worldXrayConnection then
+                    config.worldXrayConnection:Disconnect()
+                end
+                config.worldXrayConnection = workspace.DescendantAdded:Connect(function(obj)
+                    if config.worldXrayEnabled and obj:IsA("BasePart") and ShouldXrayPart(obj) then
+                        if not config.worldXrayOriginalValues[obj] then
+                            config.worldXrayOriginalValues[obj] = obj.Transparency
+                        end
+                        obj.Transparency = config.worldXrayTransparency or 0.5
+                    end
+                end)
+                config.varibz.lastXrayTrans = config.worldXrayTransparency
+            else
+                RestoreXray()
+            end
+        end
+        if config.worldXrayEnabled and config.worldXrayTransparency ~= config.varibz.lastXrayTrans then
+            config.varibz.lastXrayTrans = config.worldXrayTransparency
+            UpdateXrayTransparency()
+        end
+        local blacklistKey = table.concat(config.worldXrayBlacklist or {"Humanoids"}, ",")
+        if config.varibz.lastXrayBlacklist == nil then
+            config.varibz.lastXrayBlacklist = blacklistKey
+        elseif config.varibz.lastXrayBlacklist ~= blacklistKey then
+            config.varibz.lastXrayBlacklist = blacklistKey
+            if config.worldXrayEnabled then
+                RestoreXray()
+                config.worldXrayOriginalValues = {}
+                ApplyXray()
+                if config.worldXrayConnection then
+                    config.worldXrayConnection:Disconnect()
+                end
+                config.worldXrayConnection = workspace.DescendantAdded:Connect(function(obj)
+                    if config.worldXrayEnabled and obj:IsA("BasePart") and ShouldXrayPart(obj) then
+                        if not config.worldXrayOriginalValues[obj] then
+                            config.worldXrayOriginalValues[obj] = obj.Transparency
+                        end
+                        obj.Transparency = config.worldXrayTransparency or 0.5
+                    end
+                end)
+            end
+        end
+        if config.varibz.lastLoopFire == nil then
+            config.varibz.lastLoopFire = config.worldLoopFireEnabled
+        elseif config.worldLoopFireEnabled ~= config.varibz.lastLoopFire then
+            config.varibz.lastLoopFire = config.worldLoopFireEnabled
+            if config.worldLoopFireEnabled then
+                StartLoopFire()
+            else
+                StopLoopFire()
+            end
+        end
+        if config.worldLoopFireEnabled and config.worldLoopFireInterval ~= config.varibz.lastLoopFireInterval then
+            config.varibz.lastLoopFireInterval = config.worldLoopFireInterval
+            StartLoopFire()
         end
     end
 end)
@@ -18422,6 +19372,7 @@ local function buhbyegravellllllll________()
         end
         config.desyncActive = false
         for i = 1, 5 do
+            BMG:togglePlay(false)
             BMG:cleanup()
         end
         if config.varibz.openbtnconnection then
@@ -18476,13 +19427,25 @@ local function buhbyegravellllllll________()
             end
         end
         config.proxyHitboxes = {}
-        if visualizer and visualizer.Parent then
-            visualizer:Destroy()
+        if config.reach.visualizerPart then
+            pcall(function() config.reach.visualizerPart:Destroy() end)
+            config.reach.visualizerPart = nil
+        end
+        if config.reach.renderConnection then
+            pcall(function() config.reach.renderConnection:Disconnect() end)
+            config.reach.renderConnection = nil
+        end
+        if config.reach.autoSwingConnection then
+            pcall(function() config.reach.autoSwingConnection:Disconnect() end)
+            config.reach.autoSwingConnection = nil
         end
         if autoSwingConnection then
-            autoSwingConnection:Disconnect()
+            pcall(function() autoSwingConnection:Disconnect() end)
             autoSwingConnection = nil
         end
+        config.reach.enabled = false
+        config.reach.autoSwing.enabled = false
+        config.visualizer.enabled = false
         config.infjumpEnabled = false
         if config.infjumpConnection then
             config.infjumpConnection:Disconnect()
@@ -18542,6 +19505,60 @@ local function buhbyegravellllllll________()
                 pcall(function() humC.PlatformStand = false end)
             end
         end
+        if config.worldProximityOriginalValues then
+            for obj, values in pairs(config.worldProximityOriginalValues) do
+                if obj and obj.Parent then
+                    pcall(function()
+                        obj.HoldDuration = values.HoldDuration
+                        obj.MaxActivationDistance = values.MaxActivationDistance
+                        obj.MaxIndicatorDistance = values.MaxIndicatorDistance
+                    end)
+                end
+            end
+            config.worldProximityOriginalValues = {}
+        end
+        config.worldProximityEnabled = false
+        config.worldLoopFireEnabled = false
+        if config.worldLoopFireConnection then
+            pcall(function() task.cancel(config.worldLoopFireConnection) end)
+            config.worldLoopFireConnection = nil
+        end
+        if config.worldXrayConnection then
+            pcall(function() config.worldXrayConnection:Disconnect() end)
+            config.worldXrayConnection = nil
+        end
+        if config.worldXrayOriginalValues then
+            for obj, transparency in pairs(config.worldXrayOriginalValues) do
+                if obj and obj.Parent then
+                    pcall(function()
+                        obj.Transparency = transparency
+                    end)
+                end
+            end
+            config.worldXrayOriginalValues = {}
+        end
+        config.worldXrayEnabled = false
+        if config.devStats then
+            config.devStats.running = false
+            config.devStats.updateLoopRunning = false
+            if config.devStats.logConnection then
+                pcall(function() config.devStats.logConnection:Disconnect() end)
+                config.devStats.logConnection = nil
+            end
+        end
+        config.varibz.lastWorldProximity = nil
+        config.varibz.lastWPHold = nil
+        config.varibz.lastWPActivation = nil
+        config.varibz.lastWPIndicator = nil
+        config.varibz.lastWorldXray = nil
+        config.varibz.lastXrayTrans = nil
+        config.varibz.lastXrayBlacklist = nil
+        config.varibz.lastLoopFire = nil
+        config.varibz.lastLoopFireInterval = nil
+        config.varibz.lastFullbright = nil
+        config.varibz.lastClockTime = nil
+        config.varibz.lastSkybox = nil
+        config.varibz.lastDesync = nil
         config.camYOffsetEnabled = false
         config.camYOffsetValue = 0
         config.currentTarget = nil
@@ -18567,6 +19584,7 @@ local function buhbyegravellllllll________()
         config.trussEnabled = false
         config.airwalkEnabled = false
         config.autorespawnEnabled = false
+        config.KeybindsEnabled = false
         config.antiafk = false
         config.SSEnabled = false
         config.autoFarmCompleted = {}
@@ -18600,15 +19618,8 @@ local function buhbyegravellllllll________()
             hookmetamethod(game, "__index", mouseywousey)
             mouseywousey = nil
         end
-        for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
-            v:Enable()
-        end
-        for _, v in pairs(getconnections(excusemesir.LogService.MessageOut)) do
-            v:Enable()
-        end
         config.varibz.lowpatcher = false
         config.varibz.patcher = false
-        config.varibz.errors = false
         if getgenv().destroyInitGui then
             getgenv().destroyInitGui()
         end
@@ -18622,6 +19633,36 @@ local function buhbyegravellllllll________()
                 part:Destroy()
             end
         end
+        config.Gradow.eyecon.active = false
+        config.Gradow.eyecon.lbl = nil
+        config.Gradow.eyecon.pool = {}
+        if config.Gradow.uianimate.connection then
+            config.Gradow.uianimate.connection:Disconnect()
+            config.Gradow.uianimate.connection = nil
+        end
+        for pl, conns in pairs(config.varibz.hbConnections or {}) do
+            for _, c in ipairs(conns) do
+                pcall(function() c:Disconnect() end)
+            end
+        end
+        config.varibz.hbConnections = {}
+        config.varibz.sa2dump.data = {}
+        config.varibz.sa2dump.cache = {}
+        config.varibz.sa2dump.fcache = {}
+        config.varibz.sa2dump.rcache = {}
+        config.varibz.sa2dump.validPlayers = {}
+        config.varibz.sa2dump.flist = {}
+        config.varibz.npcCache.list = {}
+        config.varibz.scopeCache.list = {}
+        config.varibz.candidates = {}
+        config.varibz.targetsInFOV = {}
+        config.varibz.allTargetsInFOV = {}
+        config.varibz.targetsToRemove = {}
+        config.varibz.targetsToRemoveHigh = {}
+        config.varibz.lineToRemove = {}
+        config.varibz.rng3dis = {}
+        config.varibz.Rng5stuff = nil
+        config.varibz.raycats = nil
         config.Gradow.uianimate.connection = nil
         config.Gradow.uianimate.openButton = nil
         config.Gradow.uianimate.windowFrame = nil
