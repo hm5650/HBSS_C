@@ -3244,10 +3244,11 @@ end
 
 function kzjwnwwoerjjdfti_ftiftikrhgeksie_iwhefti(obj)
     if not obj or not obj:IsA("BasePart") then return false end
-    if not getconnections then return false end
-    local ok, conns = pcall(function() return getconnections(obj.Touched) end)
-    if not ok or not conns then return false end
-    return #conns > 0
+    for _, child in ipairs(obj:GetChildren()) do
+        if child:IsA("TouchTransmitter") then
+            return true
+        end
+    end
 end
 
 function toooooolskjwmekrj_roolrjhendrofflksnetool_ksne(obj)
