@@ -15,5 +15,5 @@
   2. [YouTube; Second Channel](https://www.youtube.com/@gpszickle)
   3. [RScripts](rscripts.net/@Gpssickle)
   4. [Scriptblox](https://scriptblox.com/u/Gpssickle)
-  5. [Roblox](roblox.com/users/8517361356/profile)
+  5. [Roblox](https://www.roblox.com/users/8517361356/profile)
 </details>
