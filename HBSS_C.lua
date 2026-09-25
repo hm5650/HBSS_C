@@ -32,8 +32,13 @@ print([[
            “gravel bread :3” 
                                            
                                     - Gpssickle
-
 ]])
+--[[
+    Author: Gpssickle! (hm5650)
+    GitHub: https://github.com/hm5650/HBSS
+    README: https://github.com/hm5650/HBSS/blob/main/README.md
+    License: MIT
+]]
 
 -- Gravel.cc (or HBSS :v)
 if getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ then
@@ -646,7 +651,7 @@ local config = {
                 "sine waves is\njust math",
             },
             {
-                typesp = "3",
+                typesp = "1.5",
                 mode = "2",
                 "RUN",
                 "TO",
@@ -6074,7 +6079,7 @@ local function isPlayerBeingTargeted(targetPlayer)
     if config.SA2_Enabled and config.SA2_currentTarget == targetPlayer then
         return true, "silentaim_hk"
     end
-    if config.currentTarget == targetPlayer then
+    if config.startsa and config.currentTarget == targetPlayer then
         return true, "silentaim"
     end
     if config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer then
@@ -9488,8 +9493,8 @@ local function updateESPColors()
             local tchar = getTargetCharacter(targetPlayer)
             local humanoid = tchar and tchar:FindFirstChildOfClass("Humanoid")
             local hpColor = (humanoid and config.prefColorByHealth) and healthColor(humanoid) or nil
-            local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
-            local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+            local isTargetedBySA1 = config.startsa and config.currentTarget == targetPlayer
+            local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
             local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
             local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
             local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
@@ -9532,8 +9537,8 @@ local function updateESPColors()
         elseif not addesp(targetPlayer) or not plralive(targetPlayer) then
             table.insert(toRemoveHighlights, targetPlayer)
         else
-            local isTargetedBySA1  = config.startsa and config.currentTarget == targetPlayer
-            local isTargetedBySA2  = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
+            local isTargetedBySA1 = config.startsa and config.currentTarget == targetPlayer
+            local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
             local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
             local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
             local isTargeted = isTargetedBySA1 or isTargetedBySA2 or isTargetedByAimbot or isTargetedByTbot
@@ -11848,23 +11853,41 @@ local function UpdateQT()
     end
 end
 
+
 local function onRenderStep()
     config.varibz.sa1dump.rs = config.varibz.sa1dump.rs + 1
     if config.varibz.sa1dump.rs % config.varibz.sa1stuff ~= 0 then return end
+    
     if not camera or not camera.Parent then
         camera = workspace.CurrentCamera
         if not camera then return end
     end
-
-    if not gui.RingHolder or not gui.RingStroke then return end
-
     if not config.startsa then
-        gui.RingHolder.Visible = false
+        if gui.RingHolder then
+            gui.RingHolder.Visible = false
+        end
+        if config.currentTarget ~= nil then
+            config.currentTarget = nil
+            updateESPColors()
+        end
+        if next(config.activeApplied) ~= nil then
+            for pl, _ in pairs(config.activeApplied) do
+                table.insert(config.varibz.targetsToRemove, pl)
+            end
+            for _, pl in ipairs(config.varibz.targetsToRemove) do
+                restorePartForPlayer(pl)
+            end
+            table.clear(config.varibz.targetsToRemove)
+        end
+        table.clear(config.varibz.candidates)
+        table.clear(config.varibz.allTargetsInFOV)
+        table.clear(config.varibz.targetsInFOV)
+        table.clear(config.targetSeenTargets)
         return
-    else
+    end
+    if gui.RingHolder then
         gui.RingHolder.Visible = true
     end
-
     local viewportSize = camera.ViewportSize
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local radiusPx = config.fovsize
