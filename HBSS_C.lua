@@ -1,3 +1,4 @@
+do
 print([[
          
                                               +####+               
@@ -29,7 +30,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “gravel bread :3” 
+           “sand.cc is somewhere here :o” 
                                            
                                     - Gpssickle
 ]])
@@ -98,9 +99,9 @@ getgenv().HttpUrlz_ = {
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     --other
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
-    adonisabuse = "https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",
     ilikedisui = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
     ewitsabadapple = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
+    --me cool script dat r not hbss related
     tpuabasically = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
@@ -138,12 +139,6 @@ local lp_info = loadstring(getgist_(getgenv().HttpUrlz_.showmyipadress_jk))()
 -- unprofessionalism professionist 🥀
 loadstring(getgist_(getgenv().HttpUrlz_.hbssloader))()
 local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
-
-local function n(opts)
-    if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
-        Alurt.CreateNode(opts)
-    end
-end
 task.wait(5.7)
 --                               ⸜( ˃ ᵕ ˂ )⸝♡
 local func = loadstring(getgist_(getgenv().HttpUrlz_.sa2func))()
@@ -174,6 +169,7 @@ getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_ = {
 -- cfg
 local config = {
     antikick = true,
+    notif = true,
     startsa = false,
     fovsize = 120,
     hbtrans = 1,
@@ -320,10 +316,17 @@ local config = {
     autoFarmPartClaimStarted = false,
     autoFarmLastRefresh = 0,
     ignoreForcefield = true,
+    MobileControls = false,
+    MobileDynamic = false,
+    MobileDrag = false,
+    MobileRingPos = nil,
+    MobileJumpPos = nil,
+    MobileGui = nil,
+    MobileLayout = nil,
     QuickToggles = false,
     QTDrag = true,
     QTScale = 1,
-    selectedQuickToggles = {
+    selectedQuickToggles = { --qtkeys
         SilentAim = true,
         Hitbox = true,
         AntiAim = true,
@@ -331,9 +334,12 @@ local config = {
         ESP = true,
         ClientMod = true,
         SilentAimHK = true,
+        TriggerBot = true,
         AutoFarm = true,
         BHop = true,
         Desync = true,
+        Freecam = true,
+        MobileControls = true,
     },
     availableQuickToggles = {
         "SilentAim",
@@ -343,9 +349,12 @@ local config = {
         "ESP",
         "ClientMod",
         "SilentAimHK",
+        "TriggerBot",
         "AutoFarm",
         "BHop",
         "Desync",
+        "Freecam",
+        "MobileControls",
     },
     clientModEnabled = false,
     walkspeedEnabled = false,
@@ -415,6 +424,14 @@ local config = {
     worldProximityMaxActivation = 100,
     worldProximityMaxIndicator = 100,
     worldProximityOriginalValues = {},
+    interactionAuraRadius = 50,
+    interactionAuraVisualizer = false,
+    interactionAuraVisualizerColor = Color3.fromRGB(0, 255, 150),
+    interactionAuraVisualizerTransparency = 0.6,
+    interactionAuraVisualizerShape = "Sphere",
+    interactionAuraVisualizerMaterial = "ForceField",
+    interactionAuraVisualizerPart = nil,
+    interactionAuraVisualizerConnection = nil,
     worldXrayEnabled = false,
     worldXrayTransparency = 0.5,
     worldXrayOriginalValues = {},
@@ -428,6 +445,36 @@ local config = {
         running = true,
         logConnection = nil,
         updateLoopRunning = true,
+    },
+    freecam = false,
+    freecamState = {
+        active = false,
+        position = nil,
+        yaw = 0,
+        pitch = 0,
+        oldCameraType = nil,
+        oldCameraSubject = nil,
+        oldCameraCFrame = nil,
+        oldMouseBehavior = nil,
+        oldControlsEnabled = false,
+        speed = 70,
+        sprintSpeed = 180,
+        sensitivity = 0.0025,
+        touchSensitivity = 0.006,
+        keys = {},
+        leftTouch = nil,
+        leftTouchPos = nil,
+        rightTouch = nil,
+        renderConn = nil,
+        streamPos = nil,
+        streamTimer = 0,
+        controls = nil,
+   },
+   TextHooker = {
+       ["Search"] = "Seek",
+       ["Search..."] = "SEEKK!1!1!1!!",
+       ["Check out this script!"] = "use gravel actually (jk)",
+       ["Sand.cc"] = "GraSand.cc",
     },
     spinbot = {
         enabled = false,
@@ -473,6 +520,7 @@ local config = {
         wallCheck = false,
         hitChance = 100,
         pressDown = false,
+        targetRange = 500,
     },
     tbotcurrenttarget = nil,
     tbotTargetted = false,
@@ -490,7 +538,7 @@ local config = {
     },
     KeybindsEnabled = true,
     HoldKeysEnabled = false,
-    Keybinds = {
+    Keybinds = { --keys
         HoldKeybind = "LeftAlt",
         silentaim = "E",
         aimbot = "Q",
@@ -507,6 +555,7 @@ local config = {
         bhop = "V",
         tbotwallcheck = "Y",
         desync = "J",
+        freecam = "P",
     },
     varibz = {
         btntitle = {
@@ -1423,7 +1472,7 @@ local config = {
                 "*sick music*... keep streaking yah",
             },
             {
-                "Bro ts code is 19000+ lines long :(",
+                "Bro ts code is 20000+ lines long :(",
                 "I ''can't'' do dis shi :[",
                 "plz heseelepp me {displayname}",
             },
@@ -1847,7 +1896,7 @@ local config = {
             {
                 "me: 'i'll make a clean script'",
                 "also me:",
-                "*19000+ lines later*",
+                "*20000+ lines later*",
                 "what is organization?",
                 "i don't know her",
                 ":s",
@@ -2118,7 +2167,7 @@ local config = {
             "2 atoms touch = big explosion",
             "you can noclip when your atoms aligned\ntrust",
             "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 15000+ and 18000+ now 19000 lines long, I canf do dis sh on mobile D:",
+            "my code is used to be 8000+ now 9000+ and then 15000+ and 18000+ now 20000 lines long, I canf do dis sh on mobile D:",
             "flatgrass",
             "search free robux to get free robux",
             "alt-f4 = free rboux",
@@ -2138,7 +2187,7 @@ local config = {
             "robloz where classic faces :‹",
             "I'm not taking my sneakers off, I'm sneakers O'Toole",
             "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 19000 o_o",
+            "da script reached 8000 lines to 20000 o_o",
             "just simply cheat through it\n\n quite literally",
             "just simply go under it",
             "just simply go over it",
@@ -2253,7 +2302,7 @@ local config = {
             "if u close me you'll catch a cold so stay inside!1!1!!",
             "u has 3 options:\n\n1. cancel\n\n2. cancel\n\n3. cancel\n\nchoose wisely",
             "that evil ''Close Window'' button is a rickroll so don't press it",
-            "if u close me, I'll tell everyone globally that ur a hacker in Roblox so as david bazooka",
+            "if u close me, I'll tell everyone globally that ur a hacker in Roblox & david bazooka",
             "I'll tell david bazooka.... don't test me",
             "if u close me, you'll have to explain to ur friends why ur aim is trash now.",
             "use ALT-F4 instead of this random popup :/",
@@ -2423,6 +2472,15 @@ local config = {
                 "ur aim is insane",
                 "holeh aimbot",
                 "aimbot go crazy"
+            },
+            ["Triggerbot"] = {
+                "I only shoot straight\nnot gay",
+                "mobile-ish friendly :o",
+                "is it a autoclicker???",
+                "is it Triggerbot or Autoshoot?",
+                "FIRE HES IN THE CIRCLE",
+                "automatically pew pew tab",
+                "not an aiming tab",
             },
             ["SilentAim (HB)"] = {
                 "hitbox x aimbot x silentaim x bullet tracker",
@@ -2828,6 +2886,14 @@ local rng_s = {
     bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)],
     bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
 }
+local function n(opts, bypass)
+    if config.notif == false and not bypass then
+        return
+    end
+    if typeof(Alurt) == "table" and type(Alurt.CreateNode) == "function" then
+        Alurt.CreateNode(opts)
+    end
+end
 
 n({
     Title = "Gravel.cc",
@@ -3237,6 +3303,87 @@ local function isNPCModel(model)
     return false
 end
 
+function djsjejeudbxxjwoiwirjnz_kssk()
+    if config.interactionAuraVisualizerConnection then
+        pcall(function() config.interactionAuraVisualizerConnection:Disconnect() end)
+        config.interactionAuraVisualizerConnection = nil
+    end
+    if config.interactionAuraVisualizerPart then
+        pcall(function() config.interactionAuraVisualizerPart:Destroy() end)
+        config.interactionAuraVisualizerPart = nil
+    end
+end
+
+function hsueuehjsjei_didhznkawk()
+    if config.interactionAuraVisualizerConnection then
+        pcall(function() config.interactionAuraVisualizerConnection:Disconnect() end)
+        config.interactionAuraVisualizerConnection = nil
+    end
+    if config.interactionAuraVisualizerPart then
+        pcall(function() config.interactionAuraVisualizerPart:Destroy() end)
+        config.interactionAuraVisualizerPart = nil
+    end
+
+    if not config.interactionAuraVisualizer or not config.interactionAuraEnabled then
+        return
+    end
+
+    local character = localPlayer.Character
+    local root = character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Head"))
+    if not root then
+        return
+    end
+
+    if not config.interactionAuraVisualizerPart or not config.interactionAuraVisualizerPart.Parent then
+        local part = Instance.new("Part")
+        part.Name = "82188223883_98382828a_" .. tostring(math.random(100000, 999999))
+        part.Shape = (config.interactionAuraVisualizerShape == "Block") and Enum.PartType.Block or Enum.PartType.Ball
+        part.Material = config.materials[config.interactionAuraVisualizerMaterial or "ForceField"] or Enum.Material.ForceField
+        part.Anchored = true
+        part.CanCollide = false
+        part.CanQuery = false
+        part.CanTouch = false
+        part.CastShadow = false
+        part.Color = config.interactionAuraVisualizerColor or Color3.fromRGB(0, 255, 150)
+        part.Transparency = config.interactionAuraVisualizerTransparency or 0.6
+        part.Size = Vector3.new(1, 1, 1)
+        part.Parent = workspace
+        config.interactionAuraVisualizerPart = part
+    end
+
+    local part = config.interactionAuraVisualizerPart
+    part.Shape = (config.interactionAuraVisualizerShape == "Block") and Enum.PartType.Block or Enum.PartType.Ball
+    part.Material = config.materials[config.interactionAuraVisualizerMaterial or "ForceField"] or Enum.Material.ForceField
+    part.Color = config.interactionAuraVisualizerColor or Color3.fromRGB(0, 255, 150)
+    part.Transparency = config.interactionAuraVisualizerTransparency or 0.6
+    local d = config.interactionAuraRadius or 50
+    part.Size = Vector3.new(d * 2, d * 2, d * 2)
+    part.CFrame = CFrame.new(root.Position)
+
+    if not config.interactionAuraVisualizerConnection then
+        config.interactionAuraVisualizerConnection = excusemesir.RunService.Heartbeat:Connect(function()
+            if not config.interactionAuraVisualizer or not config.interactionAuraEnabled then
+                if config.interactionAuraVisualizerConnection then
+                    config.interactionAuraVisualizerConnection:Disconnect()
+                    config.interactionAuraVisualizerConnection = nil
+                end
+                if config.interactionAuraVisualizerPart then
+                    pcall(function() config.interactionAuraVisualizerPart:Destroy() end)
+                    config.interactionAuraVisualizerPart = nil
+                end
+                return
+            end
+            local char = localPlayer.Character
+            local r = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head"))
+            if not r or not config.interactionAuraVisualizerPart or not config.interactionAuraVisualizerPart.Parent then
+                return
+            end
+            config.interactionAuraVisualizerPart.CFrame = CFrame.new(r.Position)
+            config.interactionAuraVisualizerPart.Shape = (config.interactionAuraVisualizerShape == "Block") and Enum.PartType.Block or Enum.PartType.Ball
+            config.interactionAuraVisualizerPart.Material = config.materials[config.interactionAuraVisualizerMaterial or "ForceField"] or Enum.Material.ForceField
+        end)
+    end
+end
 function Zenzizenzizenzic_iwjwneku_wkwn(obj)
     if not obj or not obj:IsA("BasePart") then return false end
     return obj:FindFirstChildOfClass("ClickDetector") ~= nil
@@ -4332,6 +4479,14 @@ local function saveConfig(saveName)
             autoFarmVerticalOffset = config.autoFarmVerticalOffset,
             autoFarmTargetPart = config.autoFarmTargetPart,
             autoFarmMinRange = config.autoFarmMinRange,
+            freecam = config.freecam,
+            freecamState = {
+                active = config.freecamState.active,
+                speed = config.freecamState.speed,
+                sprintSpeed = config.freecamState.sprintSpeed,
+                sensitivity = config.freecamState.sensitivity,
+                touchSensitivity = config.freecamState.touchSensitivity,
+            },
             QuickToggles = config.QuickToggles,
             QTDrag = config.QTDrag,
             QTScale = config.QTScale,
@@ -4476,6 +4631,21 @@ local function saveConfig(saveName)
             SA2_GetTarget = config.SA2_GetTarget,
             SA2_AimMethods = table.clone(config.SA2_AimMethods or {"Raycast"}),
             customRemoteNames = table.clone(config.customRemoteNames),
+            MobileControls = config.MobileControls,
+            MobileDynamic = config.MobileDynamic,
+            MobileDrag = config.MobileDrag,
+            MobileRingPos = config.MobileRingPos and {
+                XS = config.MobileRingPos.X.Scale,
+                XO = config.MobileRingPos.X.Offset,
+                YS = config.MobileRingPos.Y.Scale,
+                YO = config.MobileRingPos.Y.Offset,
+            } or nil,
+            MobileJumpPos = config.MobileJumpPos and {
+                XS = config.MobileJumpPos.X.Scale,
+                XO = config.MobileJumpPos.X.Offset,
+                YS = config.MobileJumpPos.Y.Scale,
+                YO = config.MobileJumpPos.Y.Offset,
+            } or nil,
             sa2stuff = config.varibz.sa2stuff,
             sa1stuff = config.varibz.sa1stuff,
             hitboxEnabled = config.hitboxEnabled,
@@ -4490,6 +4660,17 @@ local function saveConfig(saveName)
                 R = config.hitboxVisualizer.color.R,
                 G = config.hitboxVisualizer.color.G,
                 B = config.hitboxVisualizer.color.B
+            },
+            interactionAuraEnabled = config.interactionAuraEnabled,
+            interactionAuraRadius = config.interactionAuraRadius,
+            interactionAuraVisualizer = config.interactionAuraVisualizer,
+            interactionAuraVisualizerShape = config.interactionAuraVisualizerShape,
+            interactionAuraVisualizerMaterial = config.interactionAuraVisualizerMaterial,
+            interactionAuraVisualizerTransparency = config.interactionAuraVisualizerTransparency,
+            interactionAuraVisualizerColor = {
+                R = config.interactionAuraVisualizerColor.R,
+                G = config.interactionAuraVisualizerColor.G,
+                B = config.interactionAuraVisualizerColor.B
             },
             reach_enabled = config.reach.enabled,
             reach_type = config.reach.type,
@@ -4531,6 +4712,7 @@ local function saveConfig(saveName)
             tbot_targetPart = config.tbot.targetPart,
             tbot_fovRadius = config.tbot.fovRadius,
             tbot_hitChance = config.tbot.hitChance,
+            tbot_targetRange = config.tbot.targetRange,
             tbot_delay = config.tbot.delay,
             tbot_wallCheck = config.tbot.wallCheck,
             tbot_fovTransparency = config.tbot.fovTransparency,
@@ -5046,6 +5228,34 @@ local function loadSave(saveName)
     if cfg.autoFarmVerticalOffset then config.autoFarmVerticalOffset = cfg.autoFarmVerticalOffset end
     if cfg.autoFarmTargetPart then config.autoFarmTargetPart = cfg.autoFarmTargetPart end
     if cfg.autoFarmMinRange then config.autoFarmMinRange = cfg.autoFarmMinRange end
+    if cfg.MobileControls ~= nil then config.MobileControls = cfg.MobileControls end
+    if cfg.MobileDynamic ~= nil then config.MobileDynamic = cfg.MobileDynamic end
+    if cfg.MobileDrag ~= nil then config.MobileDrag = cfg.MobileDrag end
+    if cfg.MobileRingPos then
+        config.MobileRingPos = UDim2.new(
+            cfg.MobileRingPos.XS or 0, cfg.MobileRingPos.XO or 0,
+            cfg.MobileRingPos.YS or 0, cfg.MobileRingPos.YO or 0
+        )
+    else
+        config.MobileRingPos = nil
+    end
+    if cfg.MobileJumpPos then
+        config.MobileJumpPos = UDim2.new(
+            cfg.MobileJumpPos.XS or 0, cfg.MobileJumpPos.XO or 0,
+            cfg.MobileJumpPos.YS or 0, cfg.MobileJumpPos.YO or 0
+        )
+    else
+        config.MobileJumpPos = nil
+    end
+    if config.MobileGui then
+        config.MobileGui.Enabled = config.MobileControls
+    end
+    if config.MobileLayout then
+        config.MobileLayout()
+    end
+    if config.MobileSetDrag then
+        config.MobileSetDrag(false)
+    end
     if cfg.QuickToggles ~= nil then config.QuickToggles = cfg.QuickToggles end
     if cfg.QTDrag ~= nil then config.QTDrag = cfg.QTDrag end
     if cfg.QTScale then config.QTScale = cfg.QTScale end
@@ -5073,6 +5283,19 @@ local function loadSave(saveName)
             config.varibz.scopeCache.lastRefresh = 0
             config.varibz.scopeCache.list = {}
         end
+    end
+    if cfg.interactionAuraEnabled ~= nil then config.interactionAuraEnabled = cfg.interactionAuraEnabled end
+    if cfg.interactionAuraRadius then config.interactionAuraRadius = cfg.interactionAuraRadius end
+    if cfg.interactionAuraVisualizer ~= nil then config.interactionAuraVisualizer = cfg.interactionAuraVisualizer end
+    if cfg.interactionAuraVisualizerShape then config.interactionAuraVisualizerShape = cfg.interactionAuraVisualizerShape end
+    if cfg.interactionAuraVisualizerMaterial then config.interactionAuraVisualizerMaterial = cfg.interactionAuraVisualizerMaterial end
+    if cfg.interactionAuraVisualizerTransparency then config.interactionAuraVisualizerTransparency = cfg.interactionAuraVisualizerTransparency end
+    if cfg.interactionAuraVisualizerColor then
+        config.interactionAuraVisualizerColor = Color3.new(
+            cfg.interactionAuraVisualizerColor.R or 0,
+            cfg.interactionAuraVisualizerColor.G or 1,
+            cfg.interactionAuraVisualizerColor.B or 0.6
+        )
     end
     if cfg.prefHighlightESP ~= nil then config.prefHighlightESP = cfg.prefHighlightESP end
     if cfg.prefTextESP ~= nil then config.prefTextESP = cfg.prefTextESP end
@@ -5191,6 +5414,25 @@ local function loadSave(saveName)
     if cfg.SA2_TargetRange then config.SA2_TargetRange = cfg.SA2_TargetRange end
     if cfg.SA2_TeamTarget then config.SA2_TeamTarget = cfg.SA2_TeamTarget end
     if cfg.SA2_GetTarget then config.SA2_GetTarget = cfg.SA2_GetTarget end
+    if cfg.freecamState then
+        if cfg.freecamState.speed then config.freecamState.speed = cfg.freecamState.speed end
+        if cfg.freecamState.sprintSpeed then config.freecamState.sprintSpeed = cfg.freecamState.sprintSpeed end
+        if cfg.freecamState.sensitivity then config.freecamState.sensitivity = cfg.freecamState.sensitivity end
+        if cfg.freecamState.touchSensitivity then config.freecamState.touchSensitivity = cfg.freecamState.touchSensitivity end
+    end
+    if cfg.freecam ~= nil then
+        config.freecam = cfg.freecam
+        if cfg.freecam and not config.freecamState.active then
+            task.defer(function()
+                task.wait(0.5)
+                if config.freecam and not config.freecamState.active then
+                    djwiiwirjfjskw_jajwwjw_wjnwhriz()
+                end
+            end)
+        elseif not cfg.freecam and config.freecamState.active then
+            dnnskwijrhdkakwowie_owkweki_ek()
+        end
+    end
     if cfg.SA2_AimMethods then config.SA2_AimMethods = cfg.SA2_AimMethods end
     if cfg.customRemoteNames then config.customRemoteNames = cfg.customRemoteNames end
     if cfg.worldProximityEnabled ~= nil then config.worldProximityEnabled = cfg.worldProximityEnabled end
@@ -5259,6 +5501,7 @@ local function loadSave(saveName)
     if cfg.tbot_enabled ~= nil then config.tbot.enabled = cfg.tbot_enabled end
     if cfg.tbot_targetPart then config.tbot.targetPart = cfg.tbot_targetPart end
     if cfg.tbot_fovRadius then config.tbot.fovRadius = cfg.tbot_fovRadius end
+    if cfg.tbot_targetRange then config.tbot.targetRange = cfg.tbot.targetRange end
     if cfg.tbot_hitChance then config.tbot.hitChance = cfg.tbot_hitChance end
     if cfg.tbot_delay then config.tbot.delay = cfg.tbot_delay end
     if cfg.tbot_wallCheck ~= nil then config.tbot.wallCheck = cfg.tbot_wallCheck end
@@ -5443,6 +5686,9 @@ local function loadSave(saveName)
                 end)
             end
         end
+    end)
+    pcall(function()
+        hsueuehjsjei_didhznkawk()
     end)
     pcall(function()
         if config.trussEnabled then
@@ -7421,6 +7667,252 @@ local function dothethangcframe()
         BarColor = Color3.fromRGB(0, 170, 255)
     })
 end
+
+function ekuegejeowijnxwkjejdk_qowijedjis_()
+    local ps = excusemesir.Players.LocalPlayer:FindFirstChild("PlayerScripts")
+    local pm = ps and ps:FindFirstChild("PlayerModule")
+    if not pm then return nil end
+    local ok, mod = pcall(require, pm)
+    if ok and mod and mod.GetControls then
+        local ok2, ctl = pcall(function() return mod:GetControls() end)
+        if ok2 then return ctl end
+    end
+    return nil
+end
+
+function ejhednwjiwjenejdhajwko_wiwjnd_kw()
+    local cam = workspace.CurrentCamera
+    if not cam then return end
+    local v = cam.CFrame.LookVector
+    config.freecamState.yaw = math.atan2(-v.X, -v.Z)
+    config.freecamState.pitch = math.asin(math.clamp(v.Y, -1, 1))
+end
+
+function djwiiwirjfjskw_jajwwjw_wjnwhriz()
+    local st = config.freecamState
+    if st.active then return end
+    local plr = excusemesir.Players.LocalPlayer
+    local char = plr.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    local cam = workspace.CurrentCamera
+    if not cam then return end
+
+    st.oldCameraType = cam.CameraType
+    st.oldCameraSubject = cam.CameraSubject
+    st.oldCameraCFrame = cam.CFrame
+    st.oldMouseBehavior = excusemesir.UserInputService.MouseBehavior
+
+    st.position = cam.CFrame.Position
+    ejhednwjiwjenejdhajwko_wiwjnd_kw()
+
+    st.controls = ekuegejeowijnxwkjejdk_qowijedjis_()
+    if st.controls then
+        st.oldControlsEnabled = true
+        pcall(function() st.controls:Disable() end)
+    end
+
+    cam.CameraType = Enum.CameraType.Scriptable
+
+    local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
+    if not isMobile then
+        excusemesir.UserInputService.MouseBehavior = Enum.MouseBehavior.LockCurrentPosition
+    end
+
+    st.active = true
+    config.freecam = true
+    st.streamTimer = 0
+    st.streamPos = st.position
+    st.currentInputMode = isMobile and "mobile" or "pc"
+
+    pcall(function()
+        plr:RequestStreamAroundAsync(st.position, 2)
+    end)
+
+    st.renderConn = excusemesir.RunService.RenderStepped:Connect(function(dt)
+        local s = config.freecamState
+        if not s.active then return end
+        local c = workspace.CurrentCamera
+        if not c then return end
+        if not s.position then
+            s.position = c.CFrame.Position
+        end
+
+        local cr = CFrame.Angles(0, s.yaw, 0) * CFrame.Angles(s.pitch, 0, 0)
+
+        local mv = Vector3.zero
+
+        local isMob = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
+        local newInputMode = isMob and "mobile" or "pc"
+        if s.currentInputMode and s.currentInputMode ~= newInputMode then
+            s.currentInputMode = newInputMode
+            task.defer(function()
+                if s.active then
+                    local savedPosition = s.position
+                    local savedYaw = s.yaw
+                    local savedPitch = s.pitch
+                    dnnskwijrhdkakwowie_owkweki_ek()
+                    task.wait(0.1)
+                    djwiiwirjfjskw_jajwwjw_wjnwhriz()
+                    if config.freecamState.active then
+                        config.freecamState.position = savedPosition
+                        config.freecamState.yaw = savedYaw
+                        config.freecamState.pitch = savedPitch
+                    end
+                end
+            end)
+            return
+        end
+        
+        if isMob then
+            if s.leftTouch and s.leftTouchPos then
+                local d = s.leftTouch.Position - s.leftTouchPos
+                local v = Vector2.new(
+                    math.clamp(d.X / 70, -1, 1),
+                    math.clamp(d.Y / 70, -1, 1)
+                )
+                mv += cr.RightVector * v.X
+                mv += cr.LookVector * -v.Y
+            end
+        else
+            local f, r, u = 0, 0, 0
+            if s.keys[Enum.KeyCode.W] then f += 1 end
+            if s.keys[Enum.KeyCode.S] then f -= 1 end
+            if s.keys[Enum.KeyCode.A] then r -= 1 end
+            if s.keys[Enum.KeyCode.D] then r += 1 end
+            if s.keys[Enum.KeyCode.U] then u += 1 end
+            if s.keys[Enum.KeyCode.H] then u -= 1 end
+
+            mv += cr.LookVector * f
+            mv += cr.RightVector * r
+            mv += Vector3.yAxis * u
+        end
+
+        if mv.Magnitude > 1 then mv = mv.Unit end
+
+        local speed = s.speed
+        if s.keys[Enum.KeyCode.LeftShift] or s.keys[Enum.KeyCode.RightShift] then
+            speed = s.sprintSpeed
+        end
+
+        s.position += mv * speed * dt
+
+        s.streamTimer += dt
+        if s.streamTimer >= 0.5 then
+            s.streamTimer = 0
+            if not s.streamPos or (s.position - s.streamPos).Magnitude >= 64 then
+                s.streamPos = s.position
+                task.spawn(function()
+                    pcall(function()
+                        plr:RequestStreamAroundAsync(s.position, 2)
+                    end)
+                end)
+            end
+        end
+
+        local cf = CFrame.new(s.position)
+            * CFrame.Angles(0, s.yaw, 0)
+            * CFrame.Angles(s.pitch, 0, 0)
+
+        c.CFrame = cf
+        c.Focus = CFrame.new(s.position)
+    end)
+end
+
+function dnnskwijrhdkakwowie_owkweki_ek()
+    local st = config.freecamState
+    if not st.active then return end
+    st.active = false
+    config.freecam = false
+
+    if st.renderConn then
+        pcall(function() st.renderConn:Disconnect() end)
+        st.renderConn = nil
+    end
+
+    st.keys = {}
+    st.leftTouch = nil
+    st.leftTouchPos = nil
+    st.rightTouch = nil
+    st.currentInputMode = nil
+
+    local cam = workspace.CurrentCamera
+    if cam then
+        cam.CameraType = st.oldCameraType or Enum.CameraType.Custom
+        cam.CameraSubject = st.oldCameraSubject
+        if st.oldCameraCFrame then
+            cam.CFrame = st.oldCameraCFrame
+        end
+    end
+
+    excusemesir.UserInputService.MouseBehavior = st.oldMouseBehavior or Enum.MouseBehavior.Default
+
+    if st.controls and st.oldControlsEnabled then
+        pcall(function() st.controls:Enable() end)
+    end
+    st.oldControlsEnabled = false
+    st.position = nil
+    st.streamPos = nil
+end
+
+excusemesir.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    local st = config.freecamState
+    if not st.active then return end
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        st.keys[input.KeyCode] = true
+    elseif input.UserInputType == Enum.UserInputType.Touch then
+        local vp = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize
+        if not vp then return end
+        local x, y = input.Position.X, input.Position.Y
+        if x < vp.X * 0.45 and y > vp.Y * 0.45 and not st.leftTouch then
+            st.leftTouch = input
+            st.leftTouchPos = input.Position
+        elseif x >= vp.X * 0.38 and not st.rightTouch then
+            st.rightTouch = input
+        end
+    end
+end)
+
+excusemesir.UserInputService.InputEnded:Connect(function(input)
+    local st = config.freecamState
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        st.keys[input.KeyCode] = nil
+    end
+    if input == st.leftTouch then
+        st.leftTouch = nil
+        st.leftTouchPos = nil
+    end
+    if input == st.rightTouch then
+        st.rightTouch = nil
+    end
+end)
+
+excusemesir.UserInputService.InputChanged:Connect(function(input)
+    local st = config.freecamState
+    if not st.active then return end
+    local isMob = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
+    if not isMob then
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            st.yaw -= input.Delta.X * st.sensitivity
+            st.pitch -= input.Delta.Y * st.sensitivity
+            st.pitch = math.clamp(st.pitch, -math.rad(89), math.rad(89))
+        end
+    else
+        if input.UserInputType == Enum.UserInputType.Touch and input == st.rightTouch then
+            st.yaw -= input.Delta.X * st.touchSensitivity
+            st.pitch -= input.Delta.Y * st.touchSensitivity
+            st.pitch = math.clamp(st.pitch, -math.rad(89), math.rad(89))
+        end
+    end
+end)
+
+excusemesir.Players.LocalPlayer.CharacterAdded:Connect(function()
+    if config.freecamState.active then
+        dnnskwijrhdkakwowie_owkweki_ek()
+    end
+end)
+
 local function ineednextgenrep(state)
     if state then
         local char = LocalPlayer.Character
@@ -8647,11 +9139,32 @@ local function FireInteractions()
     local player = excusemesir.Players.LocalPlayer
     local character = player.Character
     if not character then return 0 end
+    local auraOrigin = nil
+    local auraRadiusSq = nil
+    if config.interactionAuraEnabled then
+        local root = character:FindFirstChild("HumanoidRootPart")
+            or character:FindFirstChild("Head")
+        if root then
+            auraOrigin = root.Position
+            local r = config.interactionAuraRadius or 50
+            auraRadiusSq = r * r
+        end
+    end
+
+    local function inAura(partPos)
+        if not config.interactionAuraEnabled then return true end
+        if not auraOrigin then return true end
+        if not partPos then return true end
+        local diff = partPos - auraOrigin
+        return (diff.X * diff.X + diff.Y * diff.Y + diff.Z * diff.Z) <= auraRadiusSq
+    end
+
     local count = 0
+
     for _, fireType in ipairs(fireTypes) do
         if fireType == "TouchInterest" then
             for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("BasePart") then
+                if obj:IsA("BasePart") and inAura(obj.Position) then
                     for _, child in ipairs(obj:GetChildren()) do
                         if child:IsA("TouchTransmitter") then
                             for _, myPart in ipairs(character:GetDescendants()) do
@@ -8668,24 +9181,35 @@ local function FireInteractions()
                     end
                 end
             end
+
         elseif fireType == "ClickDetectors" then
             for _, obj in ipairs(workspace:GetDescendants()) do
                 if obj:IsA("ClickDetector") then
-                    pcall(function()
-                        fireclickdetector(obj)
-                    end)
-                    count = count + 1
+                    local parent = obj.Parent
+                    local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
+                    if inAura(pos) then
+                        pcall(function()
+                            fireclickdetector(obj)
+                        end)
+                        count = count + 1
+                    end
                 end
             end
+
         elseif fireType == "ProximityPrompts" then
             for _, obj in ipairs(workspace:GetDescendants()) do
                 if obj:IsA("ProximityPrompt") then
-                    pcall(function()
-                        fireproximityprompt(obj)
-                    end)
-                    count = count + 1
+                    local parent = obj.Parent
+                    local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
+                    if inAura(pos) then
+                        pcall(function()
+                            fireproximityprompt(obj)
+                        end)
+                        count = count + 1
+                    end
                 end
             end
+
         elseif fireType == "Remotes" then
             for _, obj in ipairs(workspace:GetDescendants()) do
                 if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") or obj:IsA("UnreliableRemoteEvent") then
@@ -8701,6 +9225,7 @@ local function FireInteractions()
             end
         end
     end
+
     return count
 end
 local function StartLoopFire()
@@ -9025,6 +9550,16 @@ local function updateLineESP()
         end
         return
     end
+    local function hpColorFor(target)
+        local char = getTargetCharacter(target)
+        if not char then return config.lineColor end
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return config.lineColor end
+        local maxH = humanoid.MaxHealth or 100
+        if maxH <= 0 then maxH = 100 end
+        local hp = math.clamp(humanoid.Health / maxH, 0, 1)
+        return Color3.new(1 - hp, hp, 0)
+    end
     
     for _, target in ipairs(getAllTargets()) do
         if addesp(target) and plralive(target) then
@@ -9046,8 +9581,7 @@ local function updateLineESP()
                         local shouldDrawLine = false
                         
                         if config.lineESPOnlyTarget then
-                            local isTargeted = isPlayerBeingTargeted(target)
-                            shouldDrawLine = isTargeted
+                            shouldDrawLine = isPlayerBeingTargeted(target)
                         else
                             shouldDrawLine = true
                         end
@@ -9061,7 +9595,6 @@ local function updateLineESP()
                             
                             if lineData and lineData.drawing then
                                 local line = lineData.drawing
-                                
                                 line.From = getLineStartPosition()
                                 line.To = screenPos
                                 line.Visible = true
@@ -9070,6 +9603,8 @@ local function updateLineESP()
                                 local isTargeted = isPlayerBeingTargeted(target)
                                 if isTargeted then
                                     line.Color = Color3.fromRGB(255, 255, 0)
+                                elseif config.prefColorByHealth then
+                                    line.Color = hpColorFor(target)
                                 else
                                     line.Color = config.lineColor
                                 end
@@ -9110,7 +9645,6 @@ local function updateLineESP()
         removeLineESP(targetPlayer)
     end
 end
-
 local function removeHighlightESP(targetPlayer)
     if not targetPlayer then return end
     local h = config.highlightData[targetPlayer]
@@ -10952,6 +11486,8 @@ local function triggerBotUpdate()
                 targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
             end
             if not targetPart then continue end
+            local worldDist = (targetPart.Position - camera.CFrame.Position).Magnitude
+            if worldDist > (config.tbot.targetRange or 500) then continue end
             local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
             if not onScreen or screenPos.Z <= 0 then continue end
             
@@ -11015,28 +11551,16 @@ local function triggerBotUpdate()
             end
         end
         if bestPart then
-            local tool = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Tool")
-            if tool then
-                if config.tbot.pressDown then
-                    if not config.tbotPressed then
-                        config.tbotPressed = true
-                        pcall(function() tool:Activate() end)
-                    end
-                else
-                    pcall(function() tool:Activate() end)
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            if config.tbot.pressDown then
+                if not config.tbotPressed then
+                    config.tbotPressed = true
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                 end
             else
-                local VirtualInputManager = excusemesir.VirtualInputManager
-                if config.tbot.pressDown then
-                    if not config.tbotPressed then
-                        config.tbotPressed = true
-                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                    end
-                else
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                    task.wait(config.tbot.delay or 0.1)
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                end
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                task.wait(config.tbot.delay or 0.1)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
             end
         end
     else
@@ -11343,6 +11867,128 @@ excusemesir.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
     end
 end)
 end
+function jsnwekixuzjakwio_textnsiehne_()
+    if not config.TextHooker or type(config.TextHooker) ~= "table" then return end
+    if next(config.TextHooker) == nil then return end
+    local CoreGui = excusemesir.CoreGui
+    local hookPairs = {}
+    for from, to in pairs(config.TextHooker) do
+        if type(from) == "string" and type(to) == "string" and from ~= "" then
+            table.insert(hookPairs, { exact = from, exactTo = to })
+        end
+    end
+    if #hookPairs == 0 then return end
+
+    local function applyHooks(txt)
+        if not txt or txt == "" then return txt end
+        for _, pair in ipairs(hookPairs) do
+            if txt == pair.exact then
+                return pair.exactTo
+            end
+        end
+        return txt
+    end
+    local labels = {}
+    local boxes = {}
+    local inRegistry = setmetatable({}, { __mode = "k" })
+    local seenText = setmetatable({}, { __mode = "k" })
+    local seenPlaceholder = setmetatable({}, { __mode = "k" })
+    local function register(obj)
+        if not obj or inRegistry[obj] then return end
+        if obj:IsA("TextBox") then
+            inRegistry[obj] = true
+            table.insert(boxes, obj)
+        elseif obj:IsA("TextLabel") or obj:IsA("TextButton") then
+            inRegistry[obj] = true
+            table.insert(labels, obj)
+        end
+    end
+    for _, d in ipairs(CoreGui:GetDescendants()) do
+        register(d)
+    end
+    local function processLabel(obj)
+        if not obj or not obj.Parent then return end
+        local txt = obj.Text
+        if not txt or txt == "" then return end
+        if seenText[obj] == txt then return end
+        local newText = applyHooks(txt)
+        if newText ~= txt then
+            seenText[obj] = newText
+            obj.Text = newText
+        else
+            seenText[obj] = txt
+        end
+    end
+
+    local function processBox(obj)
+        if not obj or not obj.Parent then return end
+        local txt = obj.Text
+        if txt and txt ~= "" and seenText[obj] ~= txt then
+            local newText = applyHooks(txt)
+            if newText ~= txt then
+                seenText[obj] = newText
+                obj.Text = newText
+            else
+                seenText[obj] = txt
+            end
+        end
+        local ph = obj.PlaceholderText
+        if ph and ph ~= "" and seenPlaceholder[obj] ~= ph then
+            local newPh = applyHooks(ph)
+            if newPh ~= ph then
+                seenPlaceholder[obj] = newPh
+                obj.PlaceholderText = newPh
+            else
+                seenPlaceholder[obj] = ph
+            end
+        end
+    end
+    local function processAll()
+        for i = #labels, 1, -1 do
+            local obj = labels[i]
+            if not obj or not obj.Parent then
+                inRegistry[obj] = nil
+                table.remove(labels, i)
+            else
+                processLabel(obj)
+            end
+        end
+        for i = #boxes, 1, -1 do
+            local obj = boxes[i]
+            if not obj or not obj.Parent then
+                inRegistry[obj] = nil
+                table.remove(boxes, i)
+            else
+                processBox(obj)
+            end
+        end
+    end
+    local descendantConn = CoreGui.DescendantAdded:Connect(function(d)
+        if not d then return end
+        if d:IsA("TextBox") or d:IsA("TextLabel") or d:IsA("TextButton") then
+            register(d)
+            if d:IsA("TextBox") then
+                processBox(d)
+            else
+                processLabel(d)
+            end
+        end
+    end)
+
+    config.TextHookerRunning = true
+    config.TextHookerConnection = descendantConn
+
+    task.defer(function()
+        while config.TextHookerRunning do
+            if subside_I_I_I_I_I_() then
+                task.wait(0.5)
+                continue
+            end
+            processAll()
+            task.wait(0.25)
+        end
+    end)
+end
 -- bgupdater
 local function burgerking(deltaTime)
     if not config.varibz.patcher then
@@ -11400,6 +12046,370 @@ task.defer(function()
     end
 end)
 local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
+local yesh = function()
+    if not excusemesir.UserInputService.TouchEnabled then return end
+    if config.MobileGui then return end
+    pcall(function()
+        excusemesir.GuiService = excusemesir.GuiService or game:GetService("GuiService")
+        excusemesir.GuiService.TouchControlsEnabled = not config.MobileControls
+    end)
+    local COLORS = {
+        Ring = Color3.fromRGB(25, 25, 25),
+        Thumb = Color3.fromRGB(60, 60, 60),
+        Jump = Color3.fromRGB(25, 25, 25),
+        Icon = Color3.fromRGB(200, 200, 200),
+        Stroke = Color3.fromRGB(90, 90, 90),
+    }
+    local StickIdle = { Fill = 0.55, Stroke = 0.55, Thumb = 0.35 }
+    local StickActive = { Fill = 0.30, Stroke = 0.25, Thumb = 0.15 }
+    local JumpIdle = { Fill = 0.50, Stroke = 0.45 }
+    local JumpPressed = { Fill = 0.25, Stroke = 0.15 }
+    local DeadZone = 0.12
+    local SmallScale = 0.78
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "392727384883828_2929847429_3883838"
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Enabled = config.MobileControls
+    gui.Parent = excusemesir.CoreGui
+    config.MobileGui = gui
+    local editOverlay = Instance.new("Frame")
+    editOverlay.Name = "EditOverlay"
+    editOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    editOverlay.BackgroundTransparency = 0.55
+    editOverlay.BorderSizePixel = 0
+    editOverlay.Size = UDim2.fromScale(1, 1)
+    editOverlay.Position = UDim2.fromScale(0, 0)
+    editOverlay.Visible = false
+    editOverlay.ZIndex = 1
+    editOverlay.Active = false
+    editOverlay.Parent = gui
+    local editHint = Instance.new("TextLabel")
+    editHint.Name = "EditHint"
+    editHint.BackgroundTransparency = 1
+    editHint.TextColor3 = Color3.fromRGB(230, 230, 230)
+    editHint.TextStrokeTransparency = 0.4
+    editHint.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    editHint.Font = Enum.Font.Code
+    editHint.TextSize = 16
+    editHint.Text = "ey ur in editing mode btw :p"
+    editHint.Size = UDim2.new(1, 0, 0, 24)
+    editHint.Position = UDim2.new(0, 0, 0, 20)
+    editHint.Visible = false
+    editHint.ZIndex = 8
+    editHint.Parent = gui
+    local editDone = Instance.new("TextButton")
+    editDone.Name = "EditDone"
+    editDone.Text = "DONE!1!!11"
+    editDone.Font = Enum.Font.GothamBold
+    editDone.TextSize = 16
+    editDone.TextColor3 = Color3.fromRGB(240, 240, 240)
+    editDone.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    editDone.BackgroundTransparency = 0.1
+    editDone.BorderSizePixel = 0
+    editDone.Size = UDim2.fromOffset(110, 40)
+    editDone.Position = UDim2.new(0.5, -55, 0, 55)
+    editDone.Visible = false
+    editDone.ZIndex = 9
+    editDone.Active = true
+    editDone.Parent = gui
+    local editDoneCorner = Instance.new("UICorner")
+    editDoneCorner.CornerRadius = UDim.new(0, 8)
+    editDoneCorner.Parent = editDone
+    local root = Instance.new("Frame")
+    root.Name = "Root"
+    root.BackgroundTransparency = 1
+    root.Size = UDim2.fromScale(1, 1)
+    root.ZIndex = 4
+    root.Parent = gui
+    local TWEEN = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local function tween(o, g) excusemesir.TweenService:Create(o, TWEEN, g):Play() end
+    local function makeCircle(name, parent, fill, stroke, color)
+        local f = Instance.new("Frame")
+        f.Name = name
+        f.AnchorPoint = Vector2.new(0.5, 0.5)
+        f.BackgroundColor3 = color
+        f.BackgroundTransparency = fill
+        f.BorderSizePixel = 0
+        f.Parent = parent
+        local c = Instance.new("UICorner")
+        c.CornerRadius = UDim.new(0.5, 0)
+        c.Parent = f
+        local s = Instance.new("UIStroke")
+        s.Color = COLORS.Stroke
+        s.Thickness = 2
+        s.Transparency = stroke
+        s.Parent = f
+        return f, s
+    end
+    local zone = Instance.new("Frame")
+    zone.Name = "StickZone"
+    zone.BackgroundTransparency = 1
+    zone.Active = true
+    zone.ZIndex = 6
+    zone.Parent = root
+    local ring, ringStroke = makeCircle("Ring", root, StickIdle.Fill, StickIdle.Stroke, COLORS.Ring)
+    ring.ZIndex = 6
+    local thumb, thumbStroke = makeCircle("Thumb", ring, StickIdle.Thumb, StickIdle.Stroke, COLORS.Thumb)
+    thumb.ZIndex = 7
+    thumb.Position = UDim2.fromScale(0.5, 0.5)
+    local jump, jumpStroke = makeCircle("Jump", root, JumpIdle.Fill, JumpIdle.Stroke, COLORS.Jump)
+    jump.Active = true
+    jump.ZIndex = 6
+    local jumpScale = Instance.new("UIScale")
+    jumpScale.Parent = jump
+    local icon = Instance.new("Frame")
+    icon.AnchorPoint = Vector2.new(0.5, 0.5)
+    icon.Position = UDim2.fromScale(0.5, 0.5)
+    icon.Size = UDim2.fromScale(0.5, 0.5)
+    icon.BackgroundTransparency = 1
+    icon.ZIndex = 7
+    icon.Parent = jump
+    for _, arm in ipairs({ { x = 0.281, rotation = -45 }, { x = 0.719, rotation = 45 } }) do
+        local bar = Instance.new("Frame")
+        bar.AnchorPoint = Vector2.new(0.5, 0.5)
+        bar.Position = UDim2.fromScale(arm.x, 0.5)
+        bar.Size = UDim2.fromScale(0.62, 0.17)
+        bar.Rotation = arm.rotation
+        bar.BackgroundColor3 = COLORS.Icon
+        bar.BackgroundTransparency = 0.05
+        bar.BorderSizePixel = 0
+        bar.ZIndex = 7
+        bar.Parent = icon
+        local bc = Instance.new("UICorner")
+        bc.CornerRadius = UDim.new(0.5, 0)
+        bc.Parent = bar
+    end
+    local ringGrabPad = Instance.new("TextButton")
+    ringGrabPad.Name = "RingGrabPad"
+    ringGrabPad.Text = ""
+    ringGrabPad.BackgroundTransparency = 1
+    ringGrabPad.BorderSizePixel = 0
+    ringGrabPad.AutoButtonColor = false
+    ringGrabPad.AnchorPoint = Vector2.new(0.5, 0.5)
+    ringGrabPad.Size = UDim2.fromOffset(210, 210)
+    ringGrabPad.Position = UDim2.fromScale(0.5, 0.5)
+    ringGrabPad.ZIndex = 20
+    ringGrabPad.Visible = false
+    ringGrabPad.Active = false
+    ringGrabPad.Parent = ring
+
+    local humanoid
+    local moveTouch, jumpTouch
+    local jumpHeld = false
+    local moveVector = Vector3.zero
+    local home = Vector2.zero
+    local origin = Vector2.zero
+    local ringSize, thumbSize, maxRadius, jumpSize = 0, 0, 0, 0
+
+    local function toRoot(pos) return Vector2.new(pos.X, pos.Y) - root.AbsolutePosition end
+
+    local function layout()
+        local size = root.AbsoluteSize
+        local scale = math.min(size.X, size.Y) <= 500 and SmallScale or 1
+        local pad = 40 * scale
+        ringSize = 170 * scale
+        thumbSize = 68 * scale
+        jumpSize = 90 * scale
+        maxRadius = (ringSize - thumbSize) / 2
+        home = Vector2.new(pad + ringSize / 2, size.Y - pad - ringSize / 2)
+        ring.Size = UDim2.fromOffset(ringSize, ringSize)
+        ringGrabPad.Size = UDim2.fromOffset(ringSize + 40, ringSize + 40)
+        thumb.Size = UDim2.fromOffset(thumbSize, thumbSize)
+        local ringRestPos = config.MobileRingPos
+        if not ringRestPos then
+            ringRestPos = UDim2.fromOffset(home.X, home.Y)
+        end
+
+        if not moveTouch then
+            ring.Position = ringRestPos
+        end
+
+        if config.MobileDynamic then
+            zone.AnchorPoint = Vector2.new(0, 1)
+            zone.Position = UDim2.fromScale(0, 1)
+            zone.Size = UDim2.fromScale(0.5, 0.65)
+        else
+            zone.AnchorPoint = Vector2.new(0.5, 0.5)
+            zone.Position = ringRestPos
+            zone.Size = UDim2.fromOffset(ringSize * 1.4, ringSize * 1.4)
+        end
+
+        jump.Size = UDim2.fromOffset(jumpSize, jumpSize)
+        if config.MobileJumpPos then jump.Position = config.MobileJumpPos
+        else jump.Position = UDim2.fromOffset(size.X - pad - jumpSize / 2 - 20 * scale, size.Y - pad - jumpSize / 2) end
+    end
+
+    local function setStickActive(active)
+        local s = active and StickActive or StickIdle
+        tween(ring, { BackgroundTransparency = s.Fill })
+        tween(ringStroke, { Transparency = s.Stroke })
+        tween(thumb, { BackgroundTransparency = s.Thumb })
+        tween(thumbStroke, { Transparency = s.Stroke })
+    end
+
+    local function updateStick(pos)
+        local offset = pos - origin
+        if offset.Magnitude > maxRadius then offset = offset.Unit * maxRadius end
+        thumb.Position = UDim2.new(0.5, offset.X, 0.5, offset.Y)
+        local strength = offset.Magnitude / maxRadius
+        if strength <= DeadZone then moveVector = Vector3.zero
+        else
+            local amount = (strength - DeadZone) / (1 - DeadZone)
+            moveVector = Vector3.new(offset.Unit.X, 0, offset.Unit.Y) * amount
+        end
+    end
+
+    local function releaseStick()
+        moveTouch = nil
+        moveVector = Vector3.zero
+        thumb.Position = UDim2.fromScale(0.5, 0.5)
+        if config.MobileRingPos then
+            ring.Position = config.MobileRingPos
+        else
+            ring.Position = UDim2.fromOffset(home.X, home.Y)
+        end
+        setStickActive(false)
+    end
+
+    zone.InputBegan:Connect(function(input)
+        if config.MobileDrag then return end
+        if input.UserInputType ~= Enum.UserInputType.Touch or moveTouch then return end
+        moveTouch = input
+        local pos = toRoot(input.Position)
+        local center, o = home, home
+        if config.MobileDynamic then
+            o = pos
+            local size, radius = root.AbsoluteSize, ringSize / 2
+            center = Vector2.new(
+                math.clamp(pos.X, radius, size.X - radius),
+                math.clamp(pos.Y, radius, size.Y - radius)
+            )
+        else
+            local rp = ring.AbsolutePosition
+            local rs = ring.AbsoluteSize
+            center = Vector2.new(rp.X + rs.X / 2, rp.Y + rs.Y / 2)
+            o = center
+        end
+        origin = o
+        ring.Position = UDim2.fromOffset(center.X, center.Y)
+        setStickActive(true)
+        updateStick(pos)
+    end)
+
+    local function setJumpPressed(pressed)
+        jumpHeld = pressed
+        local s = pressed and JumpPressed or JumpIdle
+        tween(jump, { BackgroundTransparency = s.Fill })
+        tween(jumpStroke, { Transparency = s.Stroke })
+        tween(jumpScale, { Scale = pressed and 0.92 or 1 })
+        if pressed and humanoid then humanoid.Jump = true end
+    end
+
+    local function releaseJump()
+        jumpTouch = nil
+        setJumpPressed(false)
+    end
+
+    jump.InputBegan:Connect(function(input)
+        if config.MobileDrag then return end
+        if input.UserInputType == Enum.UserInputType.Touch and not jumpTouch then
+            jumpTouch = input
+            setJumpPressed(true)
+        end
+    end)
+
+    excusemesir.UserInputService.InputChanged:Connect(function(input)
+        if input == moveTouch then updateStick(toRoot(input.Position)) end
+    end)
+
+    excusemesir.UserInputService.InputEnded:Connect(function(input)
+        if input == moveTouch then releaseStick()
+        elseif input == jumpTouch then releaseJump() end
+    end)
+
+    excusemesir.UserInputService.WindowFocusReleased:Connect(function()
+        if moveTouch then releaseStick() end
+        if jumpTouch then releaseJump() end
+    end)
+
+    local function onChar(c) humanoid = c:WaitForChild("Humanoid") end
+    excusemesir.Players.LocalPlayer.CharacterAdded:Connect(onChar)
+    if excusemesir.Players.LocalPlayer.Character then
+        task.spawn(onChar, excusemesir.Players.LocalPlayer.Character)
+    end
+
+    local wasMoving = false
+    excusemesir.RunService:BindToRenderStep("392727384883828_2929847429_3883838", Enum.RenderPriority.Input.Value + 1, function()
+        if not config.MobileControls then return end
+        if not humanoid or not humanoid.Parent then return end
+        if config.MobileDrag then return end
+        if moveTouch then
+            humanoid:Move(moveVector, true)
+            wasMoving = true
+        elseif wasMoving then
+            humanoid:Move(Vector3.zero, true)
+            wasMoving = false
+        end
+        if jumpHeld then humanoid.Jump = true end
+    end)
+    local dragging, dragTarget, dragStart, dragStartPos = false, nil, nil, nil
+    local function makeDraggable(obj, target)
+        obj.InputBegan:Connect(function(input)
+            if not config.MobileDrag then return end
+            if input.UserInputType == Enum.UserInputType.Touch
+            or input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                dragTarget = target
+                dragStart = input.Position
+                dragStartPos = target.Position
+            end
+        end)
+    end
+    makeDraggable(ringGrabPad, ring)
+    makeDraggable(jump, jump)
+
+    excusemesir.UserInputService.InputChanged:Connect(function(input)
+        if not dragging or not dragTarget then return end
+        if input.UserInputType ~= Enum.UserInputType.Touch
+        and input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+        local delta = input.Position - dragStart
+        local newPos = UDim2.new(
+            dragStartPos.X.Scale, dragStartPos.X.Offset + delta.X,
+            dragStartPos.Y.Scale, dragStartPos.Y.Offset + delta.Y
+        )
+        dragTarget.Position = newPos
+        if dragTarget == ring then config.MobileRingPos = newPos
+        elseif dragTarget == jump then config.MobileJumpPos = newPos end
+    end)
+    excusemesir.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch
+        or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+            dragTarget = nil
+        end
+    end)
+    editDone.MouseButton1Click:Connect(function()
+        if config.MobileSetDrag then config.MobileSetDrag(false) end
+    end)
+
+    layout()
+    root:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
+    config.MobileLayout = layout
+
+    config.MobileSetDrag = function(state)
+        config.MobileDrag = state
+        editOverlay.Visible = state
+        editHint.Visible = state
+        editDone.Visible = state
+        ringGrabPad.Visible = state
+        ringGrabPad.Active = state
+        if state then
+            if moveTouch then releaseStick() end
+            if jumpTouch then releaseJump() end
+        end
+    end
+end
 local function CreateQT()
     if gui.mobileGui and gui.mobileGui.ScreenGui and gui.mobileGui.ScreenGui.Parent then
         gui.mobileGui.ScreenGui.Enabled = true
@@ -11537,6 +12547,8 @@ local function CreateQT()
                     toggleBHop(true)
                 elseif name == "Desync" then
                     ineednextgenrep(true)
+                elseif name == "TriggerBot" then
+                    toggleTriggerBot(true)
                 end
             else
                 toggleOff()
@@ -11568,6 +12580,8 @@ local function CreateQT()
                     toggleBHop(false)
                 elseif name == "Desync" then
                     ineednextgenrep(false)
+                elseif name == "TriggerBot" then
+                    toggleTriggerBot(false)
                 end
             end
             label.Text = getter() and name .. "<" or name
@@ -11754,6 +12768,16 @@ local function CreateQT()
             getter = function() return config.bhop.enabled end,
             setter = function(v) toggleBHop(v) end
         },
+        Freecam = {
+            getter = function() return config.freecamState.active end,
+            setter = function(v)
+                if v and not config.freecamState.active then
+                    djwiiwirjfjskw_jajwwjw_wjnwhriz()
+                elseif not v and config.freecamState.active then
+                    dnnskwijrhdkakwowie_owkweki_ek()
+                end
+            end
+        },
         Desync = {
             getter = function() return config.desync end,
             setter = function(v) 
@@ -11763,6 +12787,20 @@ local function CreateQT()
                 else
                     ineednextgenrep(false)
                 end
+            end
+        },
+        TriggerBot = {
+            getter = function() return config.tbot.enabled end,
+            setter = function(v) toggleTriggerBot(v) end
+        },
+        MobileControls = {
+            getter = function() return config.MobileControls end,
+            setter = function(v) 
+                config.MobileControls = v
+                if config.MobileGui then config.MobileGui.Enabled = v end
+                pcall(function()
+                    game:GetService("GuiService").TouchControlsEnabled = not v
+                end)
             end
         },
     }
@@ -11833,6 +12871,9 @@ local function UpdateQT()
             SilentAimHK = config.SA2_Enabled,
             BHop = config.bhop.enabled,
             Desync = config.desync,
+            Freecam = config.freecam,
+            TriggerBot = config.tbot.enabled,
+            MobileControls = config.MobileControls,
         }
         
         for buttonName, isEnabled in pairs(buttonStates) do
@@ -12706,6 +13747,20 @@ function ksjweidushnweoidhsgu_aoehd__()
 end
 function jdjwhejdijahweki____sidjnww_ieje()
     local ui = coolzestyuithing_diehedijsi_iwhwked()
+    local vib = Instance.new("HapticEffect")
+    vib.Type = Enum.HapticEffectType.UIClick
+    vib.Looped = false
+    vib.Parent = workspace
+    local function triggerHaptic(effectType)
+        if not vib or not vib.Parent then
+            vib = Instance.new("HapticEffect")
+            vib.Looped = false
+            vib.Parent = workspace
+        end
+        vib.Type = effectType or Enum.HapticEffectType.UIClick
+        pcall(function() vib:Play() end)
+    end
+
     local function setAllTransparency(value)
         ui.Frame.ImageTransparency = value
         ui.HealthBar.TextTransparency = value
@@ -12714,6 +13769,7 @@ function jdjwhejdijahweki____sidjnww_ieje()
         ui.NameLabel.TextTransparency = value
         ui.FeatureLabel.TextTransparency = value
     end
+
     local dragging = false
     local dragInput = nil
     local dragStart = nil
@@ -12755,11 +13811,23 @@ function jdjwhejdijahweki____sidjnww_ieje()
             updateDrag(input)
         end
     end)
+    local lastHapticTime = 0
+    local culdown = 0.08
+    local function triggerHapticThrottled(effectType)
+        local now = tick()
+        if now - lastHapticTime < culdown then return end
+        lastHapticTime = now
+        triggerHaptic(effectType)
+    end
+
     local function fadeIn()
         if config.indicator.visible then return end
         config.indicator.visible = true
         ui.Frame.Visible = true
         pcall(function() ui.FadeInSound:Play() end)
+        if excusemesir.UserInputService.TouchEnabled then
+            triggerHaptic(Enum.HapticEffectType.UIClick)
+        end
         local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 0.2}):Play()
         excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 0}):Play()
@@ -12773,6 +13841,9 @@ function jdjwhejdijahweki____sidjnww_ieje()
         if not config.indicator.visible then return end
         config.indicator.visible = false
         pcall(function() ui.FadeOutSound:Play() end)
+        if excusemesir.UserInputService.TouchEnabled then
+            triggerHaptic(Enum.HapticEffectType.UIClick)
+        end
         local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         excusemesir.TweenService:Create(ui.Frame, tweenInfo, {ImageTransparency = 1}):Play()
         excusemesir.TweenService:Create(ui.HealthBar, tweenInfo, {TextTransparency = 1}):Play()
@@ -12786,9 +13857,21 @@ function jdjwhejdijahweki____sidjnww_ieje()
             end
         end)
     end
+
     local function triggerDamageEffect(damage)
         config.indicator.flashUntil = tick() + 0.1
         config.indicator.si = math.clamp(damage / 10, 1, 8)
+        if excusemesir.UserInputService.TouchEnabled then
+            local hapticType
+            if damage >= 25 then
+                hapticType = Enum.HapticEffectType.GameplayExplosion
+            elseif damage >= 10 then
+                hapticType = Enum.HapticEffectType.GameplayCollision
+            else
+                hapticType = Enum.HapticEffectType.UIClick
+            end
+            triggerHapticThrottled(hapticType)
+        end
         local redColor = Color3.fromRGB(255, 80, 80)
         ui.Profile.ImageColor3 = redColor
         ui.NameLabel.TextColor3 = redColor
@@ -12804,6 +13887,7 @@ function jdjwhejdijahweki____sidjnww_ieje()
             end
         end)
     end
+
     local accum = 0
     config.indicator.heartbeat = excusemesir.RunService.Heartbeat:Connect(function(dt)
         if not config.indicator.enabled then
@@ -12856,6 +13940,9 @@ function jdjwhejdijahweki____sidjnww_ieje()
             config.indicator.lastHealth = nil
             ui.Profile.Image = profolio(target)
             pcall(function() ui.SwitchSound:Play() end)
+            if excusemesir.UserInputService.TouchEnabled then
+                triggerHapticThrottled(Enum.HapticEffectType.UIClick)
+            end
         end
         if config.indicator.lastHealth and humanoid.Health < config.indicator.lastHealth then
             local dmg = config.indicator.lastHealth - humanoid.Health
@@ -12904,7 +13991,6 @@ function jdjwhejdijahweki____sidjnww_ieje()
 
     return ui
 end
-
 local function enablethecoolindicator(state)
     config.indicator.enabled = state
     if state and config.indicator.alwaysVisible and gui.indicator then
@@ -12978,6 +14064,7 @@ local Window = WindUI:CreateWindow({
     Folder = "Gravel_Saves",
     Theme = "Dark",
     Icon = "rbxassetid://96858797315175",
+    NewElements = true,
 	 IconSize = 38,
     Size = size,
     HideSearchBar = false,
@@ -12985,6 +14072,7 @@ local Window = WindUI:CreateWindow({
         Title = rng_s.lezzzgoo,
         Enabled = true,
         Draggable = true,
+        OnlyMobile = true,
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 200)),
             ColorSequenceKeypoint.new(0.5, Color3.fromRGB(144, 238, 144)),
@@ -12999,6 +14087,7 @@ local Window = WindUI:CreateWindow({
 })
 loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
+jsnwekixuzjakwio_textnsiehne_()
 local function rng6()
     if config.varibz.rng6connection then
         pcall(function() config.varibz.rng6connection:Disconnect() end)
@@ -13797,6 +14886,53 @@ MainTab:Button({
     end
 })
 MainTab:Space()
+MainTab:Toggle({
+    Title = "Mobile Controls",
+    Desc = "weird mobile gui :p",
+    Value = config.MobileControls or false,
+    Callback = function(v)
+        config.MobileControls = v
+        if config.MobileGui then config.MobileGui.Enabled = v end
+        pcall(function()
+            game:GetService("GuiService").TouchControlsEnabled = not v
+        end)
+    end
+})
+
+MainTab:Toggle({
+    Title = "Dynamic Mobile Layout",
+    Desc = "stick follows ur finger :o",
+    Value = config.MobileDynamic ~= false,
+    Callback = function(v)
+        config.MobileDynamic = v
+        if config.MobileLayout then config.MobileLayout() end
+    end
+})
+
+MainTab:Toggle({
+    Title = "Drag Mobile Controls",
+    Desc = "edit em :p",
+    Value = config.MobileDrag or false,
+    Callback = function(v)
+        if config.MobileSetDrag then
+            config.MobileSetDrag(v)
+        else
+            config.MobileDrag = v
+        end
+    end
+})
+
+MainTab:Button({
+    Title = "Reset Mobile Positions",
+    Desc = "hurry go bac!!! D:",
+    Icon = "rotate-ccw",
+    Callback = function()
+        config.MobileRingPos = nil
+        config.MobileJumpPos = nil
+        if config.MobileLayout then config.MobileLayout() end
+    end
+})
+MainTab:Space()
     MainTab:Toggle({
         Title = "QuickToggles",
         Desc = "1000x easier for the mobile folks",
@@ -13978,6 +15114,15 @@ MainTab:Keybind({
 })
 
 MainTab:Keybind({
+    Title = "Freecam",
+    Desc = "Toggle Freecam",
+    Value = config.Keybinds.freecam or "P",
+    Callback = function(key)
+        config.Keybinds.freecam = key
+    end
+})
+
+MainTab:Keybind({
     Title = "Hitbox",
     Desc = "Toggle Hitbox Expansion",
     Value = config.Keybinds.hitbox or "G",
@@ -14154,46 +15299,13 @@ MainTab:Keybind({
                 Icon = "copy",
                 Callback = function()
                     local code = [[
---  you adjust stuff here
-local Config = {
-    NETWORK_OPTIMIZATION = true,
-    REDUCE_REPLICATION = true,
-    THROTTLE_REMOTE_EVENTS = true,
-    OPTIMIZE_CHAT = true,
-    DISABLE_UNNECESSARY_GUI = true,
-    STREAMING_ENABLED = true,
-    REDUCE_PLAYER_REPLICATION_DISTANCE = 100,
-    THROTTLE_SOUNDS = true,
-    DESTROY_EMITTERS = true,
-    REMOVE_GRASS = true,
-    CORE = true,
-    FPS_MONITOR = true,
-    OPTIZ = true,
-    OPTIMIZATION_INTERVAL = 10,
-    MIN_INTERVAL = 3,
-    MAX_DISTANCE = 50,
-    PERFORMANCE_MONITORING = true,
-    FPS_THRESHOLD = 30,
-    GRAY_SKY_ENABLED = true,
-    GRAY_SKY_ID = "rbxassetid://114666145996289",
-    FULL_BRIGHT_ENABLED = true,
-    SMOOTH_PLASTIC_ENABLED = true,
-    COLLISION_GROUP_NAME = "OptimizedParts",
-    OPTIMIZE_PHYSICS = true,
-    DISABLE_CONSTRAINTS = true,
-    THROTTLE_PARTICLES = true,
-    THROTTLE_TEXTURES = true,
-    REMOVE_ANIMATIONS = true,
-    LOW_POLY_CONVERSION = true,
-    SELECTIVE_TEXTURE_REMOVAL = true,
-    PRESERVE_IMPORTANT_TEXTURES = true,
-    IMPORTANT_TEXTURE_KEYWORDS = {"sign", "ui", "hud", "menu", "button", "fence"},
-    QUALITY_LEVEL = 1,
-    FPS_CAP = 1000,
-    MEMORY_CLEANUP_THRESHOLD = 500,
-}
-
-local Optiz = loadstring(game:HttpGet('https://raw.githubusercontent.com/hm5650/Optiz/refs/heads/main/Optiz.lua'))()(Config)]]
+local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/Sand/main/Sand.lua"))({
+    createwindui = true, -- true/false     / allow creating Wind UI (you'll need to rejoin and set the boolean to 'true' and rejoin if you need to change something)
+    autoload = true, -- true/false            / allow autoloading
+    autosave = true, -- true/false           / allow autosaving
+})
+-- you can out this in your autoexecute folder if you wanna :p
+-- also this script is underdevelopment like gravel.cc >_>]]
                     setclipboard(code)
                     n({
                         Title = "Gravel.cc",
@@ -14978,7 +16090,27 @@ VisualsTab:Colorpicker({
         config.visualizer.color = color
     end
 })
+VisualsTab:Space()
+VisualsTab:Paragraph({
+    Title = "Interaction Aura",
+    Desc = "Visualize the interaction aura :3",
+    Color = config.Gradow.uicolor.lightGreen
+})
 
+VisualsTab:Colorpicker({
+    Title = "Aura Visualizer Color",
+    Desc = "make the aura sphere pretty",
+    Default = config.interactionAuraVisualizerColor or Color3.fromRGB(0, 255, 150),
+    Transparency = 0,
+    Locked = false,
+    LockedTitle = "Locked message",
+    Callback = function(color)
+        config.interactionAuraVisualizerColor = color
+        if config.interactionAuraVisualizerPart and config.interactionAuraVisualizerPart.Parent then
+            config.interactionAuraVisualizerPart.Color = color
+        end
+    end
+})
 VisualsTab:Space()
 VisualsTab:Paragraph({
     Title = "Theme",
@@ -15030,6 +16162,23 @@ VisualsTab:Slider({
     end
 })
 
+VisualsTab:Toggle({
+    Title = "Notifications",
+    Desc = "Show or hide notifications :3",
+    Value = config.notif ~= false,
+    Callback = function(v)
+        config.notif = v
+        SaveUI:setNotif(v)
+        n({
+            Title = "Gravel.cc",
+            Content = "Notifications: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 1,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        }, true)
+    end
+})
 VisualsTab:Input({
     Title = "Tag's TextCursor",
     Desc = "bro... who even needs ts 💔",
@@ -15056,7 +16205,7 @@ VisualsTab:Input({
 
 VisualsTab:Button({
     Title = "Save UI Settings",
-    Desc = "Save current theme, trans & textcursor :]",
+    Desc = "Save current theme, trans, notifications & textcursors :]",
     Icon = "save",
     Callback = function()
         local currentTheme = WindUI.Theme and WindUI.Theme.Name or "Dark"
@@ -15414,7 +16563,7 @@ local AimbotTab = Window:Tab({
 }) do
     AimbotTab:Paragraph({
         Title = "Gravel",
-        Desc = "[ Bad Injectors might work here ]",
+        Desc = "[ Ban-Risk ] [ Bad Injectors might work here ]",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -15557,6 +16706,154 @@ AimbotTab:Slider({
         },
         Callback = function(value)
             config.aimbotTargetRange = value
+        end
+    })
+end
+
+-- TBot Tab
+local TBotTab = Window:Tab({
+    Title = "Triggerbot",
+    Desc = rng3("Triggerbot"),
+    Icon = "mouse-pointer-click",
+    IconColor = config.Gradow.uicolor.lightGray
+}) do
+    TBotTab:Paragraph({
+        Title = "Gravel",
+        Desc = "[ Bad Injectors might work here ] [ Mobile-Friendly-ish?? ]",
+        Color = config.Gradow.uicolor.darkGray
+    })
+
+    TBotTab:Paragraph({
+        Title = "TriggerBot",
+        Desc = "Automatically shoot when fov is inside target\n\nUse custom mobile controls in the MainTab to be Mobile-friendly!!! :D",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+    TBotTab:Space()
+    TBotTab:Paragraph({
+        Title = "TriggerBot Master",
+        Desc = "Master control for TriggerBot",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+
+    TBotTab:Toggle({
+        Title = "TriggerBot ('X')",
+        Desc = "Toggle triggerbot on/off",
+        Value = config.tbot.enabled or false,
+        Callback = function(v)
+            toggleTriggerBot(v)
+            n({
+                Title = "Gravel.cc",
+                Content = "TriggerBot: " .. (v and "Enabled" or "Disabled"),
+                Audio = "rbxassetid://17208361335",
+                Length = 2,
+                Image = "rbxassetid://4483362458",
+                BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            })
+        end
+    })
+
+    TBotTab:Toggle({
+        Title = "Wall Check ('Y')",
+        Desc = "wallchecker 9999",
+        Value = config.tbot.wallCheck or false,
+        Callback = function(v)
+            config.tbot.wallCheck = v
+        end
+    })
+
+    TBotTab:Space()
+
+    TBotTab:Paragraph({
+        Title = "Settings",
+        Desc = "TriggerBot settings",
+        Color = config.Gradow.uicolor.lightGreen
+    })
+
+    TBotTab:Dropdown({
+        Title = "Target Part",
+        Desc = "wat part",
+        Values = {"Head", "HumanoidRootPart", "Random"},
+        Value = config.tbot.targetPart or "Head",
+        Multi = false,
+        Callback = function(Option)
+            config.tbot.targetPart = Option
+        end
+    })
+
+    TBotTab:Slider({
+        Title = "FOV Radius",
+        Desc = "eyesight",
+        IsTextbox = true,
+        Step = 5,
+        Value = {
+            Min = 10,
+            Max = 500,
+            Default = config.tbot.fovRadius or 150
+        },
+        Callback = function(value)
+            config.tbot.fovRadius = value
+            updateTriggerBotFOV()
+        end
+    })
+
+TBotTab:Slider({
+    Title = "Target Range",
+    Desc = "eyesight²",
+    IsTextbox = true,
+    Step = 10,
+    Value = {
+        Min = 5,
+        Max = 10000,
+        Default = config.tbot.targetRange or 500
+    },
+    Callback = function(value)
+        config.tbot.targetRange = value
+    end
+})
+
+    TBotTab:Slider({
+        Title = "Shoot Chance",
+        Desc = "make me more..... ''legit''",
+        Step = 1,
+        Suffix = "%",
+        Value = {
+            Min = 1,
+            Max = 100,
+            Default = config.tbot.hitChance or 100
+        },
+        Callback = function(value)
+            config.tbot.hitChance = value
+        end
+    })
+
+    TBotTab:Slider({
+        Title = "Shoot Delay",
+        Desc = "firerate basically",
+        Step = 0.01,
+        Suffix = "s",
+        Value = {
+            Min = 0.01,
+            Max = 1,
+            Default = config.tbot.delay or 0.1
+        },
+        Callback = function(value)
+            config.tbot.delay = value
+        end
+    })
+
+    TBotTab:Toggle({
+        Title = "PressDown",
+        Desc = "press it & keep it like dat :3",
+        Value = config.tbot.pressDown or false,
+        Callback = function(v)
+            config.tbot.pressDown = v
+            if not v and config.tbotPressed then
+                config.tbotPressed = false
+                local VirtualInputManager = excusemesir.VirtualInputManager
+                pcall(function()
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                end)
+            end
         end
     })
 end
@@ -15770,7 +17067,7 @@ SilentAimTab:Slider({
 end
 
 -- SA2Tab
--- SilentAim (HK)
+-- SilentAim2 Tab (HK)
 local SilentAimTab2 = Window:Tab({
     Title = "SilentAim (HK)",
     Desc = rng3("SilentAim (HK)"),
@@ -15779,7 +17076,7 @@ local SilentAimTab2 = Window:Tab({
 }) do
     SilentAimTab2:Paragraph({
         Title = "Gravel",
-        Desc = "[ Hooked Based ]\n[ Ban Risk ]\n[ Bad Injectors aren't supported ]",
+        Desc = "[ Hooked Based ]\n[ Ban-Risk ]\n[ Bad Injectors aren't supported ]",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -16203,7 +17500,7 @@ local ReachTab = Window:Tab({
 }) do
     ReachTab:Paragraph({
         Title = "Gravel",
-        Desc = "[ FireTouchInterest ]\n[ Melees Recommended ]\n[ Bad Injectors might work here ]\n[ This might not work for every game ]",
+        Desc = "[ Ban-Risk ]\n[ Melees Recommended ]\n[ Bad Injectors might work here ]\n[ This might not work for every game ]",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -16382,6 +17679,12 @@ local ClientTab = Window:Tab({
     Icon = "user",
     IconColor = config.Gradow.uicolor.lightGray
 }) do
+
+    ClientTab:Paragraph({
+        Title = "Gravel",
+        Desc = "[ Ban-Risk ]\n[ Bad Injectors might work here ]\n[ This might not work on every game ]",
+        Color = config.Gradow.uicolor.darkGray
+    })
 
     ClientTab:Paragraph({
         Title = "Client Modification",
@@ -16911,7 +18214,7 @@ local WorldTab = Window:Tab({
 }) do
     WorldTab:Paragraph({
         Title = "Gravel",
-        Desc = "[ Ban Risk ]\n[ This might not work on every game ]",
+        Desc = "[ Ban-Risk ]\n[ This might not work on every game ]",
         Color = config.Gradow.uicolor.darkGray
     })
     WorldTab:Paragraph({
@@ -17087,29 +18390,17 @@ local WorldTab = Window:Tab({
             config.worldLoopFireInterval = value
         end
     })
-end
--- Misc Tab
-local MiscTab = Window:Tab({
-    Title = "Miscellaneous",
-    Desc = rng3("Miscellaneous"),
-    Icon = "settings",
-    IconColor = config.Gradow.uicolor.lightGray
-}) do
-MiscTab:Paragraph({
-    Title = "TriggerBot",
-    Desc = "Automatically shoot when fov is inside target\nNot mobile friendly! :(",
-    Color = config.Gradow.uicolor.lightGreen
-})
-
-MiscTab:Toggle({
-    Title = "TriggerBot ('X')",
-    Desc = "Toggle triggerbot on/off",
-    Value = config.tbot.enabled or false,
+WorldTab:Space()
+WorldTab:Toggle({
+    Title = "Interaction Aura",
+    Desc = "Only fire interactions with a weird ''aura'' :o",
+    Value = config.interactionAuraEnabled or false,
     Callback = function(v)
-        toggleTriggerBot(v)
+        config.interactionAuraEnabled = v
+        hsueuehjsjei_didhznkawk()
         n({
             Title = "Gravel.cc",
-            Content = "TriggerBot: " .. (v and "Enabled" or "Disabled"),
+            Content = "Interaction Aura: " .. (v and "Enabled" or "Disabled"),
             Audio = "rbxassetid://17208361335",
             Length = 2,
             Image = "rbxassetid://4483362458",
@@ -17118,90 +18409,94 @@ MiscTab:Toggle({
     end
 })
 
-MiscTab:Toggle({
-    Title = "Tbot Wall Check ('Y')",
-    Desc = "wallchecker 9999",
-    Value = config.tbot.wallCheck or false,
-    Callback = function(v)
-        config.tbot.wallCheck = v
+WorldTab:Slider({
+    Title = "Aura Radius",
+    Desc = "how big thr blob is",
+    IsTextbox = true,
+    Step = 10,
+    Value = {
+        Min = 5,
+        Max = 1000,
+        Default = config.interactionAuraRadius or 50
+    },
+    Callback = function(value)
+        config.interactionAuraRadius = value
+        hsueuehjsjei_didhznkawk()
     end
 })
 
-MiscTab:Dropdown({
-    Title = "Tbot Target Part",
-    Desc = "wat part",
-    Values = {"Head", "HumanoidRootPart", "Random"},
-    Value = config.tbot.targetPart or "Head",
+WorldTab:Toggle({
+    Title = "Show Aura Visualizer",
+    Desc = "make cool visualizer blob",
+    Value = config.interactionAuraVisualizer or false,
+    Callback = function(v)
+        config.interactionAuraVisualizer = v
+        hsueuehjsjei_didhznkawk()
+    end
+})
+
+WorldTab:Dropdown({
+    Title = "Aura Visualizer Shape",
+    Desc = "(self explanatory)",
+    Values = {"Block", "Sphere"},
+    Value = "Sphere",
     Multi = false,
     Callback = function(Option)
-        config.tbot.targetPart = Option
-    end
-})
-
-MiscTab:Slider({
-    Title = "Tbot FOV Radius",
-    Desc = "eyesight",
-    IsTextbox = true,
-    Step = 5,
-    Value = {
-        Min = 10,
-        Max = 500,
-        Default = config.tbot.fovRadius or 150
-    },
-    Callback = function(value)
-        config.tbot.fovRadius = value
-        updateTriggerBotFOV()
-    end
-})
-
-MiscTab:Slider({
-    Title = "Tbot Hit Chance",
-    Desc = "make me more..... ''legit''",
-    Step = 1,
-    Suffix = "%",
-    Value = {
-        Min = 1,
-        Max = 100,
-        Default = config.tbot.hitChance or 100
-    },
-    Callback = function(value)
-        config.tbot.hitChance = value
-    end
-})
-
-MiscTab:Slider({
-    Title = "Tbot Shoot Delay",
-    Desc = "firerate basically",
-    Step = 0.01,
-    Suffix = "s",
-    Value = {
-        Min = 0.01,
-        Max = 1,
-        Default = config.tbot.delay or 0.1
-    },
-    Callback = function(value)
-        config.tbot.delay = value
-    end
-})
-
-MiscTab:Toggle({
-    Title = "Tbot PressDown",
-    Desc = "press it & keep it like dat :3",
-    Value = config.tbot.pressDown or false,
-    Callback = function(v)
-        config.tbot.pressDown = v
-        if not v and config.tbotPressed then
-            config.tbotPressed = false
-            local VirtualInputManager = excusemesir.VirtualInputManager
-            pcall(function()
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-            end)
+        config.interactionAuraVisualizerShape = Option
+        if config.interactionAuraVisualizerPart and config.interactionAuraVisualizerPart.Parent then
+            if Option == "Sphere" then
+                config.interactionAuraVisualizerPart.Shape = Enum.PartType.Ball
+            else
+                config.interactionAuraVisualizerPart.Shape = Enum.PartType.Block
+            end
         end
+        hsueuehjsjei_didhznkawk()
     end
 })
-    MiscTab:Space()
+
+WorldTab:Dropdown({
+    Title = "Aura Visualizer Material",
+    Desc = "idk if you want it you want it",
+    Values = {"ForceField", "Plastic", "Glass", "Neon", "SmoothPlastic", "Metal", "DiamondPlate"},
+    Value = "ForceField",
+    Multi = false,
+    Callback = function(Option)
+        config.interactionAuraVisualizerMaterial = Option
+        if config.interactionAuraVisualizerPart and config.interactionAuraVisualizerPart.Parent then
+            config.interactionAuraVisualizerPart.Material = config.materials[Option] or Enum.Material.ForceField
+        end
+        hsueuehjsjei_didhznkawk()
+    end
+})
+
+WorldTab:Slider({
+    Title = "Aura Visualizer Transparency",
+    Desc = "ooOoO da sphere so ghostly :o",
+    Step = 0.05,
+    Value = {
+        Min = 0,
+        Max = 1,
+        Default = config.interactionAuraVisualizerTransparency or 0.6
+    },
+    Callback = function(value)
+        config.interactionAuraVisualizerTransparency = value
+        if config.interactionAuraVisualizerPart and config.interactionAuraVisualizerPart.Parent then
+            config.interactionAuraVisualizerPart.Transparency = value
+        end
+        hsueuehjsjei_didhznkawk()
+    end
+})
+end
+
+-- Misc Tab
+local MiscTab = Window:Tab({
+    Title = "Miscellaneous",
+    Desc = rng3("Miscellaneous"),
+    Icon = "settings",
+    IconColor = config.Gradow.uicolor.lightGray
+}) do
     MiscTab:Paragraph({
-        Title = "Other",
+        Title = "random shi",
         Desc = "Additional miscellaneous features >:]",
         Color = config.Gradow.uicolor.lightGreen
     })
@@ -17224,7 +18519,7 @@ MiscTab:Toggle({
 
     MiscTab:Button({
         Title = "Brick.cc (pls ignore)",
-        Desc = "I has da powa of unanchored (yes brick is back again :D!!1!1)",
+        Desc = "I has da powa of unanchored (brick would no longer be updated :c)",
         Callback = function()
               loadstring(getgist_(getgenv().HttpUrlz_.imbricked))()
         end
@@ -17310,7 +18605,26 @@ MiscTab:Toggle({
         })
     end
 })
-
+MiscTab:Toggle({
+    Title = "Freecam ('P')",
+    Desc = "fly wit camera :3",
+    Value = config.freecam or false,
+    Callback = function(v)
+        if v and not config.freecamState.active then
+            djwiiwirjfjskw_jajwwjw_wjnwhriz()
+        elseif not v and config.freecamState.active then
+            dnnskwijrhdkakwowie_owkweki_ek()
+        end
+        n({
+            Title = "Gravel.cc",
+            Content = "Freecam: " .. (v and "Enabled" or "Disabled"),
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
+    end
+})
     MiscTab:Toggle({
         Title = "AntiAfk",
         Desc = "Prevents idle kick",
@@ -18004,7 +19318,7 @@ InfoTab:Button({
         setclipboard("https://www.roblox.com/games/96489792142939/Happy-Home")
         n({
             Title = "YAYY :D",
-            Content = "Gaem id copied!1!1!",
+            Content = "Gaem id copied!!!1 ;3",
             Audio = "rbxassetid://12222253",
             Length = 1,
             Image = "rbxassetid://10245993691",
@@ -18068,6 +19382,12 @@ InfoTab:Space()
     InfoTab:Paragraph({
         Title = "AimbotTab",
         Desc = "Manipulates your camera and it would automatically aim at your opponents",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    
+    InfoTab:Paragraph({
+        Title = "TBotTab",
+        Desc = "Automatically shoots when someone enters your FOV",
         Color = config.Gradow.uicolor.darkGray
     })
     
@@ -18138,93 +19458,25 @@ InfoTab:Space()
     })
 InfoTab:Space()
 InfoTab:Paragraph({
-    Title = "Guide",
-    Desc = "Tutorial for some features\nread ts or I cry :c",
-    Color = config.Gradow.uicolor.Blue
+    Title = "README.md",
+    Desc = "head over to my readme plz",
+    Color = config.Gradow.uicolor.Black
 })
-
-InfoTab:Paragraph({
-    Title = "Guide: Setup",
-    Desc = "STEP 1: Go to the MainTab\nSTEP 2: Set ur TeamTarget (Enemies is default & works for most games)\nSTEP 3: Set ur TargetType (Players / NPCs / Both)\nSTEP 4: Pick a GetTarget mode:\n  • Closest - nearest target\n  • Lowest Health - weakest target\n  • TargetSeen - switches between visible targets (chaotic but fun)\nSTEP 5: Toggle AntiKick (unless u WANT to get kicked lol)",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: SilentAim (HB)",
-    Desc = "This is the SAFEST silent aim option (hitbox based).\n\nHOW IT WORKS:\nIt resizes ur opponent's hitbox and aligns it to the center of ur screen, so whenever u shoot, u hit em.\n\nHOW TO USE:\n1. Toggle 'SilentAim (HB)' on ('E' by default)\n2. Set ur Target Part (Head is most accurate)\n3. Set ur FOV Radius (120 is good)\n4. Set ur HitChance (100% = always hit, lower = looks more 'legit')\n5. Enable WallCheck if u don't want to shoot through walls",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: SilentAim (HK)",
-    Desc = "This is the BETTER but RISKIER silent aim (hook based).\n\nHOW IT WORKS:\nIt intercepts raycasts/remotes and redirects them to ur target. Because of this, it's more accurate but also more ban-prone on some games.\n\nHOW TO USE:\n1. Toggle 'SilentAim (HK)' on ('R' by default)\n2. Set ur Target Part (Head or Random)\n3. Set ur Aim Method (Raycast works on most games)\n4. Adjust ur Responsiveness (lower = snappier, higher = smoother)\n5. If u want to hit through walls, toggle WallBang\n6. If u want bullets to spawn inside enemies, toggle Bullet Teleport\n\nNOTES:\n• Doesn't work on NPCs\n• Doesn't work on bad injectors\n• Might break on games with custom anticheat\n• If ur remotes are custom, add em in Remote Gestalt",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Hitbox",
-    Desc = "Makes ur opponents HUGE so u can't miss.\n\nHOW TO USE:\n1. Toggle 'Hitbox' on ('G' by default)\n2. Set ur Hitbox Size (10-30 is normal, 100+ is funny)\n3. Optionally enable Hitbox Visualizer to see the hitboxes:\n\nWARNING:\nOn some games, big hitboxes will make enemies fly around. If dat happens, lower ur size.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Aimbot",
-    Desc = "Moves ur camera to aim at targets.\n\nHOW TO USE:\n1. Toggle 'Aimbot' on ('Q' by default)\n2. Set ur FOV Radius (smaller = less obvious)\n3. Set ur Aim Strength (0.5 = smooth, 1.0 = instant snap)\n4. Toggle WallCheck if u don't want to aim through walls\n5. Enable '360° Aimbot' if u want to hit people behind u\n\nNOTE:\nThis moves ur ACTUAL camera, so its more visible to others. If u want something more subtle, use SilentAim instead.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: AntiAim",
-    Desc = "Makes it hard for others to hit u.\n\nMODES:\n• Raycast AntiAim - teleports u when someone aims at u\n• Above Player - teleports u above the closest enemy\n• Behind Player - teleports u behind the closest enemy\n• Orbit Players - circles around the closest enemy\n\nHOW TO USE:\n1. Toggle 'AntiAim' on ('L' by default)\n2. Pick a mode (only ONE at a time)\n3. Adjust the settings (height, distance, speed, etc.)\n\nNOTE:\nAntiAim teleports ur character, so it might look weird to others. Use at ur own risk.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: AutoFarm",
-    Desc = "Teleports enemies in front of u so u can kill em.\n\nHOW TO USE:\n1. Toggle 'Toggle AutoFarm' on ('F' by default)\n2. Set ur TP Distance (how far in front of u they spawn)\n3. Set ur TP Max Range (only farm enemies within this range)\n4. Pick an Align Part (Head or HumanoidRootPart)\n\nWARNING:\nMight not work on all games.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: ESP",
-    Desc = "Shows where enemies are through walls.\n\nHOW TO USE:\n1. Toggle 'ESP' on ('Z' by default)\n2. Enable whatever u want to see:\n  • Highlight ESP - full body highlight\n  • Text ESP - name + HP\n  • Box ESP - 2D box around em\n  • Health ESP - HP bar\n  • Head Dot ESP - dot on their head\n  • Tracer ESP - line from ur screen to em\n3. Set ur ESP Colors in the VisualsTab",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: ClientMods",
-    Desc = "Changes ur movement properties (client-side).\n\nHOW TO USE:\n1. Toggle 'ClientMods' on ('N' by default)\n2. Enable whatever u want:\n  • Walkspeed - go fast\n  • Jumppower - jump high\n  • Gravity - float or heavy\n  • HipHeight - hover above ground\n  • TPWalk - teleport while walking",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: TriggerBot",
-    Desc = "Automatically shoots when someone is in ur FOV.\n\nHOW TO USE:\n1. Toggle 'Enable TriggerBot' on ('X' by default)\n2. Set ur FOV Radius (how big the detection area is)\n3. Set ur Hit Chance (100% = always shoot)\n4. Set ur Shoot Delay (firerate)\n5. Enable WallCheck if u don't want to shoot through walls\n\nWARNING:\nNot mobile friendly. Might not work on all games.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Keybinds",
-    Desc = "Here are da default keybinds:\n\nE - SilentAim (HB)\nR - SilentAim (HK)\nQ - Aimbot\nF - AutoFarm\nL - AntiAim\nJ - Desync\nX - TriggerBot\nV - BHop\nG - Hitbox\nZ - ESP\nN - ClientMods\nB - SilentAim (HB) WallCheck\nH - Aimbot WallCheck\nU - SilentAim (HK) WallCheck\nY - TriggerBot WallCheck\n\nU can change all of these in the MainTab.\n\nHoldKey Mode = hold LeftAlt + key for combo keybinds",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Save/Load",
-    Desc = "Saves ur settings so u don't have to redo em every time.\n\nHOW TO USE:\n1. Type a save name in 'Save Name'\n2. Press 'New Save' to save ur current settings\n3. Press 'Load Save' to load em back\n4. Press 'Delete Save' to delete a save\n\nAUTOLOAD:\n1. Type a save name\n2. Press 'Autoload on Game'\n3. Now whenever u load Gravel in dis game, it'll auto-load dat save\n\nNOTE:\nSome features won't save (Desync & etc.)\nSaves are stored in 'Gravel_Saves' folder.",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Troubleshooting",
-    Desc = "Something not working? Try dis:\n\n• Not working at all? Check if ur injector supports hookmetamethod & hookfunction\n• SilentAim (HK) not working? Try a different Aim Method (Raycast / FireServer / InvokeServer / Mouse.hit)\n• Hitbox not working? Lower ur hitbox size. Some games reset it\n• ESP not showing? Toggle it off and on again\n• Lagging? Lower ur ESP Hertz, disable some features\n• Getting kicked? Make sure AntiKick is ON in the MainTab\n\nif it all fails, then... idk wtf is wrong with it :p",
-    Color = config.Gradow.uicolor.darkGray
-})
-
-InfoTab:Paragraph({
-    Title = "Guide: Known Limitations",
-    Desc = "Things Gravel CANNOT do (or struggles with):\n\n• Full universality - it works on most generic shooters, but NOT all games\n• Bad injectors - SilentAim (HK) & AntiKick need hookmetamethod & hookfunction\n• Games with custom anticheat - might get u banned\n• Grow A Garden style games - not designed for em\n• Mobile + TriggerBot - not mobile friendly\n• Big hitboxes - some games make enemies fly around\n\nGravel is a SEMI-UNIVERSAL script. Don't expect it to work on every game in da universe :p",
-    Color = config.Gradow.uicolor.darkGray
+InfoTab:Button({
+    Title = "copy da README.md",
+    Desc = "a file to uhhhh read......",
+    Icon = "copy",
+    Callback = function()
+        setclipboard("https://github.com/hm5650/HBSS/blob/main/README.md")
+        n({
+            Title = "YAYY :D",
+            Content = "README.md copied!! :3",
+            Audio = "rbxassetid://12222253",
+            Length = 1,
+            Image = "rbxassetid://10245993691",
+            BarColor = Color3.fromRGB(255, 255, 0)
+        })
+    end
 })
 InfoTab:Space()
     InfoTab:Paragraph({
@@ -18465,12 +19717,17 @@ InfoTab:Space()
         Desc = "other stuff :7\nAdded: WorldTab\nAdded: DevTab\nFixed: Cleanup issues\nBugs Fixed: 12",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (05/10/2026)",
+        Desc = "sry lol I was sick :v\nMoved Triggerbot to new TBotTab\nUsing: New WindUI Elements\nAdded: interaction Aura to Worldtab\nAdded: Custom Mobile Layout\nAdded: Triggerbot & Custom Mobile Layout to Quicktoggles\nChanged: Triggerbot is now Mobile-Friendly-ish\nAdded: Freecam\nAdded: Notification toggle to VisualsTab\nChanged: The script ''Optiz'' is now changed to ''Sand.cc''",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 end
 -- tsu
 --[[
     InfoTab:Paragraph({
-        Title = "Gravel (DD/09/2026)",
+        Title = "Gravel (DD/10/2026)",
         Desc = "",
         Color = config.Gradow.uicolor.darkGray
     })
@@ -18603,13 +19860,14 @@ local function nanqhsj_wish_nxaiww()
         if input.KeyCode == Enum.KeyCode[config.Keybinds.silentaim] then
             if shouldTriggerKeybind(config.Keybinds.silentaim) then
                 config.startsa = not config.startsa
-                WindUI:Notify({
-                    Title = "Silent Aim (HB)",
-                    Content = config.startsa and "Enabled" or "Disabled",
-                    Icon = config.startsa and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HB): " .. (config.startsa and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.startsa and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
-                
                 if not config.startsa and gui.RingHolder then
                     gui.RingHolder.Visible = false
                     for pl, _ in pairs(config.activeApplied) do
@@ -18626,22 +19884,26 @@ local function nanqhsj_wish_nxaiww()
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.silentaimhk] then
             if shouldTriggerKeybind(config.Keybinds.silentaimhk) then
                 config.SA2_Enabled = not config.SA2_Enabled
-                WindUI:Notify({
-                    Title = "Silent Aim (HK)",
-                    Content = config.SA2_Enabled and "Enabled" or "Disabled",
-                    Icon = config.SA2_Enabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HK): " .. (config.SA2_Enabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.SA2_Enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.aimbot] then
             if shouldTriggerKeybind(config.Keybinds.aimbot) then
                 handleAimbotToggle(not config.aimbotEnabled)
-                WindUI:Notify({
-                    Title = "Aimbot",
-                    Content = config.aimbotEnabled and "Enabled" or "Disabled",
-                    Icon = config.aimbotEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Aimbot: " .. (config.aimbotEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.aimbotEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
@@ -18653,11 +19915,13 @@ local function nanqhsj_wish_nxaiww()
                 else
                     stopAutoFarm()
                 end
-                WindUI:Notify({
-                    Title = "Auto Farm",
-                    Content = config.autoFarmEnabled and "Enabled" or "Disabled",
-                    Icon = config.autoFarmEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Autofarm: " .. (config.autoFarmEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.autoFarmEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
@@ -18667,42 +19931,67 @@ local function nanqhsj_wish_nxaiww()
                 if not config.antiAimEnabled then
                     returnToOriginalPosition()
                 end
-                WindUI:Notify({
-                    Title = "Anti Aim",
-                    Content = config.antiAimEnabled and "Enabled" or "Disabled",
-                    Icon = config.antiAimEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "AntiAim: " .. (config.antiAimEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.antiAimEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.triggerbot] then
             if shouldTriggerKeybind(config.Keybinds.triggerbot) then
                 toggleTriggerBot(not config.tbot.enabled)
-                WindUI:Notify({
-                    Title = "TriggerBot",
-                    Content = config.tbot.enabled and "Enabled" or "Disabled",
-                    Icon = config.tbot.enabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Triggerbot: " .. (config.tbot.enabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.tbot.enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.bhop] then
             if shouldTriggerKeybind(config.Keybinds.bhop) then
                 toggleBHop(not config.bhop.enabled)
-                WindUI:Notify({
-                    Title = "BHop",
-                    Content = config.bhop.enabled and "Enabled" or "Disabled",
-                    Icon = config.bhop.enabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "BHop: " .. (config.bhop.enabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.bhop.enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.tbotwallcheck] then
             if shouldTriggerKeybind(config.Keybinds.tbotwallcheck) then
                 config.tbot.wallCheck = not config.tbot.wallCheck
-                WindUI:Notify({
-                    Title = "TriggerBot Wall Check",
-                    Content = config.tbot.wallCheck and "Enabled" or "Disabled",
-                    Icon = config.tbot.wallCheck and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Triggerbot WallCheck: " .. (config.tbot.wallCheck and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.tbot.wallCheck and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                })
+            end
+        elseif input.KeyCode == Enum.KeyCode[config.Keybinds.freecam] then
+            if shouldTriggerKeybind(config.Keybinds.freecam) then
+                local newState = not config.freecamState.active
+                if newState then
+                    djwiiwirjfjskw_jajwwjw_wjnwhriz()
+                else
+                    dnnskwijrhdkakwowie_owkweki_ek()
+                end
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Freecam: " .. (newState and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = newState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.client] then
@@ -18713,11 +20002,13 @@ local function nanqhsj_wish_nxaiww()
                 else
                     resetcmods()
                 end
-                WindUI:Notify({
-                    Title = "Client Mod",
-                    Content = config.clientModEnabled and "Enabled" or "Disabled",
-                    Icon = config.clientModEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "ClientMods: " .. (config.clientModEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.clientModEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.hitbox] then
@@ -18731,22 +20022,26 @@ local function nanqhsj_wish_nxaiww()
                     end
                     config.hitboxExpandedParts = {}
                 end
-                WindUI:Notify({
-                    Title = "Hitbox",
-                    Content = config.hitboxEnabled and "Enabled" or "Disabled",
-                    Icon = config.hitboxEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Hitbox: " .. (config.hitboxEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.hitboxEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.esp] then
             if shouldTriggerKeybind(config.Keybinds.esp) then
                 applyESPMaster(not config.espMasterEnabled)
-                WindUI:Notify({
-                    Title = "ESP",
-                    Content = config.espMasterEnabled and "Enabled" or "Disabled",
-                    Icon = config.espMasterEnabled and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "ESP: " .. (config.espMasterEnabled and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.espMasterEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
@@ -18758,44 +20053,52 @@ local function nanqhsj_wish_nxaiww()
                 else
                     ineednextgenrep(false)
                 end
-                WindUI:Notify({
-                    Title = "Desync",
-                    Content = config.desync and "Enabled" or "Disabled",
-                    Icon = config.desync and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Desync: " .. (config.desync and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.desync and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.silentaimwallcheck] then
             if shouldTriggerKeybind(config.Keybinds.silentaimwallcheck) then
                 config.wallc = not config.wallc
-                WindUI:Notify({
-                    Title = "Silent Aim Wall Check",
-                    Content = config.wallc and "Enabled" or "Disabled",
-                    Icon = config.wallc and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HB) WallCheck: " .. (config.wallc and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.wallc and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.aimbotwallcheck] then
             if shouldTriggerKeybind(config.Keybinds.aimbotwallcheck) then
                 config.aimbotWallCheck = not config.aimbotWallCheck
-                WindUI:Notify({
-                    Title = "Aimbot Wall Check",
-                    Content = config.aimbotWallCheck and "Enabled" or "Disabled",
-                    Icon = config.aimbotWallCheck and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "Aimbot WallCheck: " .. (config.aimbotWallCheck and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.aimbotWallCheck and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
             
         elseif input.KeyCode == Enum.KeyCode[config.Keybinds.silentaimhkwallcheck] then
             if shouldTriggerKeybind(config.Keybinds.silentaimhkwallcheck) then
                 config.SA2_Wallcheck = not config.SA2_Wallcheck
-                WindUI:Notify({
-                    Title = "Silent Aim HK Wall Check",
-                    Content = config.SA2_Wallcheck and "Enabled" or "Disabled",
-                    Icon = config.SA2_Wallcheck and "check" or "x",
-                    Duration = 1
+                n({
+                    Title = "Gravel.cc",
+                    Content = "SilentAim (HK) WallCheck: " .. (config.SA2_Wallcheck and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = config.SA2_Wallcheck and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 })
             end
         end
@@ -18816,6 +20119,7 @@ local function init()
     recmods()
     nanqhsj_wish_nxaiww()
     autolaodbssthing_()
+    yesh()
     makeeverysingletabs()
     gui.indicator = jdjwhejdijahweki____sidjnww_ieje()
     for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
@@ -19147,6 +20451,12 @@ task.defer(function()
             config.varibz.lastLoopFireInterval = config.worldLoopFireInterval
             StartLoopFire()
         end
+        local fireTypeKey = table.concat(config.worldFireType or {"TouchInterest"}, ",")
+        if config.varibz.lastFireType == nil then
+            config.varibz.lastFireType = fireTypeKey
+        elseif config.varibz.lastFireType ~= fireTypeKey then
+            config.varibz.lastFireType = fireTypeKey
+        end
     end
 end)
 task.defer(function()
@@ -19347,22 +20657,36 @@ local function buhbyegravellllllll________()
         for pl, conn in pairs(config.characterConnections) do
             pcall(function() conn:Disconnect() end)
         end
+        pcall(function()
+            excusemesir.RunService:UnbindFromRenderStep("392727384883828_2929847429_3883838")
+        end)
+        if config.MobileSetDrag then
+            pcall(function() config.MobileSetDrag(false) end)
+        end
+        if config.MobileGui and config.MobileGui.Parent then
+            pcall(function() config.MobileGui:Destroy() end)
+        end
+        config.MobileGui = nil
+        config.MobileLayout = nil
+        config.MobileSetDrag = nil
+        config.MobileDrag = false
+        if config.indicator and config.indicator._vib then
+            pcall(function() config.indicator._vib:Destroy() end)
+            config.indicator._vib = nil
+        end
         if config.indicator then
             config.indicator.enabled = false
             config.indicator.visible = false
-
             if config.indicator.heartbeat then
                 pcall(function() config.indicator.heartbeat:Disconnect() end)
                 config.indicator.heartbeat = nil
             end
-
             if gui.indicator then
                 if gui.indicator.ScreenGui then
                     pcall(function() gui.indicator.ScreenGui:Destroy() end)
                 end
                 gui.indicator = nil
             end
-
             config.indicator.lastHealth = nil
             config.indicator.lastTarget = nil
             config.indicator.flashUntil = 0
@@ -19396,6 +20720,7 @@ local function buhbyegravellllllll________()
             BMG:togglePlay(false)
             BMG:cleanup()
         end
+        djsjejeudbxxjwoiwirjnz_kssk()
         if config.varibz.openbtnconnection then
             pcall(function() config.varibz.openbtnconnection:Disconnect() end)
             config.varibz.openbtnconnection = nil
@@ -19567,6 +20892,7 @@ local function buhbyegravellllllll________()
                 config.devStats.logConnection = nil
             end
         end
+        config.TextHookerRunning = false
         config.varibz.lastWorldProximity = nil
         config.varibz.lastWPHold = nil
         config.varibz.lastWPActivation = nil
@@ -19644,13 +20970,17 @@ local function buhbyegravellllllll________()
         if getgenv().destroyInitGui then
             getgenv().destroyInitGui()
         end
+        if config.freecamState.active then
+            dnnskwijrhdkakwowie_owkweki_ek()
+        end
+        --:des
         for _, gui in ipairs(excusemesir.CoreGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "9373632872636482919190394736292837_937293984_8372837_38" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
+            if gui:IsA("ScreenGui") and (gui.Name == "48621826482727_83638_73763826382" or gui.Name == "37276227227277_383728736478_393828" or gui.Name == "2918736637167_9373727372872_9372763" or gui.Name == "9373632872636482919190394736292837_937293984_8372837_38" or gui.Name == "927172638798_392817637282_3846151648" or gui.Name == "391716637363627_836263736_3762627_" or gui.Name == "392727384883828_2929847429_3883838" or gui.Name == "84726272747372737_93727363737_937272_" or string.find(gui.Name, "84726272747372737_93727363737_937272_") or string.find(gui.Name, "idk1")) then
                 gui:Destroy()
             end
         end
         for _, part in ipairs(excusemesir.Workspace:GetChildren()) do
-            if part:IsA("BasePart") and (string.find(part.Name, "498372737377_83727737_837272_") or string.find(part.Name, "487362637488_393872738_392887_") or string.find(part.Name, "3827636473772_83737377_339_") or string.find(part.Name, "392726368382828288_292873738_392827_") or string.find(part.Name, "3827636473772_83737377_339_")) then
+            if part:IsA("BasePart") and (string.find(part.Name, "498372737377_83727737_837272_") or string.find(part.Name, "487362637488_393872738_392887_") or string.find(part.Name, "3827636473772_83737377_339_") or string.find(part.Name, "392726368382828288_292873738_392827_") or string.find(part.Name, "82188223883_98382828a_") or string.find(part.Name, "3827636473772_83737377_339_")) then
                 part:Destroy()
             end
         end
@@ -19759,3 +21089,4 @@ CAN YOU GUYS STAWP ASKINF ME "it doesn't work on [insert game name]"
 DIS IS A SEMI-UNIVERSAL SCRIPT VROROO
 IT DONT WORK ON ALL GAMES IN DA UNIVERSE
 ]]
+end
