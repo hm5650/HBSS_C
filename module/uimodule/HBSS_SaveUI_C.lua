@@ -5,6 +5,7 @@ local SaveUI = {
     CurrentTransparency = 0.15,
     TextCursor1 = "_",
     TextCursor2 = "  ",
+    NotifEnabled = true,
     _initialized = false,
     _windUI = nil,
     _config = nil
@@ -17,7 +18,7 @@ function SaveUI:init(windUI, config)
     end
     self._windUI = windUI
     self._config = config
-    
+
     if config and config.Gradow then
         self.Folder = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.Folder or self.Folder
         self.FileName = config.Gradow.uiThemeSave and config.Gradow.uiThemeSave.FileName or self.FileName
@@ -30,7 +31,11 @@ function SaveUI:init(windUI, config)
             self.TextCursor2 = config.Gradow.textcursor2
         end
     end
-    
+
+    if config and config.notif ~= nil then
+        self.NotifEnabled = config.notif
+    end
+
     self._initialized = true
     return true
 end
@@ -52,21 +57,22 @@ function SaveUI:save(theme, transparency)
         warn("SaveUI: Module not initialized! Call :init() first.")
         return false
     end
-    
+
     self:ensureFolder()
-    
+
     local dataToSave = {
         theme = theme or self.CurrentTheme,
         transparency = transparency or self.CurrentTransparency,
         textcursor = self:getTextCursor1(),
         textcursor2 = self:getTextCursor2(),
+        notif = self:getNotif(),
         savedAt = os.time()
     }
-    
+
     local success, encoded = pcall(function()
         return game:GetService("HttpService"):JSONEncode(dataToSave)
     end)
-    
+
     if not success then
         if self._windUI then
             self._windUI:Notify({
@@ -78,12 +84,12 @@ function SaveUI:save(theme, transparency)
         end
         return false
     end
-    
+
     local path = self:getFilePath()
     local success, err = pcall(function()
         writefile(path, encoded)
     end)
-    
+
     if success then
         if self._windUI then
             self._windUI:Notify({
@@ -112,33 +118,33 @@ function SaveUI:load()
         warn("SaveUI: Module not initialized! Call :init() first.")
         return false
     end
-    
+
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
         return false
     end
-    
+
     local success, data = pcall(function()
         return readfile(path)
     end)
     if not success or not data then
         return false
     end
-    
+
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
     if not success or not decoded then
         return false
     end
-    
+
     pcall(function()
         if decoded.theme and self._windUI and self._windUI.SetTheme then
             self.CurrentTheme = decoded.theme
             self._windUI:SetTheme(decoded.theme)
         end
-        
+
         if decoded.transparency ~= nil then
             self.CurrentTransparency = decoded.transparency
             self._windUI.TransparencyValue = decoded.transparency
@@ -146,17 +152,24 @@ function SaveUI:load()
                 self._windUI.Window:ToggleTransparency(true)
             end
         end
-        
+
         if decoded.textcursor ~= nil then
             self.TextCursor1 = decoded.textcursor
             self:setTextCursor1(decoded.textcursor)
         end
-        
+
         if decoded.textcursor2 ~= nil then
             self.TextCursor2 = decoded.textcursor2
             self:setTextCursor2(decoded.textcursor2)
         end
-        
+
+        if decoded.notif ~= nil then
+            self.NotifEnabled = decoded.notif and true or false
+            if self._config then
+                self._config.notif = self.NotifEnabled
+            end
+        end
+
         if self._config and self._config.Gradow then
             if not self._config.Gradow.uiThemeSave then
                 self._config.Gradow.uiThemeSave = {}
@@ -165,7 +178,7 @@ function SaveUI:load()
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
     end)
-    
+
     return true
 end
 
@@ -173,33 +186,33 @@ function SaveUI:autoLoad()
     if not self._initialized then
         return false
     end
-    
+
     self:ensureFolder()
     local path = self:getFilePath()
     if not isfile(path) then
         return false
     end
-    
+
     local success, data = pcall(function()
         return readfile(path)
     end)
     if not success or not data then
         return false
     end
-    
+
     local success, decoded = pcall(function()
         return game:GetService("HttpService"):JSONDecode(data)
     end)
     if not success or not decoded then
         return false
     end
-    
+
     pcall(function()
         if decoded.theme and self._windUI and self._windUI.SetTheme then
             self.CurrentTheme = decoded.theme
             self._windUI:SetTheme(decoded.theme)
         end
-        
+
         if decoded.transparency ~= nil then
             self.CurrentTransparency = decoded.transparency
             self._windUI.TransparencyValue = decoded.transparency
@@ -207,17 +220,24 @@ function SaveUI:autoLoad()
                 self._windUI.Window:ToggleTransparency(true)
             end
         end
-        
+
         if decoded.textcursor ~= nil then
             self.TextCursor1 = decoded.textcursor
             self:setTextCursor1(decoded.textcursor)
         end
-        
+
         if decoded.textcursor2 ~= nil then
             self.TextCursor2 = decoded.textcursor2
             self:setTextCursor2(decoded.textcursor2)
         end
-        
+
+        if decoded.notif ~= nil then
+            self.NotifEnabled = decoded.notif and true or false
+            if self._config then
+                self._config.notif = self.NotifEnabled
+            end
+        end
+
         if self._config and self._config.Gradow then
             if not self._config.Gradow.uiThemeSave then
                 self._config.Gradow.uiThemeSave = {}
@@ -226,9 +246,10 @@ function SaveUI:autoLoad()
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
     end)
-    
+
     return true
 end
+
 function SaveUI:getTextCursor1()
     if self._config and self._config.Gradow and self._config.Gradow.textcursor then
         return self._config.Gradow.textcursor
@@ -276,12 +297,17 @@ function SaveUI:setTextCursor2(value)
         end
     end)
 end
+
 function SaveUI:getTheme()
     return self.CurrentTheme
 end
 
 function SaveUI:getTransparency()
     return self.CurrentTransparency
+end
+
+function SaveUI:getNotif()
+    return self.NotifEnabled
 end
 
 function SaveUI:setTheme(theme)
@@ -300,12 +326,21 @@ function SaveUI:setTransparency(transparency)
     return true
 end
 
+function SaveUI:setNotif(value)
+    self.NotifEnabled = value and true or false
+    if self._config then
+        self._config.notif = self.NotifEnabled
+    end
+    return true
+end
+
 function SaveUI:reset()
     self.CurrentTheme = "Dark"
     self.CurrentTransparency = 0.15
     self.TextCursor1 = "_"
     self.TextCursor2 = "  "
-    
+    self.NotifEnabled = true
+
     if self._config and self._config.Gradow then
         if not self._config.Gradow.uiThemeSave then
             self._config.Gradow.uiThemeSave = {}
@@ -315,7 +350,11 @@ function SaveUI:reset()
         self._config.Gradow.textcursor = "_"
         self._config.Gradow.textcursor2 = "  "
     end
-    
+
+    if self._config then
+        self._config.notif = true
+    end
+
     if self._windUI then
         self._windUI:SetTheme(self.CurrentTheme)
         self._windUI.TransparencyValue = self.CurrentTransparency
@@ -334,7 +373,7 @@ function SaveUI:reset()
             end
         end
     end)
-    
+
     return true
 end
 
