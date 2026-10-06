@@ -2727,6 +2727,23 @@ local config = {
             raykitty = RaycastParams.new(),
             ihazrays = RaycastParams.new(),
         },
+        threads = { -- task_
+            patcherLoop = nil,
+            lowPatcherLoop = nil,
+            espColorLoop = nil,
+            autoloadListLoop = nil,
+            savesListLoop = nil,
+            devStatsLoop = nil,
+            rng4TypingLoop = nil,
+            rng7Loop = nil,
+            teamListLoop = nil,
+            remoteScannerLoop = nil,
+            textHookerLoop = nil,
+            loopFireLoop = nil,
+            eyeconlLop = nil,
+            bgm = nil,
+            respawnLoop = nil,
+        },
         savesParagraph = nil,
         remotespara = nil,
         remotesInput = nil,
@@ -2886,6 +2903,20 @@ local rng_s = {
     bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)],
     bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
 }
+local function task_(key, fn)
+    if config.varibz.threads[key] then
+        pcall(task.cancel, config.varibz.threads[key])
+        config.varibz.threads[key] = nil
+    end
+    local thread = task.spawn(function(...)
+        local ok, err = pcall(fn, ...)
+        if not ok and not string.find(tostring(err), "cancel") then
+            warn("[Gravel] thread '" .. key .. "' died: " .. tostring(err))
+        end
+    end)
+    config.varibz.threads[key] = thread
+    return thread
+end
 local function n(opts, bypass)
     if config.notif == false and not bypass then
         return
@@ -3232,7 +3263,7 @@ local function eye_con()
             table.insert(config.Gradow.eyecon.pool, entry.id)
         end
     end
-    task.defer(function()
+    task_("eyeconlLop", function()
         local lbl
         while config.Gradow.eyecon.active and not lbl do
             if Window and Window.UIElements and Window.UIElements.Main then
@@ -4016,7 +4047,7 @@ local function fuzzymatch(inputName)
         end
     end
 end
-local function givegaemname()
+function skejejdisihwnez_akwiwj_mdnd()
     local success, info = pcall(function()
         return excusemesir.MarketplaceService:GetProductInfo(game.PlaceId)
     end)
@@ -4181,7 +4212,7 @@ end
 
 local function uniquesavename(baseName)
     local saves = getSaveList()
-    local gameName = givegaemname()
+    local gameName = skejejdisihwnez_akwiwj_mdnd()
     local variations = {}
     local nameExists = false
     for _, save in ipairs(saves) do
@@ -4313,7 +4344,7 @@ end
 
 local function saveConfig(saveName)
     if not saveName or saveName == "" then
-        local gameName = givegaemname()
+        local gameName = skejejdisihwnez_akwiwj_mdnd()
         if gameName then
             local abbr = gengameabbr(gameName)
             if abbr then
@@ -4376,7 +4407,7 @@ local function saveConfig(saveName)
     
     local finalName = saveName
     if exactMatch then
-        local gameName = givegaemname()
+        local gameName = skejejdisihwnez_akwiwj_mdnd()
         
         if gameName and gameName ~= "" then
             local variations = makeitunqiue(gameName)
@@ -9233,7 +9264,7 @@ local function StartLoopFire()
         pcall(function() task.cancel(config.worldLoopFireConnection) end)
         config.worldLoopFireConnection = nil
     end
-    config.worldLoopFireConnection = task.spawn(function()
+    config.worldLoopFireConnection = task_("loopFireLoop", function()
         while config.worldLoopFireEnabled do
             FireInteractions()
             task.wait(config.worldLoopFireInterval or 1)
@@ -11978,7 +12009,7 @@ function jsnwekixuzjakwio_textnsiehne_()
     config.TextHookerRunning = true
     config.TextHookerConnection = descendantConn
 
-    task.defer(function()
+    task_("textHookerLoop", function()
         while config.TextHookerRunning do
             if subside_I_I_I_I_I_() then
                 task.wait(0.5)
@@ -12039,7 +12070,7 @@ local function burgerking(deltaTime)
         config.varibz.xraystuff = config.masterTarget
     end
 end
-task.defer(function()
+task_("espColorLoop", function()
     while config.espMasterEnabled do
         updateESPColors()
         task.wait(1 / math.max(config.esphertz or 100, 1))
@@ -14247,7 +14278,7 @@ local function rng4()
         return info
     end
     
-    task.defer(function()
+    task_("rng4TypingLoop", function()
         while rng4.tag do
             if not subside_I_I_I_I_I_() then
                 rng4.cursorVisible = not rng4.cursorVisible
@@ -14584,7 +14615,7 @@ local function rng7()
         return true
     end
 
-    task.spawn(function()
+    task_("rng7Loop", function()
         local label
         local attempts = 0
         while not label and attempts < 100 do
@@ -14672,7 +14703,7 @@ eye_con()
 rng4()
 rng6()
 rng7()
-task.defer(function()
+task_("bgm", function()
     task.wait(0.5)
     SaveUI:autoLoad()
     BMG:autoLoad()
@@ -14768,7 +14799,7 @@ local teamDropdown = MainTab:Dropdown({
         config.targetedTeams = selected or {}
     end
 })
-task.defer(function()
+task_("teamListLoop", function()
     while true do
         task.wait(5)
         local teamNames = getTeamNames()
@@ -15290,7 +15321,7 @@ MainTab:Keybind({
     })
     
     MainTab:Paragraph({
-        Title = "Optimization",
+        Title = "Sand.cc !!! (TRYYYY PLZZ)",
         Desc = "Copy and execute optimization code :3",
         Color = config.Gradow.uicolor.darkGray,
         Buttons = {
@@ -15481,7 +15512,7 @@ config.varibz.savesParagraph = MainTab:Paragraph({
     Desc = savePara() .. "\nBLLEHH >:P",
     Color = config.Gradow.uicolor.darkGray
 })
-task.defer(function()
+task_("saveListLoop", function()
     while true do
         task.wait(1)
         if Window and Window.UIElements and Window.UIElements.Main then
@@ -15503,7 +15534,7 @@ config.varibz.autoloadParagraph = MainTab:Paragraph({
     Desc = "Loading...",
     Color = config.Gradow.uicolor.darkGray
 })
-task.defer(function()
+task_("autoloadListLoop", function()
     while true do
         task.wait(2)
         if Window and Window.UIElements and Window.UIElements.Main then
@@ -15775,34 +15806,6 @@ VisualsTab:Input({
         config.skyboxValue = text
     end
 })
-VisualsTab:Button({
-    Title = "Kill Lighting",
-    Desc = "get rid of lighting it's useless :/",
-    Callback = function()
-        excusemesir.Lighting.Technology = Enum.Technology.Legacy
-        excusemesir.Lighting.FogEnd = 1e9
-        excusemesir.Lighting.EnvironmentDiffuseScale = 0
-        excusemesir.Lighting.EnvironmentSpecularScale = 0
-        excusemesir.Lighting.GlobalShadows = false
-        excusemesir.Lighting.ShadowSoftness = 0
-        excusemesir.Lighting.Brightness = math.max(Lighting.Brightness, 2)
-        excusemesir.Lighting.Ambient = Color3.fromRGB(110, 110, 110)
-        excusemesir.Lighting.OutdoorAmbient = Color3.fromRGB(140, 140, 140)
-        settings().Rendering.QualityLevel = 1
-        for _, v in ipairs(Lighting:GetChildren()) do
-            if v:IsA("BloomEffect")
-            or v:IsA("BlurEffect")
-            or v:IsA("ColorCorrectionEffect")
-            or v:IsA("DepthOfFieldEffect")
-            or v:IsA("SunRaysEffect")
-            or v:IsA("Atmosphere")
-            or v:IsA("Sky") then
-                v:Destroy()
-            end
-        end
-    end
-})
-
 VisualsTab:Toggle({
     Title = "FOV",
     Desc = "[insert funny desc here]",
@@ -17292,7 +17295,7 @@ config.varibz.remotespara = SilentAimTab2:Paragraph({
     Color = config.Gradow.uicolor.darkGray
 })
 
-task.defer(function()
+task_("remoteScannerLoop", function()
     while true do
         if subside_I_I_I_I_I_() then
             task.wait(0.5)
@@ -19220,7 +19223,7 @@ local DevTab = Window:Tab({
             addLog("INFO", "[Dev] Rescanned all players")
         end
     })
-    task.defer(function()
+    task_("devStatsLoop", function()
         local fpsAccum = 0
         local fpsFrames = 0
         excusemesir.RunService.Heartbeat:Connect(function(dt)
@@ -20223,13 +20226,13 @@ local function clearTargetCache()
 end
 
 --updaters
-task.defer(function()
+task_("lowPatcherLoop", function()
     while config.varibz.lowpatcher do
         clearTargetCache()
         task.wait(config.varibz.lowpatcherwait)
     end
 end)
-task.defer(function()
+task_("patcherLoop", function()
     while config.varibz.patcher do
         task.wait(config.varibz.patcherwait)
         if config.fullbrightValue ~= config.varibz.lastFullbright then
@@ -20459,7 +20462,7 @@ task.defer(function()
         end
     end
 end)
-task.defer(function()
+task_("respawnLoop", function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
         local localPlayer = excusemesir.Players.LocalPlayer
@@ -20957,6 +20960,10 @@ local function buhbyegravellllllll________()
             heartbeatConnection:Disconnect()
             heartbeatConnection = nil
         end
+        if config.TextHookerConnection then
+            pcall(function() config.TextHookerConnection:Disconnect() end)
+            config.TextHookerConnection = nil
+        end
         if callmyoldname then
             hookmetamethod(game, "__namecall", callmyoldname)
             callmyoldname = nil
@@ -21056,6 +21063,20 @@ local function buhbyegravellllllll________()
         table.clear(config.varibz.candidates)
         table.clear(config.varibz.targetsInFOV)
         table.clear(ignoreList)
+        local killallofthesethreadsplease = {
+            "patcherLoop", "lowPatcherLoop", "espColorLoop",
+            "autoloadListLoop", "savesListLoop", "devStatsLoop",
+            "rng4TypingLoop", "rng7Loop", "teamListLoop",
+            "remoteScannerLoop", "textHookerLoop", "loopFireLoop",
+            "eyeconlLop", "bgm", "respawnLoop",
+        }
+        for _, key in ipairs(killallofthesethreadsplease) do
+            local thread = config.varibz.threads[key]
+            if thread then
+                pcall(task.cancel, thread)
+                config.varibz.threads[key] = nil
+            end
+        end
     end)
 end
 Window:OnDestroy(function()
