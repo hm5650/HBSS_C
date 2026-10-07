@@ -2281,25 +2281,25 @@ local config = {
         },
         rng6popz = {
             "DONT YOU DARE CLICK ON\nTHAT ''CLOSE WINDOW'' BUTTON",
-            "Do you REALLY want to close Gravel.cc? Gravel is crying right now :c",
-            "Gravel doesn't want to leave! He just learned how to aimbot :(",
+            "Do you REALLY want to close me\nif u do it me gonna cry :c",
+            "Me doesn't want to leave! :[",
             "English or Spanish\n\n\nwho ever moves first is gay",
-            "Close Gravel? That's a skill issue tbh...",
-            "closing gravel wouldn't improve ur aim",
-            "keeping gravel open = inf robux\n2020 NO CLICKBAIT FREE",
+            "Close Me? That's a skill issue tbh...",
+            "closing me wouldn't improve ur 'skills' or performance",
+            "keeping me open = inf robux\n2020 NO CLICKBAIT FREE",
             "if u close me I'll leak ur ip which is uhh..\nuhhh which is uhhh\nuhhhhh\nwhats ur ip again????",
             "no closing plz... :c",
             "one more game please... just one more.. than you can close",
-            "at the end of the day gravel shan't close",
+            "at the end of the day, i shan't close",
             "Don't you dare x me out or I'll x'd you out and see how u'll like it",
-            "I'm rng6 that's now sitting here for eternity to tell you to not close gravel...\n\nWHICH YOU TOTALLY SHOULDNT",
-            "VERY SERIOUS CLOSING MESSAGE THAT SYAS NOT TO CLOSE GRAVEL",
+            "I'm rng6 that's now sitting here for eternity to tell you to not close me...\n\nWHICH YOU TOTALLY SHOULDNT",
+            "VERY SERIOUS CLOSING MESSAGE THAT SYAS NOT TO CLOSE ME",
             "plzz don't unload me :(((((((",
-            "closing gravel = -10000 aura",
+            "closing me = -10000 aura",
             ":c",
             "CLICK THIS ONE!1!!1\n↓\n↓\n↓",
             "Close = BAD\nOpen = ALPHA SIGMA MALE\n\nits simple math vro",
-            "I hope ur not like repeatedly clicking on the X button and repeatedly closing this popup just to see new messages everytime\n\nbut still... don't close gravel",
+            "I hope ur not like repeatedly clicking on the X button and repeatedly closing this popup just to see new messages everytime\n\nbut still... don't close me",
             "if u close me you'll catch a cold so stay inside!1!1!!",
             "u has 3 options:\n\n1. cancel\n\n2. cancel\n\n3. cancel\n\nchoose wisely",
             "that evil ''Close Window'' button is a rickroll so don't press it",
@@ -4833,11 +4833,18 @@ local function deleteSave(saveName)
         })
         return false
     end
-    local exactMatch, errorMsg = fuzzymatch(saveName)
-    if errorMsg then
+    local saves = getSaveList()
+    local exactMatch = nil
+    for _, save in ipairs(saves) do
+        if save == saveName then
+            exactMatch = save
+            break
+        end
+    end
+    if not exactMatch then
         n({
             Title = "Gravel.cc",
-            Content = errorMsg,
+            Content = "No save found with exact name '" .. saveName .. "'\n(Deletion requires exact name match)",
             Audio = "rbxassetid://17208361335",
             Length = 2,
             Image = "rbxassetid://4483362458",
@@ -4845,11 +4852,7 @@ local function deleteSave(saveName)
         })
         return false
     end
-    
-    if exactMatch then
-        saveName = exactMatch
-    end
-    
+    saveName = exactMatch
     local path = getSavePath(saveName)
     if not isfile(path) then
         n({
@@ -15485,7 +15488,7 @@ MainTab:Button({
 
 MainTab:Button({
     Title = "Delete Save",
-    Desc = "Delete that one",
+    Desc = "Delete that one but only if the match is solid",
     Icon = "trash",
     Callback = function()
         local name = saveInputValue or ""
