@@ -244,6 +244,7 @@ local config = {
     aimbotTargetPart = "Head",
     aimbotAimMethod = "CFrame",
     aimbotPrediction = 0,
+    aimbotAutoRotate = false,
     aimbotTeamTarget = "Enemies",
     aimbotCurrentTarget = nil,
     aimbotFOVRing = nil,
@@ -3067,7 +3068,7 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
-local function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
     if not config.Gradow.uianimate.openButton then return end
@@ -4629,6 +4630,7 @@ local function saveConfig(saveName)
             aimbotAimMethod = config.aimbotAimMethod,
             aimbotTargetRange = config.aimbotTargetRange or 500,
             aimbotPrediction = config.aimbotPrediction,
+            aimbotAutoRotate = config.aimbotAutoRotate,
             aimbotStrength = config.aimbotStrength,
             aimbotFOVSize = config.aimbotFOVSize,
             aimbotGetTarget = config.aimbotGetTarget,
@@ -5226,6 +5228,7 @@ local function loadSave(saveName)
         config.camYOffsetOriginalCFrame = nil
         config.QuickToggles = false
         KillQT()
+        restoreAutoRotate()
         config.antiafk = false
         config.currentTarget = nil
         config.aimbotCurrentTarget = nil
@@ -5417,6 +5420,7 @@ local function loadSave(saveName)
     if cfg.aimbotTargetRange then config.aimbotTargetRange = cfg.aimbotTargetRange end
     if cfg.aimbotAimMethod then config.aimbotAimMethod = cfg.aimbotAimMethod end
     if cfg.aimbotPrediction then config.aimbotPrediction = cfg.aimbotPrediction end
+    if cfg.aimbotAutoRotate ~= nil then config.aimbotAutoRotate = cfg.aimbotAutoRotate end
     if cfg.aimbotTargetPart then config.aimbotTargetPart = cfg.aimbotTargetPart end
     if cfg.aimbotStrength then config.aimbotStrength = cfg.aimbotStrength end
     if cfg.aimbotFOVSize then config.aimbotFOVSize = cfg.aimbotFOVSize end
@@ -11085,6 +11089,14 @@ local function smoothAim(currentCFrame, targetCFrame, strength)
     return currentCFrame:Lerp(targetCFrame, strength)
 end
 
+local function restoreAutoRotate()
+    local char = localPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum and hum.AutoRotate == false then
+        hum.AutoRotate = true
+    end
+end
+
 local function predictthatposagain(targetPart)
     if not targetPart or not targetPart.Parent then
         return targetPart and targetPart.Position or nil
@@ -11111,6 +11123,7 @@ local function aimbotUpdate()
             config.aimbotCurrentTarget = nil
             updateESPColors()
         end
+        restoreAutoRotate()
         return
     end
     
@@ -11123,6 +11136,7 @@ local function aimbotUpdate()
     local allTargets = getAllTargets()
     if #allTargets <= 0 then 
         config.aimbotCurrentTarget = nil 
+        restoreAutoRotate()
         return 
     end
     
@@ -11192,6 +11206,7 @@ local function aimbotUpdate()
     
     if #potentialTargets == 0 then
         config.aimbotCurrentTarget = nil
+        restoreAutoRotate()
         updateESPColors()
         return
     end
@@ -11219,6 +11234,7 @@ local function aimbotUpdate()
     
     if not bestTarget then
         config.aimbotCurrentTarget = nil
+        restoreAutoRotate()
         updateESPColors()
         return
     end
@@ -11236,6 +11252,24 @@ local function aimbotUpdate()
                 targetPosition = bestTarget.part.Position
             end
             local strength = math.clamp(config.aimbotStrength, 0, 1)
+            if config.aimbotAutoRotate then
+                local char = localPlayer.Character
+                local root = char and char:FindFirstChild("HumanoidRootPart")
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                if root and hum and hum.Health > 0 then
+                    hum.AutoRotate = false
+                    local flatTarget = Vector3.new(targetPosition.X, root.Position.Y, targetPosition.Z)
+                    if (flatTarget - root.Position).Magnitude > 0.01 then
+                        local goal = CFrame.lookAt(root.Position, flatTarget)
+                        root.CFrame = root.CFrame:Lerp(goal, strength)
+                    end
+                end
+                return
+            else
+                restoreAutoRotate()
+            end
+
+local currentCFrame = camera.CFrame
             local currentCFrame = camera.CFrame
             local targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
             if config.aimbotAimMethod == "CFrame" then
@@ -13333,6 +13367,7 @@ local function setupDeathListener(targetPlayer)
         end
         if config.aimbotCurrentTarget == targetPlayer then
             config.aimbotCurrentTarget = nil
+            restoreAutoRotate()
             updateESPColors()
         end
         if config.SA2_currentTarget == targetPlayer then
@@ -13382,6 +13417,7 @@ local function cleanplrdata(targetPlayer)
     end
     if config.aimbotCurrentTarget == targetPlayer then
         config.aimbotCurrentTarget = nil
+        restoreAutoRotate()
         updateESPColors()
     end
     if config.SA2_currentTarget == targetPlayer then
@@ -15335,7 +15371,7 @@ local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650
     autoload = true, -- true/false            / allow autoloading
     autosave = true, -- true/false           / allow autosaving
 })
--- you can out this in your autoexecute folder if you wanna :p
+-- you can put this in your autoexecute folder if you wanna :p
 -- also this script is underdevelopment like gravel.cc >_>]]
                     setclipboard(code)
                     n({
@@ -16609,13 +16645,25 @@ local AimbotTab = Window:Tab({
     })
     
     AimbotTab:Toggle({
-        Title = "360° Aimbot",
+        Title = "360 Aimbot",
         Desc = "i have eyes on everyone",
         Value = config.aimbot360Enabled or false,
         Callback = function(v)
             toggle360Aimbot(v)
         end
     })
+
+AimbotTab:Toggle({
+    Title = "AutoRotate",
+    Desc = "Rotates your character to aim instead of the camera",
+    Value = config.aimbotAutoRotate or false,
+    Callback = function(v)
+        config.aimbotAutoRotate = v
+        if not v then
+            restoreAutoRotate()
+        end
+    end
+})
     
     AimbotTab:Dropdown({
         Title = "Target Part",
