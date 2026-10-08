@@ -5539,7 +5539,7 @@ local function loadSave(saveName)
     if cfg.tbot_enabled ~= nil then config.tbot.enabled = cfg.tbot_enabled end
     if cfg.tbot_targetPart then config.tbot.targetPart = cfg.tbot_targetPart end
     if cfg.tbot_fovRadius then config.tbot.fovRadius = cfg.tbot_fovRadius end
-    if cfg.tbot_targetRange then config.tbot.targetRange = cfg.tbot.targetRange end
+    if cfg.tbot_targetRange then config.tbot.targetRange = cfg.tbot_targetRange end
     if cfg.tbot_hitChance then config.tbot.hitChance = cfg.tbot_hitChance end
     if cfg.tbot_delay then config.tbot.delay = cfg.tbot_delay end
     if cfg.tbot_wallCheck ~= nil then config.tbot.wallCheck = cfg.tbot_wallCheck end
