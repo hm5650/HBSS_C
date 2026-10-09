@@ -4111,238 +4111,6 @@ local function gengameabbr(gameName)
     return abbr
 end
 
-local function makeitunqiue(gameName)
-    if not gameName or gameName == "" then
-        return {}
-    end
-    local cleanName = gameName:gsub("[^%w%s]", ""):gsub("%s+", " ")
-    local words = {}
-    for word in cleanName:gmatch("%S+") do
-        if #word > 1 then
-            table.insert(words, word)
-        end
-    end
-    
-    if #words == 0 then
-        local letters = gameName:gsub("[^%a]", "")
-        if #letters >= 3 then
-            words = {string.sub(letters, 1, 3)}
-        else
-            return {}
-        end
-    end
-    
-    local variations = {}
-    local firstLetter = string.upper(string.sub(words[1] or gameName, 1, 1))
-    if #words >= 1 then
-        local mainWord = words[1]
-        local cleanMain = mainWord:gsub("[^%a]", "")
-        
-        if #cleanMain >= 4 then
-            table.insert(variations, string.upper(string.sub(cleanMain, 1, 4)))
-            table.insert(variations, string.upper(string.sub(cleanMain, 1, 3) .. string.sub(cleanMain, -1)))
-            if #cleanMain >= 4 then
-                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanMain, 3, 4)))
-            end
-        end
-        if #words >= 2 then
-            local word2 = words[2]
-            local cleanWord2 = word2:gsub("[^%a]", "")
-            
-            if #cleanMain >= 2 and #cleanWord2 >= 2 then
-                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanWord2, 1, 2)))
-            end
-            
-            if #cleanMain >= 2 and #cleanWord2 >= 1 then
-                table.insert(variations, string.upper(string.sub(cleanMain, 1, 3) .. string.sub(cleanWord2, 1, 1)))
-                table.insert(variations, string.upper(string.sub(cleanMain, 1, 2) .. string.sub(cleanWord2, 1, 2)))
-            end
-        end
-        if #words >= 3 then
-            local word2 = words[2]
-            local word3 = words[3]
-            local cleanWord2 = word2:gsub("[^%a]", "")
-            local cleanWord3 = word3:gsub("[^%a]", "")
-            
-            if #cleanMain >= 2 and #cleanWord2 >= 1 and #cleanWord3 >= 1 then
-                table.insert(variations, string.upper(string.sub(cleanMain, 1, 1) .. string.sub(cleanWord2, 1, 1) .. string.sub(cleanWord3, 1, 1) .. string.sub(cleanMain, 2, 2)))
-            end
-        end
-        local consonants = ""
-        for _, word in ipairs(words) do
-            for char in word:gmatch(".") do
-                if char:match("[BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz]") then
-                    consonants = consonants .. string.upper(char)
-                end
-            end
-        end
-        
-        if #consonants >= 4 then
-            table.insert(variations, string.sub(consonants, 1, 4))
-        elseif #consonants >= 3 then
-            local padded = string.sub(consonants, 1, 3) .. firstLetter
-            table.insert(variations, padded)
-        end
-        if #cleanMain >= 4 then
-            local base = string.upper(cleanMain)
-            local first = string.sub(base, 1, 1)
-            local rest = string.sub(base, 2, 4)
-            for i = 1, #rest do
-                local arrangement = first
-                for j = 1, #rest do
-                    local pos = ((i + j - 2) % #rest) + 1
-                    arrangement = arrangement .. string.sub(rest, pos, pos)
-                end
-                if arrangement ~= base and arrangement ~= string.upper(string.sub(cleanMain, 1, 4)) then
-                    table.insert(variations, arrangement)
-                end
-            end
-        end
-    end
-    local seen = {}
-    local unique = {}
-    for _, v in ipairs(variations) do
-        if not seen[v] and v ~= "" then
-            seen[v] = true
-            table.insert(unique, v)
-        end
-    end
-    
-    return unique
-end
-
-local function uniquesavename(baseName)
-    local saves = getSaveList()
-    local gameName = skejejdisihwnez_akwiwj_mdnd()
-    local variations = {}
-    local nameExists = false
-    for _, save in ipairs(saves) do
-        if save == baseName then
-            nameExists = true
-            break
-        end
-    end
-    
-    if not nameExists then
-        return baseName
-    end
-    if gameName and gameName ~= "" then
-        variations = makeitunqiue(gameName)
-    end
-    if #variations == 0 then
-        local cleanName = gameName and gameName:gsub("[^%a]", "") or ""
-        if #cleanName >= 4 then
-            table.insert(variations, string.upper(string.sub(cleanName, 1, 4)))
-        end
-        
-        if #cleanName >= 3 then
-            local first = string.upper(string.sub(cleanName, 1, 1))
-            local rest = string.upper(string.sub(cleanName, 2, 4))
-            if #rest >= 3 then
-                for i = 1, #rest do
-                    local arrangement = first
-                    for j = 1, 3 do
-                        local pos = ((i + j - 2) % #rest) + 1
-                        arrangement = arrangement .. string.sub(rest, pos, pos)
-                    end
-                    if arrangement ~= string.upper(string.sub(cleanName, 1, 4)) then
-                        table.insert(variations, arrangement)
-                    end
-                end
-            end
-        end
-        if #variations == 0 then
-            table.insert(variations, "GAME")
-        end
-    end
-    for _, variation in ipairs(variations) do
-        local name = variation
-        if #name < 4 then
-            local pad = string.upper((gameName or ""):gsub("[^%a]", ""))
-            if #pad < 4 then
-                pad = pad .. string.rep("X", 4 - #pad)
-            end
-            name = string.upper(string.sub(pad, 1, 4))
-        else
-            name = string.upper(string.sub(name, 1, 4))
-        end
-        local isUnique = true
-        for _, save in ipairs(saves) do
-            if save == name then
-                isUnique = false
-                break
-            end
-        end
-        
-        if isUnique then
-            return name
-        end
-    end
-    local baseLetters = string.upper((gameName or "GAME"):gsub("[^%a]", ""))
-    if #baseLetters < 4 then
-        baseLetters = baseLetters .. string.rep("X", 4 - #baseLetters)
-    end
-    baseLetters = string.sub(baseLetters, 1, 4)
-    
-    local attempts = 0
-    while attempts < 1000 do
-        local chars = {}
-        for i = 1, #baseLetters do
-            chars[i] = string.sub(baseLetters, i, i)
-        end
-        for i = #chars, 2, -1 do
-            local j = math.random(1, i)
-            chars[i], chars[j] = chars[j], chars[i]
-        end
-        
-        local newName = table.concat(chars)
-        local isUnique = true
-        for _, save in ipairs(saves) do
-            if save == newName then
-                isUnique = false
-                break
-            end
-        end
-        
-        if isUnique then
-            return newName
-        end
-        
-        attempts = attempts + 1
-    end
-    local clean = (gameName or "GAME"):gsub("[^%a]", "")
-    if #clean < 4 then
-        clean = clean .. string.rep("X", 4 - #clean)
-    end
-    
-    local chars = {}
-    for i = 1, #clean do
-        chars[i] = string.upper(string.sub(clean, i, i))
-    end
-    
-    for i = 1, 1000 do
-        local name = ""
-        for j = 1, 4 do
-            local idx = ((i * j + j * i) % #chars) + 1
-            name = name .. chars[idx]
-        end
-        
-        local isUnique = true
-        for _, save in ipairs(saves) do
-            if save == name then
-                isUnique = false
-                break
-            end
-        end
-        
-        if isUnique then
-            return name
-        end
-    end
-    local timestamp = os.time()
-    return "S" .. tostring(timestamp % 10000)
-end
-
 local function saveConfig(saveName)
     if not saveName or saveName == "" then
         local gameName = skejejdisihwnez_akwiwj_mdnd()
@@ -4396,103 +4164,7 @@ local function saveConfig(saveName)
         })
         return false
     end
-
-    local saves = getSaveList()
-    local exactMatch = nil
-    for _, save in ipairs(saves) do
-        if save == saveName then
-            exactMatch = save
-            break
-        end
-    end
-    
     local finalName = saveName
-    if exactMatch then
-        local gameName = skejejdisihwnez_akwiwj_mdnd()
-        
-        if gameName and gameName ~= "" then
-            local variations = makeitunqiue(gameName)
-            for _, variation in ipairs(variations) do
-                local name = string.upper(string.sub(variation, 1, 4))
-                if #name < 4 then
-                    local pad = string.upper(gameName:gsub("[^%a]", ""))
-                    if #pad < 4 then
-                        pad = pad .. string.rep("X", 4 - #pad)
-                    end
-                    name = string.upper(string.sub(pad, 1, 4))
-                end
-                
-                local isUnique = true
-                for _, save in ipairs(saves) do
-                    if save == name then
-                        isUnique = false
-                        break
-                    end
-                end
-                
-                if isUnique then
-                    finalName = name
-                    break
-                end
-            end
-            if finalName == saveName then
-                local baseLetters = string.upper(gameName:gsub("[^%a]", ""))
-                if #baseLetters < 4 then
-                    baseLetters = baseLetters .. string.rep("X", 4 - #baseLetters)
-                end
-                baseLetters = string.sub(baseLetters, 1, 4)
-                
-                local attempts = 0
-                while attempts < 1000 do
-                    local chars = {}
-                    for i = 1, #baseLetters do
-                        chars[i] = string.sub(baseLetters, i, i)
-                    end
-                    for i = #chars, 2, -1 do
-                        local j = math.random(1, i)
-                        chars[i], chars[j] = chars[j], chars[i]
-                    end
-                    
-                    local newName = table.concat(chars)
-                    
-                    local isUnique = true
-                    for _, save in ipairs(saves) do
-                        if save == newName then
-                            isUnique = false
-                            break
-                        end
-                    end
-                    
-                    if isUnique then
-                        finalName = newName
-                        n({
-                            Title = "Gravel.cc",
-                            Content = "Save '" .. saveName .. "' exists. Using: " .. finalName,
-                            Audio = "rbxassetid://17208361335",
-                            Length = 2,
-                            Image = "rbxassetid://4483362458",
-                            BarColor = Color3.fromRGB(0, 170, 255)
-                        })
-                        break
-                    end
-                    
-                    attempts = attempts + 1
-                end
-            end
-        end
-        if finalName == saveName then
-            local timestamp = os.time()
-            finalName = "S" .. tostring(timestamp % 10000)
-            n({
-                Title = "Gravel.cc",
-                Content = "Using: " .. finalName,
-                Audio = "rbxassetid://17208361335",
-                Length = 2,
-                Image = "rbxassetid://4483362458",
-                BarColor = Color3.fromRGB(0, 255, 0)
-            })
-        end
-    end
     local configToSave = {
         version = "2.0",
         timestamp = os.time(),
@@ -4842,14 +4514,26 @@ local function deleteSave(saveName)
         end
     end
     if not exactMatch then
-        n({
-            Title = "Gravel.cc",
-            Content = "No save found with exact name '" .. saveName .. "'\n(Deletion requires exact name match)",
-            Audio = "rbxassetid://17208361335",
-            Length = 2,
-            Image = "rbxassetid://4483362458",
-            BarColor = Color3.fromRGB(255, 0, 0)
-        })
+        local closestMatch, errMsg = fuzzymatch(saveName)
+        if closestMatch then
+            n({
+                Title = "Gravel.cc",
+                Content = "No exact match for '" .. saveName .. "'.\nDid you mean: '" .. closestMatch .. "'?\n(Deletion requires exact name match, please type it exactly)",
+                Audio = "rbxassetid://17208361335",
+                Length = 6,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        else
+            n({
+                Title = "Gravel.cc",
+                Content = "No save found matching '" .. saveName .. "'\n(Deletion requires exact name match)",
+                Audio = "rbxassetid://17208361335",
+                Length = 4,
+                Image = "rbxassetid://4483362458",
+                BarColor = Color3.fromRGB(255, 0, 0)
+            })
+        end
         return false
     end
     saveName = exactMatch
