@@ -317,6 +317,9 @@ local config = {
     autoFarmPartClaimStarted = false,
     autoFarmLastRefresh = 0,
     ignoreForcefield = true,
+    targetBlacklist = {},
+    ignoreFriends = false,
+    friendCache = {},
     MobileControls = false,
     MobileDynamic = false,
     MobileDrag = false,
@@ -2918,6 +2921,40 @@ local function task_(key, fn)
     config.varibz.threads[key] = thread
     return thread
 end
+
+config.resolveTargetPlayer = function(target)
+    if typeof(target) ~= "Instance" then return nil end
+    if target:IsA("Player") then return target end
+    if target:IsA("Model") then
+        return excusemesir.Players:GetPlayerFromCharacter(target)
+    end
+    return nil
+end
+config.cacheFriend = function(pl)
+    if not pl or pl == localPlayer or config.friendCache[pl.UserId] ~= nil then return end
+    config.friendCache[pl.UserId] = false
+    task.spawn(function()
+        local ok, res = pcall(function()
+            return localPlayer:IsFriendsWith(pl.UserId)
+        end)
+        config.friendCache[pl.UserId] = (ok and res) and true or false
+    end)
+end
+config.isBlacklisted = function(target)
+    local pl = config.resolveTargetPlayer(target)
+    if not pl or pl == localPlayer then return false end
+    if config.targetBlacklist[pl.Name] then return true end
+    if config.ignoreFriends then
+        if config.friendCache[pl.UserId] == nil then config.cacheFriend(pl) end
+        if config.friendCache[pl.UserId] then return true end
+    end
+    return false
+end
+config.clearCurrentTargets = function()
+    config.aimbotCurrentTarget = nil
+    config.currentTarget = nil
+    config.SA2_currentTarget = nil
+end
 local function n(opts, bypass)
     if config.notif == false and not bypass then
         return
@@ -3155,7 +3192,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
         if not lpos then return nil end
         
         for _, player in ipairs(excusemesir.Players:GetPlayers()) do
-            if player ~= lp and player.Character then
+            if player ~= lp and player.Character and not config.isBlacklisted(player) then
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if root then
                     local dist = (root.Position - lpos.Position).Magnitude
@@ -3506,6 +3543,20 @@ local function getAllTargets(getTargetSeen)
     end
 
     return targets
+end
+
+config.getTargetsFiltered = function(...)
+    local all = getAllTargets(...)
+    if next(config.targetBlacklist) == nil and not config.ignoreFriends then
+        return all
+    end
+    local out = {}
+    for _, t in ipairs(all) do
+        if not config.isBlacklisted(t) then
+            out[#out + 1] = t
+        end
+    end
+    return out
 end
 
 local function getTargetCharacter(target)
@@ -4170,6 +4221,7 @@ local function saveConfig(saveName)
         timestamp = os.time(),
         config = {
             antikick = config.antikick,
+            ignoreFriends = config.ignoreFriends,
             masterTeamTarget = config.masterTeamTarget,
             specificTeamTarget = config.specificTeamTarget,
             targetedTeams = table.clone(config.targetedTeams),
@@ -4935,6 +4987,15 @@ local function loadSave(saveName)
         if config.antikick then
             localscripts_are_wayy_too_gullible__(true)
         end
+    end
+    if cfg.ignoreFriends ~= nil then
+        config.ignoreFriends = cfg.ignoreFriends
+        if config.ignoreFriends then
+            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+                config.cacheFriend(pl)
+            end
+        end
+        config.clearCurrentTargets()
     end
     if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
     if cfg.specificTeamTarget ~= nil then config.specificTeamTarget = cfg.specificTeamTarget end
@@ -6276,7 +6337,7 @@ local function GetClosestPlayer()
     table.clear(candidates)
     if config.masterTarget == "Players" or config.masterTarget == "Both" then
         for _, p in ipairs(excusemesir.Players:GetPlayers()) do
-            if p ~= lp then
+            if p ~= lp and not config.isBlacklisted(p) then
                 table.insert(candidates, {type = "player", instance = p})
             end
         end
@@ -7236,6 +7297,7 @@ local function dothethangcframe()
         if masterTarget == "Players" or masterTarget == "Both" then
             for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
                 if plr ~= localPlayer
+                    and not config.isBlacklisted(plr)
                     and plr.Character
                     and plr.Character:FindFirstChild("HumanoidRootPart")
                     and isEnemy(plr)
@@ -8072,7 +8134,7 @@ local function getValidAutoFarmTargets()
     
     if not localRoot then return validTargets end
     
-    config.varibz.candidates = getAllTargets()
+    config.varibz.candidates = config.getTargetsFiltered()
     for _, t in ipairs(config.varibz.candidates) do
         if t ~= localPlayer and plralive(t) then
             local shouldTarget = false
@@ -8468,7 +8530,7 @@ local function findClosestEnemy()
     local potentialTargets = {}
     local targetsInView = {}
     
-    for _, t in ipairs(getAllTargets()) do
+    for _, t in ipairs(config.getTargetsFiltered()) do
         if t ~= localPlayer and plralive(t) then
             local shouldTarget = false
             if config.specificTeamTarget and #config.targetedTeams > 0 then
@@ -8702,7 +8764,7 @@ local function antiAimUpdate()
         local wasTargeted = false
         
         for _, player in ipairs(excusemesir.Players:GetPlayers()) do
-            if player ~= localPlayer and plralive(player) then
+            if player ~= localPlayer and plralive(player) and not config.isBlacklisted(player) then
                 local shouldCheck = true
                 if config.antiAimGetTarget == "TargetSeen" then
                     local tgtChar = getTargetCharacter(player)
@@ -9010,7 +9072,7 @@ do
         if not handle then return targets end
         
         for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= excusemesir.Players.LocalPlayer and player.Character then
+            if player ~= excusemesir.Players.LocalPlayer and player.Character and not config.isBlacklisted(player) then
                 local hrp = player.Character:FindFirstChild("HumanoidRootPart")
                 if hrp then
                     local distance = (hrp.Position - handle.Position).Magnitude
@@ -10527,7 +10589,7 @@ local function updateeveryproxyeva()
         config.proxyHitboxes = {}
         return
     end
-    for _, target in ipairs(getAllTargets()) do
+    for _, target in ipairs(config.getTargetsFiltered()) do
         if target ~= localPlayer and targethb(target) then
             updateproxyhb(target)
         end
@@ -10555,7 +10617,12 @@ local function applyhb()
         return
     end
 
-    for _, player in ipairs(getAllTargets()) do
+    for player in pairs(config.hitboxExpandedParts) do
+        if config.isBlacklisted(player) then
+            pcall(restoreTorso, player)
+        end
+    end
+    for _, player in ipairs(config.getTargetsFiltered()) do
         if not config.varibz.hbConnections[player] then
             oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
         end
@@ -10820,7 +10887,7 @@ local function aimbotUpdate()
     local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     local cameraPos = camera.CFrame.Position
     local localPlayer = excusemesir.Players.LocalPlayer
-    local allTargets = getAllTargets()
+    local allTargets = config.getTargetsFiltered()
     if #allTargets <= 0 then 
         config.aimbotCurrentTarget = nil 
         restoreAutoRotate()
@@ -11176,7 +11243,7 @@ local function triggerBotUpdate()
         config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
     end
     table.clear(config.varibz.targetsInFOV)
-    local targets = getAllTargets()
+    local targets = config.getTargetsFiltered()
     local bestTarget = nil
     local bestDist = math.huge
     local bestPart = nil
@@ -12689,7 +12756,7 @@ local function onRenderStep()
         local currentSize = gui.RingHolder.AbsoluteSize and gui.RingHolder.AbsoluteSize.X or (config.fovsize * 2)
         radiusPx = currentSize / 2
     end
-    for _, pl in ipairs(getAllTargets()) do
+    for _, pl in ipairs(config.getTargetsFiltered()) do
         local bodyPart, chosenName = chooseBodyPartInstance(pl)
         local humanoid = nil
         local char = getTargetCharacter(pl)
@@ -14532,6 +14599,84 @@ task_("teamListLoop", function()
             end)
         end
     end
+end)
+
+local function getBlacklistCandidates()
+    local names = {}
+    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+        if pl ~= localPlayer then
+            table.insert(names, pl.Name)
+        end
+    end
+    table.sort(names)
+    return names
+end
+local function getBlacklistSelection()
+    local selected = {}
+    for name, on in pairs(config.targetBlacklist) do
+        if on and excusemesir.Players:FindFirstChild(name) then
+            table.insert(selected, name)
+        end
+    end
+    return selected
+end
+local blacklistDropdown
+local function refreshBlacklistDropdown()
+    if not blacklistDropdown then return end
+    local names = getBlacklistCandidates()
+    for name in pairs(config.targetBlacklist) do
+        if not excusemesir.Players:FindFirstChild(name) then
+            config.targetBlacklist[name] = nil
+        end
+    end
+    pcall(function() blacklistDropdown:SetValues(names) end)
+    local selected = getBlacklistSelection()
+    pcall(function() blacklistDropdown:Select(selected) end)
+end
+blacklistDropdown = MainTab:Dropdown({
+    Title = "Target Blacklist",
+    Desc = "make me ignore that guy and the other guy\n\n(Incomp with S/L)",
+    Values = getBlacklistCandidates(),
+    Value = {},
+    Multi = true,
+    AllowNone = true,
+    Callback = function(selected)
+        table.clear(config.targetBlacklist)
+        for _, name in ipairs(selected or {}) do
+            config.targetBlacklist[name] = true
+        end
+        config.clearCurrentTargets()
+    end
+})
+MainTab:Button({
+    Title = "Refresh Blacklist",
+    Desc = "reload the player list",
+    Callback = function()
+        refreshBlacklistDropdown()
+    end
+})
+MainTab:Toggle({
+    Title = "Ignore Friends",
+    Desc = "if your teaming with your enemies... ig bro",
+    Value = config.ignoreFriends,
+    Callback = function(v)
+        config.ignoreFriends = v
+        if v then
+            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+                config.cacheFriend(pl)
+            end
+        end
+        config.clearCurrentTargets()
+    end
+})
+excusemesir.Players.PlayerAdded:Connect(function(pl)
+    task.defer(refreshBlacklistDropdown)
+    if config.ignoreFriends then config.cacheFriend(pl) end
+end)
+excusemesir.Players.PlayerRemoving:Connect(function(pl)
+    config.targetBlacklist[pl.Name] = nil
+    config.friendCache[pl.UserId] = nil
+    task.defer(refreshBlacklistDropdown)
 end)
     
     MainTab:Dropdown({
@@ -20739,6 +20884,8 @@ local function buhbyegravellllllll________()
                 pcall(function() c:Disconnect() end)
             end
         end
+        config.ignoreFriends = false
+        config.friendCache = {}
         config.varibz.hbConnections = {}
         config.varibz.sa2dump.data = {}
         config.varibz.sa2dump.cache = {}
