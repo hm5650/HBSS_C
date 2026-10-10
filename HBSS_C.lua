@@ -7576,8 +7576,12 @@ function ineednextgenrep(state)
         if config.desyncLoop then
             config.desyncLoop:Disconnect()
         end
-        config.desyncLoop = excusemesir.RunService.Heartbeat:Connect(function()
+        local desyncAcc = 0
+        config.desyncLoop = excusemesir.RunService.Heartbeat:Connect(function(dt)
             if not config.desyncActive then return end
+            desyncAcc = desyncAcc + dt
+            if desyncAcc < 0.25 then return end
+            desyncAcc = 0
             if config.desyncSeat and config.desyncSeat.Parent then
                 local c = LocalPlayer.Character
                 if c then
@@ -8746,16 +8750,14 @@ function FireInteractions()
     local player = excusemesir.Players.LocalPlayer
     local character = player.Character
     if not character then return 0 end
+    local myRoot = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Head")
+
     local auraOrigin = nil
     local auraRadiusSq = nil
-    if config.interactionAuraEnabled then
-        local root = character:FindFirstChild("HumanoidRootPart")
-            or character:FindFirstChild("Head")
-        if root then
-            auraOrigin = root.Position
-            local r = config.interactionAuraRadius or 50
-            auraRadiusSq = r * r
-        end
+    if config.interactionAuraEnabled and myRoot then
+        auraOrigin = myRoot.Position
+        local r = config.interactionAuraRadius or 50
+        auraRadiusSq = r * r
     end
 
     local function inAura(partPos)
@@ -8766,70 +8768,79 @@ function FireInteractions()
         return (diff.X * diff.X + diff.Y * diff.Y + diff.Z * diff.Z) <= auraRadiusSq
     end
 
+    local wantTouch, wantClick, wantPrompt, wantRemote = false, false, false, false
+    for _, t in ipairs(fireTypes) do
+        if t == "TouchInterest" then wantTouch = true
+        elseif t == "ClickDetectors" then wantClick = true
+        elseif t == "ProximityPrompts" then wantPrompt = true
+        elseif t == "Remotes" then wantRemote = true end
+    end
+    local touchParts, clicks, prompts, remotes = {}, {}, {}, {}
+    local all = workspace:GetDescendants()
+    for i = 1, #all do
+        local obj = all[i]
+        if wantTouch and obj:IsA("TouchTransmitter") then
+            local part = obj.Parent
+            if part and part:IsA("BasePart") and inAura(part.Position) then
+                touchParts[#touchParts + 1] = part
+            end
+        elseif wantClick and obj:IsA("ClickDetector") then
+            local parent = obj.Parent
+            local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
+            if inAura(pos) then clicks[#clicks + 1] = obj end
+        elseif wantPrompt and obj:IsA("ProximityPrompt") then
+            local parent = obj.Parent
+            local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
+            if inAura(pos) then prompts[#prompts + 1] = obj end
+        elseif wantRemote and (obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") or obj:IsA("UnreliableRemoteEvent")) then
+            remotes[#remotes + 1] = obj
+        end
+        if i % 4000 == 0 then task.wait() end
+    end
     local count = 0
+    local sentThisFrame = 0
+    local function pace()
+        sentThisFrame = sentThisFrame + 1
+        count = count + 1
+        if sentThisFrame >= 15 then
+            sentThisFrame = 0
+            task.wait()
+        end
+    end
 
-    for _, fireType in ipairs(fireTypes) do
-        if fireType == "TouchInterest" then
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("BasePart") and inAura(obj.Position) then
-                    for _, child in ipairs(obj:GetChildren()) do
-                        if child:IsA("TouchTransmitter") then
-                            for _, myPart in ipairs(character:GetDescendants()) do
-                                if myPart:IsA("BasePart") then
-                                    pcall(function()
-                                        firetouchinterest(myPart, obj, 0)
-                                        task.wait()
-                                        firetouchinterest(myPart, obj, 1)
-                                    end)
-                                end
-                            end
-                            count = count + 1
-                        end
-                    end
-                end
+    if myRoot then
+        for _, part in ipairs(touchParts) do
+            if part.Parent then
+                pcall(function()
+                    firetouchinterest(myRoot, part, 0)
+                    firetouchinterest(myRoot, part, 1)
+                end)
+                pace()
             end
-
-        elseif fireType == "ClickDetectors" then
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("ClickDetector") then
-                    local parent = obj.Parent
-                    local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
-                    if inAura(pos) then
-                        pcall(function()
-                            fireclickdetector(obj)
-                        end)
-                        count = count + 1
-                    end
+        end
+    end
+    for _, obj in ipairs(clicks) do
+        if obj.Parent then
+            pcall(fireclickdetector, obj)
+            pace()
+        end
+    end
+    for _, obj in ipairs(prompts) do
+        if obj.Parent then
+            pcall(fireproximityprompt, obj)
+            pace()
+        end
+    end
+    for _, obj in ipairs(remotes) do
+        if obj.Parent then
+            pcall(function()
+                if obj:IsA("RemoteFunction") then
+                    obj:InvokeServer()
+                else
+                    obj:FireServer()
                 end
-            end
-
-        elseif fireType == "ProximityPrompts" then
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("ProximityPrompt") then
-                    local parent = obj.Parent
-                    local pos = (parent and parent:IsA("BasePart")) and parent.Position or nil
-                    if inAura(pos) then
-                        pcall(function()
-                            fireproximityprompt(obj)
-                        end)
-                        count = count + 1
-                    end
-                end
-            end
-
-        elseif fireType == "Remotes" then
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") or obj:IsA("UnreliableRemoteEvent") then
-                    pcall(function()
-                        if obj:IsA("RemoteEvent") or obj:IsA("UnreliableRemoteEvent") then
-                            obj:FireServer()
-                        elseif obj:IsA("RemoteFunction") then
-                            obj:InvokeServer()
-                        end
-                    end)
-                    count = count + 1
-                end
-            end
+            end)
+            pace()
         end
     end
 
@@ -8843,7 +8854,7 @@ function StartLoopFire()
     config.worldLoopFireConnection = task_("loopFireLoop", function()
         while config.worldLoopFireEnabled do
             FireInteractions()
-            task.wait(config.worldLoopFireInterval or 1)
+            task.wait(math.max(config.worldLoopFireInterval or 1, 0.5))
         end
         config.worldLoopFireConnection = nil
     end)
@@ -17273,7 +17284,24 @@ local ReachTab = Window:Tab({
             visualizer.Transparency = value
         end
     })
-    
+    local function makeAutoSwingConnection()
+        local acc = 0
+        return game:GetService("RunService").Heartbeat:Connect(function(dt)
+            if not config.reach.autoSwing.enabled then return end
+            acc = acc + dt
+            local delay = math.max(tonumber(config.reach.autoSwing.delay) or 0.1, 0.05)
+            if acc < delay then return end
+            acc = 0
+            local char = excusemesir.Players.LocalPlayer.Character
+            local tool = char and char:FindFirstChildOfClass("Tool")
+            if tool then
+                pcall(function()
+                    tool:Activate()
+                end)
+            end
+        end)
+    end
+
     ReachTab:Toggle({
         Title = "Auto activate",
         Desc = "autoclicker 4 tools",
@@ -17285,16 +17313,7 @@ local ReachTab = Window:Tab({
                     config.reach.autoSwingConnection:Disconnect()
                 end
     
-                config.reach.autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                    if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
-                        local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
-                        if tool then
-                            pcall(function()
-                                tool:Activate()
-                            end)
-                        end
-                    end
-                end)
+                config.reach.autoSwingConnection = makeAutoSwingConnection()
             else
                 if config.reach.autoSwingConnection then
                     config.reach.autoSwingConnection:Disconnect()
@@ -17318,17 +17337,7 @@ local ReachTab = Window:Tab({
             config.reach.autoSwing.delay = value
             if config.reach.autoSwingConnection then
                 config.reach.autoSwingConnection:Disconnect()
-                config.reach.autoSwingConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                    if config.reach.autoSwing.enabled and excusemesir.Players.LocalPlayer.Character then
-                        local tool = excusemesir.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
-                        if tool then
-                            pcall(function()
-                                tool:Activate()
-                            end)
-                            task.wait(value)
-                        end
-                    end
-                end)
+                config.reach.autoSwingConnection = makeAutoSwingConnection()
             end
         end
     })
@@ -18044,9 +18053,9 @@ local WorldTab = Window:Tab({
         Step = 0.1,
         Suffix = "s",
         Value = {
-            Min = 0.1,
+            Min = 0.5,
             Max = 10,
-            Default = config.worldLoopFireInterval or 1
+            Default = math.max(config.worldLoopFireInterval or 1, 0.5)
         },
         Callback = function(value)
             config.worldLoopFireInterval = value
@@ -19386,7 +19395,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel (10/10/2026)",
-        Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed Bugs: 15",
+        Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed: Cause of high ping\nFixed Bugs: 15",
         Color = config.Gradow.uicolor.darkGray
     })
 end
