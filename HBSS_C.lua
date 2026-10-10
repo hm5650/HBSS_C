@@ -30,7 +30,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “sand.cc is somewhere here :o” 
+           “idk wat to type here lmfao” 
                                            
                                     - Gpssickle
 ]])
@@ -148,14 +148,11 @@ local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) -- I hate http 429 errors...
 -- other wallmart variables
 local gui = {}
-local ValidTargetParts = {"Head", "HumanoidRootPart", "Random"}
 local Camera = workspace.CurrentCamera
-local FindFirstChild = game.FindFirstChild
 local camera = workspace.CurrentCamera
 local humanoid = nil
 local character = nil
 local updateESPColors = function() end
-local clone_ref = cloneref or function(v) return v end
 local folkenstein______ = nil
 local callmyoldname = nil
 local mouseywousey = nil
@@ -2898,6 +2895,12 @@ local config = {
         },
     },
 }
+local savePara, autolaodpara, kshakwieudhjs_skjwnejzjs, updateTeamTargetModes, applyESPMaster, addesp,
+      autoFarmProcess, teleportTargetToLocalPlayerFront, returnToOriginalPosition, high, createLineESP, removeLineESP,
+      removeHighlightESP, removeESPLabel, makeesp, restorePartForPlayer, updateproxyhb, restoreTorso,
+      targethb, applyhb, restoreAutoRotate, aimbotfov, updateAimbotFOVRing, toggle360Aimbot,
+      handleAimbotToggle, toggleTriggerBot, spinbotUpdate, toggleBHop, CreateQT, KillQT,
+      UpdateQT, enablethecoolindicator, Window
 local rng_s = {
     lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)],
     Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)],
@@ -3620,21 +3623,6 @@ local function isTeammate(p)
     return false
 end
 
-local function isInTargetedSpecificTeam(player)
-    if not config.specificTeamTarget or #config.targetedTeams == 0 then
-        return true
-    end
-    
-    local team = player.Team
-    if not team then return false end
-    
-    for _, teamName in ipairs(config.targetedTeams) do
-        if team.Name == teamName then
-            return true
-        end
-    end
-    return false
-end
 _ = print
 local function cmods()
     local player = excusemesir.Players.LocalPlayer
@@ -3939,6 +3927,9 @@ local function recmods()
     end)
 end
 
+local saveConfig, deleteSave, deleteAllSaves, loadSave, SETDAAUTOLAOD_, nullifymahfilez_,
+      autolaodbssthing_, startdaautlado_
+do
 local function getSavePath(saveName)
     return getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Folder .. "/" .. saveName .. getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.Extension
 end
@@ -4162,7 +4153,7 @@ local function gengameabbr(gameName)
     return abbr
 end
 
-local function saveConfig(saveName)
+function saveConfig(saveName)
     if not saveName or saveName == "" then
         local gameName = skejejdisihwnez_akwiwj_mdnd()
         if gameName then
@@ -4545,7 +4536,7 @@ local function saveConfig(saveName)
         return false
     end
 end
-local function deleteSave(saveName)
+function deleteSave(saveName)
     if not saveName or saveName == "" then
         n({
             Title = "Gravel.cc",
@@ -4650,7 +4641,7 @@ local function deleteSave(saveName)
         return false
     end
 end
-local function deleteAllSaves()
+function deleteAllSaves()
     local saves = getSaveList()
     if #saves == 0 then
         n({
@@ -4823,7 +4814,7 @@ local function deleteAllSaves()
 end
 
 -- ^_^/
-local function loadSave(saveName)
+function loadSave(saveName)
     if not saveName or saveName == "" then
         n({
             Title = "Gravel.cc",
@@ -5638,7 +5629,7 @@ function uhhhhgetnamesbetter(saveName)
     end
     return nil
 end
-local function savePara()
+function savePara()
     local saves = getSaveList()
     local saveText = "Available Saves:\n"
     
@@ -5706,7 +5697,7 @@ local function ineedgaemforaotu_()
     end
     return "Unknown Game"
 end
-local function SETDAAUTOLAOD_(saveName)
+function SETDAAUTOLAOD_(saveName)
     if not saveName or saveName == "" then
         n({
             Title = "Gravel.cc",
@@ -5789,7 +5780,7 @@ local function SETDAAUTOLAOD_(saveName)
         return false
     end
 end
-local function nullifymahfilez_()
+function nullifymahfilez_()
     local gameId = tostring(game.PlaceId)
     local gameName = ineedgaemforaotu_()
     
@@ -5835,7 +5826,7 @@ local function nullifymahfilez_()
     end
 end
 
-local function autolaodbssthing_()
+function autolaodbssthing_()
     local memory = raedmahbrain_()
     local modified = false
     local removedCount = 0
@@ -5868,7 +5859,7 @@ local function autolaodbssthing_()
     return removedCount
 end
 
-local function autolaodpara()
+function autolaodpara()
     local memory = raedmahbrain_()
     local text = "Autoload Settings:\n"
     local hasEntries = false
@@ -5893,7 +5884,7 @@ local function autolaodpara()
         config.varibz.autoloadParagraph:SetDesc(text)
     end
 end
-local function startdaautlado_()
+function startdaautlado_()
     local gameId = tostring(game.PlaceId)
     autolaodbssthing_()
 
@@ -5931,12 +5922,6 @@ local function startdaautlado_()
 end
 SaveUI:init(WindUI, config)
 BMG:init(WindUI, config)
-local function loadUISettings()
-    return SaveUI:autoLoad()
-end
-local function saveUISettings(theme, transparency)
-    return SaveUI:save(theme, transparency)
-end
 
 function detectrem__________()
     local detected = {}
@@ -5996,72 +5981,11 @@ function rerempara________()
     text = text .. "\n\nTip: use rspy :p"
     return text
 end
-local function ignorethisandthat(additionalIgnore)
-    local ignoreList = {}
-    if localPlayer and localPlayer.Character then
-        table.insert(ignoreList, localPlayer.Character)
-        for _, part in ipairs(localPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                table.insert(ignoreList, part)
-            end
-        end
-    end
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
-        if otherPlayer.Character then
-            table.insert(ignoreList, otherPlayer.Character)
-            for _, part in ipairs(otherPlayer.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
-                        table.insert(ignoreList, part)
-                    end
-                end
-            end
-        end
-    end
-    for _, proxyPart in pairs(config.proxyHitboxes) do
-        if proxyPart and proxyPart.Parent then
-            table.insert(ignoreList, proxyPart)
-        end
-    end
-    for player, data in pairs(config.hitboxExpandedParts) do
-        if data and data.part and data.part.Parent then
-            table.insert(ignoreList, data.part)
-        end
-    end
-    if additionalIgnore then
-        if type(additionalIgnore) == "table" then
-            for _, item in ipairs(additionalIgnore) do
-                if item then
-                    table.insert(ignoreList, item)
-                    if item:IsA("Model") or item:IsA("Character") then
-                        for _, part in ipairs(item:GetDescendants()) do
-                            if part:IsA("BasePart") then
-                                if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
-                                    table.insert(ignoreList, part)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        else
-            table.insert(ignoreList, additionalIgnore)
-            if additionalIgnore:IsA("Model") or additionalIgnore:IsA("Character") then
-                for _, part in ipairs(additionalIgnore:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        if part.Name ~= "HumanoidRootPart" and part.Name ~= "Torso" and part.Name ~= "Head" and part.Name ~= "UpperTorso" and part.Name ~= "LowerTorso" then
-                            table.insert(ignoreList, part)
-                        end
-                    end
-                end
-            end
-        end
-    end
-    
-    return ignoreList
 end
 
-local function hasForcefield(character)
+local hasForcefield, isPlayerBeingTargeted, unsetSpawnLocation, dothethangcframe, ineednextgenrep, nextgenrepre
+do
+function hasForcefield(character)
     if not character then return false end
     
     if config.ignoreForcefield == false then
@@ -6104,7 +6028,7 @@ local function hasForcefield(character)
     return false
 end
 
-local function isPlayerBeingTargeted(targetPlayer)
+function isPlayerBeingTargeted(targetPlayer)
     if config.SA2_Enabled and config.SA2_currentTarget == targetPlayer then
         return true, "silentaim_hk"
     end
@@ -6120,62 +6044,8 @@ local function isPlayerBeingTargeted(targetPlayer)
     return false, nil
 end
 
-local function GetRandomTargetPart()
-    return ValidTargetParts[math.random(1, #ValidTargetParts)]
-end
-local function GetActualTargetPart()
-    if config.SA2_TargetPart == "Random" then
-        return GetRandomTargetPart()
-    end
-    return config.SA2_TargetPart
-end
 
-local function ArePlayersSameTeam(player1, player2)
-    if not player1 or not player2 then return false end
-    
-    if config.specificTeamTarget then
-        return isInSpecificTeam(player1) and isInSpecificTeam(player2)
-    end
-    
-    local team1 = player1.Team
-    local team2 = player2.Team
-    if not team1 or not team2 then return false end
-    
-    return team1 == team2
-end
-local function ShouldTargetPlayer(targetPlayer)
-    if targetPlayer == plr then return false end
-    if config.ignoreForcefield and targetPlayer.Character and hasForcefield(targetPlayer.Character) then
-        return false
-    end
-    
-    if config.specificTeamTarget then
-        return isInSpecificTeam(targetPlayer)
-    end
-    
-    if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Player") then
-        if config.SA2_TeamTarget == "All" then
-            return true
-        elseif config.SA2_TeamTarget == "Enemies" then
-            return not ArePlayersSameTeam(plr, targetPlayer)
-        elseif config.SA2_TeamTarget == "Teams" then
-            return ArePlayersSameTeam(plr, targetPlayer)
-        end
-        return false
-    end
-    if typeof(targetPlayer) == "Instance" and targetPlayer:IsA("Model") then
-        if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
-            if config.SA2_TeamTarget == "All" then return true end
-            if config.SA2_TeamTarget == "Enemies" then return true end
-            if config.SA2_TeamTarget == "Teams" then return false end
-            return true
-        end
-        return false
-    end
-    
-    return false
-end
-local function kshakwieudhjs_skjwnejzjs()
+function kshakwieudhjs_skjwnejzjs()
     if config.masterTeamTarget == "All" then
         config.SA2_TeamTarget = "All"
         config.targetMode = "All"
@@ -6278,31 +6148,6 @@ local function IsPlayerVisible(player, maxDistance)
         return true
     end
     return false
-end
-local function isTargetVisible(target, maxDistance)
-    local now = tick()
-    if now - config.varibz.sa2dump.lclr > 60 then
-        config.varibz.sa2dump.data = {}
-        config.varibz.sa2dump.cache = {}
-        config.varibz.sa2dump.lclr = now
-    end
-    local targetId = typeof(target) == "Instance" and target:IsA("Player") and "player_" .. tostring(target.UserId) or tostring(target)
-    local cacheKey = targetId .. "_" .. tostring(maxDistance)
-    local cached = config.varibz.sa2dump.cache[cacheKey]
-    if cached and (now - cached.time) < config.varibz.sa2dump.t then
-        return cached.visible
-    end
-    local visible = IsPlayerVisible(target, maxDistance)
-    config.varibz.sa2dump.cache[cacheKey] = {
-        visible = visible,
-        time = now
-    }
-    local regularCacheKey = getVis(target, maxDistance)
-    config.varibz.sa2dump.data[regularCacheKey] = {
-        visible = visible,
-        time = now
-    }
-    return visible
 end
 local function GetClosestPlayer()
     if not config.varibz.sa2this then
@@ -6702,15 +6547,6 @@ local function predictthatpos(targetPart, velocityOverride)
     return targetPart.Position + (velocity * clampedTime)
 end
 
-local function calc_chance(chance)
-    if chance == 100 then
-        return true
-    elseif chance <= 0 then
-        return false
-    else
-        return math.random(1, 100) <= chance
-    end
-end
 
 -- so this whole time pcalls were causing lag (apparently... & didn't even know... mb)
 if callmyoldname then
@@ -7187,24 +7023,7 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
     end
 end)
 
-local function setSpawnLocation(positionCFrame)
-    config.SSEnabled = true
-    config.SpawnLocation = positionCFrame
-    
-    if config.SSConnection then
-        config.SSConnection:Disconnect()
-    end
-    
-    config.SSConnection = excusemesir.Players.LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-        if config.SSEnabled and config.SpawnLocation then
-            local newRoot = newCharacter:WaitForChild("HumanoidRootPart", 5)
-            if newRoot then
-                newRoot.CFrame = config.SpawnLocation
-            end
-        end
-    end)
-end
-local function unsetSpawnLocation()
+function unsetSpawnLocation()
     config.SSEnabled = false
     config.SpawnLocation = nil
     
@@ -7220,7 +7039,7 @@ game:GetService('Players').LocalPlayer.Idled:Connect(function()
     end
 end)
 
-local function dothethangcframe()
+function dothethangcframe()
     local Players = game:GetService("Players")
     local RunService = game:GetService("RunService")
     local Camera = workspace.CurrentCamera
@@ -7697,7 +7516,7 @@ excusemesir.Players.LocalPlayer.CharacterAdded:Connect(function()
     end
 end)
 
-local function ineednextgenrep(state)
+function ineednextgenrep(state)
     if state then
         local char = LocalPlayer.Character
         if not char then 
@@ -7892,7 +7711,7 @@ local function gonextgenrep()
         end
     end
 end
-local function nextgenrepre()
+function nextgenrepre()
     if config.desyncRespawnConnection then
         config.desyncRespawnConnection:Disconnect()
     end
@@ -7912,7 +7731,11 @@ if not math.clamp then
     end
 end
 
-local function updateTeamTargetModes()
+end
+local stopAutoFarm, antiAimUpdate, ApplyProximityPrompts, ShouldXrayPart, ApplyXray, UpdateXrayTransparency,
+      RestoreXray, FireInteractions, StartLoopFire, StopLoopFire
+do
+function updateTeamTargetModes()
     local masterTeamSelection = config.masterTeamTarget or "Enemies"
     
     if masterTeamSelection == "All" then
@@ -7980,7 +7803,7 @@ local function updateTeamTargetModes()
     updateESPColors()
 end
 
-local function applyESPMaster(state)
+function applyESPMaster(state)
     config.espMasterEnabled = state
     if not state then
         for target in pairs(config.espData) do
@@ -8033,7 +7856,7 @@ excusemesir.RunService.Heartbeat:Connect(function()
     end
 end)
 
-local function addesp(targetPlayer)
+function addesp(targetPlayer)
     if not targetPlayer then return false end
 
     if typeof(targetPlayer) == "Instance" and
@@ -8282,7 +8105,7 @@ local function checkTargetHealth(target)
     
     return humanoid.Health > 0
 end
-local function autoFarmProcess()
+function autoFarmProcess()
     if config.autoFarmLoop then
         config.autoFarmLoop:Disconnect()
         config.autoFarmLoop = nil
@@ -8370,7 +8193,7 @@ local function autoFarmProcess()
         end
     end)
 end
-local function teleportTargetToLocalPlayerFront(target)
+function teleportTargetToLocalPlayerFront(target)
     local targetChar = getTargetCharacter(target)
     if not targetChar or not localPlayer.Character then 
         return false 
@@ -8397,7 +8220,7 @@ local function teleportTargetToLocalPlayerFront(target)
     return true
 end
 
-local function stopAutoFarm()
+function stopAutoFarm()
     if config.autoFarmLoop then
         config.autoFarmLoop:Disconnect()
         config.autoFarmLoop = nil
@@ -8462,7 +8285,7 @@ local function teleportLocalPlayer(direction, distance)
     config.isTeleported = true
 end
 
-local function returnToOriginalPosition()
+function returnToOriginalPosition()
     if not config.originalPosition or not localPlayer.Character then return end
     local humanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
@@ -8654,7 +8477,7 @@ local function findClosestEnemy()
     
     return best
 end
-local function antiAimUpdate()
+function antiAimUpdate()
     if not config.antiAimEnabled then
         if config.isTeleported then
             returnToOriginalPosition()
@@ -8806,7 +8629,7 @@ local function antiAimUpdate()
 end
 
 
-local function ApplyProximityPrompts()
+function ApplyProximityPrompts()
     for _, obj in ipairs(workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") then
             pcall(function()
@@ -8817,7 +8640,7 @@ local function ApplyProximityPrompts()
         end
     end
 end
-local function ShouldXrayPart(part)
+function ShouldXrayPart(part)
     if not config.worldXrayBlacklist then
         config.worldXrayBlacklist = {"Humanoids"}
     end
@@ -8878,7 +8701,7 @@ local function ShouldXrayPart(part)
     end
     return true
 end
-local function ApplyXray()
+function ApplyXray()
     if not config.worldXrayOriginalValues then
         config.worldXrayOriginalValues = {}
     end
@@ -8891,7 +8714,7 @@ local function ApplyXray()
         end
     end
 end
-local function UpdateXrayTransparency()
+function UpdateXrayTransparency()
     if not config.worldXrayOriginalValues then return end
     for obj, _ in pairs(config.worldXrayOriginalValues) do
         if obj and obj.Parent and ShouldXrayPart(obj) then
@@ -8899,7 +8722,7 @@ local function UpdateXrayTransparency()
         end
     end
 end
-local function RestoreXray()
+function RestoreXray()
     if config.worldXrayConnection then
         config.worldXrayConnection:Disconnect()
         config.worldXrayConnection = nil
@@ -8915,7 +8738,7 @@ local function RestoreXray()
     end
     config.worldXrayOriginalValues = {}
 end
-local function FireInteractions()
+function FireInteractions()
     local fireTypes = config.worldFireType or {"TouchInterest"}
     if type(fireTypes) == "string" then
         fireTypes = {fireTypes}
@@ -9012,7 +8835,7 @@ local function FireInteractions()
 
     return count
 end
-local function StartLoopFire()
+function StartLoopFire()
     if config.worldLoopFireConnection then
         pcall(function() task.cancel(config.worldLoopFireConnection) end)
         config.worldLoopFireConnection = nil
@@ -9025,7 +8848,7 @@ local function StartLoopFire()
         config.worldLoopFireConnection = nil
     end)
 end
-local function StopLoopFire()
+function StopLoopFire()
     config.worldLoopFireEnabled = false
     if config.worldLoopFireConnection then
         pcall(function() task.cancel(config.worldLoopFireConnection) end)
@@ -9145,9 +8968,11 @@ do
         end
     end)
 end
-
-
-local function RFD(targetPlayer)
+end
+local RFD, wallCheck, updateLineESP, toggleHighlightESP, toggleTextESP, toggleBoxESP,
+      toggleHealthESP, d, espRefresher
+do
+function RFD(targetPlayer)
     local char = getTargetCharacter(targetPlayer)
     if not char then return end
     local head = char:FindFirstChild("Head")
@@ -9165,7 +8990,7 @@ local function RFD(targetPlayer)
     end
 end
 
-local function wallCheck(targetPos, sourcePos)
+function wallCheck(targetPos, sourcePos)
     if not config.wallc then
         return true
     end
@@ -9236,7 +9061,7 @@ local function wallCheck(targetPos, sourcePos)
     
     return false
 end
-local function high(targetPlayer)
+function high(targetPlayer)
     if not targetPlayer then return end
     if not config.espMasterEnabled or not config.prefHighlightESP then return end
     if not addesp(targetPlayer) then return end
@@ -9278,7 +9103,7 @@ local function high(targetPlayer)
     config.highlightData[targetPlayer] = highlight
 end
 
-local function createLineESP(targetPlayer)
+function createLineESP(targetPlayer)
     if config.lineESPData[targetPlayer] then
         removeLineESP(targetPlayer)
     end
@@ -9297,7 +9122,7 @@ local function createLineESP(targetPlayer)
 end
 
 
-local function removeLineESP(targetPlayer)
+function removeLineESP(targetPlayer)
     if config.lineESPData[targetPlayer] then
         if config.lineESPData[targetPlayer].drawing then
             config.lineESPData[targetPlayer].drawing:Remove()
@@ -9325,7 +9150,7 @@ local function getLineStartPosition()
         return Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
     end
 end
-local function updateLineESP()
+function updateLineESP()
     if not config.espMasterEnabled or not config.lineESPEnabled then
         for targetPlayer, data in pairs(config.lineESPData) do
             if data.drawing then
@@ -9429,7 +9254,7 @@ local function updateLineESP()
         removeLineESP(targetPlayer)
     end
 end
-local function removeHighlightESP(targetPlayer)
+function removeHighlightESP(targetPlayer)
     if not targetPlayer then return end
     local h = config.highlightData[targetPlayer]
     if h then
@@ -9442,7 +9267,7 @@ local function removeHighlightESP(targetPlayer)
     end
 end
 
-local function removeESPLabel(targetPlayer)
+function removeESPLabel(targetPlayer)
     if not targetPlayer then return end
     local data = config.espData[targetPlayer]
     if not data then return end
@@ -9466,7 +9291,7 @@ local function healthColor(humanoid)
     local g = health
     return Color3.new(r, g, 0)
 end
-local function makeesp(targetPlayer)
+function makeesp(targetPlayer)
     if not targetPlayer then return end
     if not addesp(targetPlayer) then return end
     
@@ -9885,7 +9710,7 @@ local function updateESPColors()
         end
     end
 end
-local function toggleHighlightESP(enabled)
+function toggleHighlightESP(enabled)
     config.prefHighlightESP = enabled
     config.highlightesp = enabled and config.espMasterEnabled or false
     if config.espMasterEnabled and enabled then
@@ -9902,7 +9727,7 @@ local function toggleHighlightESP(enabled)
     end
     updateESPColors()
 end
-local function toggleTextESP(enabled)
+function toggleTextESP(enabled)
     config.prefTextESP = enabled
     config.espon = enabled and config.espMasterEnabled or false
 
@@ -9922,7 +9747,7 @@ local function toggleTextESP(enabled)
     end
 end
 
-local function toggleBoxESP(enabled)
+function toggleBoxESP(enabled)
     config.prefBoxESP = enabled
     if config.espMasterEnabled then
         for _, target in ipairs(getAllTargets()) do
@@ -9943,7 +9768,7 @@ local function toggleBoxESP(enabled)
     end
 end
 
-local function toggleHealthESP(enabled)
+function toggleHealthESP(enabled)
     config.prefHealthESP = enabled
     if config.espMasterEnabled then
         for _, target in ipairs(getAllTargets()) do
@@ -9956,12 +9781,12 @@ local function toggleHealthESP(enabled)
         updateESPColors()
     end
 end
-local function d()
+function d()
     for _, target in ipairs(getAllTargets()) do
         RFD(target)
     end
 end
-local function espRefresher()
+function espRefresher()
     if not config.espMasterEnabled then 
         for target, _ in pairs(config.espData) do
             removeESPLabel(target)
@@ -10011,16 +9836,11 @@ local function espRefresher()
     end
     updateESPColors()
 end
-
-local function saveOriginalPartInfo(targetPlayer, part)
-    if not targetPlayer or not part then return end
-    config.originalSizes[targetPlayer] = {
-        partName = part.Name or "Head",
-        size = part.Size,
-    }
 end
+local chooseBodyPartInstance, applySizeToPart, expandhb, updateeveryproxyeva, hb
+do
 
-local function chooseBodyPartInstance(target)
+function chooseBodyPartInstance(target)
     local char = getTargetCharacter(target)
     if not char then return nil, "Head" end
 
@@ -10068,7 +9888,7 @@ local function chooseBodyPartInstance(target)
         return found, (found and found.Name) or "Head"
     end
 end
-local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
+function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     local char = getTargetCharacter(targetPlayer)
     if not char or targetPlayer == localPlayer then return end
     if not plralive(targetPlayer) then return end
@@ -10191,7 +10011,7 @@ local function applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         config.activeApplied[targetPlayer] = nil
     end
 end
-local function restorePartForPlayer(targetPlayer)
+function restorePartForPlayer(targetPlayer)
     if not targetPlayer or targetPlayer == localPlayer then return end
     local char = getTargetCharacter(targetPlayer)
     local original = config.originalSizes[targetPlayer]
@@ -10292,7 +10112,7 @@ local function tnormalsize(targetPlayer)
     end
 end
 
-local function updateproxyhb(targetPlayer)
+function updateproxyhb(targetPlayer)
     if not targetPlayer then return end
     if not config.hitboxVisualizer.enabled then
         if config.proxyHitboxes[targetPlayer] then
@@ -10332,7 +10152,7 @@ local function updateproxyhb(targetPlayer)
     end
 end
 
-local function expandhb(targetPlayer, size)
+function expandhb(targetPlayer, size)
     if not targetPlayer then return end
     if targetPlayer == localPlayer then return end
     if not plralive(targetPlayer) then return end  
@@ -10383,7 +10203,7 @@ local function expandhb(targetPlayer, size)
     end
 end
 
-local function restoreTorso(targetPlayer)
+function restoreTorso(targetPlayer)
     if not targetPlayer then return end  
 
     local original = config.hitboxOriginalSizes[targetPlayer]
@@ -10462,7 +10282,7 @@ local function updateHitboxes()
     end
 end
 
-local function targethb(player)
+function targethb(player)
     if not player or player == localPlayer then return false end  
     if not plralive(player) then return false end  
     local char = getTargetCharacter(player)
@@ -10579,7 +10399,7 @@ function oehsbwkduxuhejwjwhjxue_eijwjdnxj(player)
     end
 end
 
-local function updateeveryproxyeva()
+function updateeveryproxyeva()
     if not config.hitboxVisualizer.enabled then
         for player, proxy in pairs(config.proxyHitboxes) do
             if proxy and proxy.Parent then
@@ -10609,7 +10429,7 @@ local function updateeveryproxyeva()
     end
 end
 
-local function applyhb()
+function applyhb()
     if not config.hitboxEnabled then
         for player in pairs(config.hitboxExpandedParts) do
             restoreTorso(player)
@@ -10630,7 +10450,7 @@ local function applyhb()
         dbsjhsbsjzhshauwhd_siwjennxjsj(player)
     end
 end
-local function hb()
+function hb()
     local toProcess = {}
     for playerObj, targetSize in pairs(config.targethbSizes) do
         table.insert(toProcess, {playerObj = playerObj, targetSize = targetSize})
@@ -10689,32 +10509,9 @@ local function hb()
     table.clear(config.varibz.targetsToRemove)
     updateHitboxes()
 end
-local function handleHitboxForRespawnedPlayer(player)
-    if not config.hitboxEnabled then return end
-    
-    if player.Character then
-        task.wait(0.5)
-        
-        local char = player.Character
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            if config.hitboxOriginalSizes[player] and config.hitboxOriginalSizes[player].part and config.hitboxOriginalSizes[player].part.Parent then
-                restoreTorso(player)
-            end
-            
-            if humanoid.Health > 0 and targethb(player) then
-                expandhb(player, config.hitboxSize)
-            end
-            
-            humanoid.Died:Connect(function()
-                if config.hitboxEnabled then
-                    restoreTorso(player)
-                end
-            end)
-        end
-    end
 end
-
+local aimbotUpdate, updateTriggerBotFOV
+do
 local function shouldTargetAimbot(target)
     if not target then return false end
     if target == localPlayer then return false end
@@ -10821,29 +10618,9 @@ local function aimbotWallCheck(targetPos, sourcePos)
     }
     return visible
 end
-local function getAimbotTargetPart(target)
-    if not target then return nil end
-    local partName = config.aimbotTargetPart or "Head"
-    local char = getTargetCharacter(target)
-    if not char then return nil end
-    
-    if partName == "Head" then
-        return char:FindFirstChild("Head")
-    elseif partName == "HumanoidRootPart" then
-        return char:FindFirstChild("HumanoidRootPart")
-    elseif partName == "Torso" then
-        return char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-    else
-        return char:FindFirstChild("Head")
-    end
-end
 
-local function smoothAim(currentCFrame, targetCFrame, strength)
-    strength = math.clamp(strength or 0.5, 0, 1)
-    return currentCFrame:Lerp(targetCFrame, strength)
-end
 
-local function restoreAutoRotate()
+function restoreAutoRotate()
     local char = localPlayer.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
     if hum and hum.AutoRotate == false then
@@ -10871,7 +10648,7 @@ local function predictthatposagain(targetPart)
     return targetPart.Position + (vel * clampedTime)
 end
 
-local function aimbotUpdate()
+function aimbotUpdate()
     if not config.aimbotEnabled then
         if config.aimbotCurrentTarget then
             config.aimbotCurrentTarget = nil
@@ -11060,7 +10837,7 @@ local currentCFrame = camera.CFrame
     end
 end
 
-local function aimbotfov()
+function aimbotfov()
     if config.aimbotFOVRing and config.aimbotFOVRing.ScreenGui 
        and config.aimbotFOVRing.ScreenGui.Parent 
        and config.aimbotFOVRing.LastSize == config.aimbotFOVSize then
@@ -11105,7 +10882,7 @@ local function aimbotfov()
     return config.aimbotFOVRing
 end
 
-local function updateAimbotFOVRing()
+function updateAimbotFOVRing()
     if config.aimbotFOVRing and config.aimbotFOVRing.RingFrame then
         if config.aimbot360Enabled and config.aimbotEnabled then
             config.aimbotFOVRing.RingFrame.Visible = false
@@ -11144,7 +10921,7 @@ local function aimbot360UpdateLoop()
         config.varibz.aimbot360LoopTask = nil
     end)
 end
-local function toggle360Aimbot(state)
+function toggle360Aimbot(state)
     if state then
         if not config.aimbotEnabled then
             config.aimbot360Enabled = false
@@ -11163,7 +10940,7 @@ local function toggle360Aimbot(state)
     end
 end
 
-local function handleAimbotToggle(state)
+function handleAimbotToggle(state)
     config.aimbotEnabled = state
     
     if state then
@@ -11453,7 +11230,7 @@ local function createTriggerBotFOV()
 end
 
 
-local function updateTriggerBotFOV()
+function updateTriggerBotFOV()
     if config.tbot.fovCircle and config.tbot.fovCircle.RingFrame then
         config.tbot.fovCircle.RingFrame.Size = UDim2.new(0, config.tbot.fovRadius * 2, 0, config.tbot.fovRadius * 2)
         config.tbot.fovCircle.RingFrame.Visible = config.tbot.enabled and config.tbot.fovVisible
@@ -11462,7 +11239,7 @@ local function updateTriggerBotFOV()
     end
 end
 
-local function toggleTriggerBot(state)
+function toggleTriggerBot(state)
     config.tbot.enabled = state
     
     if state then
@@ -11487,7 +11264,7 @@ local function toggleTriggerBot(state)
     end
 end
 
-local function spinbotUpdate()
+function spinbotUpdate()
     if not config.spinbot.enabled then
         if config.varibz.spinbotConnection then
             config.varibz.spinbotConnection:Disconnect()
@@ -11546,7 +11323,7 @@ local function bhopUpdate()
     end
 end
 
-local function toggleBHop(state)
+function toggleBHop(state)
     config.bhop.enabled = state
     
     if state then
@@ -11562,8 +11339,10 @@ local function toggleBHop(state)
         end
     end
 end
-
-local function ineedinvistool()
+end
+local ineedinvistool, heartbeatConnection
+do
+function ineedinvistool()
 local offset = 1100
 local invisible = false
 local grips = {}
@@ -11864,7 +11643,8 @@ task_("espColorLoop", function()
         task.wait(1 / math.max(config.esphertz or 100, 1))
     end
 end)
-local heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
+heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
+end
 local yesh = function()
     if not excusemesir.UserInputService.TouchEnabled then return end
     if config.MobileGui then return end
@@ -12229,7 +12009,9 @@ local yesh = function()
         end
     end
 end
-local function CreateQT()
+local onRenderStep, cos, cleanplrdata, setupPlayerListeners, autoloadSuccess
+do
+function CreateQT()
     if gui.mobileGui and gui.mobileGui.ScreenGui and gui.mobileGui.ScreenGui.Parent then
         gui.mobileGui.ScreenGui.Enabled = true
         return
@@ -12650,7 +12432,7 @@ local function CreateQT()
     end
 end
 
-local function KillQT()
+function KillQT()
     if gui and gui.mobileGui and gui.mobileGui.ScreenGui then
         pcall(function()
             gui.mobileGui.ScreenGui:Destroy()
@@ -12658,7 +12440,7 @@ local function KillQT()
     end
     gui.mobileGui = nil
 end
-local function UpdateQT()
+function UpdateQT()
     if not config.QuickToggles then
         if gui.mobileGui and gui.mobileGui.ScreenGui then
             gui.mobileGui.ScreenGui.Enabled = false
@@ -12714,7 +12496,7 @@ local function UpdateQT()
 end
 
 
-local function onRenderStep()
+function onRenderStep()
     config.varibz.sa1dump.rs = config.varibz.sa1dump.rs + 1
     if config.varibz.sa1dump.rs % config.varibz.sa1stuff ~= 0 then return end
     
@@ -13072,7 +12854,7 @@ local function onRenderStep()
         end
     end
 end
-local function cos(input)
+function cos(input)
     if not input then return nil end
     local function proc(data)
         local result = ""
@@ -13131,7 +12913,7 @@ local function setupDeathListener(targetPlayer)
     end)
 end
 
-local function cleanplrdata(targetPlayer)
+function cleanplrdata(targetPlayer)
     if not targetPlayer then return end
 
     config.autoFarmOriginalPositions[targetPlayer] = nil
@@ -13179,7 +12961,7 @@ local function cleanplrdata(targetPlayer)
         updateESPColors()
     end
 end
-local function setupPlayerListeners(pl)
+function setupPlayerListeners(pl)
     if pl == localPlayer then return end
     if config.playerConnections[pl] then
         for _, conn in ipairs(config.playerConnections[pl]) do
@@ -13266,13 +13048,6 @@ local function setupPlayerListeners(pl)
             expandhb(pl, config.hitboxSize)
         end
     end
-end
-local function safeGetCharacter()
-    if not localPlayer then return nil end
-    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    return character, humanoid, rootPart
 end
 
 -- i had to use sum random gui creator for ts 🥀🥀🥀🥀
@@ -13812,7 +13587,7 @@ function jdjwhejdijahweki____sidjnww_ieje()
 
     return ui
 end
-local function enablethecoolindicator(state)
+function enablethecoolindicator(state)
     config.indicator.enabled = state
     if state and config.indicator.alwaysVisible and gui.indicator then
         local ui = gui.indicator
@@ -13849,7 +13624,8 @@ local function enablethecoolindicator(state)
         end
     end
 end
-local autoloadSuccess = startdaautlado_()
+autoloadSuccess = startdaautlado_()
+end
 if autoloadSuccess then
     print("autoloaded on dis gaem :3")
 end
@@ -13870,6 +13646,7 @@ end
 ]]
 -- ui neuron activation starter
 math.randomseed(os.time())
+do
 local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
 local isTablet = excusemesir.UserInputService.TouchEnabled and excusemesir.UserInputService.KeyboardEnabled
 local size = config.Gradow.windowSize.pc
@@ -13879,7 +13656,7 @@ elseif isTablet then
     size = config.Gradow.windowSize.tablet
 end
 
-local Window = WindUI:CreateWindow({
+Window = WindUI:CreateWindow({
     Title = rng5(),
     Author = "[dis guy Gpssickle]",
     Folder = "Gravel_Saves",
@@ -13909,6 +13686,7 @@ local Window = WindUI:CreateWindow({
 loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
 jsnwekixuzjakwio_textnsiehne_()
+end
 local function rng6()
     if config.varibz.rng6connection then
         pcall(function() config.varibz.rng6connection:Disconnect() end)
@@ -19606,9 +19384,14 @@ InfoTab:Space()
         Desc = "sry lol I was sick :v\nMoved Triggerbot to new TBotTab\nUsing: New WindUI Elements\nAdded: interaction Aura to Worldtab\nAdded: Custom Mobile Layout\nAdded: Triggerbot & Custom Mobile Layout to Quicktoggles\nChanged: Triggerbot is now Mobile-Friendly-ish\nAdded: Freecam\nAdded: Notification toggle to VisualsTab\nChanged: The script ''Optiz'' is now changed to ''Sand.cc''",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (10/10/2026)",
+        Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed Bugs: 15",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 end
--- tsu
+--tsu
 --[[
     InfoTab:Paragraph({
         Title = "Gravel (DD/10/2026)",
@@ -19617,6 +19400,7 @@ end
     })
 ]]
 
+do
 local fovScreenGui = Instance.new("ScreenGui")
 fovScreenGui.Name = "391716637363627_836263736_3762627_"
 fovScreenGui.ResetOnSpawn = false
@@ -19654,7 +19438,7 @@ gui.MainFrame = mainFrame
 gui.RingHolder = ringHolder
 gui.RingStroke = ringStroke
 aimbotfov()
-
+end
 local function sjuwhjwjeeuhdjxoah_iejwendkisj()
     plr.CharacterAdded:Connect(function(character)
         if config.varibz.respawnLock then
