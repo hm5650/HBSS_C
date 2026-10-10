@@ -20161,44 +20161,73 @@ task_("patcherLoop", function()
                 end
             end
         end
-        if config.skyboxValue ~= config.varibz.lastSkybox then
-            config.varibz.lastSkybox = config.skyboxValue
-            local lighting = game:GetService("Lighting")
-            local skyboxInput = tostring(config.skyboxValue or ""):gsub("%s+", "")
-            local existingSky = lighting:FindFirstChildOfClass("Sky")
-            if config.originalSkybox == nil then
-                if existingSky then
-                    config.originalSkybox = existingSky:Clone()
-                else
-                    config.originalSkybox = "none"
-                end
+        do
+            local sandCC = (getgenv and getgenv().__SandCC) or nil
+            local sandOn = false
+            if type(sandCC) == "table" and type(sandCC.graySkyActive) == "function" then
+                local okS, resS = pcall(sandCC.graySkyActive)
+                sandOn = okS and resS == true
             end
-            local isDefault = (skyboxInput == "" or skyboxInput == "0" or skyboxInput:upper() == "NAN")
-            if isDefault then
-                if existingSky then
-                    existingSky:Destroy()
-                end
-                if config.originalSkybox and config.originalSkybox ~= "none" and typeof(config.originalSkybox) == "Instance" then
-                    config.originalSkybox:Clone().Parent = lighting
-                end
-            else
-                local assetId = skyboxInput:gsub("rbxassetid://", ""):gsub("rbxasset://", "")
-                local idNum = tonumber(assetId)
-                
-                if idNum then
-                    if existingSky then
-                        existingSky:Destroy()
+            local sandChanged = (config.varibz.lastSandSky ~= nil) and (config.varibz.lastSandSky ~= sandOn)
+            config.varibz.lastSandSky = sandOn
+            if config.skyboxValue ~= config.varibz.lastSkybox or sandChanged then
+                config.varibz.lastSkybox = config.skyboxValue
+                local GRAVEL_SKY = "9272623829911_938388_8382282_"
+                local lighting = game:GetService("Lighting")
+                local function isGravelSky(o) return o.Name == GRAVEL_SKY end
+                local function isSandSky(o) return o.Name == "SandSky" end
+                local function realSkies()
+                    local t = {}
+                    for _, o in ipairs(lighting:GetChildren()) do
+                        if o:IsA("Sky") and not isGravelSky(o) and not isSandSky(o) then
+                            t[#t + 1] = o
+                        end
                     end
-                    local newSky = Instance.new("Sky")
-                    newSky.Name = "9272623829911_938388_8382282_"
-                    local skyAsset = "rbxassetid://" .. tostring(idNum)
-                    newSky.SkyboxBk = skyAsset
-                    newSky.SkyboxDn = skyAsset
-                    newSky.SkyboxFt = skyAsset
-                    newSky.SkyboxLf = skyAsset
-                    newSky.SkyboxRt = skyAsset
-                    newSky.SkyboxUp = skyAsset
-                    newSky.Parent = lighting
+                    return t
+                end
+                local function applySky()
+                    local skyboxInput = tostring(config.skyboxValue or ""):gsub("%s+", "")
+                    local isDefault = (skyboxInput == "" or skyboxInput == "0" or skyboxInput:upper() == "NAN")
+                    local reals = realSkies()
+                    if config.originalSkybox == nil then
+                        if reals[1] then
+                            config.originalSkybox = reals[1]:Clone()
+                        elseif not sandOn then
+                            config.originalSkybox = "none"
+                        end
+                    end
+                    if isDefault then
+                        for _, o in ipairs(lighting:GetChildren()) do
+                            if o:IsA("Sky") and isGravelSky(o) then o:Destroy() end
+                        end
+                        if not sandOn and #realSkies() == 0
+                            and typeof(config.originalSkybox) == "Instance" then
+                            config.originalSkybox:Clone().Parent = lighting
+                        end
+                    else
+                        local assetId = skyboxInput:gsub("rbxassetid://", ""):gsub("rbxasset://", "")
+                        local idNum = tonumber(assetId)
+                        if idNum then
+                            for _, o in ipairs(lighting:GetChildren()) do
+                                if o:IsA("Sky") and not isSandSky(o) then o:Destroy() end
+                            end
+                            local newSky = Instance.new("Sky")
+                            newSky.Name = GRAVEL_SKY
+                            local skyAsset = "rbxassetid://" .. tostring(idNum)
+                            newSky.SkyboxBk = skyAsset
+                            newSky.SkyboxDn = skyAsset
+                            newSky.SkyboxFt = skyAsset
+                            newSky.SkyboxLf = skyAsset
+                            newSky.SkyboxRt = skyAsset
+                            newSky.SkyboxUp = skyAsset
+                            newSky.Parent = lighting
+                        end
+                    end
+                end
+                if sandChanged and not sandOn then
+                    task.delay(0.4, function() pcall(applySky) end)
+                else
+                    applySky()
                 end
             end
         end
@@ -20632,18 +20661,24 @@ local function buhbyegravellllllll________()
             end
             config.clockTimeValue = 0
             config.varibz.lastClockTime = 0
-            local existingSky = lighting:FindFirstChildOfClass("Sky")
-            if config.originalSkybox == nil or config.originalSkybox == "none" then
-                if existingSky then
-                    existingSky:Destroy()
+            local sandCC2 = (getgenv and getgenv().__SandCC) or nil
+            local sandOn2 = false
+            if type(sandCC2) == "table" and type(sandCC2.graySkyActive) == "function" then
+                local okS, resS = pcall(sandCC2.graySkyActive)
+                sandOn2 = okS and resS == true
+            end
+            for _, o in ipairs(lighting:GetChildren()) do
+                if o:IsA("Sky") and o.Name == "9272623829911_938388_8382282_" then
+                    o:Destroy()
                 end
-            else
-                if existingSky then
-                    existingSky:Destroy()
+            end
+            if not sandOn2 and typeof(config.originalSkybox) == "Instance" then
+                local hasReal = false
+                for _, o in ipairs(lighting:GetChildren()) do
+                    if o:IsA("Sky") and o.Name ~= "SandSky" then hasReal = true end
                 end
-                if typeof(config.originalSkybox) == "Instance" then
+                if not hasReal then
                     local cloned = config.originalSkybox:Clone()
-                    cloned.Name = "Sky"
                     cloned.Parent = lighting
                 end
             end
@@ -20789,6 +20824,7 @@ local function buhbyegravellllllll________()
         config.varibz.lastFullbright = nil
         config.varibz.lastClockTime = nil
         config.varibz.lastSkybox = nil
+        config.varibz.lastSandSky = nil
         config.varibz.lastDesync = nil
         config.camYOffsetEnabled = false
         config.camYOffsetValue = 0
