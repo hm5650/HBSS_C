@@ -2983,6 +2983,26 @@ local subside_I_I_I_I_I_ = function()
     return false
 end
 
+config.uiAutoRefresh = function(key, baseInterval, maxInterval, step)
+    return task_(key, function()
+        local interval = baseInterval
+        while true do
+            if subside_I_I_I_I_I_() then
+                interval = baseInterval
+                task.wait(0.5)
+            else
+                local ok, changed = pcall(step)
+                if ok and changed then
+                    interval = baseInterval
+                else
+                    interval = math.min(interval * 1.5, maxInterval)
+                end
+                task.wait(interval)
+            end
+        end
+    end)
+end
+
 local function localscripts_are_wayy_too_gullible__(state)
     config.antikick = state
     if state then
@@ -4988,7 +5008,9 @@ function loadSave(saveName)
         end
         config.clearCurrentTargets()
     end
-    if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
+    if cfg.masterGetTarget then
+        config.masterGetTarget = config.Priority.toList(cfg.masterGetTarget)
+    end
     if cfg.specificTeamTarget ~= nil then config.specificTeamTarget = cfg.specificTeamTarget end
     if cfg.targetedTeams then config.targetedTeams = cfg.targetedTeams end
     if cfg.masterTarget then config.masterTarget = cfg.masterTarget end
@@ -5589,12 +5611,18 @@ function loadSave(saveName)
                     elseif element.Title == "TargetType" then
                         currentValue = config.masterTarget
                     elseif element.Title == "GetTarget" then
-                        currentValue = config.masterGetTarget
+                        currentValue = config.Priority.toList(config.masterGetTarget)
                     elseif element.Title == "Target Part" and element.Parent and element.Parent.Title == "Aimbot" then
                         currentValue = config.aimbotTargetPart
                     end
                     if currentValue then
-                        pcall(function() element:SetValue(currentValue) end)
+                        pcall(function()
+                            if type(currentValue) == "table" and element.Select then
+                                element:Select(currentValue)
+                            else
+                                element:SetValue(currentValue)
+                            end
+                        end)
                     end
                 end
             end
@@ -5880,7 +5908,8 @@ function autolaodpara()
 
     text = text .. "\nhelo :3"
 
-    if config.varibz.autoloadParagraph then
+    if config.varibz.autoloadParagraph and config.varibz.lastAutoloadText ~= text then
+        config.varibz.lastAutoloadText = text
         config.varibz.autoloadParagraph:SetDesc(text)
     end
 end
@@ -6149,6 +6178,314 @@ local function IsPlayerVisible(player, maxDistance)
     end
     return false
 end
+config.Priority = (function()
+    local P = {}
+    local Players = excusemesir.Players
+    local UIS = excusemesir.UserInputService
+    P.Modes = {
+        "Closest", "Farthest", "Lowest Health", "Highest Health", "Lowest Health %",
+        "Closest To Crosshair", "Closest To Cursor", "Aim At You", "Holding Tool",
+        "TargetSeen", "Stick To Target"
+    }
+    local valid = {}
+    for _, m in ipairs(P.Modes) do valid[m] = true end
+    local stickybonus = 0.2
+    local aimhalflife = 0.75
+    local aimconecos = math.cos(math.rad(30))
+    function P.toList(sel)
+        local out = {}
+        if type(sel) == "string" then
+            if valid[sel] then out[1] = sel end
+        elseif type(sel) == "table" then
+            for _, v in ipairs(sel) do
+                if valid[v] and not table.find(out, v) then out[#out + 1] = v end
+            end
+        end
+        if #out == 0 then out[1] = "Closest" end
+        return out
+    end
+
+    function P.hasSeen(sel)
+        if sel == "TargetSeen" then return true end
+        if type(sel) == "table" then
+            for _, v in ipairs(sel) do
+                if v == "TargetSeen" then return true end
+            end
+        end
+        return false
+    end
+
+    function P.hasRanking(sel)
+        if type(sel) == "string" then
+            return valid[sel] == true and sel ~= "TargetSeen" and sel ~= "Stick To Target"
+        end
+        if type(sel) == "table" then
+            for _, v in ipairs(sel) do
+                if valid[v] and v ~= "TargetSeen" and v ~= "Stick To Target" then return true end
+            end
+        end
+        return false
+    end
+
+    local pools = {}
+    local aimState = setmetatable({}, {__mode = "k"})
+    Players.PlayerRemoving:Connect(function(pl) aimState[pl] = nil end)
+
+    local function getPool(key)
+        local p = pools[key]
+        if not p then
+            p = {n = 0, items = {}, raw = {}, mins = {}, maxs = {}, ms = {}, ctx = {}, last = nil}
+            pools[key] = p
+        end
+        return p
+    end
+
+    function P.begin(key)
+        getPool(key).n = 0
+    end
+
+    function P.push(key, inst, char, hum, part, dist, ref)
+        local p = getPool(key)
+        local n = p.n + 1
+        p.n = n
+        local e = p.items[n]
+        if not e then
+            e = {}
+            p.items[n] = e
+        end
+        e.inst, e.char, e.hum, e.part, e.dist, e.ref = inst, char, hum, part, dist, ref
+        e.skip = false
+    end
+
+    local function angleBetween(origin, dir, pos)
+        local v = pos - origin
+        local mag = v.Magnitude
+        if mag < 0.001 then return 0 end
+        local d = dir:Dot(v) / mag
+        if d > 1 then d = 1 elseif d < -1 then d = -1 end
+        return math.acos(d)
+    end
+
+    local function aimAlignment(inst, char, ctx)
+        local src = char and (char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart"))
+        if not src then return 0 end
+        local to = ctx.myPos - src.Position
+        local tx, tz = to.X, to.Z
+        local tm = math.sqrt(tx * tx + tz * tz)
+        if tm < 0.01 then return 1 end
+        local look = src.CFrame.LookVector
+        local lx, lz = look.X, look.Z
+        local lm = math.sqrt(lx * lx + lz * lz)
+        if lm < 0.01 then return 0 end
+        local d = (lx * tx + lz * tz) / (lm * tm)
+        local a = (d - aimconecos) / (1 - aimconecos)
+        if a < 0 then a = 0 elseif a > 1 then a = 1 end
+        local now = ctx.now
+        local st = aimState[inst]
+        if not st then
+            st = {v = a, t = now}
+            aimState[inst] = st
+        else
+            local dt = now - st.t
+            if dt >= 0.03 then
+                if dt > 1.5 then
+                    st.v = a
+                else
+                    st.v = st.v + (a - st.v) * (1 - 0.5 ^ (dt / aimhalflife))
+                end
+                st.t = now
+            end
+        end
+        return st.v
+    end
+
+    local function metric(m, e, ctx)
+        if m == "Closest" then
+            return e.dist
+        elseif m == "Farthest" then
+            return e.dist and -e.dist or nil
+        elseif m == "Lowest Health" or m == "Highest Health" or m == "Lowest Health %" then
+            local hum = e.hum
+            if not hum then
+                local char = e.char or getTargetCharacter(e.inst)
+                hum = char and char:FindFirstChildOfClass("Humanoid")
+            end
+            if not hum then return nil end
+            if m == "Lowest Health" then
+                return hum.Health
+            elseif m == "Highest Health" then
+                return -hum.Health
+            end
+            return hum.Health / math.max(hum.MaxHealth, 1)
+        elseif m == "Closest To Crosshair" then
+            return e.part and angleBetween(ctx.camPos, ctx.camLook, e.part.Position) or nil
+        elseif m == "Closest To Cursor" then
+            return e.part and angleBetween(ctx.curOrigin, ctx.curDir, e.part.Position) or nil
+        elseif m == "Aim At You" then
+            local char = e.char or getTargetCharacter(e.inst)
+            return -aimAlignment(e.inst, char, ctx)
+        elseif m == "Holding Tool" then
+            local char = e.char or getTargetCharacter(e.inst)
+            return (char and char:FindFirstChildOfClass("Tool")) and 0 or 1
+        end
+        return e.dist
+    end
+    function P.resolve(key, sel, default, exclude)
+        local p = getPool(key)
+        local n = p.n
+        local items = p.items
+        if n == 0 then
+            p.last = nil
+            return nil
+        end
+        if n == 1 then
+            p.last = items[1].inst
+            return items[1].inst, items[1].ref
+        end
+
+        local ms = p.ms
+        table.clear(ms)
+        local sticky = false
+        if type(sel) == "string" then
+            if sel == "Stick To Target" then
+                sticky = true
+            elseif valid[sel] and sel ~= "TargetSeen" then
+                ms[1] = sel
+            end
+        elseif type(sel) == "table" then
+            for _, v in ipairs(sel) do
+                if v == "Stick To Target" then
+                    sticky = true
+                elseif v ~= "TargetSeen" and valid[v] and not table.find(ms, v) then
+                    ms[#ms + 1] = v
+                end
+            end
+        end
+        if #ms == 0 then ms[1] = default or "Closest" end
+        local nm = #ms
+
+        local ctx = p.ctx
+        local cam = workspace.CurrentCamera
+        local cf = cam.CFrame
+        ctx.camPos, ctx.camLook = cf.Position, cf.LookVector
+        ctx.curOrigin, ctx.curDir = ctx.camPos, ctx.camLook
+        ctx.now = tick()
+        local myChar = plr.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        ctx.myPos = myRoot and myRoot.Position or ctx.camPos
+        if UIS.MouseEnabled and table.find(ms, "Closest To Cursor") then
+            local ml = UIS:GetMouseLocation()
+            local ray = cam:ViewportPointToRay(ml.X, ml.Y)
+            ctx.curOrigin, ctx.curDir = ray.Origin, ray.Direction.Unit
+        end
+
+        local skip = (exclude ~= nil)
+        local raw, mins, maxs = p.raw, p.mins, p.maxs
+        for mi = 1, nm do
+            mins[mi], maxs[mi] = math.huge, -math.huge
+            if not raw[mi] then raw[mi] = {} end
+        end
+
+        local live = 0
+        for i = 1, n do
+            local e = items[i]
+            if skip and e.inst == exclude then
+                e.skip = true
+            else
+                e.skip = false
+                live = live + 1
+                for mi = 1, nm do
+                    local v = metric(ms[mi], e, ctx)
+                    if v == nil or v ~= v or v == math.huge or v == -math.huge then
+                        v = false
+                    else
+                        if v < mins[mi] then mins[mi] = v end
+                        if v > maxs[mi] then maxs[mi] = v end
+                    end
+                    raw[mi][i] = v
+                end
+            end
+        end
+
+        if live == 0 then
+            p.last = items[1].inst
+            return items[1].inst, items[1].ref
+        end
+
+        local bestI, bestScore = nil, math.huge
+        for i = 1, n do
+            local e = items[i]
+            if not e.skip then
+                local sc = 0
+                for mi = 1, nm do
+                    local v = raw[mi][i]
+                    if v == false then
+                        sc = sc + 1
+                    else
+                        local range = maxs[mi] - mins[mi]
+                        if range > 1e-6 then
+                            sc = sc + (v - mins[mi]) / range
+                        end
+                    end
+                end
+                sc = sc / nm
+                if sticky and p.last ~= nil and e.inst == p.last then
+                    sc = sc - stickybonus
+                end
+                if sc < bestScore then
+                    bestScore, bestI = sc, i
+                end
+            end
+        end
+
+        local best = items[bestI or 1]
+        p.last = best.inst
+        return best.inst, best.ref
+    end
+
+    function P.pickAnti(sel, list)
+        P.begin("anti")
+        for i = 1, #list do
+            local e = list[i]
+            P.push("anti", e.target, e.char, e.humanoid, e.root, e.distance, e)
+        end
+        local _, ref = P.resolve("anti", sel, "Closest")
+        return ref
+    end
+
+    function P.pickAim(sel, list)
+        P.begin("aim")
+        for i = 1, #list do
+            local e = list[i]
+            P.push("aim", e.target, nil, e.humanoid, e.part, e.worldDist, e)
+        end
+        local _, ref = P.resolve("aim", sel, "Closest")
+        return ref
+    end
+
+    function P.pickSilent(sel, list)
+        P.begin("silent")
+        for i = 1, #list do
+            local e = list[i]
+            P.push("silent", e.player, nil, e.humanoid, e.part, e.worldDist, e)
+        end
+        local _, ref = P.resolve("silent", sel, "Closest")
+        return ref
+    end
+
+    function P.pickTbot(sel, list)
+        P.begin("tbot")
+        for i = 1, #list do
+            local e = list[i]
+            P.push("tbot", e.target, e.char, e.humanoid, e.part, e.worldDist, e)
+        end
+        local _, ref = P.resolve("tbot", sel, "Closest")
+        return ref
+    end
+
+    return P
+end)()
+
 local function GetClosestPlayer()
     if not config.varibz.sa2this then
         return nil
@@ -6161,6 +6498,7 @@ local function GetClosestPlayer()
     local viewport = cam.ViewportSize
     local camPos = cam.CFrame.Position
     local targetMode = config.masterGetTarget
+    local seenMode = config.Priority.hasSeen(targetMode)
     local localTeam = plr.Team
     local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
     local maxRangeSq1 = config.SA2_TargetRange * config.SA2_TargetRange
@@ -6235,6 +6573,7 @@ local function GetClosestPlayer()
     end
     table.clear(validPlayers)
     local playerCount = 0
+    config.Priority.begin("sa2")
     for _, candidate in ipairs(candidates) do
         local p = candidate.instance
         local isPlayer = (candidate.type == "player")
@@ -6365,43 +6704,7 @@ local function GetClosestPlayer()
                                 inFOV = true
                             end
                             if inFOV then
-                                local score
-                                if targetMode == "Closest" then
-                                    score = worldDist
-                                elseif targetMode == "Lowest Health" then
-                                    score = humanoid.Health
-                                elseif targetMode == "TargetSeen" then
-                                    if p == config.SA2_currentTarget then
-                                        score = -1
-                                    else
-                                        score = screenDist > 0 and math.sqrt(screenDist) or worldDist
-                                    end
-                                else
-                                    score = worldDist
-                                end
-                                if bestTarget == nil then
-                                    bestTarget = p
-                                    bestScore = score
-                                else
-                                    local isBetter = false
-                                    if targetMode == "Closest" then
-                                        isBetter = score < bestScore
-                                    elseif targetMode == "Lowest Health" then
-                                        isBetter = score < bestScore
-                                    elseif targetMode == "TargetSeen" then
-                                        if score == -1 then
-                                            isBetter = false
-                                        elseif bestScore == -1 then
-                                            isBetter = false
-                                        else
-                                            isBetter = score < bestScore
-                                        end
-                                    end
-                                    if isBetter then
-                                        bestTarget = p
-                                        bestScore = score
-                                    end
-                                end
+                                config.Priority.push("sa2", p, char, humanoid, part, worldDist)
                             end
                         else
                             validPlayers[p] = false
@@ -6423,6 +6726,7 @@ local function GetClosestPlayer()
         config.SA2_currentTarget = nil
         return nil
     end
+    bestTarget = config.Priority.resolve("sa2", targetMode, seenMode and "Closest To Crosshair" or "Closest", seenMode and config.SA2_currentTarget or nil)
     local toRemove = {}
     for cacheKey in pairs(config.varibz.sa2dump.data) do
         local playerId = cacheKey:match("player_(%d+)")
@@ -6466,7 +6770,7 @@ local function GetClosestPlayer()
     end
     table.clear(wallToRemove)
     if bestTarget then
-        if targetMode == "TargetSeen" and bestTarget ~= config.SA2_currentTarget then
+        if seenMode and bestTarget ~= config.SA2_currentTarget then
             if shouldSwitch or not config.SA2_currentTarget then
                 config.lastTargetSwitchTime = currentTime
                 config.SA2_currentTarget = bestTarget
@@ -8354,6 +8658,7 @@ local function findClosestEnemy()
     local best = nil
     local bestMetric = nil
     local mode = config.antiAimGetTarget or config.masterGetTarget or "Closest"
+    local seenMode = config.Priority.hasSeen(mode)
     local potentialTargets = {}
     local targetsInView = {}
     
@@ -8404,7 +8709,7 @@ local function findClosestEnemy()
                     local distance = (localRoot.Position - playerRoot.Position).Magnitude
                     local health = humanoid.Health
                     local isInView = true
-                    if mode == "TargetSeen" then
+                    if seenMode then
                         local camera = workspace.CurrentCamera
                         local screenPos, onScreen = camera:WorldToViewportPoint(playerRoot.Position)
                         isInView = onScreen and screenPos.Z > 0
@@ -8430,17 +8735,14 @@ local function findClosestEnemy()
     end
     
     if #potentialTargets > 0 then
-        if mode == "TargetSeen" then
+        if seenMode then
             if #targetsInView > 0 then
                 local currentTime = tick()
                 if currentTime - config.lastTargetSwitchTime >= config.targetSeenSwitchRate then
                     config.lastTargetSwitchTime = currentTime
                     
                     if not config.currentAntiAimTarget then
-                        table.sort(targetsInView, function(a, b)
-                            return a.distance < b.distance
-                        end)
-                        best = targetsInView[1].target
+                        best = config.Priority.pickAnti(mode, targetsInView).target
                     else
                         local currentIndex = nil
                         for i, target in ipairs(targetsInView) do
@@ -8454,10 +8756,7 @@ local function findClosestEnemy()
                             local nextIndex = (currentIndex % #targetsInView) + 1
                             best = targetsInView[nextIndex].target
                         else
-                            table.sort(targetsInView, function(a, b)
-                                return a.distance < b.distance
-                            end)
-                            best = targetsInView[1].target
+                            best = config.Priority.pickAnti(mode, targetsInView).target
                         end
                     end
                 else
@@ -8466,16 +8765,8 @@ local function findClosestEnemy()
             else
                 return nil
             end
-        elseif mode == "Lowest Health" then
-            table.sort(potentialTargets, function(a, b)
-                return a.health < b.health
-            end)
-            best = potentialTargets[1].target
         else
-            table.sort(potentialTargets, function(a, b)
-                return a.distance < b.distance
-            end)
-            best = potentialTargets[1].target
+            best = config.Priority.pickAnti(mode, potentialTargets).target
         end
     end
     
@@ -8593,7 +8884,7 @@ function antiAimUpdate()
         for _, player in ipairs(excusemesir.Players:GetPlayers()) do
             if player ~= localPlayer and plralive(player) and not config.isBlacklisted(player) then
                 local shouldCheck = true
-                if config.antiAimGetTarget == "TargetSeen" then
+                if config.Priority.hasSeen(config.antiAimGetTarget) then
                     local tgtChar = getTargetCharacter(player)
                     if tgtChar then
                         local camera = workspace.CurrentCamera
@@ -10756,23 +11047,7 @@ function aimbotUpdate()
     local bestTarget = nil
     local targetingMode = config.aimbotGetTarget or config.masterGetTarget or "Closest"
     
-    if targetingMode == "Lowest Health" then
-        local lowestHealth = math.huge
-        for _, t in ipairs(potentialTargets) do
-            if t.health < lowestHealth then
-                lowestHealth = t.health
-                bestTarget = t
-            end
-        end
-    else
-        local closestDist = math.huge
-        for _, t in ipairs(potentialTargets) do
-            if t.worldDist < closestDist then
-                closestDist = t.worldDist
-                bestTarget = t
-            end
-        end
-    end
+    bestTarget = config.Priority.pickAim(targetingMode, potentialTargets)
     
     if not bestTarget then
         config.aimbotCurrentTarget = nil
@@ -11032,145 +11307,7 @@ local function triggerBotUpdate()
     end
     table.clear(config.varibz.targetsInFOV)
     local targets = config.getTargetsFiltered()
-    local bestTarget = nil
-    local bestDist = math.huge
-    local bestPart = nil
-    local bestChar = nil
-    
-    for _, target in ipairs(targets) do
-        if target ~= localPlayer then
-            local shouldTarget = false
-            local char = getTargetCharacter(target)
-            if not char then continue end
-            if config.specificTeamTarget and #config.targetedTeams > 0 then
-                if typeof(target) == "Instance" and target:IsA("Player") then
-                    local team = target.Team
-                    if team then
-                        for _, teamName in ipairs(config.targetedTeams) do
-                            if team.Name == teamName then
-                                shouldTarget = true
-                                break
-                            end
-                        end
-                    end
-                elseif typeof(target) == "Instance" and target:IsA("Model") then
-                    local npcTeam = target:FindFirstChild("Team")
-                    if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
-                        for _, teamName in ipairs(config.targetedTeams) do
-                            if npcTeam.Value.Name == teamName then
-                                shouldTarget = true
-                                break
-                            end
-                        end
-                    end
-                end
-            else
-                if typeof(target) == "Instance" and target:IsA("Player") then
-                    local mode = config.masterTeamTarget or "Enemies"
-                    if mode == "Enemies" then
-                        shouldTarget = not isTeammate(target)
-                    elseif mode == "Teams" then
-                        shouldTarget = isTeammate(target)
-                    elseif mode == "All" then
-                        shouldTarget = true
-                    end
-                elseif typeof(target) == "Instance" and target:IsA("Model") then
-                    shouldTarget = true
-                end
-            end
-            
-            if not shouldTarget then continue end
-            
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            if not humanoid or humanoid.Health <= 0 then continue end
-            if config.ignoreForcefield and hasForcefield(char) then continue end
-            local targetPart = nil
-            if config.tbot.targetPart == "Head" then
-                targetPart = char:FindFirstChild("Head")
-            elseif config.tbot.targetPart == "HumanoidRootPart" then
-                targetPart = char:FindFirstChild("HumanoidRootPart")
-            else
-                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            end
-            if not targetPart then continue end
-            local worldDist = (targetPart.Position - camera.CFrame.Position).Magnitude
-            if worldDist > (config.tbot.targetRange or 500) then continue end
-            local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
-            if not onScreen or screenPos.Z <= 0 then continue end
-            
-            local dx = screenPos.X - center.X
-            local dy = screenPos.Y - center.Y
-            local distSq = dx * dx + dy * dy
-            if distSq > fovRadiusSq then continue end
-            
-            local distPx = math.sqrt(distSq)
-            if config.tbot.wallCheck then
-                local origin = camera.CFrame.Position
-                local dir = (targetPart.Position - origin)
-                local dist = dir.Magnitude
-                local ignoreList = smthsmth(char)
-                
-                if not config.varibz.raycats.rayowo then
-                    config.varibz.raycats.rayowo = RaycastParams.new()
-                    config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
-                    config.varibz.raycats.rayowo.IgnoreWater = true
-                end
-                config.varibz.raycats.rayowo.FilterDescendantsInstances = ignoreList
-                
-                local result = workspace:Raycast(origin, dir.Unit * dist, config.varibz.raycats.rayowo)
-                if result then
-                    local hitInstance = result.Instance
-                    local hitParent = hitInstance.Parent
-                    if hitParent ~= char and (not hitParent or hitParent.Parent ~= char) then
-                        continue
-                    end
-                end
-            end
-            local chance = math.random(1, 100)
-            if chance <= config.tbot.hitChance then
-                if distPx < bestDist then
-                    bestDist = distPx
-                    bestTarget = target
-                    bestPart = targetPart
-                    bestChar = char
-                end
-            end
-        end
-    end
-    
-    if bestTarget then
-        config.tbotcurrenttarget = bestTarget
-        config.tbotTargetted = true
-        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
-            config.tbot.fovCircle.RingStroke.Color = config.tbot.fovTargetColor or Color3.fromRGB(255, 255, 0)
-        end
-        if config.espMasterEnabled and config.prefHighlightESP then
-            local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == bestTarget
-            local isTargetedByRegular = config.currentTarget == bestTarget
-            local isTargetedByAimbot = config.aimbotCurrentTarget == bestTarget
-            if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
-                if config.highlightData[bestTarget] then
-                    config.highlightData[bestTarget].FillColor = Color3.fromRGB(255, 100, 0)
-                end
-                if config.espData[bestTarget] and config.espData[bestTarget].label then
-                    config.espData[bestTarget].label.TextColor3 = Color3.fromRGB(255, 100, 0)
-                end
-            end
-        end
-        if bestPart then
-            local VirtualInputManager = excusemesir.VirtualInputManager
-            if config.tbot.pressDown then
-                if not config.tbotPressed then
-                    config.tbotPressed = true
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                end
-            else
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                task.wait(config.tbot.delay or 0.1)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-            end
-        end
-    else
+    if #targets == 0 then
         config.tbotcurrenttarget = nil
         config.tbotTargetted = false
         if config.tbotPressed then
@@ -11197,6 +11334,207 @@ local function triggerBotUpdate()
                     end
                 end
             end
+        end
+        return
+    end
+
+    local candidates = {}
+    for _, target in ipairs(targets) do
+        if target ~= localPlayer then
+            local shouldTarget = false
+            local char = getTargetCharacter(target)
+            if char then
+                if config.specificTeamTarget and #config.targetedTeams > 0 then
+                    if typeof(target) == "Instance" and target:IsA("Player") then
+                        local team = target.Team
+                        if team then
+                            for _, teamName in ipairs(config.targetedTeams) do
+                                if team.Name == teamName then
+                                    shouldTarget = true
+                                    break
+                                end
+                            end
+                        end
+                    elseif typeof(target) == "Instance" and target:IsA("Model") then
+                        local npcTeam = target:FindFirstChild("Team")
+                        if npcTeam and npcTeam:IsA("ObjectValue") and npcTeam.Value then
+                            for _, teamName in ipairs(config.targetedTeams) do
+                                if npcTeam.Value.Name == teamName then
+                                    shouldTarget = true
+                                    break
+                                end
+                            end
+                        end
+                    end
+                else
+                    if typeof(target) == "Instance" and target:IsA("Player") then
+                        local mode = config.masterTeamTarget or "Enemies"
+                        if mode == "Enemies" then
+                            shouldTarget = not isTeammate(target)
+                        elseif mode == "Teams" then
+                            shouldTarget = isTeammate(target)
+                        elseif mode == "All" then
+                            shouldTarget = true
+                        end
+                    elseif typeof(target) == "Instance" and target:IsA("Model") then
+                        shouldTarget = true
+                    end
+                end
+
+                if shouldTarget then
+                    local humanoid = char:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
+                        if not (config.ignoreForcefield and hasForcefield(char)) then
+                            local targetPart = nil
+                            if config.tbot.targetPart == "Head" then
+                                targetPart = char:FindFirstChild("Head")
+                            elseif config.tbot.targetPart == "HumanoidRootPart" then
+                                targetPart = char:FindFirstChild("HumanoidRootPart")
+                            else
+                                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+                            end
+                            if targetPart then
+                                local worldDist = (targetPart.Position - camera.CFrame.Position).Magnitude
+                                if worldDist <= (config.tbot.targetRange or 500) then
+                                    local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
+                                    if onScreen and screenPos.Z > 0 then
+                                        local dx = screenPos.X - center.X
+                                        local dy = screenPos.Y - center.Y
+                                        local distSq = dx * dx + dy * dy
+                                        if distSq <= fovRadiusSq then
+                                            local passWall = true
+                                            if config.tbot.wallCheck then
+                                                local origin = camera.CFrame.Position
+                                                local dir = (targetPart.Position - origin)
+                                                local dist = dir.Magnitude
+                                                local ignoreList = smthsmth(char)
+
+                                                if not config.varibz.raycats.rayowo then
+                                                    config.varibz.raycats.rayowo = RaycastParams.new()
+                                                    config.varibz.raycats.rayowo.FilterType = Enum.RaycastFilterType.Exclude
+                                                    config.varibz.raycats.rayowo.IgnoreWater = true
+                                                end
+                                                config.varibz.raycats.rayowo.FilterDescendantsInstances = ignoreList
+
+                                                local result = workspace:Raycast(origin, dir.Unit * dist, config.varibz.raycats.rayowo)
+                                                if result then
+                                                    local hitInstance = result.Instance
+                                                    local hitParent = hitInstance.Parent
+                                                    if hitParent ~= char and (not hitParent or hitParent.Parent ~= char) then
+                                                        passWall = false
+                                                    end
+                                                end
+                                            end
+                                            if passWall then
+                                                table.insert(candidates, {
+                                                    target = target,
+                                                    char = char,
+                                                    humanoid = humanoid,
+                                                    part = targetPart,
+                                                    worldDist = worldDist,
+                                                    screenDistSq = distSq,
+                                                    screenDist = math.sqrt(distSq),
+                                                })
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if #candidates == 0 then
+        config.tbotcurrenttarget = nil
+        config.tbotTargetted = false
+        if config.tbotPressed then
+            config.tbotPressed = false
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            pcall(function()
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+            end)
+        end
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+            config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
+        end
+        if config.espMasterEnabled then
+            for target, _ in pairs(config.espData) do
+                local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == target
+                local isTargetedByRegular = config.currentTarget == target
+                local isTargetedByAimbot = config.aimbotCurrentTarget == target
+                if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
+                    if config.espData[target] and config.espData[target].label then
+                        config.espData[target].label.TextColor3 = config.espc
+                    end
+                    if config.highlightData[target] then
+                        config.highlightData[target].FillColor = config.espc
+                    end
+                end
+            end
+        end
+        return
+    end
+    local targetingMode = config.masterGetTarget or "Closest"
+    local picked = config.Priority.pickSilent(targetingMode, candidates)
+    local bestTarget, bestPart, bestChar = nil, nil, nil
+    if picked then
+        bestTarget = picked.target
+        bestPart = picked.part
+        bestChar = picked.char
+    end
+    if not bestTarget then
+        bestTarget = candidates[1].target
+        bestPart = candidates[1].part
+        bestChar = candidates[1].char
+    end
+    if math.random(1, 100) > (config.tbot.hitChance or 100) then
+        config.tbotcurrenttarget = nil
+        config.tbotTargetted = false
+        if config.tbotPressed then
+            config.tbotPressed = false
+            local VirtualInputManager = excusemesir.VirtualInputManager
+            pcall(function()
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+            end)
+        end
+        if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+            config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor or Color3.fromRGB(180, 210, 228)
+        end
+        return
+    end
+
+    config.tbotcurrenttarget = bestTarget
+    config.tbotTargetted = true
+    if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
+        config.tbot.fovCircle.RingStroke.Color = config.tbot.fovTargetColor or Color3.fromRGB(255, 255, 0)
+    end
+    if config.espMasterEnabled and config.prefHighlightESP then
+        local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == bestTarget
+        local isTargetedByRegular = config.currentTarget == bestTarget
+        local isTargetedByAimbot = config.aimbotCurrentTarget == bestTarget
+        if not isTargetedBySA2 and not isTargetedByRegular and not isTargetedByAimbot then
+            if config.highlightData[bestTarget] then
+                config.highlightData[bestTarget].FillColor = Color3.fromRGB(255, 100, 0)
+            end
+            if config.espData[bestTarget] and config.espData[bestTarget].label then
+                config.espData[bestTarget].label.TextColor3 = Color3.fromRGB(255, 100, 0)
+            end
+        end
+    end
+    if bestPart then
+        local VirtualInputManager = excusemesir.VirtualInputManager
+        if config.tbot.pressDown then
+            if not config.tbotPressed then
+                config.tbotPressed = true
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+            end
+        else
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+            task.wait(config.tbot.delay or 0.1)
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
         end
     end
 end
@@ -11651,7 +11989,7 @@ end
 task_("espColorLoop", function()
     while config.espMasterEnabled do
         updateESPColors()
-        task.wait(1 / math.max(config.esphertz or 100, 1))
+        task.wait(math.max(1 / math.max(config.esphertz or 100, 1), 0.05))
     end
 end)
 heartbeatConnection = excusemesir.RunService.Heartbeat:Connect(burgerking)
@@ -12653,7 +12991,7 @@ function onRenderStep()
     end
 
     local best = nil
-    if config.silentGetTarget == "TargetSeen" then
+    if config.Priority.hasSeen(config.silentGetTarget) then
         for _, target in ipairs(config.varibz.allTargetsInFOV) do
             if target.inFOV then
                 local cameraPos = camera.CFrame.Position
@@ -12671,8 +13009,12 @@ function onRenderStep()
             if currentTime - config.lastTargetSwitchTime >= switchRate then
                 config.lastTargetSwitchTime = currentTime
                 if not config.currentTarget then
-                    local randomIndex = math.random(1, #config.varibz.targetsInFOV)
-                    best = config.varibz.targetsInFOV[randomIndex]
+                    if config.Priority.hasRanking(config.silentGetTarget) then
+                        best = config.Priority.pickSilent(config.silentGetTarget, config.varibz.targetsInFOV)
+                    else
+                        local randomIndex = math.random(1, #config.varibz.targetsInFOV)
+                        best = config.varibz.targetsInFOV[randomIndex]
+                    end
                 else
                     local currentIndex = nil
                     for i, target in ipairs(config.varibz.targetsInFOV) do
@@ -12705,24 +13047,7 @@ function onRenderStep()
         end
     else
         if #config.varibz.candidates > 0 then
-            if config.silentGetTarget == "Lowest Health" then
-                local bestHealth = math.huge
-                for _, c in ipairs(config.varibz.candidates) do
-                    local h = c.humanoid and c.humanoid.Health or math.huge
-                    if best == nil or h < bestHealth then
-                        bestHealth = h
-                        best = c
-                    end
-                end
-            else
-                local bestWorldDist = math.huge
-                for _, c in ipairs(config.varibz.candidates) do
-                    if c.worldDist < bestWorldDist then
-                        bestWorldDist = c.worldDist
-                        best = c
-                    end
-                end
-            end
+            best = config.Priority.pickSilent(config.silentGetTarget, config.varibz.candidates)
         end
     end
 
@@ -12741,7 +13066,7 @@ function onRenderStep()
         
         if best and pl == best.player then
             shouldRemove = false
-        elseif config.silentGetTarget == "TargetSeen" then
+        elseif config.Priority.hasSeen(config.silentGetTarget) then
             local stillInFOV = false
             for _, target in ipairs(config.targetSeenTargets or {}) do
                 if target.player == pl then
@@ -12855,7 +13180,7 @@ function onRenderStep()
         end
     end
     
-    if config.silentGetTarget == "TargetSeen" then
+    if config.Priority.hasSeen(config.silentGetTarget) then
         for _, target in ipairs(config.targetSeenTargets or {}) do
             if target.player ~= (best and best.player) and plralive(target.player) then
                 local diameter = calculateDiameter(target.worldDist, radiusPx, camera)
@@ -14378,16 +14703,26 @@ local teamDropdown = MainTab:Dropdown({
         config.targetedTeams = selected or {}
     end
 })
-task_("teamListLoop", function()
-    while true do
-        task.wait(5)
-        local teamNames = getTeamNames()
-        if #teamNames > 0 then
-            pcall(function()
-                teamDropdown:SetValues(teamNames)
-            end)
-        end
+config.varibz.lastTeamKey = table.concat(getTeamNames(), ",")
+config.uiAutoRefresh("teamListLoop", 3, 15, function()
+    local teamNames = getTeamNames()
+    if #teamNames == 0 then return false end
+    local key = table.concat(teamNames, ",")
+    if key == config.varibz.lastTeamKey then return false end
+    config.varibz.lastTeamKey = key
+    local keep = {}
+    for _, name in ipairs(config.targetedTeams or {}) do
+        if table.find(teamNames, name) then table.insert(keep, name) end
     end
+    pcall(function() teamDropdown:Refresh(teamNames) end)
+    pcall(function()
+        if teamDropdown.Select then
+            teamDropdown:Select(keep)
+        elseif teamDropdown.SetValue then
+            teamDropdown:SetValue(keep)
+        end
+    end)
+    return true
 end)
 
 local function getBlacklistCandidates()
@@ -14398,29 +14733,43 @@ local function getBlacklistCandidates()
         end
     end
     table.sort(names)
+    if #names == 0 then
+        table.insert(names, "No Players Found")
+    end
     return names
 end
 local function getBlacklistSelection()
     local selected = {}
     for name, on in pairs(config.targetBlacklist) do
-        if on and excusemesir.Players:FindFirstChild(name) then
+        if on and name ~= "No Players Found" and excusemesir.Players:FindFirstChild(name) then
             table.insert(selected, name)
         end
     end
     return selected
 end
 local blacklistDropdown
-local function refreshBlacklistDropdown()
-    if not blacklistDropdown then return end
-    local names = getBlacklistCandidates()
+local lastBlacklistKey = table.concat(getBlacklistCandidates(), ",")
+local function refreshBlacklistDropdown(force)
+    if not blacklistDropdown then return false end
     for name in pairs(config.targetBlacklist) do
         if not excusemesir.Players:FindFirstChild(name) then
             config.targetBlacklist[name] = nil
         end
     end
-    pcall(function() blacklistDropdown:SetValues(names) end)
+    local names = getBlacklistCandidates()
+    local key = table.concat(names, ",")
+    if not force and key == lastBlacklistKey then return false end
+    lastBlacklistKey = key
     local selected = getBlacklistSelection()
-    pcall(function() blacklistDropdown:Select(selected) end)
+    pcall(function() blacklistDropdown:Refresh(names) end)
+    pcall(function()
+        if blacklistDropdown.Select then
+            blacklistDropdown:Select(selected)
+        elseif blacklistDropdown.SetValue then
+            blacklistDropdown:SetValue(selected)
+        end
+    end)
+    return true
 end
 blacklistDropdown = MainTab:Dropdown({
     Title = "Target Blacklist",
@@ -14430,20 +14779,24 @@ blacklistDropdown = MainTab:Dropdown({
     Multi = true,
     AllowNone = true,
     Callback = function(selected)
-        table.clear(config.targetBlacklist)
+        local newList, changed = {}, false
         for _, name in ipairs(selected or {}) do
-            config.targetBlacklist[name] = true
+            if name ~= "No Players Found" then
+                newList[name] = true
+                if not config.targetBlacklist[name] then changed = true end
+            end
         end
+        for name in pairs(config.targetBlacklist) do
+            if not newList[name] then changed = true end
+        end
+        if not changed then return end
+        config.targetBlacklist = newList
         config.clearCurrentTargets()
     end
 })
-MainTab:Button({
-    Title = "Refresh Blacklist",
-    Desc = "reload the player list",
-    Callback = function()
-        refreshBlacklistDropdown()
-    end
-})
+config.uiAutoRefresh("blacklistListLoop", 2, 10, function()
+    return refreshBlacklistDropdown()
+end)
 MainTab:Toggle({
     Title = "Ignore Friends",
     Desc = "if your teaming with your enemies... ig bro",
@@ -14459,13 +14812,13 @@ MainTab:Toggle({
     end
 })
 excusemesir.Players.PlayerAdded:Connect(function(pl)
-    task.defer(refreshBlacklistDropdown)
+    task.defer(refreshBlacklistDropdown, true)
     if config.ignoreFriends then config.cacheFriend(pl) end
 end)
 excusemesir.Players.PlayerRemoving:Connect(function(pl)
     config.targetBlacklist[pl.Name] = nil
     config.friendCache[pl.UserId] = nil
-    task.defer(refreshBlacklistDropdown)
+    task.delay(0.2, refreshBlacklistDropdown, true)
 end)
     
     MainTab:Dropdown({
@@ -14482,15 +14835,16 @@ end)
     MainTab:Dropdown({
         Title = "GetTarget",
         Desc = "uhhhhh priority shi",
-        Values = {"Closest", "Lowest Health", "TargetSeen"},
-        Value = config.masterGetTarget or "Closest",
-        Multi = false,
+        Values = table.clone(config.Priority.Modes),
+        Value = config.Priority.toList(config.masterGetTarget),
+        Multi = true,
         Callback = function(Option)
-            config.masterGetTarget = Option
-            config.aimbotGetTarget = Option
-            config.silentGetTarget = Option
-            config.antiAimGetTarget = Option
-            config.SA2_GetTarget = Option
+            local sel = config.Priority.toList(Option)
+            config.masterGetTarget = sel
+            config.aimbotGetTarget = sel
+            config.silentGetTarget = sel
+            config.antiAimGetTarget = sel
+            config.SA2_GetTarget = sel
             kshakwieudhjs_skjwnejzjs()
         end
     })
@@ -15170,43 +15524,24 @@ config.varibz.savesParagraph = MainTab:Paragraph({
     Desc = savePara() .. "\nBLLEHH >:P",
     Color = config.Gradow.uicolor.darkGray
 })
-task_("saveListLoop", function()
-    while true do
-        task.wait(1)
-        if Window and Window.UIElements and Window.UIElements.Main then
-            local sizeY = Window.UIElements.Main.Size.Y.Offset
-            if sizeY < 50 then
-                task.wait(0.5)
-                continue
-            end
-        end
-        
-        if config.varibz.savesParagraph then
-            local newDesc = savePara() .. "\nBLLEHH >:P"
-            config.varibz.savesParagraph:SetDesc(newDesc)
-        end
-    end
+config.uiAutoRefresh("saveListLoop", 1, 8, function()
+    if not config.varibz.savesParagraph then return false end
+    local newDesc = savePara() .. "\nBLLEHH >:P"
+    if newDesc == config.varibz.lastSavesDesc then return false end
+    config.varibz.lastSavesDesc = newDesc
+    config.varibz.savesParagraph:SetDesc(newDesc)
+    return true
 end)
 config.varibz.autoloadParagraph = MainTab:Paragraph({
     Title = "Autoload List",
     Desc = "Loading...",
     Color = config.Gradow.uicolor.darkGray
 })
-task_("autoloadListLoop", function()
-    while true do
-        task.wait(2)
-        if Window and Window.UIElements and Window.UIElements.Main then
-            local sizeY = Window.UIElements.Main.Size.Y.Offset
-            if sizeY < 50 then
-                task.wait(0.5)
-                continue
-            end
-        end
-        
-        if config.varibz.autoloadParagraph then
-            autolaodpara()
-        end
-    end
+config.uiAutoRefresh("autoloadListLoop", 2, 10, function()
+    if not config.varibz.autoloadParagraph then return false end
+    local before = config.varibz.lastAutoloadText
+    autolaodpara()
+    return config.varibz.lastAutoloadText ~= before
 end)
 end
 
@@ -16965,19 +17300,14 @@ config.varibz.remotespara = SilentAimTab2:Paragraph({
     Color = config.Gradow.uicolor.darkGray
 })
 
-task_("remoteScannerLoop", function()
-    while true do
-        if subside_I_I_I_I_I_() then
-            task.wait(0.5)
-            continue
-        end
-        
-        if config.varibz.remotespara then
-            detectrem__________()
-            config.varibz.remotespara:SetDesc(rerempara________())
-        end
-        task.wait(2)
-    end
+config.uiAutoRefresh("remoteScannerLoop", 2, 20, function()
+    if not config.varibz.remotespara then return false end
+    detectrem__________()
+    local desc = rerempara________()
+    if desc == config.varibz.lastRemotesDesc then return false end
+    config.varibz.lastRemotesDesc = desc
+    config.varibz.remotespara:SetDesc(desc)
+    return true
 end)
 end
 
@@ -19395,7 +19725,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel (10/10/2026)",
-        Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed: Cause of high ping\nFixed Bugs: 15",
+        Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed: Cause of high ping\nFixed: Target Blacklist not refreshing\nAdded: more stuff in GetTarget drop-down\nFixed Bugs: 15",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -20205,15 +20535,14 @@ task_("respawnLoop", function()
                 restoreTorso(player)
             end
             
-            for player, _ in pairs(config.lineESPData) do
-                local found = false
+            local allTargetsSet = {}
+            if next(config.lineESPData) ~= nil then
                 for _, target in ipairs(getAllTargets()) do
-                    if target == player then
-                        found = true
-                        break
-                    end
+                    allTargetsSet[target] = true
                 end
-                if not found then
+            end
+            for player, _ in pairs(config.lineESPData) do
+                if not allTargetsSet[player] then
                     table.insert(config.varibz.lineToRemove, player)
                 end
             end
@@ -20221,6 +20550,7 @@ task_("respawnLoop", function()
             for _, player in ipairs(config.varibz.lineToRemove) do
                 removeLineESP(player)
             end
+            table.clear(config.varibz.lineToRemove)
         end
         
         task.wait(config.varibz.patcherwait)
