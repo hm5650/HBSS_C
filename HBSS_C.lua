@@ -217,6 +217,11 @@ local config = {
     prefHeadDotESP = false,
     lineESPEnabled = false,
     lineESPOnlyTarget = false,
+    prefOffscreenArrows = false,
+    offArrowSize = 18,
+    offArrowRadius = 200,
+    offArrowShowDistance = true,
+    prefDistanceESP = false,
     lineStartPosition = "Center",
     lineColor = Color3.fromRGB(255, 255, 255),
     lineThickness = 1,
@@ -4469,6 +4474,11 @@ function saveConfig(saveName)
             prefHeadDotESP = config.prefHeadDotESP,
             lineESPEnabled = config.lineESPEnabled,
             lineESPOnlyTarget = config.lineESPOnlyTarget,
+            prefOffscreenArrows = config.prefOffscreenArrows,
+            offArrowSize = config.offArrowSize,
+            offArrowRadius = config.offArrowRadius,
+            offArrowShowDistance = config.offArrowShowDistance,
+            prefDistanceESP = config.prefDistanceESP,
             lineStartPosition = config.lineStartPosition,
             prefColorByHealth = config.prefColorByHealth,
             esphertz = config.esphertz,
@@ -5310,6 +5320,11 @@ function loadSave(saveName)
     if cfg.prefHeadDotESP ~= nil then config.prefHeadDotESP = cfg.prefHeadDotESP end
     if cfg.lineESPEnabled ~= nil then config.lineESPEnabled = cfg.lineESPEnabled end
     if cfg.lineESPOnlyTarget ~= nil then config.lineESPOnlyTarget = cfg.lineESPOnlyTarget end
+    if cfg.prefOffscreenArrows ~= nil then config.prefOffscreenArrows = cfg.prefOffscreenArrows end
+    if cfg.offArrowSize then config.offArrowSize = cfg.offArrowSize end
+    if cfg.offArrowRadius then config.offArrowRadius = cfg.offArrowRadius end
+    if cfg.offArrowShowDistance ~= nil then config.offArrowShowDistance = cfg.offArrowShowDistance end
+    if cfg.prefDistanceESP ~= nil then config.prefDistanceESP = cfg.prefDistanceESP end
     if cfg.lineStartPosition then config.lineStartPosition = cfg.lineStartPosition end
     if cfg.prefColorByHealth ~= nil then config.prefColorByHealth = cfg.prefColorByHealth end
     if cfg.esphertz then config.esphertz = cfg.esphertz end
@@ -8404,6 +8419,7 @@ function applyESPMaster(state)
         config.espon = config.prefTextESP
         config.highlightesp = config.prefHighlightESP
     end
+    if config.offArrow then config.offArrow.refresh() end
     updateESPColors()
 end
 excusemesir.RunService.Heartbeat:Connect(function()
@@ -9927,7 +9943,7 @@ function makeesp(targetPlayer)
     
     local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
     local isTargetedByRegular = config.currentTarget == targetPlayer
-    local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
+    local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
     local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
     local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
     label.TextColor3 = isTargeted and config.esptargetc or config.espc
@@ -10051,7 +10067,7 @@ function makeesp(targetPlayer)
 
             local isTargetedBySA2 = config.SA2_Enabled and config.SA2_currentTarget == targetPlayer
             local isTargetedByRegular = config.currentTarget == targetPlayer
-            local isTargetedByAimbot = config.aimbotCurrentTarget == targetPlayer
+            local isTargetedByAimbot = config.aimbotEnabled and config.aimbotCurrentTarget == targetPlayer
             local isTargetedByTbot = config.tbot.enabled and config.tbotcurrenttarget == targetPlayer
             local isTargeted = isTargetedBySA2 or isTargetedByRegular or isTargetedByAimbot or isTargetedByTbot
             if config.espMasterEnabled and config.prefTextESP then
@@ -10060,6 +10076,9 @@ function makeesp(targetPlayer)
                     text = string.format("%s [%d]", getTargetName(targetPlayer), math.floor(humanoid.Health))
                 else
                     text = getTargetName(targetPlayer)
+                end
+                if config.prefDistanceESP then
+                    text = text .. string.format(" [%dm]", math.floor((head.Position - currentCamera.CFrame.Position).Magnitude))
                 end
                 label.Text = text
                 local absWidth = 200
@@ -10262,6 +10281,180 @@ local function updateESPColors()
         end
     end
 end
+config.offArrow = {
+    gui = nil,
+    items = {},
+    conn = nil,
+    acc = 0,
+}
+config.offArrow.destroyItem = function(target)
+    local it = config.offArrow.items[target]
+    if it then
+        pcall(function() it.arrow:Destroy() end)
+        pcall(function() it.dist:Destroy() end)
+        config.offArrow.items[target] = nil
+    end
+end
+config.offArrow.stop = function()
+    local oa = config.offArrow
+    if oa.conn then
+        pcall(function() oa.conn:Disconnect() end)
+        oa.conn = nil
+    end
+    for t in pairs(oa.items) do
+        oa.destroyItem(t)
+    end
+    oa.items = {}
+    if oa.gui then
+        pcall(function() oa.gui:Destroy() end)
+        oa.gui = nil
+    end
+end
+config.offArrow.makeItem = function(target)
+    local oa = config.offArrow
+    local arrow = Instance.new("TextLabel")
+    arrow.Name = "OffscreenArrow"
+    arrow.BackgroundTransparency = 1
+    arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+    arrow.Text = "\226\150\178"
+    arrow.Font = Enum.Font.GothamBold
+    arrow.TextStrokeTransparency = 0.3
+    arrow.TextStrokeColor3 = Color3.new(0, 0, 0)
+    arrow.Visible = false
+    arrow.Parent = oa.gui
+
+    local dist = Instance.new("TextLabel")
+    dist.Name = "OffscreenArrowDist"
+    dist.BackgroundTransparency = 1
+    dist.AnchorPoint = Vector2.new(0.5, 0.5)
+    dist.Size = UDim2.fromOffset(60, 14)
+    dist.Text = ""
+    dist.Font = Enum.Font.GothamBold
+    dist.TextSize = 11
+    dist.TextStrokeTransparency = 0.3
+    dist.TextStrokeColor3 = Color3.new(0, 0, 0)
+    dist.Visible = false
+    dist.Parent = oa.gui
+
+    local item = { arrow = arrow, dist = dist }
+    oa.items[target] = item
+    return item
+end
+config.offArrow.update = function(dt)
+    local oa = config.offArrow
+    if not (config.espMasterEnabled and config.prefOffscreenArrows) then
+        oa.stop()
+        return
+    end
+    oa.acc = oa.acc + dt
+    if oa.acc < 1 / math.max(config.esphertz or 100, 1) then return end
+    oa.acc = 0
+
+    local cam = workspace.CurrentCamera
+    if not cam then return end
+    if not (oa.gui and oa.gui.Parent) then
+        local pg = localPlayer:FindFirstChildOfClass("PlayerGui")
+        if not pg then return end
+        oa.items = {}
+        local g = Instance.new("ScreenGui")
+        g.Name = "37276227227277_" .. tostring(math.random(100000, 999999)) .. "_" .. tostring(math.random(1000, 9999))
+        g.ResetOnSpawn = false
+        g.IgnoreGuiInset = true
+        g.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        g.Parent = pg
+        oa.gui = g
+    end
+
+    local vp = cam.ViewportSize
+    local center = vp / 2
+    local size = config.offArrowSize or 18
+    local maxR = math.max(math.min(vp.X, vp.Y) / 2 - size, 20)
+    local radius = math.clamp(config.offArrowRadius or 200, 20, maxR)
+    local camCF = cam.CFrame
+    local seen = {}
+
+    for _, target in ipairs(getAllTargets()) do
+        if target ~= localPlayer and addesp(target) and plralive(target) then
+            local char = getTargetCharacter(target)
+            local root
+            if char then
+                if char:IsA("BasePart") then
+                    root = char
+                elseif char:IsA("Tool") or char:IsA("HopperBin") then
+                    root = char:FindFirstChild("Handle") or char:FindFirstChildWhichIsA("BasePart")
+                else
+                    root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head")
+                end
+            end
+            if root then
+                seen[target] = true
+                local v3, on = cam:WorldToViewportPoint(root.Position)
+                local inside = on and v3.Z > 0 and v3.X >= 0 and v3.X <= vp.X and v3.Y >= 0 and v3.Y <= vp.Y
+                local it = oa.items[target]
+                if inside then
+                    if it then
+                        it.arrow.Visible = false
+                        it.dist.Visible = false
+                    end
+                else
+                    it = it or oa.makeItem(target)
+                    local rel = camCF:PointToObjectSpace(root.Position)
+                    local d2 = Vector2.new(rel.X, -rel.Y)
+                    if d2.Magnitude < 1e-4 then d2 = Vector2.new(0, 1) end
+                    d2 = d2.Unit
+                    local pos = center + d2 * radius
+
+                    local color = config.espc
+                    if isPlayerBeingTargeted(target) then
+                        color = config.esptargetc
+                    elseif config.prefColorByHealth then
+                        local hum = char:FindFirstChildOfClass("Humanoid")
+                        if hum then color = healthColor(hum) end
+                    end
+
+                    it.arrow.TextSize = size
+                    it.arrow.Size = UDim2.fromOffset(size * 1.5, size * 1.5)
+                    it.arrow.Position = UDim2.fromOffset(pos.X, pos.Y)
+                    it.arrow.Rotation = math.deg(math.atan2(d2.X, -d2.Y))
+                    it.arrow.TextColor3 = color
+                    it.arrow.Visible = true
+
+                    if config.offArrowShowDistance then
+                        local dpos = pos - d2 * (size * 1.1)
+                        it.dist.Text = string.format("%dm", math.floor((root.Position - camCF.Position).Magnitude))
+                        it.dist.Position = UDim2.fromOffset(dpos.X, dpos.Y)
+                        it.dist.TextColor3 = color
+                        it.dist.Visible = true
+                    else
+                        it.dist.Visible = false
+                    end
+                end
+            end
+        end
+    end
+
+    for t in pairs(oa.items) do
+        if not seen[t] then
+            oa.destroyItem(t)
+        end
+    end
+end
+config.offArrow.start = function()
+    local oa = config.offArrow
+    if oa.conn then return end
+    oa.acc = 0
+    oa.conn = excusemesir.RunService.RenderStepped:Connect(function(dt)
+        pcall(oa.update, dt)
+    end)
+end
+config.offArrow.refresh = function()
+    if config.espMasterEnabled and config.prefOffscreenArrows then
+        config.offArrow.start()
+    else
+        config.offArrow.stop()
+    end
+end
+
 function toggleHighlightESP(enabled)
     config.prefHighlightESP = enabled
     config.highlightesp = enabled and config.espMasterEnabled or false
@@ -11200,6 +11393,23 @@ local function predictthatposagain(targetPart)
     return targetPart.Position + (vel * clampedTime)
 end
 
+config.aimAtFovPoint = function(cam, targetPos, pixel)
+    local cf = cam.CFrame
+    local origin = cf.Position
+    local toTarget = targetPos - origin
+    if toTarget.Magnitude < 1e-3 then return cf end
+    local wantDir = toTarget.Unit
+    local pixelDir = cam:ViewportPointToRay(pixel.X, pixel.Y).Direction.Unit
+    local dot = math.clamp(pixelDir:Dot(wantDir), -1, 1)
+    local axis = pixelDir:Cross(wantDir)
+    if axis.Magnitude < 1e-5 then
+        if dot > 0 then return cf end
+        axis = cf.UpVector
+    end
+    local rot = CFrame.fromAxisAngle(axis.Unit, math.acos(dot))
+    return CFrame.new(origin) * rot * (cf - origin)
+end
+
 function aimbotUpdate()
     if not config.aimbotEnabled then
         if config.aimbotCurrentTarget then
@@ -11336,9 +11546,15 @@ function aimbotUpdate()
                 restoreAutoRotate()
             end
 
-local currentCFrame = camera.CFrame
             local currentCFrame = camera.CFrame
-            local targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
+            local fovMode = config.fovEffectiveMode()
+            local offsetAim = (fovMode == "Cursor" or fovMode == "Touch")
+            local targetCFrame
+            if offsetAim then
+                targetCFrame = config.aimAtFovPoint(camera, targetPosition, center)
+            else
+                targetCFrame = CFrame.lookAt(currentCFrame.Position, targetPosition)
+            end
             if config.aimbotAimMethod == "CFrame" then
                 if strength < 1 then
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
@@ -11361,9 +11577,9 @@ local currentCFrame = camera.CFrame
                     targetCFrame = currentCFrame:Lerp(targetCFrame, strength)
                 end
                 camera.CFrame = targetCFrame
-                local screenPos = camera:WorldToViewportPoint(targetPosition)
-                local fovCenter = config.getFovCenter(camera.ViewportSize)
-                if config.fovEffectiveMode() ~= "Touch" then
+                if not offsetAim then
+                    local screenPos = camera:WorldToViewportPoint(targetPosition)
+                    local fovCenter = config.getFovCenter(camera.ViewportSize)
                     mousemoverel(
                         screenPos.X - fovCenter.X,
                         screenPos.Y - fovCenter.Y
@@ -15993,6 +16209,37 @@ VisualsTab:Dropdown({
             espRefresher()
         end
     })
+
+    VisualsTab:Slider({
+        Title = "Offscreen Arrow Size",
+        Desc = "big arrow or smol arrow",
+        IsTextbox = true,
+        Step = 1,
+        Value = {
+            Min = 8,
+            Max = 40,
+            Default = config.offArrowSize or 18
+        },
+        Callback = function(value)
+            config.offArrowSize = value
+        end
+    })
+
+    VisualsTab:Slider({
+        Title = "Offscreen Arrow Radius",
+        Desc = "how far arrows float\nfrom the middle of ur screen\nor a fov circle... ig",
+        IsTextbox = true,
+        Step = 5,
+        Suffix = "px",
+        Value = {
+            Min = 50,
+            Max = 500,
+            Default = config.offArrowRadius or 200
+        },
+        Callback = function(value)
+            config.offArrowRadius = value
+        end
+    })
     
     VisualsTab:Toggle({
         Title = "ESP Colour Based On Health",
@@ -16084,6 +16331,34 @@ VisualsTab:Dropdown({
         end
     })
    
+    VisualsTab:Toggle({
+        Title = "Toggle Offscreen Arrows",
+        Desc = "arrows pointing to ppl ur not looking at...\nturn around and act ''reactive''",
+        Value = config.prefOffscreenArrows or false,
+        Callback = function(v)
+            config.prefOffscreenArrows = v
+            config.offArrow.refresh()
+        end
+    })
+
+    VisualsTab:Toggle({
+        Title = "Offscreen Arrow Distance",
+        Desc = "shows how many\nstuds away they are",
+        Value = config.offArrowShowDistance ~= false,
+        Callback = function(v)
+            config.offArrowShowDistance = v
+        end
+    })
+
+    VisualsTab:Toggle({
+        Title = "Toggle Distance ESP",
+        Desc = "idk tbh for this one\n(needs Text ESP on)",
+        Value = config.prefDistanceESP or false,
+        Callback = function(v)
+            config.prefDistanceESP = v
+        end
+    })
+
     VisualsTab:Space()
 
     VisualsTab:Paragraph({
@@ -20061,7 +20336,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel (11/10/2026)",
-        Desc = "idk I'm just taking ur ideas know :/\nAdded: Fov Mode in the maintab\nFixed: target priority issues\nFixed: SilentAim (HB) Target & Idle flicker issue\nBugs Fixed: 6",
+        Desc = "idk I'm just taking ur ideas know :/\nAdded: Fov Mode in the MainTab\nFixed: Target Priority issues\nFixed: SilentAim (HB) Target & Idle flicker issue\nFixed: Aimbot for Fov Mode\nAdded: Offscreen Arrows & Distance ESP to VisualsTab\nBugs Fixed: 6",
         Color = config.Gradow.uicolor.darkGray
     })
 end
