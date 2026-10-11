@@ -169,6 +169,8 @@ local config = {
     notif = true,
     startsa = false,
     fovsize = 120,
+    fovMode = "Fixed",
+    QTPositions = {},
     hbtrans = 1,
     scaleToScreen = false,
     stsdistance = 0,
@@ -557,6 +559,16 @@ local config = {
         tbotwallcheck = "Y",
         desync = "J",
         freecam = "P",
+    },
+    touchFov = {
+        pos = nil,
+        touch = nil,
+        grab = Vector2.zero,
+        dirty = false,
+        grabMin = 50,
+        grabMax = 120,
+        blockPad = 12,
+        bound = false,
     },
     varibz = {
         btntitle = {
@@ -3567,6 +3579,179 @@ local function getAllTargets(getTargetSeen)
 
     return targets
 end
+config.fovEffectiveMode = function()
+    local m = config.fovMode
+    if m == "Cursor" and not excusemesir.UserInputService.MouseEnabled then
+        return "Fixed"
+    end
+    return m
+end
+config.getFovCenter = function(viewport)
+    local mode = config.fovEffectiveMode()
+    if mode == "Cursor" then
+        local UIS = excusemesir.UserInputService
+        if UIS.MouseEnabled then
+            return UIS:GetMouseLocation()
+        end
+    elseif mode == "Touch" then
+        local p = config.touchFov.pos
+        if p then
+            return Vector2.new(math.clamp(p.X, 0, viewport.X), math.clamp(p.Y, 0, viewport.Y))
+        end
+    end
+    return Vector2.new(viewport.X / 2, viewport.Y / 2)
+end
+config.setFovRingPos = function(frame)
+    if not frame then return end
+    local mode = config.fovEffectiveMode()
+    if mode == "Cursor" then
+        local UIS = excusemesir.UserInputService
+        if UIS.MouseEnabled then
+            local m = UIS:GetMouseLocation()
+            frame.Position = UDim2.fromOffset(m.X, m.Y)
+            return
+        end
+    elseif mode == "Touch" then
+        local p = config.touchFov.pos
+        if p then
+            frame.Position = UDim2.fromOffset(p.X, p.Y)
+            return
+        end
+    end
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+end
+config.updateFovRings = function()
+    if gui and gui.RingHolder then config.setFovRingPos(gui.RingHolder) end
+    local ab = config.aimbotFOVRing
+    if ab and ab.RingFrame then config.setFovRingPos(ab.RingFrame) end
+    local tb = config.tbot and config.tbot.fovCircle
+    if tb and tb.RingFrame then config.setFovRingPos(tb.RingFrame) end
+end
+config.touchFov.inset = function()
+    local ok, gi = pcall(function() return game:GetService("GuiService"):GetGuiInset() end)
+    if ok and typeof(gi) == "Vector2" then return gi end
+    return Vector2.zero
+end
+config.touchFov.hitObj = function(o, vx, vy, pad)
+    local inset = config.touchFov.inset()
+    local sg = o:FindFirstAncestorWhichIsA("ScreenGui")
+    local px, py = vx, vy
+    if not (sg and sg.IgnoreGuiInset) then
+        px, py = vx - inset.X, vy - inset.Y
+    end
+    local ap, as = o.AbsolutePosition, o.AbsoluteSize
+    return px >= ap.X - pad and px <= ap.X + as.X + pad
+        and py >= ap.Y - pad and py <= ap.Y + as.Y + pad
+end
+config.touchFov.bat = function(vx, vy, full)
+    return false
+end
+config.touchFov.grabRadius = function()
+    local tf = config.touchFov
+    local r = 0
+    local function chk(f)
+        if f and f.Visible then r = math.max(r, f.AbsoluteSize.X / 2) end
+    end
+    chk(gui and gui.RingHolder)
+    chk(config.aimbotFOVRing and config.aimbotFOVRing.RingFrame)
+    chk(config.tbot and config.tbot.fovCircle and config.tbot.fovCircle.RingFrame)
+    if config.SA2_Enabled and config.SA2_FovVisible then r = math.max(r, config.SA2_FovRadius or 0) end
+    return math.clamp(r, tf.grabMin, tf.grabMax)
+end
+config.touchFov.setPos = function(v)
+    local vp = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1, 1)
+    config.touchFov.pos = Vector2.new(math.clamp(v.X, 0, vp.X), math.clamp(v.Y, 0, vp.Y))
+    config.touchFov.dirty = true
+end
+config.touchFov.reset = function()
+    config.touchFov.pos = nil
+    config.touchFov.touch = nil
+    config.touchFov.dirty = true
+    pcall(config.updateFovRings)
+end
+config.touchFov.handler = function(_, state, input)
+    local tf = config.touchFov
+    local pass = Enum.ContextActionResult.Pass
+    if config.fovEffectiveMode() ~= "Touch" then
+        tf.touch = nil
+        return pass
+    end
+    if state == Enum.UserInputState.Begin then
+        if tf.touch then return pass end
+        local cam = workspace.CurrentCamera
+        if not cam then return pass end
+        local inset = tf.inset()
+        local finger = Vector2.new(input.Position.X + inset.X, input.Position.Y + inset.Y)
+        local c = config.getFovCenter(cam.ViewportSize)
+        if (finger - c).Magnitude > tf.grabRadius() then return pass end
+        if tf.bat(finger.X, finger.Y, true) then return pass end
+        tf.touch = input
+        tf.grab = c - finger
+        return Enum.ContextActionResult.Sink
+    elseif input == tf.touch then
+        if state == Enum.UserInputState.Change then
+            tf.move(input)
+        else
+            tf.touch = nil
+        end
+        return Enum.ContextActionResult.Sink
+    end
+    return pass
+end
+config.touchFov.move = function(input)
+    local tf = config.touchFov
+    local inset = tf.inset()
+    local np = Vector2.new(input.Position.X + inset.X, input.Position.Y + inset.Y) + tf.grab
+    if not tf.bat(np.X, np.Y, false) then
+        tf.setPos(np)
+    end
+end
+config.applyFovMode = function()
+    local tf = config.touchFov
+    local CAS = game:GetService("ContextActionService")
+    local want = config.fovEffectiveMode() == "Touch"
+    if want and not tf.bound then
+        tf.bound = true
+        pcall(function()
+            CAS:BindActionAtPriority("HBSS_TouchFov", tf.handler, false,
+                Enum.ContextActionPriority.High.Value + 1000, Enum.UserInputType.Touch)
+        end)
+    elseif not want and tf.bound then
+        tf.bound = false
+        tf.touch = nil
+        pcall(function() CAS:UnbindAction("HBSS_TouchFov") end)
+    end
+    tf.dirty = true
+    pcall(config.updateFovRings)
+end
+config.varibz.fovTouchMoved = excusemesir.UserInputService.TouchMoved:Connect(function(input)
+    local tf = config.touchFov
+    if tf.touch and input == tf.touch then tf.move(input) end
+end)
+config.varibz.fovTouchEnded = excusemesir.UserInputService.TouchEnded:Connect(function(input)
+    local tf = config.touchFov
+    if tf.touch and input == tf.touch then tf.touch = nil end
+end)
+config.varibz.fovModeConn = excusemesir.RunService.RenderStepped:Connect(function()
+    local fm = config.fovMode
+    if fm == "Fixed" then return end
+    local mode = config.fovEffectiveMode()
+    if mode == "Cursor" then
+        config.updateFovRings()
+    elseif mode == "Touch" then
+        local tf = config.touchFov
+        if tf.touch then
+            local st = tf.touch.UserInputState
+            if st ~= Enum.UserInputState.Begin and st ~= Enum.UserInputState.Change then
+                tf.touch = nil
+            end
+        end
+        if tf.dirty then
+            tf.dirty = false
+            config.updateFovRings()
+        end
+    end
+end)
 
 config.getTargetsFiltered = function(...)
     local all = getAllTargets(...)
@@ -4226,6 +4411,23 @@ function saveConfig(saveName)
         })
         return false
     end
+    pcall(function()
+        if gui.mobileGui and gui.mobileGui.SnapshotPositions then
+            gui.mobileGui.SnapshotPositions()
+        end
+        if gui.indicator and gui.indicator.Frame then
+            config.indicator.position = gui.indicator.Frame.Position
+        end
+    end)
+    local qtPosSave = {}
+    for qtName, qtPos in pairs(config.QTPositions or {}) do
+        qtPosSave[qtName] = { XS = qtPos.X.Scale, XO = qtPos.X.Offset, YS = qtPos.Y.Scale, YO = qtPos.Y.Offset }
+    end
+    local indPosSave = nil
+    if config.indicator.position then
+        local ip = config.indicator.position
+        indPosSave = { XS = ip.X.Scale, XO = ip.X.Offset, YS = ip.Y.Scale, YO = ip.Y.Offset }
+    end
     local finalName = saveName
     local configToSave = {
         version = "2.0",
@@ -4501,6 +4703,9 @@ function saveConfig(saveName)
             indicator_draggable = config.indicator.draggable,
             indicator_alwaysVisible = config.indicator.alwaysVisible,
             indicator_size = config.indicator.size,
+            indicator_position = indPosSave,
+            QTPositions = qtPosSave,
+            fovMode = config.fovMode,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -5051,6 +5256,12 @@ function loadSave(saveName)
     if config.MobileSetDrag then
         config.MobileSetDrag(false)
     end
+    config.QTPositions = {}
+    if cfg.QTPositions then
+        for qtName, ps in pairs(cfg.QTPositions) do
+            config.QTPositions[qtName] = UDim2.new(ps.XS or 0, ps.XO or 0, ps.YS or 0, ps.YO or 0)
+        end
+    end
     if cfg.QuickToggles ~= nil then config.QuickToggles = cfg.QuickToggles end
     if cfg.QTDrag ~= nil then config.QTDrag = cfg.QTDrag end
     if cfg.QTScale then config.QTScale = cfg.QTScale end
@@ -5318,6 +5529,11 @@ function loadSave(saveName)
         config.indicator.enabled = cfg.indicator_enabled
     end
     if cfg.indicator_size then config.indicator.size = cfg.indicator_size end
+    if cfg.indicator_position then
+        local ip = cfg.indicator_position
+        config.indicator.position = UDim2.new(ip.XS or 0, ip.XO or 0, ip.YS or 0, ip.YO or 0)
+    end
+    if cfg.fovMode == "Fixed" or cfg.fovMode == "Cursor" or cfg.fovMode == "Touch" then config.fovMode = cfg.fovMode end
     if cfg.Keybinds then
         for key, value in pairs(cfg.Keybinds) do
             config.Keybinds[key] = value
@@ -5360,6 +5576,9 @@ function loadSave(saveName)
     pcall(function()
         if gui.indicator and gui.indicator.UIScale then
             gui.indicator.UIScale.Scale = config.indicator.size or 1
+        end
+        if gui.indicator and gui.indicator.Frame and config.indicator.position then
+            gui.indicator.Frame.Position = config.indicator.position
         end
         if gui.mobileGui and gui.mobileGui.UIScale then
             gui.mobileGui.UIScale.Scale = config.QTScale or 1
@@ -5626,6 +5845,21 @@ function loadSave(saveName)
                     end
                 end
             end
+        end
+    end)
+    pcall(function()
+        local fd = config.varibz.fovModeDropdown
+        if fd then
+            pcall(function() fd:Select(config.fovMode) end)
+        end
+        pcall(config.applyFovMode)
+        local qd = config.varibz.qtDropdown
+        if qd then
+            local sel = {}
+            for _, nm in ipairs(config.availableQuickToggles) do
+                if config.selectedQuickToggles[nm] then table.insert(sel, nm) end
+            end
+            pcall(function() qd:Select(sel) end)
         end
     end)
     pcall(function()
@@ -6373,10 +6607,17 @@ config.Priority = (function()
         local myChar = plr.Character
         local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
         ctx.myPos = myRoot and myRoot.Position or ctx.camPos
-        if UIS.MouseEnabled and table.find(ms, "Closest To Cursor") then
-            local ml = UIS:GetMouseLocation()
-            local ray = cam:ViewportPointToRay(ml.X, ml.Y)
-            ctx.curOrigin, ctx.curDir = ray.Origin, ray.Direction.Unit
+        if table.find(ms, "Closest To Cursor") then
+            local ml
+            if config.fovEffectiveMode() == "Touch" then
+                ml = config.getFovCenter(cam.ViewportSize)
+            elseif UIS.MouseEnabled then
+                ml = UIS:GetMouseLocation()
+            end
+            if ml then
+                local ray = cam:ViewportPointToRay(ml.X, ml.Y)
+                ctx.curOrigin, ctx.curDir = ray.Origin, ray.Direction.Unit
+            end
         end
 
         local skip = (exclude ~= nil)
@@ -6500,7 +6741,7 @@ local function GetClosestPlayer()
     local targetMode = config.masterGetTarget
     local seenMode = config.Priority.hasSeen(targetMode)
     local localTeam = plr.Team
-    local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
+    local center = config.getFovCenter(viewport)
     local maxRangeSq1 = config.SA2_TargetRange * config.SA2_TargetRange
     local character = plr.Character
     local localRoot = character and character:FindFirstChild("HumanoidRootPart")
@@ -6692,7 +6933,11 @@ local function GetClosestPlayer()
                             local inFOV = false
                             local screenDist = 0
                             if useFOV then
-                                local targetPos = part.Position
+                                local fovPart = part
+                                if targetPartStr == "Random" then
+                                    fovPart = char:FindFirstChild("HumanoidRootPart") or part
+                                end
+                                local targetPos = fovPart.Position
                                 local screenPos, onScreen = camera:WorldToViewportPoint(targetPos)
                                 if onScreen and screenPos.Z > 0 then
                                     local distX = screenPos.X - center.X
@@ -6822,6 +7067,9 @@ excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
             config.varibz.sa2this = true
             folkenstein______ = GetClosestPlayer()
             config.varibz.sa2this = false
+            if folkenstein______ then
+                config.varibz.sa2LockUntil = tick() + math.max(0.3, (config.varibz.sa2stuff or 0.5) * 1.5)
+            end
         end
     end
 end)
@@ -7301,7 +7549,7 @@ excusemesir.RunService.Heartbeat:Connect(function()
     local viewportSize = Camera.ViewportSize
     if viewportSize.X == 0 then return end
     
-    local screenCenter = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    local screenCenter = config.getFovCenter(viewportSize)
     
     if config.varibz.respawnLock then
         return
@@ -7311,11 +7559,13 @@ excusemesir.RunService.Heartbeat:Connect(function()
         CircleFrame.Visible = true
         CircleFrame.Position = UDim2.new(0, screenCenter.X, 0, screenCenter.Y)
         CircleFrame.Size = UDim2.new(0, config.SA2_FovRadius * 2, 0, config.SA2_FovRadius * 2)
-        local targetColor = currentTarget and config.SA2_FovColourTarget or config.SA2_FovColor
+        local locked = currentTarget ~= nil or tick() < (config.varibz.sa2LockUntil or 0)
+        local targetColor = locked and config.SA2_FovColourTarget or config.SA2_FovColor
         UIStroke.Color = targetColor
         UIStroke.Transparency = 1 - config.SA2_FovTransparency
     else
         CircleFrame.Visible = false
+        config.varibz.sa2LockUntil = 0
     end
 end)
 excusemesir.RunService.Heartbeat:Connect(function(deltaTime)
@@ -10963,7 +11213,7 @@ function aimbotUpdate()
     if not camera then camera = workspace.CurrentCamera end
     if not camera then return end
     local viewportSize = camera.ViewportSize
-    local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    local center = config.getFovCenter(viewportSize)
     local cameraPos = camera.CFrame.Position
     local localPlayer = excusemesir.Players.LocalPlayer
     local allTargets = config.getTargetsFiltered()
@@ -11112,10 +11362,13 @@ local currentCFrame = camera.CFrame
                 end
                 camera.CFrame = targetCFrame
                 local screenPos = camera:WorldToViewportPoint(targetPosition)
-                mousemoverel(
-                    screenPos.X - camera.ViewportSize.X / 2,
-                    screenPos.Y - camera.ViewportSize.Y / 2
-                )
+                local fovCenter = config.getFovCenter(camera.ViewportSize)
+                if config.fovEffectiveMode() ~= "Touch" then
+                    mousemoverel(
+                        screenPos.X - fovCenter.X,
+                        screenPos.Y - fovCenter.Y
+                    )
+                end
             elseif config.aimbotAimMethod == "Teleport" then
                 camera.CFrame = targetCFrame
             end
@@ -11135,6 +11388,7 @@ function aimbotfov()
     
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "37276227227277_383728736478_393828"
+    screenGui.IgnoreGuiInset = true
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = excusemesir.CoreGui
@@ -11143,7 +11397,7 @@ function aimbotfov()
     ringFrame.Name = "RingFrame"
     ringFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     ringFrame.Size = UDim2.new(0, config.aimbotFOVSize * 2, 0, config.aimbotFOVSize * 2)
-    ringFrame.Position = UDim2.new(0.5, 0, 0.5, -28)
+    config.setFovRingPos(ringFrame)
     ringFrame.BackgroundTransparency = 1
     ringFrame.Visible = config.aimbotEnabled and not config.aimbot360Enabled
     ringFrame.Parent = screenGui
@@ -11174,7 +11428,7 @@ function updateAimbotFOVRing()
             config.aimbotFOVRing.RingFrame.Visible = false
         elseif config.aimbotEnabled then
             config.aimbotFOVRing.RingFrame.Size = UDim2.new(0, config.aimbotFOVSize * 2, 0, config.aimbotFOVSize * 2)
-            config.aimbotFOVRing.RingFrame.Position = UDim2.new(0.5, 0, 0.5, -28)
+            config.setFovRingPos(config.aimbotFOVRing.RingFrame)
             config.aimbotFOVRing.RingFrame.Visible = true
             if config.aimbotCurrentTarget then
                 config.aimbotFOVRing.RingStroke.Color = config.aimbotFOVTargetColor or Color3.fromRGB(255, 255, 0)
@@ -11299,7 +11553,7 @@ local function triggerBotUpdate()
     local camera = workspace.CurrentCamera
     if not camera then return end
     local viewportSize = camera.ViewportSize
-    local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    local center = config.getFovCenter(viewportSize)
     local fovRadius = config.tbot.fovRadius
     local fovRadiusSq = fovRadius * fovRadius
     if config.tbot.fovCircle and config.tbot.fovCircle.RingStroke then
@@ -11545,6 +11799,7 @@ local function createTriggerBotFOV()
     
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "927172638798_392817637282_3846151648"
+    screenGui.IgnoreGuiInset = true
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = excusemesir.CoreGui
@@ -11553,7 +11808,7 @@ local function createTriggerBotFOV()
     ringFrame.Name = "TriggerFOVRing"
     ringFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     ringFrame.Size = UDim2.new(0, config.tbot.fovRadius * 2, 0, config.tbot.fovRadius * 2)
-    ringFrame.Position = UDim2.new(0.5, 0, 0.5, -28)
+    config.setFovRingPos(ringFrame)
     ringFrame.BackgroundTransparency = 1
     ringFrame.Visible = config.tbot.enabled and config.tbot.fovVisible
     ringFrame.Parent = screenGui
@@ -11582,6 +11837,7 @@ end
 function updateTriggerBotFOV()
     if config.tbot.fovCircle and config.tbot.fovCircle.RingFrame then
         config.tbot.fovCircle.RingFrame.Size = UDim2.new(0, config.tbot.fovRadius * 2, 0, config.tbot.fovRadius * 2)
+        config.setFovRingPos(config.tbot.fovCircle.RingFrame)
         config.tbot.fovCircle.RingFrame.Visible = config.tbot.enabled and config.tbot.fovVisible
         config.tbot.fovCircle.RingStroke.Color = config.tbot.fovColor
         config.tbot.fovCircle.RingStroke.Transparency = 1 - config.tbot.fovTransparency
@@ -11955,8 +12211,20 @@ local function burgerking(deltaTime)
     end
     if config.SA2_Enabled then
         local currentTime = tick()
-        if currentTime - 0 >= 1 then
-            local FindTool = loadstring(getgist_(getgenv().HttpUrlz_.sa2findtool))()
+        local vz = config.varibz
+        if not vz.sa2FindToolBusy and currentTime - (vz.sa2FindToolLast or 0) >= 1 then
+            vz.sa2FindToolLast = currentTime
+            vz.sa2FindToolBusy = true
+            task.spawn(function()
+                pcall(function()
+                    if not vz.sa2FindToolFn then
+                        local src = getgist_(getgenv().HttpUrlz_.sa2findtool)
+                        if src then vz.sa2FindToolFn = loadstring(src) end
+                    end
+                    if vz.sa2FindToolFn then vz.sa2FindToolFn() end
+                end)
+                vz.sa2FindToolBusy = false
+            end)
         end
     end
     if config.antiAimEnabled then
@@ -12633,46 +12901,62 @@ function CreateQT()
         }
     end
 
-    local function updateContainerLayout()
-        local visibleToggles = {}
-        for name, visible in pairs(config.selectedQuickToggles) do
-            if visible then
-                table.insert(visibleToggles, name)
+    local buttons = {}
+    local function snapshotPositions()
+        for name, buttonData in pairs(buttons) do
+            local m = buttonData and buttonData.main
+            if m and m.Parent and buttonData.assigned and m.Position ~= buttonData.assigned then
+                config.QTPositions[name] = m.Position
+                buttonData.assigned = m.Position
             end
         end
-        
+    end
+    local function updateContainerLayout()
+        snapshotPositions()
         local toggleWidth = 120
         local horizontalSpacing = 10
         local verticalSpacing = 10
         local togglesPerRow = 4
         local x = 0
         local y = 0
-        
-        for i, name in ipairs(visibleToggles) do
-            local buttonData = gui.mobileGui.Buttons[name]
+        local slot = 0
+        for _, name in ipairs(config.availableQuickToggles) do
+            local buttonData = buttons[name]
             if buttonData and buttonData.main then
-                local col = (i - 1) % togglesPerRow
-                local row = math.floor((i - 1) / togglesPerRow)
-                
-                buttonData.main.Position = UDim2.new(0, col * (toggleWidth + horizontalSpacing), 0, row * (40 + verticalSpacing))
-                buttonData.main.Visible = true
-                
-                x = math.max(x, (col + 1) * (toggleWidth + horizontalSpacing))
-                y = math.max(y, (row + 1) * (40 + verticalSpacing))
-            end
-        end
-        
-        for name, buttonData in pairs(gui.mobileGui.Buttons) do
-            if buttonData and buttonData.main then
-                if not config.selectedQuickToggles[name] then
+                if config.selectedQuickToggles[name] then
+                    local pos = config.QTPositions[name]
+                    if not pos then
+                        local col = slot % togglesPerRow
+                        local row = math.floor(slot / togglesPerRow)
+                        pos = UDim2.new(0, col * (toggleWidth + horizontalSpacing), 0, row * (40 + verticalSpacing))
+                        slot = slot + 1
+                        x = math.max(x, (col + 1) * (toggleWidth + horizontalSpacing))
+                        y = math.max(y, (row + 1) * (40 + verticalSpacing))
+                    end
+                    buttonData.main.Position = pos
+                    buttonData.assigned = pos
+                    buttonData.main.Visible = true
+                else
                     buttonData.main.Visible = false
                 end
             end
         end
-        
+        for name, buttonData in pairs(buttons) do
+            if buttonData and buttonData.main and not config.selectedQuickToggles[name] then
+                buttonData.main.Visible = false
+            end
+        end
         container.Size = UDim2.new(0, x + 10, 0, y + 10)
     end
-    local buttons = {}
+    local function resetPositions()
+        for _, buttonData in pairs(buttons) do
+            if buttonData and buttonData.main then
+                buttonData.assigned = buttonData.main.Position
+            end
+        end
+        config.QTPositions = {}
+        updateContainerLayout()
+    end
     local startX = 0
     local startY = 0
     local toggleConfigs = {
@@ -12770,6 +13054,8 @@ function CreateQT()
         Buttons = buttons,
         Container = container,
         UpdateLayout = updateContainerLayout,
+        SnapshotPositions = snapshotPositions,
+        ResetPositions = resetPositions,
         UIScale = contamination,
     }
     updateContainerLayout()
@@ -12782,6 +13068,9 @@ function CreateQT()
 end
 
 function KillQT()
+    if gui and gui.mobileGui and gui.mobileGui.SnapshotPositions then
+        pcall(gui.mobileGui.SnapshotPositions)
+    end
     if gui and gui.mobileGui and gui.mobileGui.ScreenGui then
         pcall(function()
             gui.mobileGui.ScreenGui:Destroy()
@@ -12880,7 +13169,7 @@ function onRenderStep()
         gui.RingHolder.Visible = true
     end
     local viewportSize = camera.ViewportSize
-    local center = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    local center = config.getFovCenter(viewportSize)
     local radiusPx = config.fovsize
 
     if gui.RingHolder then
@@ -13412,7 +13701,7 @@ function coolzestyuithing_diehedijsi_iwhwked()
     UIObject1.Rotation = 0
     UIObject1.ResampleMode = Enum.ResamplerMode.Default
     UIObject1.BackgroundTransparency = 1
-    UIObject1.Position = UDim2.new(0,459,0,5)
+    UIObject1.Position = config.indicator.position or UDim2.new(0,459,0,5)
     UIObject1.Visible = false
     UIObject1.ImageRectOffset = Vector2.new(0,0)
     UIObject1.ImageTransparency = 1
@@ -13724,6 +14013,7 @@ function jdjwhejdijahweki____sidjnww_ieje()
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
+                    config.indicator.position = ui.Frame.Position
                 end
             end)
         end
@@ -14832,6 +15122,27 @@ end)
         end
     })
     
+config.varibz.fovModeDropdown = MainTab:Dropdown({
+    Title = "Fov Mode",
+    Desc = "if u want every fov thingamajigs to move :p",
+    Values = {"Fixed", "Cursor", "Touch"},
+    Value = config.fovMode or "Fixed",
+    Multi = false,
+    Callback = function(Option)
+        config.fovMode = Option
+        pcall(config.applyFovMode)
+    end
+})
+
+    MainTab:Button({
+        Title = "Reset Touch FOV",
+        Desc = "put the touch fov circle back in the middle",
+        Icon = "rotate-ccw",
+        Callback = function()
+            config.touchFov.reset()
+        end
+    })
+
     MainTab:Dropdown({
         Title = "GetTarget",
         Desc = "uhhhhh priority shi",
@@ -14922,6 +15233,7 @@ MainTab:Button({
     Desc = "put the indicator back where it belongs :3",
     Icon = "rotate-ccw",
     Callback = function()
+        config.indicator.position = nil
         if gui.indicator and gui.indicator.Frame then
             gui.indicator.Frame.Position = UDim2.new(0, 459, 0, 5)
         end
@@ -14986,11 +15298,17 @@ MainTab:Space()
             end
         end
     })
-MainTab:Dropdown({
+config.varibz.qtDropdown = MainTab:Dropdown({
     Title = "QuickToggle Selection",
     Desc = "show what button now??",
     Values = config.availableQuickToggles,
-    Value = config.availableQuickToggles,
+    Value = (function()
+        local sel = {}
+        for _, nm in ipairs(config.availableQuickToggles) do
+            if config.selectedQuickToggles[nm] then table.insert(sel, nm) end
+        end
+        return sel
+    end)(),
     Multi = true,
     Callback = function(selected)
         for name, _ in pairs(config.selectedQuickToggles) do
@@ -15019,6 +15337,19 @@ MainTab:Toggle({
                     buttonData.main.Draggable = v
                 end
             end
+        end
+    end
+})
+
+MainTab:Button({
+    Title = "Reset QuickToggles Position",
+    Desc = "put the buttons back in their grid",
+    Icon = "rotate-ccw",
+    Callback = function()
+        if gui.mobileGui and gui.mobileGui.ResetPositions then
+            gui.mobileGui.ResetPositions()
+        else
+            config.QTPositions = {}
         end
     end
 })
@@ -15342,7 +15673,7 @@ MainTab:Keybind({
                 Callback = function()
                     local code = [[
 local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650/Sand/main/Sand.lua"))({
-    createwindui = true, -- true/false     / allow creating Wind UI (you'll need to rejoin and set the boolean to 'true' and rejoin if you need to change something)
+    createwindui = true, -- true/false     / allow creating Wind UI (set the boolean to 'true' and rejoin if you need to change something or use it's public API found in the README.md)
     autoload = true, -- true/false            / allow autoloading
     autosave = true, -- true/false           / allow autosaving
     autoflag = false, -- true/false        / allow auto rejoining whenever a flag is applied
@@ -19352,7 +19683,7 @@ InfoTab:Space()
     })
     InfoTab:Paragraph({
         Title = "Gravel: About",
-        Desc = "Hi I'm Gravel or HBSS ;D\nIm an monolithic semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
+        Desc = "Hi I'm Gravel or HBSS ;D\nIm an monolithic, aio, semi-universal script\nthat happens to be open source, keyless & free :>\nim not full ban-proof, completely universal nor ''bug-proof''\nthe script is developed by an solo dev so yeh\n(also the oldest version of gravel is 'hitblox' insane lore right?)\n\nAlso wonder what does 'HBSS' means it means nothing....\ncould be a sickle cell tho..\n\noh yeah the script also ghost updates\nalot so if you see something new you'll know why :7\n\nI mostly do stuff/work outside the platform I'm losing interest in playing roblox, sorry :c",
         Color = config.Gradow.uicolor.Black
     })
 InfoTab:Space()
@@ -19728,6 +20059,11 @@ InfoTab:Space()
         Desc = "sum code refactor n bug stuff\nAdded: Target Blacklist in MainTab\nAdded: Ignore Friends in MainTab\nCode: Refactored... a lil\nFixed: Cause of high ping\nFixed: Target Blacklist not refreshing\nAdded: more stuff in GetTarget drop-down\nFixed Bugs: 15",
         Color = config.Gradow.uicolor.darkGray
     })
+    InfoTab:Paragraph({
+        Title = "Gravel (11/10/2026)",
+        Desc = "idk I'm just taking ur ideas know :/\nAdded: Fov Mode in the maintab\nFixed: target priority issues\nFixed: SilentAim (HB) Target & Idle flicker issue\nBugs Fixed: 6",
+        Color = config.Gradow.uicolor.darkGray
+    })
 end
 end
 --tsu
@@ -19742,6 +20078,7 @@ end
 do
 local fovScreenGui = Instance.new("ScreenGui")
 fovScreenGui.Name = "391716637363627_836263736_3762627_"
+fovScreenGui.IgnoreGuiInset = true
 fovScreenGui.ResetOnSpawn = false
 fovScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 fovScreenGui.Parent = excusemesir.CoreGui
@@ -19756,7 +20093,7 @@ local ringHolder = Instance.new("Frame")
 ringHolder.Name = "RingHolder"
 ringHolder.AnchorPoint = Vector2.new(0.5, 0.5)
 ringHolder.Size = UDim2.new(0, config.fovsize * 2, 0, config.fovsize * 2)
-ringHolder.Position = UDim2.new(0.5, 0, 0.5, -28)
+config.setFovRingPos(ringHolder)
 ringHolder.BackgroundTransparency = 1
 ringHolder.Visible = false
 ringHolder.Parent = mainFrame
@@ -21081,6 +21418,17 @@ local function buhbyegravellllllll________()
             config.varibz.rng6connection = nil
         end
         config.varibz.rng6lastindex = nil
+        if config.varibz.fovModeConn then
+            pcall(function() config.varibz.fovModeConn:Disconnect() end)
+            config.varibz.fovModeConn = nil
+        end
+        for _, k in ipairs({"fovTouchMoved", "fovTouchEnded"}) do
+            if config.varibz[k] then
+                pcall(function() config.varibz[k]:Disconnect() end)
+                config.varibz[k] = nil
+            end
+        end
+        pcall(function() game:GetService("ContextActionService"):UnbindAction("HBSS_TouchFov") end)
         config.varibz.rng6label = nil
         getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
         table.clear(getgenv().HttpUrlz_)
