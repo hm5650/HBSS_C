@@ -176,13 +176,6 @@ function SaveUI:load()
             end
         end
 
-        if decoded.animMode ~= nil then
-            self:setAnimMode(decoded.animMode)
-            if self._config and self._config.Gradow and self._config.Gradow.setAnimMode then
-                self._config.Gradow.setAnimMode(self.AnimMode)
-            end
-        end
-
         if self._config and self._config.Gradow then
             if not self._config.Gradow.uiThemeSave then
                 self._config.Gradow.uiThemeSave = {}
@@ -191,7 +184,7 @@ function SaveUI:load()
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
     end)
-
+    self:applyAnimMode(decoded.animMode)
     return true
 end
 
@@ -251,13 +244,6 @@ function SaveUI:autoLoad()
             end
         end
 
-        if decoded.animMode ~= nil then
-            self:setAnimMode(decoded.animMode)
-            if self._config and self._config.Gradow and self._config.Gradow.setAnimMode then
-                self._config.Gradow.setAnimMode(self.AnimMode)
-            end
-        end
-
         if self._config and self._config.Gradow then
             if not self._config.Gradow.uiThemeSave then
                 self._config.Gradow.uiThemeSave = {}
@@ -266,7 +252,7 @@ function SaveUI:autoLoad()
             self._config.Gradow.uiThemeSave.CurrentTransparency = self.CurrentTransparency
         end
     end)
-
+    self:applyAnimMode(decoded.animMode)
     return true
 end
 
@@ -328,6 +314,21 @@ end
 
 function SaveUI:getNotif()
     return self.NotifEnabled
+end
+
+function SaveUI:applyAnimMode(mode)
+    if mode == nil then return false end
+    self:setAnimMode(mode)
+    local ok, err = pcall(function()
+        local g = self._config and self._config.Gradow
+        if g and g.setAnimMode then
+            g.setAnimMode(self.AnimMode)
+        end
+    end)
+    if not ok then
+        warn("SaveUI: failed to apply animMode: " .. tostring(err))
+    end
+    return ok
 end
 
 function SaveUI:getAnimMode()
