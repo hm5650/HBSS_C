@@ -30,7 +30,7 @@ print([[
              .--+++---.                                            
                                                                    
 
-           “idk wat to type here lmfao” 
+           “am i just aimware in luau?? :o” 
                                            
                                     - Gpssickle
 ]])
@@ -97,11 +97,11 @@ getgenv().HttpUrlz_ = {
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    --other
+    --other stuff made by other people... and it's mostly just uis... totally not because i suck at making uis... especially when it comes to making it a library
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     ilikedisui = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
-    ewitsabadapple = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
     --me cool script dat r not hbss related
+    ewitsabadapple = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
     tpuabasically = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
     imbricked = "https://raw.githubusercontent.com/hm5650/Brick/refs/heads/main/Brick.lua",
     wflingguiname = "https://raw.githubusercontent.com/hm5650/iwanttobanishthisspecificplayer/refs/heads/main/iwanttobanishthisspecificplayer.lua",
@@ -170,6 +170,21 @@ local config = {
     startsa = false,
     fovsize = 120,
     fovMode = "Fixed",
+    gunmods = {
+        __gm = true,
+        enabled = false,
+        interval = 0.25,
+        requireModules = true,
+        scanBackpack = true,
+        quick = {
+            fireRate = 1, damage = 1, range = 1, bulletSpeed = 1,
+            noRecoil = false, noSpread = false, noDrop = false,
+            infAmmo = false, instantReload = false, fullAuto = false,
+        },
+        overrides = {__gm = true},
+        customNames = {},
+        deep = {auto = false, interval = 0.25, budgetMs = 3, maxKeys = 120, minScore = 3, mode = "Focused"},
+    },
     QTPositions = {},
     hbtrans = 1,
     scaleToScreen = false,
@@ -923,7 +938,7 @@ local config = {
                 "wayyyy too hard :c",
             },
             {
-                "the file size is 700kb..",
+                "the file size is 800kb..",
                 "I'm fr",
                 "D:",
             },
@@ -981,6 +996,18 @@ local config = {
                 "the intro in gravel checks\ngame compatibility :3",
                 "and uhh",
                 "yeh",
+            },
+            {
+                "You're walking down a hallway.",
+                "Take a left.",
+                "You'll keep walking down a hallway",
+                "Take a right.",
+                "To the left, to the right, to the left\nto the right, to- th- ri-to the left",
+                "BRICKWALL\n''AHHH''",
+                "You'll keep walking down a hallway",
+                "Take a right.",
+                "To the left, to the right, to the left\nto the right, to- th- ri-to the left",
+                "BRICKWALL\n''AHHHHHH-''",
             },
             {
                 "animation and scripting",
@@ -2405,7 +2432,7 @@ local config = {
             "rbxassetid://94964479268464",
         },
         descs = {
-            Main = {
+            ["Main"] = {
                 "y u touching my brain",
                 "brain goes brrr",
                 "main stuffz",
@@ -2428,7 +2455,7 @@ local config = {
                 "folk",
                 "read da text vro :1",
             },
-            Visuals = {
+            ["Visuals"] = {
                 "4 the blind ppl",
                 "oooh shiny",
                 "make game look cool",
@@ -2452,7 +2479,7 @@ local config = {
                 "xray vision activated",
                 "visuals go crazy"
             },
-            AntiAim = {
+            ["AntiAim"] = {
                 "I suck at dodging tab",
                 "dodge master 3000",
                 "u cant hit me >:3",
@@ -2472,7 +2499,7 @@ local config = {
                 "now u see me, now u dont",
                 "trust im legit dodging",
             },
-            Aimbot = {
+            ["Aimbot"] = {
                 "aimware-ing",
                 "lock on target",
                 "no mouse movement aim tab",
@@ -2522,7 +2549,18 @@ local config = {
                 "awesome sauce",
                 "aim-ster",
             },
-            Hitbox = {
+            ["GunMods"] = {
+                "make my pistol shoot like minigun",
+                "TOP 101 WAYS TO GET BANNED",
+                "This one's experimental btw >_>",
+                "I'm hacking a gun to make the gun a admin gun",
+                "admin gun maker 9001",
+                "Kitchen Gun!",
+                "module scripts torture",
+                "''its full-auto, i swear''",
+                "wth is a param",
+            },
+            ["Hitbox"] = {
                 "it's hitbox not HURTBOX!1!",
                 "size matters",
                 "make em bigger",
@@ -2539,7 +2577,7 @@ local config = {
                 "hurt big box",
                 "big blob",
             },
-            Reach = {
+            ["Reach"] = {
                 "1+1= √4",
                 "long arms",
                 "stretchy arms",
@@ -2557,7 +2595,7 @@ local config = {
                 "long arms gng🥀",
                 "kill aura for sowrds"
             },
-            Client = {
+            ["Client"] = {
                 "I don't hold the serverside blud",
                 "GOTTA GO FAST",
                 "I'm in a sugar rush",
@@ -2566,7 +2604,7 @@ local config = {
                 "localscript tab",
                 "MOD MENU APK 2026!! 🔥🔥🔥",
             },
-            World = {
+            ["World"] = {
                 "//wand",
                 "uhh other-worldly world stuff",
                 "helloworld(''print'')",
@@ -2582,7 +2620,7 @@ local config = {
                 "APK UNLIMITED COIN MOD 🔥🔥💎💎",
                 "yet another misc tab",
             },
-            Miscellaneous = {
+            ["Miscellaneous"] = {
                 "random bs go!!!🔥🔥🔥",
                 "the leftovers",
                 "extra stuff",
@@ -2599,7 +2637,7 @@ local config = {
                 "kiss me misc :3",
                 "extra goodies",
             },
-            BGM = {
+            ["BGM"] = {
                 "musssiccc :3",
                 "it's super loud here",
                 "make g.cc louder",
@@ -2620,7 +2658,7 @@ local config = {
                 ">:P",
                 "me wants music :3",
             },
-            Developer = {
+            ["Developer"] = {
                 "js shows the console :/",
                 "useless tab so ignore\nbut useful 4 me",
                 "errrrrrooooorrrrs",
@@ -2634,7 +2672,7 @@ local config = {
                 "it's not a bash tab",
                 "it's not a shell tab",
             },
-            Info = {
+            ["Info"] = {
                 "show me da papperz",
                 "the knowledge",
                 "read me.txt",
@@ -2860,6 +2898,18 @@ local config = {
         },
     },
     Gradow = {
+        animMode = "ASCII",
+        ascii = {
+            textSize = 12,
+            padding = 61,
+            fps = 26,
+            ramp = " .,':;-~=+*x01#%&@",
+            color = Color3.fromRGB(255, 255, 255),
+            mouse = true,
+            holder = nil,
+            conn = nil,
+            alpha = 0,
+        },
         textcursor = "_",
         textcursor2 = "  ",
         uianimate = {
@@ -3145,6 +3195,248 @@ local function rng3(tabName)
     config.varibz.Rng3dis[tabName] = "description missing D:"
     return config.varibz.Rng3dis[tabName]
 end
+do
+    local A = config.Gradow.ascii
+
+    function A.stop()
+        if A.conn then
+            pcall(function() A.conn:Disconnect() end)
+            A.conn = nil
+        end
+        if A.holder then
+            pcall(function() A.holder:Destroy() end)
+            A.holder = nil
+        end
+        A.alpha = 0
+    end
+
+    function A.start()
+        A.stop()
+        local main = Window and Window.UIElements and Window.UIElements.Main
+        if not main then return false end
+        local sg = main:FindFirstAncestorWhichIsA("ScreenGui")
+        if not sg then return false end
+        local holderParent = main.Parent or sg
+        local TextService = game:GetService("TextService")
+        local UIS = excusemesir.UserInputService
+        local GuiService = game:GetService("GuiService")
+        local font = Enum.Font.Code
+        local huge = Vector2.new(1e5, 1e5)
+        local size = A.textSize
+
+        local cw = TextService:GetTextSize(string.rep("M", 40), size, font, huge).X / 40
+        local h1 = TextService:GetTextSize("M", size, font, huge).Y
+        local h11 = TextService:GetTextSize(string.rep("M\n", 10) .. "M", size, font, huge).Y
+        local ch = (h11 - h1) / 10
+        if cw <= 0 then cw = size * 0.6 end
+        if ch <= 0 then ch = size end
+
+        local holder = Instance.new("Frame")
+        holder.Name = "AsciiBackdrop"
+        holder.AnchorPoint = Vector2.new(0.5, 0.5)
+        holder.BackgroundTransparency = 1
+        holder.ClipsDescendants = true
+        holder.Visible = false
+        holder.Active = false
+        holder.ZIndex = main.ZIndex - 1
+        holder.Parent = holderParent
+        A.holder = holder
+        local layers = {
+            {min = 0.1, transparency = 0.84},
+            {min = 0.4, transparency = 0.62},
+            {min = 0.7, transparency = 0.3},
+        }
+        local labels = {}
+        for i = 1, #layers do
+            local l = Instance.new("TextLabel")
+            l.Name = "Layer" .. i
+            l.BackgroundTransparency = 1
+            l.Font = font
+            l.TextSize = size
+            l.TextColor3 = A.color
+            l.TextTransparency = 1
+            l.TextXAlignment = Enum.TextXAlignment.Left
+            l.TextYAlignment = Enum.TextYAlignment.Top
+            l.TextWrapped = false
+            l.RichText = false
+            l.Text = ""
+            l.ZIndex = 1
+            l.Active = false
+            l.Parent = holder
+            labels[i] = l
+        end
+
+        local ramp = {}
+        for i = 1, #A.ramp do
+            ramp[i] = A.ramp:sub(i, i)
+        end
+        local rampLen = #ramp
+
+        local cols, rows, offX, offY = 0, 0, 0, 0
+        local glow = {}
+        local bufs = {{}, {}, {}}
+        local lines = {{}, {}, {}}
+
+        local function rebuild(area, inner)
+            cols = math.max(1, math.floor(area.X / cw))
+            rows = math.max(1, math.floor(area.Y / ch))
+            offX = (area.X - cols * cw) / 2
+            offY = (area.Y - rows * ch) / 2
+            for _, l in ipairs(labels) do
+                l.Position = UDim2.fromOffset(offX, offY)
+                l.Size = UDim2.fromOffset(cols * cw + 4, rows * ch + 4)
+            end
+            local cx, cy = area.X / 2, area.Y / 2
+            local hw, hh = inner.X / 2, inner.Y / 2
+            local pad = A.padding
+            table.clear(glow)
+            for y = 0, rows - 1 do
+                local qy = math.max(math.abs(offY + (y + 0.5) * ch - cy) - hh, 0)
+                for x = 0, cols - 1 do
+                    local qx = math.max(math.abs(offX + (x + 0.5) * cw - cx) - hw, 0)
+                    local i = y * cols + x + 1
+                    if qx == 0 and qy == 0 then
+                        glow[i] = -1
+                    else
+                        local g = math.clamp(1 - math.sqrt(qx * qx + qy * qy) / pad, 0, 1)
+                        glow[i] = g * g * (3 - 2 * g)
+                    end
+                end
+            end
+            for _, b in ipairs(bufs) do table.clear(b) end
+        end
+
+        local noise, sin, cos, sqrt, exp, floor = math.noise, math.sin, math.cos, math.sqrt, math.exp, math.floor
+        local min1, min2, min3 = layers[1].min, layers[2].min, layers[3].min
+        local aspect = ch / cw
+
+        local function render(t, alpha, mx, my)
+            local mcx, mcy
+            if mx then
+                mcx, mcy = (mx - offX) / cw, (my - offY) / ch
+            end
+            local b1, b2, b3 = bufs[1], bufs[2], bufs[3]
+            local l1, l2, l3 = lines[1], lines[2], lines[3]
+            for y = 0, rows - 1 do
+                local base = y * cols
+                local ny = y * 0.11 - t * 0.35
+                local wy = cos(y * 0.21 - t * 0.7)
+                for x = 0, cols - 1 do
+                    local g = glow[base + x + 1]
+                    local c1, c2, c3 = " ", " ", " "
+                    if g > 0 then
+                        local v = 0.45 + noise(x * 0.055, ny, t * 0.12) * 1.3 + sin(x * 0.12 + t * 1.1) * wy * 0.18
+                        if mcx then
+                            local dx, dy = x - mcx, (y - mcy) * aspect
+                            local d = sqrt(dx * dx + dy * dy)
+                            v += sin(d * 0.45 - t * 7) * exp(-d * 0.09) * 0.45
+                        end
+                        v *= g * alpha
+                        if v >= min1 then
+                            local idx = math.clamp(floor(v * rampLen) + 1, 2, rampLen)
+                            local glyph = ramp[idx]
+                            if v >= min3 then
+                                c3 = glyph
+                            elseif v >= min2 then
+                                c2 = glyph
+                            else
+                                c1 = glyph
+                            end
+                        end
+                    end
+                    b1[x + 1], b2[x + 1], b3[x + 1] = c1, c2, c3
+                end
+                l1[y + 1] = table.concat(b1, "", 1, cols)
+                l2[y + 1] = table.concat(b2, "", 1, cols)
+                l3[y + 1] = table.concat(b3, "", 1, cols)
+            end
+            labels[1].Text = table.concat(l1, "\n", 1, rows)
+            labels[2].Text = table.concat(l2, "\n", 1, rows)
+            labels[3].Text = table.concat(l3, "\n", 1, rows)
+            for i, layer in ipairs(layers) do
+                labels[i].TextTransparency = 1 - (1 - layer.transparency) * alpha
+            end
+        end
+
+        local acc, lastArea = 0, nil
+        local startClock = os.clock()
+        A.conn = excusemesir.RunService.RenderStepped:Connect(function(dt)
+            if not holder.Parent or not main.Parent then
+                A.stop()
+                return
+            end
+            local open = main.Visible and main.AbsoluteSize.X > 40 and Window.Closed ~= true
+            if open then
+                A.alpha = math.min(A.alpha + dt * 1.5, 1)
+            else
+                A.alpha = math.max(A.alpha - dt * 3, 0)
+            end
+            if A.alpha <= 0.001 then
+                holder.Visible = false
+                return
+            end
+            holder.Visible = true
+            local as = main.AbsoluteSize
+            holder.Position = main.Position
+            acc += dt
+            if acc < 1 / A.fps then return end
+            acc = 0
+            local inner = Vector2.new(floor(as.X + 0.5), floor(as.Y + 0.5))
+            local area = inner + Vector2.new(A.padding * 2, A.padding * 2)
+            if area ~= lastArea then
+                lastArea = area
+                holder.Size = UDim2.fromOffset(area.X, area.Y)
+                rebuild(area, inner)
+            end
+
+            local mx, my
+            if A.mouse then
+                local m = UIS:GetMouseLocation() - holder.AbsolutePosition
+                if m.X >= 0 and m.Y >= 0 and m.X <= area.X and m.Y <= area.Y then
+                    mx, my = m.X, m.Y
+                end
+            end
+            render(os.clock() - startClock, A.alpha, mx, my)
+        end)
+        return true
+    end
+end
+
+config.Gradow.setAnimMode = function(mode)
+    if mode ~= "ASCII" and mode ~= "Stroke" and mode ~= "Off" then
+        mode = "ASCII"
+    end
+    config.Gradow.animMode = mode
+    if mode == "ASCII" then
+        if not config.Gradow.ascii.start() then
+            task.spawn(function()
+                for _ = 1, 10 do
+                    task.wait(0.5)
+                    if config.Gradow.animMode ~= "ASCII" or config.Gradow.ascii.start() then
+                        break
+                    end
+                end
+            end)
+        end
+    else
+        config.Gradow.ascii.stop()
+    end
+    local ws = config.Gradow.uianimate.windowStroke
+    if mode ~= "Stroke" and ws and ws.Parent then
+        ws.Thickness = 1
+        ws.Transparency = 0.75
+    end
+    if SaveUI and SaveUI.setAnimMode then
+        pcall(SaveUI.setAnimMode, SaveUI, mode)
+    end
+    local dd = config.Gradow.animDropdown
+    if dd and dd.Select and not config.Gradow.animSyncing then
+        config.Gradow.animSyncing = true
+        pcall(dd.Select, dd, mode)
+        config.Gradow.animSyncing = false
+    end
+end
+
 function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
     task.wait(0.1)
     config.Gradow.uianimate.openButton = Window.OpenButtonMain and Window.OpenButtonMain.Button
@@ -3255,7 +3547,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
             if config.Gradow.uianimate.connection then config.Gradow.uianimate.connection:Disconnect() end
             return
         end
-        if config.Gradow.uianimate.windowStroke and config.Gradow.uianimate.windowStroke.Parent then
+        if config.Gradow.animMode == "Stroke" and config.Gradow.uianimate.windowStroke and config.Gradow.uianimate.windowStroke.Parent then
             config.Gradow.uianimate.windowStroke.Thickness = config.Gradow.uianimate.openStroke.Thickness
             config.Gradow.uianimate.windowStroke.Transparency = config.Gradow.uianimate.openStroke.Transparency
         end
@@ -3326,7 +3618,7 @@ function uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
             config.Gradow.uianimate.openStroke.Transparency = pulseTransparency
         end
         
-        if config.Gradow.uianimate.windowStroke then
+        if config.Gradow.animMode == "Stroke" and config.Gradow.uianimate.windowStroke then
             local windowPulseValue = (math.sin(currentTime * (1 / (config.Gradow.uianimate.pulseSpeed * 0.9)) * math.pi * 2) + 1) / 2
             local windowThickness = config.Gradow.uianimate.minThickness + (windowPulseValue * thicknessRange)
             config.Gradow.uianimate.windowStroke.Thickness = windowThickness
@@ -4716,6 +5008,7 @@ function saveConfig(saveName)
             indicator_position = indPosSave,
             QTPositions = qtPosSave,
             fovMode = config.fovMode,
+            gunmods_data = (config.gunmodsAPI and config.gunmodsAPI.export()) or nil,
             varibz_patcherwait = config.varibz.patcherwait,
             varibz_lowpatcherwait = config.varibz.lowpatcherwait,
             varibz_patcher = config.varibz.patcher,
@@ -5226,8 +5519,9 @@ function loadSave(saveName)
     if cfg.masterGetTarget then
         config.masterGetTarget = config.Priority.toList(cfg.masterGetTarget)
     end
+    if cfg.masterTeamTarget then config.masterTeamTarget = cfg.masterTeamTarget end
     if cfg.specificTeamTarget ~= nil then config.specificTeamTarget = cfg.specificTeamTarget end
-    if cfg.targetedTeams then config.targetedTeams = cfg.targetedTeams end
+    if cfg.targetedTeams then config.targetedTeams = table.clone(cfg.targetedTeams) end
     if cfg.masterTarget then config.masterTarget = cfg.masterTarget end
     if cfg.masterGetTarget then config.masterGetTarget = cfg.masterGetTarget end
     if cfg.targetSeenSwitchRate then config.targetSeenSwitchRate = cfg.targetSeenSwitchRate end
@@ -5549,6 +5843,37 @@ function loadSave(saveName)
         config.indicator.position = UDim2.new(ip.XS or 0, ip.XO or 0, ip.YS or 0, ip.YO or 0)
     end
     if cfg.fovMode == "Fixed" or cfg.fovMode == "Cursor" or cfg.fovMode == "Touch" then config.fovMode = cfg.fovMode end
+    local gd = cfg.gunmods_data
+    if type(gd) ~= "table" then return end
+    local g = config.gunmods
+    if type(gd.enabled) == "boolean" then g.enabled = gd.enabled end
+    if type(gd.interval) == "number" then g.interval = gd.interval end
+    if type(gd.requireModules) == "boolean" then g.requireModules = gd.requireModules end
+    if type(gd.scanBackpack) == "boolean" then g.scanBackpack = gd.scanBackpack end
+    if type(gd.quick) == "table" then
+        for k, v in pairs(gd.quick) do
+            if k ~= "__gm" and g.quick[k] ~= nil and type(v) == type(g.quick[k]) then g.quick[k] = v end
+        end
+    end
+    if type(gd.deep) == "table" then
+        for k, v in pairs(gd.deep) do
+            if k ~= "__gm" and g.deep[k] ~= nil and type(v) == type(g.deep[k]) then g.deep[k] = v end
+        end
+    end
+    table.clear(g.overrides)
+    g.overrides.__gm = true
+    if type(gd.overrides) == "table" then
+        for k, v in pairs(gd.overrides) do
+            if k ~= "__gm" and type(k) == "string" and (type(v) == "number" or type(v) == "boolean") then g.overrides[k] = v end
+        end
+    end
+    table.clear(g.customNames)
+    if type(gd.customNames) == "table" then
+        for _, nm in ipairs(gd.customNames) do
+            if type(nm) == "string" then table.insert(g.customNames, nm) end
+        end
+    end
+    if config.gunmodsAPI then config.gunmodsAPI.syncUI() end
     if cfg.Keybinds then
         for key, value in pairs(cfg.Keybinds) do
             config.Keybinds[key] = value
@@ -5860,6 +6185,22 @@ function loadSave(saveName)
                     end
                 end
             end
+        end
+    end)
+    pcall(function()
+        local td = getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.TeamTargetDropdown
+        if td then
+            local mode = config.masterTeamTarget or "Enemies"
+            local keepTeams = table.clone(config.targetedTeams or {})
+            if td.Select then td:Select(mode) elseif td.SetValue then td:SetValue(mode) end
+            config.masterTeamTarget = mode
+            config.targetedTeams = keepTeams
+            local sd = getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.SpecificTeamsDropdown
+            if sd then
+                if sd.Select then sd:Select(keepTeams) elseif sd.SetValue then sd:SetValue(keepTeams) end
+            end
+            config.targetedTeams = keepTeams
+            updateTeamTargetModes()
         end
     end)
     pcall(function()
@@ -14497,9 +14838,16 @@ if isMobile then
 elseif isTablet then
     size = config.Gradow.windowSize.tablet
 end
-
+local gratitle = rng5()
+if getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ == "_C" then
+    if gratitle:find("%.cc$") then
+        gratitle = gratitle:gsub("%.cc$", ".tst")
+    else
+        gratitle = gratitle .. " [TST]"
+    end
+end
 Window = WindUI:CreateWindow({
-    Title = rng5(),
+    Title = gratitle,
     Author = "[dis guy Gpssickle]",
     Folder = "Gravel_Saves",
     Theme = "Dark",
@@ -15109,6 +15457,7 @@ local function rng2()
 end
 task.wait(0.2)
 uianijsyevxusuuwkaoxidhehhwiaosldjbnmate_()
+config.Gradow.setAnimMode(config.Gradow.animMode)
 eye_con()
 rng4()
 rng6()
@@ -15148,7 +15497,7 @@ MainTab:Toggle({
         Color = config.Gradow.uicolor.lightGreen
     })
     
-MainTab:Dropdown({
+getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.TeamTargetDropdown = MainTab:Dropdown({
     Title = "TeamTarget",
     Desc = "what team?? o.o",
     Values = {"Enemies", "Teams", "All", "Specific Team"},
@@ -15209,6 +15558,7 @@ local teamDropdown = MainTab:Dropdown({
         config.targetedTeams = selected or {}
     end
 })
+getgenv().blablablahblahblahhblahblahhGraaaaaaaaaaaaaaaaaaaaaaaveel_.SpecificTeamsDropdown = teamDropdown
 config.varibz.lastTeamKey = table.concat(getTeamNames(), ",")
 config.uiAutoRefresh("teamListLoop", 3, 15, function()
     local teamNames = getTeamNames()
@@ -15788,7 +16138,7 @@ MainTab:Keybind({
     
     MainTab:Toggle({
         Title = "Toggle AutoFarm ('F')",
-        Desc = "Enable/disable auto farm",
+        Desc = "Enable/Disable AutoFarm",
         Value = config.autoFarmEnabled or false,
         Callback = function(v)
             config.autoFarmEnabled = v
@@ -16111,7 +16461,7 @@ local VisualsTab = Window:Tab({
     })
     VisualsTab:Toggle({
         Title = "Toggle ESP ('Z')",
-        Desc = "Enable/disable all ESP features",
+        Desc = "Enable/Disable all ESP features",
         Value = config.espMasterEnabled or false,
         Callback = function(v)
             applyESPMaster(v)
@@ -16745,6 +17095,19 @@ VisualsTab:Dropdown({
     end
 })
 
+config.Gradow.animDropdown = VisualsTab:Dropdown({
+    Title = "UI Animation",
+    Desc = "animmmmmksksj",
+    Values = {"ASCII", "Stroke", "Off"},
+    Value = config.Gradow.animMode,
+    Multi = false,
+    Callback = function(v)
+        if type(v) == "table" then v = v[1] end
+        if config.Gradow.animSyncing then return end
+        config.Gradow.setAnimMode(v)
+    end
+})
+
 VisualsTab:Slider({
     Title = "Transparency Value",
     Desc = "make the ui ghosty",
@@ -16862,7 +17225,7 @@ local AntiAimTab = Window:Tab({
     
     AntiAimTab:Toggle({
         Title = "Toggle AntiAim ('L')",
-        Desc = "Enable/disable AntiAim",
+        Desc = "Enable/Disable AntiAim",
         Value = config.antiAimEnabled or false,
         Callback = function(v)
             config.antiAimEnabled = v
@@ -17177,7 +17540,7 @@ local AimbotTab = Window:Tab({
     AimbotTab:Space()
     AimbotTab:Toggle({
         Title = "Toggle Aimbot ('Q')",
-        Desc = "Enable/disable aimbot",
+        Desc = "Enable/Disable Aimbot",
         Value = config.aimbotEnabled or false,
         Callback = function(v)
             handleAimbotToggle(v)
@@ -17494,7 +17857,7 @@ local SilentAimTab = Window:Tab({
     
     SilentAimTab:Toggle({
         Title = "Toggle SilentAim (HB) ('E')",
-        Desc = "Enable/disable silent aim",
+        Desc = "Enable/Disable SilentAim (HB)",
         Value = config.startsa or false,
         Callback = function(v)
             config.startsa = v
@@ -17702,7 +18065,7 @@ local SilentAimTab2 = Window:Tab({
     
     SilentAimTab2:Toggle({
         Title = "Toggle SilentAim (HK) ('R')",
-        Desc = "Enable/disable silent aim",
+        Desc = "Enable/Disable SilentAim (HK)",
         Value = config.SA2_Enabled or false,
         Callback = function(v)
             config.SA2_Enabled = v
@@ -17915,6 +18278,1405 @@ config.uiAutoRefresh("remoteScannerLoop", 2, 20, function()
     config.varibz.remotespara:SetDesc(desc)
     return true
 end)
+end
+do
+    local GM = config.gunmods
+    local API = {}
+    config.gunmodsAPI = API
+    local lp = excusemesir.Players.LocalPlayer
+    local WEAKV = {__mode = "v"}
+    local WEAKK = {__mode = "k"}
+    local OWN = setmetatable({}, WEAKK)
+    local S = {
+        reg = {},
+        seenTbl = setmetatable({}, WEAKK),
+        seenInst = setmetatable({}, WEAKK),
+        seenAttr = setmetatable({}, WEAKK),
+        ui = {},
+        conns = {},
+        matchCache = {},
+        matchCacheN = 0,
+        refTotal = 0,
+        scanning = false,
+        lastDeep = 0,
+        deepPending = false,
+        status = "idle",
+        lastFound = 0,
+        lastTables = 0,
+        applying = false,
+        needRestore = false,
+        selected = nil,
+        inputText = "",
+        addText = "",
+        nameKey = "\0",
+        infoText = "",
+        statusText = "",
+        regVersion = 0,
+        lastDt = 0,
+        hbAcc = 0,
+        uiToggledAt = 0,
+        uiClosedNow = nil,
+        dropdownAt = 0,
+        statusAt = 0,
+        lastBpScan = 0,
+        strongCache = {},
+        strongN = 0,
+    }
+    OWN[GM] = true
+    OWN[GM.quick] = true
+    OWN[GM.overrides] = true
+    OWN[GM.deep] = true
+    OWN[GM.customNames] = true
+    OWN[S] = true
+    OWN[S.reg] = true
+    OWN[S.ui] = true
+    OWN[API] = true
+    table.insert(S.conns, excusemesir.RunService.Heartbeat:Connect(function(dt)
+        S.lastDt = dt
+        S.hbAcc = S.hbAcc + dt
+        if S.hbAcc < 0.1 then return end
+        S.hbAcc = 0
+        local okc, closed = pcall(subside_I_I_I_I_I_)
+        closed = (okc and closed) and true or false
+        if closed ~= S.uiClosedNow then
+            S.uiClosedNow = closed
+            S.uiToggledAt = os.clock()
+        end
+    end))
+    function S.calm()
+        return os.clock() - S.uiToggledAt > 2.5
+    end
+    function S.budget()
+        local b = math.max(GM.deep.budgetMs, 1) / 1000
+        if S.lastDt > 0.034 or not S.calm() then b = math.min(b, 0.001) end
+        return b
+    end
+    function S.pause()
+        task.wait()
+        if S.lastDt > 0.034 then task.wait(0.05) end
+        local guard = 0
+        while not S.calm() and guard < 30 do
+            guard = guard + 1
+            task.wait(0.1)
+        end
+    end
+    local function notify(msg, good)
+        n({
+            Title = "Gun Mods",
+            Content = msg,
+            Audio = "rbxassetid://17208361335",
+            Length = 2,
+            Image = "rbxassetid://4483362458",
+            BarColor = good and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        })
+    end
+    local ownBudget = 0
+    local function markOwn(t, depth)
+        if OWN[t] then return end
+        OWN[t] = true
+        ownBudget = ownBudget + 1
+        if depth >= 3 or ownBudget > 6000 then return end
+        for _, v in next, t do
+            if type(v) == "table" then markOwn(v, depth + 1) end
+        end
+    end
+    local function norm(s)
+        return (string.lower(tostring(s)):gsub("[^%a%d]", ""))
+    end
+
+    local youraveragegunstats = {
+        -- fire rate bs
+        "FireRate", "RateOfFire", "RPM", "ShootRate", "FireSpeed", "ShotsPerSecond", "AttackSpeed",
+        "FireInterval", "FireDelay", "ShootDelay", "ShotDelay", "FireCooldown", "ShootCooldown",
+        "ShotCooldown", "TimeBetweenShots", "FireTime", "AttackDelay", "AttackCooldown", "BulletDelay",
+        "FiringRate", "FireWait", "ShootWait", "ShotInterval", "BurstDelay", "BurstRate",
+        "RoundsPerMinute", "FireRateMultiplier", "FireRateValue", "CooldownTime", "ReFireDelay",
+        "ShotCooldownTime", "AttackInterval", "CycleTime", "RateMultiplier", "BurstSpeed",
+        "BurstInterval", "AutoFireRate", "SemiAutoRate", "FireRateModifier", "FireRateScale",
+        "FireRateMult", "FiringInterval", "ShotRate", "ShootingRate", "ShootCooldownTime",
+        "AttackRate", "AttackIntervalTime", "AttackSpeedMultiplier", "AttackSpeedValue",
+        -- damage bs
+        "Damage", "Dmg", "BaseDamage", "BulletDamage", "HeadDamage", "BodyDamage", "HeadshotDamage",
+        "LimbDamage", "TorsoDamage", "MinDamage", "MaxDamage", "HitDamage", "HeadshotMultiplier",
+        "HeadMultiplier", "DamageMultiplier", "DamageMult", "ShotDamage", "PelletDamage", "ArmDamage",
+        "LegDamage", "WeaponDamage", "ProjectileDamage", "ExplosionDamage", "DamageFalloff",
+        "FalloffStart", "FalloffEnd", "MinDamageRange", "MaxDamageRange", "CritDamage", "TrueDamage",
+        "RawDamage", "BaseDamageValue", "DamageValue", "DamageScale", "DamageModifier",
+        "HitDamageMultiplier", "HeadshotMulti", "HeadMulti", "HeadModifier", "HeadDamageMultiplier",
+        "CritMulti", "CritModifier", "CritValue", "DamagePerShot", "DamagePerBullet", "TotalDamage",
+        "MaxDamageRange", "MinDamageRange", "DamageOverTime", "DoT",
+        -- recoil bs
+        "Recoil", "RecoilAmount", "RecoilPower", "RecoilForce", "RecoilX", "RecoilY", "RecoilMin",
+        "RecoilMax", "VerticalRecoil", "HorizontalRecoil", "RecoilUp", "RecoilSide", "RecoilKick",
+        "Kick", "KickBack", "CameraShake", "CamShake", "CameraKick", "CamKick", "ShakeAmount",
+        "MuzzleClimb", "RecoilRecovery", "RecoilSpeed", "RecoilDecay", "RecoilReturn",
+        "RecoilPattern", "RecoilMultiplier", "VerticalClimb", "HorizontalDrift", "CameraRecoil",
+        "RecoilControl", "RecoilReduction", "KickStrength", "ScreenShake", "RecoilModifier",
+        "RecoilScale", "RecoilMult", "VerticalRecoilMultiplier", "HorizontalRecoilMultiplier",
+        "RecoilIntensity", "RecoilStrength", "RecoilForceValue", "RecoilKickValue",
+        -- spread bs
+        "Spread", "SpreadAngle", "BaseSpread", "MaxSpread", "MinSpread", "SpreadX", "SpreadY",
+        "SpreadAmount", "SpreadIncrease", "SpreadDecrease", "SpreadRecovery", "Bloom", "BloomAmount",
+        "Inaccuracy", "Scatter", "Deviation", "HipSpread", "AimSpread", "ADSSpread", "MovementSpread",
+        "JumpSpread", "CrouchSpread", "Accuracy", "HipAccuracy", "AimAccuracy", "BulletSpread",
+        "SpreadMultiplier", "SpreadPenalty", "AccuracyValue", "AimSpreadValue", "HipfireSpread",
+        "MovingSpread", "JumpingSpread", "CrouchingSpread", "RecoilSpread", "BulletDeviation",
+        "SpreadModifier", "SpreadScale", "SpreadMult", "AccuracyMultiplier", "AccuracyMult",
+        "AccuracyScale", "InaccuracyValue", "ScatterValue", "BloomValue", "SpreadRecoveryRate",
+        "SpreadRecoverySpeed", "SpreadDecay", "SpreadGain", "SpreadPerShot", "BaseInaccuracy",
+        -- ammo bs
+        "Ammo", "MaxAmmo", "CurrentAmmo", "StoredAmmo", "ReserveAmmo", "TotalAmmo", "ClipSize",
+        "MagSize", "MagazineSize", "Magazine", "MaxMagazine", "MaxMag", "MaxClip", "AmmoCapacity",
+        "AmmoCount", "MagCapacity", "AmmoPerShot", "AmmoUsage", "InfiniteAmmo", "UnlimitedAmmo",
+        "MaxReserve", "StartAmmo", "ExtraAmmo", "AmmoReserve", "AmmoMax", "AmmoMin", "AmmoAmount",
+        "AmmoLimit", "AmmoMultiplier", "ClipCapacity", "ReserveMax", "ReserveCount", "TotalCapacity",
+        "AmmoPerMag", "AmmoPerReload", "ReloadAmount", "MagazineCapacity", "ClipSizeValue",
+        "MagCapacityValue", "AmmoCapacityValue", "ReserveAmmoMax", "MaxReserveAmmo", "StartingAmmo",
+        -- reload bs
+        "ReloadTime", "ReloadSpeed", "ReloadDelay", "ReloadDuration", "ReloadLength", "ReloadRate",
+        "ReloadCooldown", "TacticalReloadTime", "EmptyReloadTime", "ReloadWait", "ReloadAnimSpeed",
+        "CanReload", "AutoReload", "ReloadEnabled", "ReloadMultiplier", "ReloadModifier",
+        "FastReload", "QuickReload", "ReloadAnimTime", "ReloadSpeedMultiplier", "ReloadTimeMultiplier",
+        "ReloadSpeedValue", "ReloadTimeValue", "ReloadDurationValue", "ReloadDelayValue",
+        "ReloadSpeedScale", "ReloadTimeScale", "ReloadCooldownTime", "ReloadInterval",
+        -- range bs
+        "MaxRange", "BulletRange", "EffectiveRange", "MaxDistance", "MaxBulletDistance", "BulletDistance",
+        "BulletSpeed", "BulletVelocity", "MuzzleVelocity", "ProjectileSpeed", "ProjectileVelocity",
+        "ShotSpeed", "BulletDrop", "BulletGravity", "ProjectileGravity", "BulletLifetime", "BulletLife",
+        "BulletSize", "BulletWidth", "BulletsPerShot", "BulletCount", "NumBullets", "NumberOfBullets",
+        "Pellets", "PelletCount", "ShotCount", "ProjectileCount", "ShotgunPellets", "Penetration",
+        "PenetrationPower", "PenetrationDepth", "Pierce", "PierceCount", "MaxPenetration", "WallBang",
+        "CanPenetrate", "CanPierce", "Ricochet", "BulletSpeedMultiplier", "ProjectileSpeedMultiplier",
+        "BulletDropRate", "BulletGravityScale", "BulletMass", "BulletDrag", "BulletAcceleration",
+        "BulletTrajectory", "BulletArc", "FalloffDistance", "FalloffMultiplier", "FalloffRate",
+        "RangeFalloff", "MinRange", "MaxRangeValue", "EffectiveDistance", "DamageRange",
+        "PenetrationValue", "PenetrationMultiplier", "PierceMultiplier", "RicochetCount",
+        "RicochetAngle", "RangeValue", "RangeMultiplier", "RangeScale", "RangeModifier",
+        "BulletSpeedValue", "BulletVelocityValue", "ProjectileSpeedValue", "MuzzleSpeed",
+        -- fire modes bs
+        "FullAuto", "IsAutomatic", "IsAuto", "CanAuto", "AutoFire", "AutoShoot", "AutoFiring",
+        "HoldToFire", "SemiAuto", "BurstCount", "BurstSize", "ShotsPerBurst", "FireMode", "CanFire",
+        "CanShoot", "IsShotgun", "FireType", "FireSelector", "BurstMode", "SingleFire", "SemiFire",
+        "AutoMode", "TriggerMode", "ShotType", "WeaponClass", "WeaponType", "WeaponCategory",
+        "WeaponTier", "IsFullAuto", "IsSemiAuto", "IsBurst", "FireModeValue", "FireModeType",
+        "WeaponClassValue", "WeaponTypeValue", "WeaponCategoryValue", "GunClass", "GunType",
+        -- equip bs
+        "EquipTime", "EquipSpeed", "EquipDelay", "DrawTime", "DeployTime", "PulloutTime", "UnequipTime",
+        "HolsterTime", "ADSSpeed", "AimSpeed", "ADSTime", "AimTime", "AimFOV", "ZoomFOV", "ADSFOV",
+        "ScopeFOV", "ZoomAmount", "ZoomSpeed", "SwayAmount", "SwaySpeed", "BobAmount",
+        "WalkSpeedMultiplier", "MoveSpeedMultiplier", "AimWalkSpeed", "WeaponWeight", "DrawSpeed",
+        "DrawDelay", "HolsterSpeed", "EquipMultiplier", "HandlingSpeed", "HandlingValue",
+        "MobilityValue", "WeightValue", "Ergonomics", "BobSpeed", "RecoilRecovery",
+        "EquipTimeValue", "EquipSpeedValue", "DrawTimeValue", "ADSValue", "ADSMultiplier",
+        "AimSpeedValue", "ZoomAmountValue", "ZoomSpeedValue", "Handling", "Mobility", "Ergo",
+        "Weight", "Sway", "Bob", "PulloutSpeed", "DeploySpeed",
+        -- misc idk
+        "ChargeTime", "MaxCharge", "ChargeRate", "MaxHeat", "HeatPerShot", "CoolRate", "CoolDownRate",
+        "Overheat", "Knockback", "KnockbackForce", "StunTime", "HeadshotChance", "CritChance",
+        "CritMultiplier", "CriticalChance", "CriticalMultiplier", "ExplosionRadius", "BlastRadius",
+        "BlastPressure", "SplashDamage", "SplashRadius", "ChargeSpeed", "ChargeMultiplier",
+        "HeatDissipation", "HeatGeneration", "OverheatTime", "CooldownRate", "ChargeTimeValue",
+        "ChargeRateValue", "MaxChargeValue", "HeatValue", "CoolRateValue", "CooldownValue",
+        "KnockbackValue", "StunDuration", "StunChance", "HitChance", "HitChanceValue",
+    }
+    local typestuffer, customs = {}, {}
+    for _, nm in ipairs(youraveragegunstats) do typestuffer[norm(nm)] = true end
+
+    local anotherbitofwords = {
+        "recoil", "spread", "firerate", "reload", "ammo", "damage", "dmg", "bullet", "shoot", "shot",
+        "muzzle", "projectile", "pellet", "magazine", "clip", "range", "kick", "sway", "bloom", "equip",
+        "cooldown", "delay", "rpm", "burst", "penetrat", "pierce", "headshot", "aim", "zoom", "scope",
+        "auto", "fire", "firing", "accuracy", "velocity", "gravity", "weapon", "gun", "interval",
+        "charge", "heat", "weight", "distance", "debounce",
+        "damagemultiplier", "falloff", "trigger", "handling", "mobility", "ergonomics", "screenshake",
+        "camerarecoil", "verticalrecoil", "horizontalrecoil", "aimspread", "hipspread", "movespeed",
+        "walkspeed", "recoilcontrol", "headshotmult", "critmult", "ricochet", "reloadmod",
+        "firerateval", "rpmval", "chargerate", "dissipate", "overheat", "trajectory", "weaponclass",
+        "weapontype", "weapontier", "firemode", "fireselector", "triggermode", "cycletime", "refire",
+        "cooldowntime", "modifier", "multiplier", "mult", "scale", "value", "setting", "config",
+        "stat", "data", "knockback", "stun", "crit", "splash", "blast", "penetration", "trajectory",
+        "arc", "drag", "mass", "acceleration", "dissipation", "generation", "intensity", "strength",
+        "power", "force", "rate", "speed", "time", "duration", "length", "size", "width", "count",
+        "capacity", "limit", "max", "min", "current", "reserve", "total", "per", "usage", "cost",
+        "recovery", "decay", "return", "gain", "penalty", "increase", "decrease", "start", "end",
+        "begin", "finish", "over", "under", "up", "down", "side", "left", "right", "vertical",
+        "horizontal", "forward", "backward", "hip", "ads", "aim", "focus",
+        "unfocus", "draw", "holster", "deploy", "pullout", "unequip", "switch", "swap",
+        "chamber", "eject", "insert", "cycle", "attack", "strike",
+        "hit", "miss", "crit", "head", "body", "limb", "torso", "arm", "leg", "foot",
+    }
+
+    local function rebuildCustom()
+        table.clear(customs)
+        for _, nm in ipairs(GM.customNames) do
+            customs[norm(nm)] = true
+        end
+        S.matchCache = {}
+        S.matchCacheN = 0
+        S.strongCache = {}
+        S.strongN = 0
+    end
+    rebuildCustom()
+
+    local function matchLevel(k)
+        local c = S.matchCache[k]
+        if c ~= nil then return c end
+        local nk = norm(k)
+        local lvl = 0
+        if typestuffer[nk] or customs[nk] then
+            lvl = 3
+        else
+            for i = 1, #anotherbitofwords do
+                if string.find(nk, anotherbitofwords[i], 1, true) then
+                    lvl = 2
+                    break
+                end
+            end
+            if lvl == 0 then
+                local stripped = nk
+                    :gsub("^_+", ""):gsub("_+$", "")
+                    :gsub("^value", ""):gsub("value$", "")
+                    :gsub("^setting", ""):gsub("setting$", "")
+                    :gsub("^config", ""):gsub("config$", "")
+                    :gsub("^data", ""):gsub("data$", "")
+                    :gsub("^stat", ""):gsub("stat$", "")
+                    :gsub("^the", ""):gsub("the$", "")
+                    :gsub("^my", ""):gsub("my$", "")
+                if stripped ~= nk and (typestuffer[stripped] or customs[stripped]) then
+                    lvl = 2
+                elseif stripped ~= nk then
+                    for i = 1, #anotherbitofwords do
+                        if string.find(stripped, anotherbitofwords[i], 1, true) then
+                            lvl = 1
+                            break
+                        end
+                    end
+                end
+            end
+        end
+        if S.matchCacheN > 20000 then
+            S.matchCache = {}
+            S.matchCacheN = 0
+        end
+        S.matchCache[k] = lvl
+        S.matchCacheN = S.matchCacheN + 1
+        return lvl
+    end
+
+    local function has(nk, ...)
+        for i = 1, select("#", ...) do
+            if string.find(nk, (select(i, ...)), 1, true) then return true end
+        end
+        return false
+    end
+
+    local AUTO_NAMES = {
+        auto = true, automatic = true, fullauto = true, isautomatic = true, isauto = true,
+        canauto = true, autofire = true, autoshoot = true, autofiring = true, holdtofire = true,
+        fireauto = true, isfullauto = true,
+    }
+    local function classify(nk)
+        if has(nk, "reload") then
+            if has(nk, "canreload", "autoreload", "reloadenabled") then return "misc" end
+            if has(nk, "speed", "rate") then return "reload", "rate" end
+            return "reload", "time"
+        end
+        if has(nk, "recoil", "camerakick", "camkick", "kickback", "camerashake", "camshake", "muzzleclimb")
+            or nk == "kick" or nk == "shake" or nk == "climb" or nk == "punch" then
+            return "recoil"
+        end
+        if has(nk, "spread", "bloom", "inaccura", "scatter", "deviation") then return "spread" end
+        if has(nk, "bulletdrop", "bulletgravity", "projectilegravity") or nk == "gravity" or nk == "dropoff" then
+            return "drop"
+        end
+        if has(nk, "bulletspeed", "bulletvelocity", "muzzlevelocity", "projectilespeed", "projectilevelocity", "shotspeed")
+            or nk == "velocity" then
+            return "velocity"
+        end
+        if has(nk, "ammo", "clipsize", "magsize", "magazine", "maxclip", "maxmag", "capacity")
+            or nk == "clip" or nk == "mag" then
+            if has(nk, "infinite", "unlimited", "pershot", "usage", "cost") then return "misc" end
+            return "ammo"
+        end
+        if has(nk, "damage", "dmg") then return "damage" end
+        if has(nk, "firerate", "rateoffire", "rpm", "firespeed", "shotspersecond", "attackspeed", "shootrate", "firingrate", "roundsperminute") then
+            return "firerate", "rate"
+        end
+        if has(nk, "firedelay", "shootdelay", "shotdelay", "firecooldown", "shootcooldown", "shotcooldown", "timebetweenshots", "firetime", "attackdelay", "attackcooldown", "bulletdelay", "fireinterval", "shotinterval", "firewait", "shootwait")
+            or nk == "cooldown" or nk == "delay" or nk == "debounce" then
+            return "firerate", "delay"
+        end
+        if (has(nk, "range", "maxdistance", "maxdist", "bulletdistance", "effectivedistance")) and not has(nk, "min", "falloff") then
+            return "range"
+        end
+        if AUTO_NAMES[nk] then return "auto" end
+        return "misc"
+    end
+    function S.strong(k)
+        local c = S.strongCache[k]
+        if c ~= nil then return c end
+        local nk = norm(k)
+        local v = (typestuffer[nk] or customs[nk] or classify(nk) ~= "misc") and true or false
+        if S.strongN > 20000 then
+            S.strongCache = {}
+            S.strongN = 0
+        end
+        S.strongCache[k] = v
+        S.strongN = S.strongN + 1
+        return v
+    end
+    local REF_CAP = 3000
+
+    local function newTblRef(t, k)
+        return setmetatable({kind = "tbl", t = t, k = k}, WEAKV)
+    end
+
+    local function addRef(name, val, ref, src, gun)
+        if S.refTotal >= REF_CAP then return end
+        local tv = type(val)
+        local e = S.reg[name]
+        if not e then
+            local cat, mode = classify(norm(name))
+            e = {name = name, kind = tv, cat = cat, mode = mode, refs = {}, srcs = {}}
+            S.reg[name] = e
+            S.regVersion = S.regVersion + 1
+        end
+        if e.kind ~= tv then return end
+        ref.orig = val
+        ref.last = val
+        ref.mod = false
+        ref.gun = gun
+        e.refs[#e.refs + 1] = ref
+        e.srcs[src] = true
+        S.refTotal = S.refTotal + 1
+    end
+
+    local function refGet(r)
+        if r.kind == "tbl" then
+            local t = r.t
+            if t == nil then return nil, true end
+            local ok, v = pcall(function() return t[r.k] end)
+            if ok then return v end
+            return nil, true
+        end
+        local i = r.i
+        if not i or not i:IsDescendantOf(game) then return nil, true end
+        if r.kind == "attr" then return i:GetAttribute(r.k) end
+        return i.Value
+    end
+
+    local function refSet(r, v)
+        if r.kind == "tbl" then
+            local t = r.t
+            if t == nil then return false end
+            local ok = pcall(function() t[r.k] = v end)
+            if not ok and setreadonly then
+                pcall(setreadonly, t, false)
+                ok = pcall(function() t[r.k] = v end)
+            end
+            return ok
+        elseif r.kind == "attr" then
+            return (pcall(function() r.i:SetAttribute(r.k, v) end))
+        end
+        return (pcall(function() r.i.Value = v end))
+    end
+    local function scanTable(t, src, depth, mode, prefix, gun)
+        if S.seenTbl[t] then return 0 end
+        S.seenTbl[t] = true
+        local added, count = 0, 0
+        local nested = nil
+        local cap = (mode == "deep") and GM.deep.maxKeys or 400
+        pcall(function()
+            for k, v in next, t do
+                count = count + 1
+                if count > cap then return end
+                if type(k) == "string" then
+                    local tv = type(v)
+                    if (tv == "number" and v == v and v > -1e15 and v < 1e15) or tv == "boolean" then
+                        if mode == "tool" or S.strong(k) then
+                            addRef(prefix .. k, v, newTblRef(t, k), src, gun)
+                            added = added + 1
+                        end
+                    elseif tv == "table" and depth < 2 and not OWN[v] and (mode == "tool" or matchLevel(k) >= 2) then
+                        nested = nested or {}
+                        nested[#nested + 1] = {k, v}
+                    end
+                end
+            end
+        end)
+        if nested then
+            for _, p in ipairs(nested) do
+                added = added + scanTable(p[2], src, depth + 1, mode, prefix .. p[1] .. ".", gun)
+            end
+        end
+        return added
+    end
+
+    local VALUE_CLASSES = {NumberValue = true, IntValue = true, BoolValue = true}
+
+    local function scanTool(tool)
+        if not tool or not tool.Parent then return end
+        local label = "tool:" .. tool.Name
+        local desc
+        if not pcall(function() desc = tool:GetDescendants() end) then return end
+        table.insert(desc, 1, tool)
+        local sliceT = os.clock()
+        for idx, inst in ipairs(desc) do
+            if idx > 600 then break end
+            local okA, attrs = pcall(inst.GetAttributes, inst)
+            if okA and type(attrs) == "table" then
+                for k, v in pairs(attrs) do
+                    local tv = type(v)
+                    if tv == "number" or tv == "boolean" then
+                        local seen = S.seenAttr[inst]
+                        if not seen then
+                            seen = {}
+                            S.seenAttr[inst] = seen
+                        end
+                        if not seen[k] then
+                            seen[k] = true
+                            addRef(k, v, {kind = "attr", i = inst, k = k}, label, tool.Name)
+                        end
+                    end
+                end
+            end
+            local cls = inst.ClassName
+            if VALUE_CLASSES[cls] and not S.seenInst[inst] then
+                S.seenInst[inst] = true
+                local okV, v = pcall(function() return inst.Value end)
+                if okV then
+                    addRef(inst.Name, v, {kind = "val", i = inst, int = (cls == "IntValue")}, label, tool.Name)
+                end
+            elseif cls == "ModuleScript" and GM.requireModules and not S.seenInst[inst] then
+                S.seenInst[inst] = true
+                local okR, res = pcall(require, inst)
+                if okR and type(res) == "table" then
+                    scanTable(res, label .. "." .. inst.Name, 0, "tool", "", tool.Name)
+                end
+            end
+            if idx % 20 == 0 and os.clock() - sliceT >= S.budget() then
+                S.pause()
+                sliceT = os.clock()
+            end
+        end
+    end
+
+    local function rescanTools()
+        task.spawn(function()
+            local char = lp.Character
+            if char then
+                for _, c in ipairs(char:GetChildren()) do
+                    if c:IsA("Tool") then pcall(scanTool, c) end
+                end
+            end
+            if GM.scanBackpack and os.clock() - S.lastBpScan > 20 then
+                S.lastBpScan = os.clock()
+                local bp = lp:FindFirstChildOfClass("Backpack")
+                if bp then
+                    for _, c in ipairs(bp:GetChildren()) do
+                        if c:IsA("Tool") then pcall(scanTool, c) end
+                    end
+                end
+            end
+        end)
+    end
+
+    local function queueToolScan(tool)
+        task.spawn(function()
+            task.wait(0.15)
+            pcall(scanTool, tool)
+            S.deepPending = true
+        end)
+    end
+
+    local function hookCharacter(char)
+        if S.charConn then
+            pcall(function() S.charConn:Disconnect() end)
+        end
+        S.charConn = char.ChildAdded:Connect(function(c)
+            if c:IsA("Tool") then queueToolScan(c) end
+        end)
+        for _, c in ipairs(char:GetChildren()) do
+            if c:IsA("Tool") then queueToolScan(c) end
+        end
+    end
+    table.insert(S.conns, lp.CharacterAdded:Connect(hookCharacter))
+    if lp.Character then hookCharacter(lp.Character) end
+    local function deepConsider(t, extra)
+        if S.seenTbl[t] or OWN[t] then return 0 end
+        if rawget(t, "__gm") ~= nil then return 0 end
+        if rawlen(t) > 8 then return 0 end
+        local cats, nCats, count = {}, 0, 0
+        local ok = pcall(function()
+            for k, v in next, t do
+                count = count + 1
+                if count > GM.deep.maxKeys then
+                    nCats = -1
+                    return
+                end
+                if type(k) == "string" then
+                    local tv = type(v)
+                    if (tv == "number" or tv == "boolean") and S.strong(k) then
+                        local nk = norm(k)
+                        local key = typestuffer[nk] and nk or (classify(nk))
+                        if not cats[key] then
+                            cats[key] = true
+                            nCats = nCats + 1
+                        end
+                    end
+                end
+            end
+        end)
+        local need = math.max(2, GM.deep.minScore - 1) + (extra or 0)
+        if not ok or nCats < need then return 0 end
+        return scanTable(t, "getgc", 0, "deep", "")
+    end
+    function S.focusScan()
+        local getE = getsenv
+        local getU = getupvalues or (debug and debug.getupvalues)
+        if type(getE) ~= "function" then return 0, false end
+        local tools, names = {}, {}
+        local ch = lp.Character
+        if ch then
+            for _, c in ipairs(ch:GetChildren()) do
+                if c:IsA("Tool") then tools[#tools + 1] = c end
+            end
+        end
+        if GM.scanBackpack then
+            local bp = lp:FindFirstChildOfClass("Backpack")
+            if bp then
+                for _, c in ipairs(bp:GetChildren()) do
+                    if c:IsA("Tool") then tools[#tools + 1] = c end
+                end
+            end
+        end
+        local found = 0
+        local sliceT = os.clock()
+        for ti, tool in ipairs(tools) do
+            names[tool.Name] = true
+            local label = "tool:" .. tool.Name
+            local desc
+            if pcall(function() desc = tool:GetDescendants() end) then
+                for si, inst in ipairs(desc) do
+                    if si > 400 then break end
+                    if inst:IsA("LocalScript") or (inst:IsA("Script") and inst.RunContext == Enum.RunContext.Client) then
+                        local okE, env = pcall(getE, inst)
+                        if okE and type(env) == "table" then
+                            found = found + scanTable(env, label .. "." .. inst.Name, 0, "deep", "", tool.Name)
+                            local fc = 0
+                            for _, v in next, env do
+                                local tv = type(v)
+                                if tv == "table" and not OWN[v] then
+                                    found = found + scanTable(v, label, 0, "deep", "", tool.Name)
+                                elseif tv == "function" and type(getU) == "function" then
+                                    fc = fc + 1
+                                    if fc > 150 then break end
+                                    local okU, ups = pcall(getU, v)
+                                    if okU and type(ups) == "table" then
+                                        for _, uv in next, ups do
+                                            if type(uv) == "table" and not OWN[uv] then
+                                                found = found + scanTable(uv, label, 0, "deep", "", tool.Name)
+                                            end
+                                        end
+                                    end
+                                end
+                                if os.clock() - sliceT >= S.budget() then
+                                    S.pause()
+                                    sliceT = os.clock()
+                                end
+                            end
+                        end
+                    end
+                    if os.clock() - sliceT >= S.budget() then
+                        S.pause()
+                        sliceT = os.clock()
+                    end
+                end
+            end
+            S.status = string.format("focused scan %d/%d guns (%d tables)", ti, #tools, found)
+            S.pause()
+            sliceT = os.clock()
+        end
+        return found, true, names
+    end
+    function S.gcScan(extra)
+        if type(getgc) ~= "function" then
+            S.status = "getgc not supported by ur executor :("
+            return 0, 0
+        end
+        S.status = "waiting for a calm moment..."
+        local guard = 0
+        while not S.calm() and guard < 50 do
+            guard = guard + 1
+            task.wait(0.1)
+        end
+        S.status = "collecting gc (might hitch once)..."
+        task.wait(0.1)
+        local okGC, list = pcall(getgc, true)
+        if not okGC or type(list) ~= "table" then
+            S.status = "getgc failed :("
+            return 0, 0
+        end
+        S.pause()
+        local total = #list
+        local idx, found, tables = 1, 0, 0
+        while idx <= total do
+            local t0 = os.clock()
+            local budget = S.budget()
+            local c = 0
+            while idx <= total do
+                local obj = list[idx]
+                list[idx] = false
+                idx = idx + 1
+                c = c + 1
+                if type(obj) == "table" then
+                    tables = tables + 1
+                    local ok2, added = pcall(deepConsider, obj, extra)
+                    if ok2 and added > 0 then found = found + 1 end
+                end
+                if c % 16 == 0 and os.clock() - t0 >= budget then break end
+            end
+            S.status = string.format("deepscan %d%% (%d gun tables so far)", math.floor(idx / math.max(total, 1) * 100), found)
+            S.pause()
+        end
+        list = nil
+        return found, tables
+    end
+
+    local function deepScan(manual)
+        if S.scanning then return end
+        S.scanning = true
+        ownBudget = 0
+        markOwn(config, 0)
+        local ok, err = pcall(function()
+            local mode = GM.deep.mode == "Everything" and "Everything" or "Focused"
+            S.status = "scanning held + backpack guns..."
+            local foundF, supported = S.focusScan()
+            local found, tables = foundF, 0
+            if mode == "Everything" then
+                local f2, t2 = S.gcScan(0)
+                found, tables = found + f2, t2
+            elseif not supported or foundF == 0 then
+                local f2, t2 = S.gcScan(1)
+                found, tables = found + f2, t2
+            end
+            S.lastFound = found
+            S.lastTables = tables
+            S.status = string.format("idle - last %s scan: %d gun tables", string.lower(mode), found)
+            if manual then notify("deepscan done: " .. found .. " gun tables", true) end
+        end)
+        S.scanning = false
+        S.lastDeep = os.clock()
+        if not ok then
+            S.status = "scan hiccup, will retry"
+            warn("[Gravel] deepscan: " .. tostring(err))
+        end
+    end
+
+    local function currentGunName()
+        local ch = lp.Character
+        local t = ch and ch:FindFirstChildOfClass("Tool")
+        return t and t.Name or nil
+    end
+
+    local function quickValue(e, orig)
+        local q = GM.quick
+        local c, m = e.cat, e.mode
+        if e.kind == "number" then
+            if c == "firerate" and q.fireRate ~= 1 then
+                if m == "delay" then
+                    if q.fireRate == 0 then return 0 end
+                    return orig / q.fireRate
+                end
+                return orig * q.fireRate
+            elseif c == "damage" and q.damage ~= 1 then
+                return orig * q.damage
+            elseif c == "range" and q.range ~= 1 then
+                return orig * q.range
+            elseif c == "velocity" and q.bulletSpeed ~= 1 then
+                return orig * q.bulletSpeed
+            elseif c == "recoil" and q.noRecoil then
+                return 0
+            elseif c == "spread" and q.noSpread then
+                return 0
+            elseif c == "drop" and q.noDrop then
+                return 0
+            elseif c == "ammo" and q.infAmmo then
+                return math.max(orig, 9999)
+            elseif c == "reload" and q.instantReload then
+                if m == "rate" then return orig * 100 end
+                return 0.01
+            end
+        elseif e.kind == "boolean" then
+            if c == "auto" and q.fullAuto then return true end
+        end
+        return nil
+    end
+
+    local function wantFor(e, orig, r)
+        if not GM.enabled then return nil end
+        local ov = GM.overrides[e.name]
+        if ov ~= nil and type(ov) == e.kind then return ov end
+        return quickValue(e, orig)
+    end
+    local function applyRef(e, r)
+        local cur, dead = refGet(r)
+        if dead or cur == nil or type(cur) ~= e.kind then return true end
+        if r.mod and cur ~= r.last then
+            r.orig = cur
+            r.mod = false
+        elseif not r.mod then
+            r.orig = cur
+        end
+        local want = wantFor(e, r.orig, r)
+        if want ~= nil then
+            if e.kind == "number" and r.int then want = math.floor(want + 0.5) end
+            if cur ~= want then
+                if refSet(r, want) then
+                    r.mod = true
+                    local nv = refGet(r)
+                    r.last = nv
+                end
+            end
+        elseif r.mod then
+            if e.cat ~= "ammo" then refSet(r, r.orig) end
+            r.mod = false
+        end
+        return false
+    end
+
+    local function applyAll()
+        if S.applying then return end
+        S.applying = true
+        local ok, err = pcall(function()
+            local snap = {}
+            for _, e in pairs(S.reg) do snap[#snap + 1] = e end
+            local t0, cnt = os.clock(), 0
+            for _, e in ipairs(snap) do
+                local refs = e.refs
+                for i = #refs, 1, -1 do
+                    local r = refs[i]
+                    if r and applyRef(e, r) then
+                        table.remove(refs, i)
+                        S.refTotal = math.max(S.refTotal - 1, 0)
+                    end
+                    cnt = cnt + 1
+                    if cnt % 40 == 0 and os.clock() - t0 > 0.004 then
+                        task.wait()
+                        t0 = os.clock()
+                    end
+                end
+                if #refs == 0 then
+                    S.reg[e.name] = nil
+                    S.regVersion = S.regVersion + 1
+                end
+            end
+        end)
+        S.applying = false
+        if not ok then warn("[Gravel] gun mods apply: " .. tostring(err)) end
+    end
+
+    local function kick()
+        task.spawn(applyAll)
+    end
+
+    local function restoreAll()
+        for _, e in pairs(S.reg) do
+            for _, r in ipairs(e.refs) do
+                if r.mod then
+                    if e.cat ~= "ammo" then refSet(r, r.orig) end
+                    r.mod = false
+                end
+            end
+        end
+    end
+
+    local function clearDetected()
+        restoreAll()
+        table.clear(S.reg)
+        table.clear(S.seenTbl)
+        table.clear(S.seenInst)
+        table.clear(S.seenAttr)
+        S.refTotal = 0
+        S.regVersion = S.regVersion + 1
+        S.nameKey = "\0"
+    end
+
+    task_("gunModsLoop", function()
+        local lastRescan = os.clock()
+        while true do
+            task.wait(math.max(GM.interval, 0.03))
+            if os.clock() - lastRescan > 6 then
+                lastRescan = os.clock()
+                rescanTools()
+            end
+            if GM.enabled then
+                S.needRestore = true
+                applyAll()
+            elseif S.needRestore then
+                S.needRestore = false
+                applyAll()
+            end
+        end
+    end)
+
+    task_("gunDeepScanLoop", function()
+        while true do
+            task.wait(1)
+            if GM.deep.auto and not S.scanning and S.calm() then
+                local since = os.clock() - S.lastDeep
+                local quick = (GM.deep.mode == "Everything") and 8 or 2
+                if since >= GM.deep.interval or (S.deepPending and since >= quick) then
+                    S.deepPending = false
+                    deepScan(false)
+                end
+            end
+        end
+    end)
+    local function parseValue(text)
+        text = tostring(text or ""):gsub("^%s+", ""):gsub("%s+$", "")
+        local low = string.lower(text)
+        if low == "true" or low == "on" or low == "yes" then return true end
+        if low == "false" or low == "off" or low == "no" then return false end
+        return tonumber(text)
+    end
+
+    local function buildNames()
+        local seen, out = {}, {}
+        for name in pairs(S.reg) do
+            if not seen[name] then
+                seen[name] = true
+                out[#out + 1] = name
+            end
+        end
+        for name in pairs(GM.overrides) do
+            if name ~= "__gm" and not seen[name] then
+                seen[name] = true
+                out[#out + 1] = name
+            end
+        end
+        table.sort(out, function(a, b)
+            local ea, eb = S.reg[a], S.reg[b]
+            local pa = ((ea and ea.cat ~= "misc") or GM.overrides[a] ~= nil) and 0 or 1
+            local pb = ((eb and eb.cat ~= "misc") or GM.overrides[b] ~= nil) and 0 or 1
+            if pa ~= pb then return pa < pb end
+            local la, lb = string.lower(a), string.lower(b)
+            if la ~= lb then return la < lb end
+            return a < b
+        end)
+        while #out > 500 do table.remove(out) end
+        return out
+    end
+
+    local function buildInfo()
+        local name = S.selected
+        if not name then return "pick a param from the dropdown first :3" end
+        local e = S.reg[name]
+        local ov = GM.overrides[name]
+        local lines = {}
+        if e then
+            local r = e.refs[1]
+            local cur = r and refGet(r)
+            lines[#lines + 1] = string.format("type: %s | group: %s%s", e.kind, e.cat, e.mode and (" (" .. e.mode .. ")") or "")
+            lines[#lines + 1] = string.format("now: %s | orig: %s | places: %d", tostring(cur), tostring(r and r.orig), #e.refs)
+        else
+            lines[#lines + 1] = "not detected right now (saved override still stays)"
+        end
+        lines[#lines + 1] = "override: " .. (ov ~= nil and tostring(ov) or "none")
+        return table.concat(lines, "\n")
+    end
+
+    local function buildStatus()
+        local names = 0
+        for _ in pairs(S.reg) do names = names + 1 end
+        return string.format("params: %d | places: %d\nequipped gun: %s\ngetgc: %s", names, S.refTotal, tostring(currentGunName()), S.status)
+    end
+
+    local function setEl(el, v)
+        if not el then return end
+        if el.Set then
+            pcall(el.Set, el, v)
+        elseif el.SetValue then
+            pcall(el.SetValue, el, v)
+        end
+    end
+
+    function API.syncUI()
+        setEl(S.ui.enabled, GM.enabled)
+        for k, v in pairs(GM.quick) do
+            if k ~= "__gm" then setEl(S.ui["q_" .. k], v) end
+        end
+        for k, v in pairs(GM.deep) do
+            if k ~= "__gm" then setEl(S.ui["d_" .. k], v) end
+        end
+        if S.ui.d_mode and S.ui.d_mode.Select then
+            pcall(S.ui.d_mode.Select, S.ui.d_mode, GM.deep.mode)
+        end
+        setEl(S.ui.interval, GM.interval)
+        setEl(S.ui.requireModules, GM.requireModules)
+        setEl(S.ui.scanBackpack, GM.scanBackpack)
+        rebuildCustom()
+        S.nameKey = "\0"
+    end
+
+    function API.export()
+        local q = table.clone(GM.quick)
+        q.__gm = true
+        local ov = table.clone(GM.overrides)
+        ov.__gm = true
+        local d = table.clone(GM.deep)
+        d.__gm = true
+        return {
+            __gm = true,
+            enabled = GM.enabled,
+            interval = GM.interval,
+            requireModules = GM.requireModules,
+            scanBackpack = GM.scanBackpack,
+            quick = q,
+            overrides = ov,
+            deep = d,
+            customNames = table.clone(GM.customNames),
+        }
+    end
+
+    function API.shutdown()
+        GM.enabled = false
+        pcall(restoreAll)
+        for _, c in ipairs(S.conns) do
+            pcall(function() c:Disconnect() end)
+        end
+        S.conns = {}
+        if S.charConn then
+            pcall(function() S.charConn:Disconnect() end)
+            S.charConn = nil
+        end
+    end
+    -- GunMods Tab
+    local GunModsTab = Window:Tab({
+        Title = "GunMods",
+        Desc = rng3("GunMods"),
+        Icon = "wrench",
+        IconColor = config.Gradow.uicolor.lightGray
+    }) do
+        GunModsTab:Paragraph({
+            Title = "Gravel",
+            Desc = "[ Ban-Risk ]\n[ Bad Injectors might work here ]\n[ Might not work for every game]",
+            Color = config.Gradow.uicolor.darkGray
+        })
+
+        GunModsTab:Paragraph({
+            Title = "Gun Mods Master",
+            Desc = "auto-finds ur gun's stats (modules, values, attributes) n changes em\nppl on scriptblox wanted this btw :p\n\nWorks on any gun that keeps its stats on the client if it's on the server or it's obfuscated it might not work :c",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        S.ui.enabled = GunModsTab:Toggle({
+            Title = "Toggle Gun Modifications",
+            Desc = "Enable/Disable GunMods",
+            Value = GM.enabled or false,
+            Callback = function(v)
+                GM.enabled = v
+                if not v then S.needRestore = true end
+                kick()
+                n({
+                    Title = "Gravel.cc",
+                    Content = "GunMods: " .. (v and "Enabled" or "Disabled"),
+                    Audio = "rbxassetid://17208361335",
+                    Length = 2,
+                    Image = "rbxassetid://4483362458",
+                    BarColor = v and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                })
+            end
+        })
+
+        GunModsTab:Space()
+        GunModsTab:Paragraph({
+            Title = "Quick Mods",
+            Desc = "the script guesses which stat is firerate, recoil, ammo n stuff by lookin at their names",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        local sliderDefs = {
+            {"fireRate", "FireRate", "makes ur gun go brrrr", -1000, 1000, 0.1},
+            {"damage", "Damage", "makes gun hurt mor", -1000, 1000, 0.1},
+            {"range", "Range", "make gun shoot far as the eye can see", -1000, 1000, 0.1},
+            {"bulletSpeed", "Bullets Speed", "makes ur bullets larp as flash", -1000, 1000, 0.1},
+        }
+        for _, d in ipairs(sliderDefs) do
+            S.ui["q_" .. d[1]] = GunModsTab:Slider({
+                Title = d[2],
+                Desc = d[3],
+                IsTextbox = true,
+                Step = d[6],
+                Suffix = "x",
+                Value = {
+                    Min = d[4],
+                    Max = d[5],
+                    Default = GM.quick[d[1]] or 1
+                },
+                Callback = function(value)
+                    GM.quick[d[1]] = value
+                    kick()
+                end
+            })
+        end
+
+        local toggleDefs = {
+            {"noRecoil", "No Recoil", "ur gun stops jumpin around"},
+            {"noSpread", "No Spread", "ur bullets go exactly where u aim"},
+            {"noDrop", "No Bullet Drop", "bullets fly straight, no gravity"},
+            {"infAmmo", "Infinite Ammo", "unlimited boolets (only if ammo is client side)"},
+            {"instantReload", "Instant Reload", "reload go ZOOM"},
+            {"fullAuto", "Full Auto", "forces auto fire on"},
+        }
+        for _, d in ipairs(toggleDefs) do
+            S.ui["q_" .. d[1]] = GunModsTab:Toggle({
+                Title = d[2],
+                Desc = d[3],
+                Value = GM.quick[d[1]] or false,
+                Callback = function(v)
+                    GM.quick[d[1]] = v
+                    kick()
+                end
+            })
+        end
+
+        GunModsTab:Space()
+        GunModsTab:Paragraph({
+            Title = "Param Editor",
+            Desc = "pick any stat, type a number or true/false, n apply it. saved with ur config :3",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        local paramDropdown = GunModsTab:Dropdown({
+            Title = "Detected Params",
+            Desc = "auto refreshes, equip a gun (or run a deepscan) to fill it",
+            Values = {"(nothing detected yet)"},
+            Multi = false,
+            Callback = function(selected)
+                if type(selected) == "table" then selected = selected[1] end
+                if selected and selected ~= "(nothing detected yet)" then
+                    S.selected = selected
+                    S.infoText = ""
+                end
+            end
+        })
+
+        local infoPara = GunModsTab:Paragraph({
+            Title = "Param Info",
+            Desc = "pick a param from the dropdown first :3",
+            Color = config.Gradow.uicolor.darkGray
+        })
+
+        GunModsTab:Input({
+            Title = "Param Value",
+            Desc = "number or true/false (press enter before applying)",
+            Placeholder = "0.05",
+            Value = "",
+            ClearTextOnFocus = false,
+            Callback = function(text)
+                S.inputText = text
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Apply Value",
+            Desc = "sets the selected param on every gun that has it",
+            Icon = "check",
+            Callback = function()
+                local name = S.selected
+                if not name then
+                    notify("pick a param first", false)
+                    return
+                end
+                local val = parseValue(S.inputText)
+                if val == nil then
+                    notify("type a number or true/false", false)
+                    return
+                end
+                local e = S.reg[name]
+                if e and type(val) ~= e.kind then
+                    notify(name .. " is a " .. e.kind .. " param", false)
+                    return
+                end
+                GM.overrides[name] = val
+                S.infoText = ""
+                S.nameKey = "\0"
+                notify(name .. " = " .. tostring(val), true)
+                kick()
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Reset Param",
+            Desc = "removes the override of the selected param",
+            Icon = "rotate-ccw",
+            Callback = function()
+                local name = S.selected
+                if not name then
+                    notify("pick a param first", false)
+                    return
+                end
+                GM.overrides[name] = nil
+                S.infoText = ""
+                S.nameKey = "\0"
+                notify("reset " .. name, true)
+                kick()
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Reset All Overrides",
+            Desc = "clears every custom param value",
+            Icon = "trash",
+            Callback = function()
+                table.clear(GM.overrides)
+                GM.overrides.__gm = true
+                S.infoText = ""
+                S.nameKey = "\0"
+                notify("cleared all overrides", true)
+                kick()
+            end
+        })
+
+        GunModsTab:Space()
+        GunModsTab:Paragraph({
+            Title = "Add Param Name To Detect",
+            Desc = "if ur gun uses a weird name or a stupid name... or a absurd names... who knows",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        GunModsTab:Input({
+            Title = "Add Param Name To Detect",
+            Desc = "if ur gun uses a weird name, add it here then it gets detected",
+            Placeholder = "FireDelayTime",
+            Value = "",
+            ClearTextOnFocus = true,
+            Callback = function(text)
+                S.addText = text
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Add Detect Name",
+            Desc = "adds it and rescans",
+            Icon = "plus",
+            Callback = function()
+                local nm = tostring(S.addText or ""):gsub("%s+", "")
+                if nm == "" then
+                    notify("type a param name first", false)
+                    return
+                end
+                for _, ex in ipairs(GM.customNames) do
+                    if string.lower(ex) == string.lower(nm) then
+                        notify("already added", false)
+                        return
+                    end
+                end
+                table.insert(GM.customNames, nm)
+                rebuildCustom()
+                clearDetected()
+                rescanTools()
+                S.deepPending = true
+                notify("added " .. nm .. ", rescanning", true)
+            end
+        })
+
+        GunModsTab:Space()
+        GunModsTab:Paragraph({
+            Title = "Deep Scan",
+            Desc = "uses getgc() to find gun config tables the game keeps in memory",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        local statusPara = GunModsTab:Paragraph({
+            Title = "Scan Status",
+            Desc = buildStatus(),
+            Color = config.Gradow.uicolor.darkGray
+        })
+
+        S.ui.d_auto = GunModsTab:Toggle({
+            Title = "Auto DeepScan",
+            Desc = "re-scans every interval and right after u equip a gun :3\nuse it when gravel sucks at finding the stuff",
+            Value = GM.deep.auto or false,
+            Callback = function(v)
+                GM.deep.auto = v
+                if v then S.lastDeep = 0 end
+            end
+        })
+
+        S.ui.d_mode = GunModsTab:Dropdown({
+            Title = "Deep Scan Mode",
+            Desc = "Focused = the gun u hold + backpack guns first, strict memory scan only if it finds nothing\nEverything = full memory scan (looser, can hitch once at the start)",
+            Values = {"Focused", "Everything"},
+            Value = GM.deep.mode or "Focused",
+            Multi = false,
+            Callback = function(Option)
+                if type(Option) == "table" then Option = Option[1] end
+                if Option == "Focused" or Option == "Everything" then
+                    GM.deep.mode = Option
+                    S.deepPending = true
+                end
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Deep Scan Now",
+            Desc = "one scan right now",
+            Icon = "scan-search",
+            Callback = function()
+                if S.scanning then
+                    notify("already scanning", false)
+                    return
+                end
+                task_("gunDeepScanNow", function()
+                    deepScan(true)
+                end)
+            end
+        })
+
+        GunModsTab:Button({
+            Title = "Clear Detected",
+            Desc = "restores values and forgets everything detected",
+            Icon = "eraser",
+            Callback = function()
+                clearDetected()
+                notify("cleared detected params", true)
+                rescanTools()
+            end
+        })
+
+        S.ui.d_interval = GunModsTab:Slider({
+            Title = "Auto Scan Interval",
+            Desc = "seconds between auto deepscans",
+            IsTextbox = true,
+            Step = 0.01,
+            Suffix = "s",
+            Value = {Min = 0.01, Max = 300, Default = GM.deep.interval or 0.25},
+            Callback = function(value)
+                GM.deep.interval = value
+            end
+        })
+
+        S.ui.d_budgetMs = GunModsTab:Slider({
+            Title = "Slice Budget",
+            Desc = "ms of work per frame while scanning (lower = smoother but slower)",
+            IsTextbox = true,
+            Step = 1,
+            Suffix = "ms",
+            Value = {Min = 1, Max = 12, Default = GM.deep.budgetMs or 3},
+            Callback = function(value)
+                GM.deep.budgetMs = value
+            end
+        })
+
+        S.ui.d_maxKeys = GunModsTab:Slider({
+            Title = "Max Keys Per Table",
+            Desc = "skips tables bigger than this (huge tables are never gun configs)",
+            IsTextbox = true,
+            Step = 10,
+            Value = {Min = 30, Max = 500, Default = GM.deep.maxKeys or 120},
+            Callback = function(value)
+                GM.deep.maxKeys = value
+            end
+        })
+
+        S.ui.d_minScore = GunModsTab:Slider({
+            Title = "Min Match Score",
+            Desc = "higher = stricter gun detection (fewer false hits)",
+            IsTextbox = true,
+            Step = 1,
+            Value = {Min = 1, Max = 8, Default = GM.deep.minScore or 3},
+            Callback = function(value)
+                GM.deep.minScore = value
+            end
+        })
+
+        GunModsTab:Space()
+        GunModsTab:Paragraph({
+            Title = "Detection Settings",
+            Desc = "how the tool scan and the apply loop behave",
+            Color = config.Gradow.uicolor.lightGreen
+        })
+
+        S.ui.requireModules = GunModsTab:Toggle({
+            Title = "Read Tool ModuleScripts",
+            Desc = "requires the gun's ModuleScripts to edit their cached settings (most guns store stats there)",
+            Value = GM.requireModules ~= false,
+            Callback = function(v)
+                GM.requireModules = v
+            end
+        })
+
+        S.ui.scanBackpack = GunModsTab:Toggle({
+            Title = "Scan Backpack Guns",
+            Desc = "also detect guns that are not equipped yet",
+            Value = GM.scanBackpack or true,
+            Callback = function(v)
+                GM.scanBackpack = v
+                if v then rescanTools() end
+            end
+        })
+
+        S.ui.interval = GunModsTab:Slider({
+            Title = "Apply Interval",
+            Desc = "how often the mods get re-applied",
+            IsTextbox = true,
+            Step = 0.05,
+            Suffix = "s",
+            Value = {Min = 0.05, Max = 2, Default = GM.interval or 0.25},
+            Callback = function(value)
+                GM.interval = value
+            end
+        })
+
+        config.uiAutoRefresh("gunParamListLoop", 1, 5, function()
+            if not S.calm() then return false end
+            local changed = false
+            if S.nameKey ~= S.regVersion and os.clock() - S.dropdownAt >= 4 then
+                S.nameKey = S.regVersion
+                S.dropdownAt = os.clock()
+                local names = buildNames()
+                local list = {}
+                local selIn = false
+                for i = 1, math.min(#names, 250) do
+                    list[i] = names[i]
+                    if names[i] == S.selected then selIn = true end
+                end
+                if S.selected and not selIn then
+                    for _, nm in ipairs(names) do
+                        if nm == S.selected then list[#list + 1] = nm break end
+                    end
+                end
+                if #list == 0 then list = {"(nothing detected yet)"} end
+                pcall(function() paramDropdown:Refresh(list) end)
+                if S.selected and selIn then
+                    pcall(function()
+                        if paramDropdown.Select then
+                            paramDropdown:Select(S.selected)
+                        elseif paramDropdown.SetValue then
+                            paramDropdown:SetValue(S.selected)
+                        end
+                    end)
+                end
+                changed = true
+            end
+            local info = buildInfo()
+            if info ~= S.infoText then
+                S.infoText = info
+                pcall(function() infoPara:SetDesc(info) end)
+                changed = true
+            end
+            local st = buildStatus()
+            if st ~= S.statusText and os.clock() - S.statusAt >= 1 then
+                S.statusText = st
+                S.statusAt = os.clock()
+                pcall(function() statusPara:SetDesc(st) end)
+                changed = true
+            end
+            return changed
+        end)
+    end
 end
 
 -- Hitbox Tab
@@ -18299,8 +20061,8 @@ local ClientTab = Window:Tab({
         Color = config.Gradow.uicolor.lightGreen
     })
     ClientTab:Toggle({
-        Title = "ClientMods ('N')",
-        Desc = "Enable/disable all client modifications",
+        Title = "Toggle Client Modifications ('N')",
+        Desc = "Enable/Disable ClientMods",
         Value = config.clientModEnabled or false,
         Callback = function(v)
             config.clientModEnabled = v
@@ -19280,7 +21042,7 @@ MiscTab:Slider({
 })
 MiscTab:Toggle({
     Title = "WallOver",
-    Desc = "Enable/disable WallOver (allows you to shoot over walls1!1!)",
+    Desc = "Enable/Disable WallOver\n(allows you to shoot over walls1!1!)",
     Value = config.camYOffsetEnabled or false,
     Callback = function(v)
         config.camYOffsetEnabled = v
@@ -19352,7 +21114,7 @@ local BGMTab = Window:Tab({
     
     BGMTab:Toggle({
         Title = "Play Music",
-        Desc = "Enable/disable background music",
+        Desc = "Enable/Disable Background Music",
         Value = BMG.IsPlaying or false,
         Callback = function(v)
             BMG:togglePlay(v)
@@ -20009,7 +21771,13 @@ InfoTab:Space()
         Desc = "Intercepts raycasts to accurately hit targets.",
         Color = config.Gradow.uicolor.darkGray
     })
-
+    
+    InfoTab:Paragraph({
+        Title = "GunModsTab",
+        Desc = "Modifies your Gun's Stats/Params and/or Module Scripts, to make the Gun powerful",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    
     InfoTab:Paragraph({
         Title = "HitboxTab",
         Desc = "Resizes opponents hitbox to easily hit or shoot at opponents",
@@ -20337,6 +22105,11 @@ InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Gravel (11/10/2026)",
         Desc = "idk I'm just taking ur ideas know :/\nAdded: Fov Mode in the MainTab\nFixed: Target Priority issues\nFixed: SilentAim (HB) Target & Idle flicker issue\nFixed: Aimbot for Fov Mode\nAdded: Offscreen Arrows & Distance ESP to VisualsTab\nBugs Fixed: 6",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (12/10/2026)",
+        Desc = "luau larps lua\nAdded: GunModsTab\nAdded: UI Animation drop-down in VisualsTab\nBugs Fixed: 3",
         Color = config.Gradow.uicolor.darkGray
     })
 end
@@ -21650,6 +23423,9 @@ local function buhbyegravellllllll________()
             config.Gradow.uianimate.connection:Disconnect()
             config.Gradow.uianimate.connection = nil
         end
+        if config.Gradow.ascii and config.Gradow.ascii.stop then
+            config.Gradow.ascii.stop()
+        end
         for pl, conns in pairs(config.varibz.hbConnections or {}) do
             for _, c in ipairs(conns) do
                 pcall(function() c:Disconnect() end)
@@ -21728,12 +23504,16 @@ local function buhbyegravellllllll________()
         table.clear(config.varibz.candidates)
         table.clear(config.varibz.targetsInFOV)
         table.clear(ignoreList)
+        pcall(function()
+            if config.gunmodsAPI then config.gunmodsAPI.shutdown() end
+        end)
         local killallofthesethreadsplease = {
             "patcherLoop", "lowPatcherLoop", "espColorLoop",
             "autoloadListLoop", "savesListLoop", "devStatsLoop",
             "rng4TypingLoop", "rng7Loop", "teamListLoop",
             "remoteScannerLoop", "textHookerLoop", "loopFireLoop",
             "eyeconlLop", "bgm", "respawnLoop",
+            "gunModsLoop", "gunDeepScanLoop", "gunDeepScanNow", "gunParamListLoop",
         }
         for _, key in ipairs(killallofthesethreadsplease) do
             local thread = config.varibz.threads[key]
