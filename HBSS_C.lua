@@ -3018,39 +3018,81 @@ do
     local RS = excusemesir.RunService
     local WS = excusemesir.Workspace
     local PL = excusemesir.Players
+    local clock = os.clock
+    local floor, huge = math.floor, math.huge
     local CFG = {
         radius = 1000,
-        chunkSize = 500,
-        refreshEvery = 2.0,
         minRadius = 250,
+        refreshEvery = 2.0,
+        sliceBudget = 0.0012,
+        idleClearAfter = 120,
+        minRefreshGap = 0.25,
     }
-    local cache = {}
-    local array = {}
-    local building = false
-    local conns = {}
     local BUCKET = math.max(CFG.radius / 4, 1)
-    local buckets = {}
-    local bucketOf = {}
-    local nonParts = {}
-    local nonPartBuckets = {}
-    local nonPartBucketOf = {}
-    local function cellKey(pos)
-        return math.floor(pos.X / BUCKET) .. ":" .. math.floor(pos.Y / BUCKET) .. ":" .. math.floor(pos.Z / BUCKET)
+    local KOFF, KSPAN = 1024, 2048
+    local Store
+    local Result
+    local conns = {}
+    local hbConn = nil
+    local lastUse = clock()
+    local deadline = huge
+
+    local function newStore()
+        return {
+            parts = {}, n = 0, slot = {},
+            buckets = {}, bucketOf = {}, bucketPos = {},
+            nbuckets = {}, nbucketOf = {}, nbucketPos = {},
+            orphans = {},
+            pq = {}, ph = 1, pt = 0,
+            ready = false,
+            active = false,
+        }
     end
-    local function setBucketSize(radius)
-        local newBucket = math.max(radius / 4, 1)
-        if newBucket == BUCKET then return false end
-        BUCKET = newBucket
-        return true
+    local function newResult()
+        return {
+            bufs = {{}, {}, {}}, front = 1,
+            stamp = 0, radius = 0, center = nil,
+            seen = {}, scratch = {}, scratchSeen = {},
+        }
     end
+    Store = newStore()
+    Result = newResult()
+
+    local J = {
+        build = {co = nil, wake = 0},
+        refresh = {co = nil, wake = 0},
+        rebucket = {co = nil, wake = 0},
+    }
+    local jobOrder = {J.build, J.refresh, J.rebucket}
+
+    local function slice()
+        if clock() >= deadline then coroutine.yield() end
+    end
+    local function rest(job, sec)
+        job.wake = clock() + sec
+        coroutine.yield()
+    end
+    local function getInterval()
+        return math.max(tonumber(config.gndInterval) or CFG.refreshEvery, 0.25)
+    end
+
+    local function keyXYZ(cx, cy, cz)
+        if cx < -1023 then cx = -1023 elseif cx > 1023 then cx = 1023 end
+        if cy < -1023 then cy = -1023 elseif cy > 1023 then cy = 1023 end
+        if cz < -1023 then cz = -1023 elseif cz > 1023 then cz = 1023 end
+        return ((cx + KOFF) * KSPAN + (cy + KOFF)) * KSPAN + (cz + KOFF)
+    end
+    local function keyOf(pos)
+        return keyXYZ(floor(pos.X / BUCKET), floor(pos.Y / BUCKET), floor(pos.Z / BUCKET))
+    end
+
+    local function pivotOf(m) return m:GetPivot() end
     local function getAnchorPos(inst)
         if inst:IsA("BasePart") then
-            local ok, pos = pcall(function() return inst.Position end)
-            if ok and pos then return pos end
-            return nil
+            return inst.Position
         end
         if inst:IsA("Model") then
-            local ok, cf = pcall(function() return inst:GetPivot() end)
+            local ok, cf = pcall(pivotOf, inst)
             if ok and cf then return cf.Position end
         end
         local p = inst.Parent
@@ -3058,11 +3100,9 @@ do
         while p and p ~= WS and guard < 64 do
             guard = guard + 1
             if p:IsA("BasePart") then
-                local ok, pos = pcall(function() return p.Position end)
-                if ok and pos then return pos end
-                return nil
+                return p.Position
             elseif p:IsA("Model") then
-                local ok, cf = pcall(function() return p:GetPivot() end)
+                local ok, cf = pcall(pivotOf, p)
                 if ok and cf then return cf.Position end
                 return nil
             end
@@ -3071,147 +3111,95 @@ do
         return nil
     end
 
-    local function addToBucket(inst)
+    local function bucketAdd(bk, of, pos, k, inst)
+        local list = bk[k]
+        if not list then list = {}; bk[k] = list end
+        local n = #list + 1
+        list[n] = inst
+        of[inst] = k
+        pos[inst] = n
+    end
+    local function bucketDel(bk, of, pos, inst)
+        local k = of[inst]
+        if not k then return end
+        local i = pos[inst]
+        of[inst], pos[inst] = nil, nil
+        local list = bk[k]
+        if not list then return end
+        local n = #list
+        local last = list[n]
+        if last ~= inst and i and i < n then
+            list[i] = last
+            pos[last] = i
+        end
+        list[n] = nil
+        if n == 1 then bk[k] = nil end
+    end
+
+    local function track(inst)
+        local S = Store
+        if S.slot[inst] then return end
+        local n = S.n + 1
+        S.n = n
+        S.parts[n] = inst
+        S.slot[inst] = n
         if inst:IsA("BasePart") then
-            local ok, pos = pcall(function() return inst.Position end)
-            if not ok or not pos then return end
-            local k = cellKey(pos)
-            local list = buckets[k]
-            if not list then list = {}; buckets[k] = list end
-            list[#list + 1] = inst
-            bucketOf[inst] = k
+            bucketAdd(S.buckets, S.bucketOf, S.bucketPos, keyOf(inst.Position), inst)
         else
-            local anchorPos = getAnchorPos(inst)
-            if not anchorPos then
-                nonParts[inst] = false
-                return
+            local p = getAnchorPos(inst)
+            if p then
+                bucketAdd(S.nbuckets, S.nbucketOf, S.nbucketPos, keyOf(p), inst)
+            else
+                S.orphans[inst] = true
             end
-            local k = cellKey(anchorPos)
-            local list = nonPartBuckets[k]
-            if not list then list = {}; nonPartBuckets[k] = list end
-            list[#list + 1] = inst
-            nonPartBucketOf[inst] = k
-            nonParts[inst] = true
         end
     end
-    local function removeFromBucket(inst)
-        if inst:IsA("BasePart") then
-            local k = bucketOf[inst]
-            if not k then return end
-            bucketOf[inst] = nil
-            local list = buckets[k]
-            if not list then return end
-            for i = #list, 1, -1 do
-                if list[i] == inst then
-                    table.remove(list, i)
-                    break
-                end
-            end
-            if #list == 0 then buckets[k] = nil end
+
+    local function untrack(inst)
+        local S = Store
+        local idx = S.slot[inst]
+        if not idx then return end
+        local parts, n = S.parts, S.n
+        local last = parts[n]
+        if last ~= inst then
+            parts[idx] = last
+            S.slot[last] = idx
+        end
+        parts[n] = nil
+        S.n = n - 1
+        S.slot[inst] = nil
+        if S.bucketOf[inst] then
+            bucketDel(S.buckets, S.bucketOf, S.bucketPos, inst)
+        elseif S.nbucketOf[inst] then
+            bucketDel(S.nbuckets, S.nbucketOf, S.nbucketPos, inst)
         else
-            local k = nonPartBucketOf[inst]
-            if not k then nonParts[inst] = nil return end
-            nonPartBucketOf[inst] = nil
-            nonParts[inst] = nil
-            local list = nonPartBuckets[k]
-            if not list then return end
-            for i = #list, 1, -1 do
-                if list[i] == inst then
-                    table.remove(list, i)
-                    break
-                end
-            end
-            if #list == 0 then nonPartBuckets[k] = nil end
+            S.orphans[inst] = nil
         end
     end
-    local function rebucketIfMoved(inst)
-        if inst:IsA("BasePart") then
-            local ok, pos = pcall(function() return inst.Position end)
-            if not ok or not pos then return end
-            local newK = cellKey(pos)
-            local oldK = bucketOf[inst]
-            if oldK == newK then return end
-            if oldK then
-                local oldList = buckets[oldK]
-                if oldList then
-                    for i = #oldList, 1, -1 do
-                        if oldList[i] == inst then table.remove(oldList, i); break end
-                    end
-                    if #oldList == 0 then buckets[oldK] = nil end
-                end
+
+    local function rebucketOne(inst)
+        local S = Store
+        local oldK = S.bucketOf[inst]
+        if oldK then
+            local k = keyOf(inst.Position)
+            if k ~= oldK then
+                bucketDel(S.buckets, S.bucketOf, S.bucketPos, inst)
+                bucketAdd(S.buckets, S.bucketOf, S.bucketPos, k, inst)
             end
-            local newList = buckets[newK]
-            if not newList then newList = {}; buckets[newK] = newList end
-            newList[#newList + 1] = inst
-            bucketOf[inst] = newK
         else
-            local anchorPos = getAnchorPos(inst)
-            if not anchorPos then return end
-            local newK = cellKey(anchorPos)
-            local oldK = nonPartBucketOf[inst]
-            if oldK == newK then return end
-            if oldK then
-                local oldList = nonPartBuckets[oldK]
-                if oldList then
-                    for i = #oldList, 1, -1 do
-                        if oldList[i] == inst then table.remove(oldList, i); break end
-                    end
-                    if #oldList == 0 then nonPartBuckets[oldK] = nil end
+            local p = getAnchorPos(inst)
+            if p then
+                local k = keyOf(p)
+                local nk = S.nbucketOf[inst]
+                if k ~= nk then
+                    if nk then bucketDel(S.nbuckets, S.nbucketOf, S.nbucketPos, inst) end
+                    bucketAdd(S.nbuckets, S.nbucketOf, S.nbucketPos, k, inst)
+                    S.orphans[inst] = nil
                 end
             end
-            local newList = nonPartBuckets[newK]
-            if not newList then newList = {}; nonPartBuckets[newK] = newList end
-            newList[#newList + 1] = inst
-            nonPartBucketOf[inst] = newK
         end
     end
-    local function rebuildCache()
-        if building then return end
-        building = true
-        setBucketSize(CFG.radius)
-        task.spawn(function()
-            local rootKids = WS:GetChildren()
-            local all = {}
-            for i = 1, #rootKids do
-                local ok, d = pcall(function() return rootKids[i]:GetDescendants() end)
-                if ok and type(d) == "table" then
-                    for j = 1, #d do all[#all + 1] = d[j] end
-                end
-            end
-            cache, array, buckets, bucketOf = {}, {}, {}, {}
-            nonParts, nonPartBuckets, nonPartBucketOf = {}, {}, {}
-            local n = #all
-            for i = 1, n do
-                local inst = all[i]
-                if inst and inst.Parent then
-                    cache[inst] = true
-                    array[#array + 1] = inst
-                    addToBucket(inst)
-                end
-                if i % CFG.chunkSize == 0 then task.wait() end
-            end
-            building = false
-        end)
-    end
-    local function startWatchers()
-        if conns.add then return end
-        conns.add = WS.DescendantAdded:Connect(function(inst)
-            if cache[inst] then return end
-            cache[inst] = true
-            array[#array + 1] = inst
-            addToBucket(inst)
-        end)
-        conns.remove = WS.DescendantRemoving:Connect(function(inst)
-            if cache[inst] then
-                cache[inst] = nil
-                removeFromBucket(inst)
-            end
-        end)
-    end
-    local function stopWatchers()
-        if conns.add then pcall(function() conns.add:Disconnect() end) conns.add = nil end
-        if conns.remove then pcall(function() conns.remove:Disconnect() end) conns.remove = nil end
-    end
+
     local function getCenter()
         local cam = WS.CurrentCamera
         if cam then return cam.CFrame.Position end
@@ -3226,201 +3214,324 @@ do
         if root then return root.Position end
         return nil
     end
-    local rebucketerRunning = false
-    local function startRebucketer()
-        if rebucketerRunning then return end
-        rebucketerRunning = true
-        task.spawn(function()
-            while rebucketerRunning do
-                task.wait(math.max(tonumber(config.gndInterval) or CFG.refreshEvery, 0.25))
-                if building then continue end
-                local arr = array
-                for i = 1, #arr do
-                    local inst = arr[i]
-                    if inst.Parent and inst:IsA("BasePart") then
-                        rebucketIfMoved(inst)
-                    end
-                end
-                for inst in pairs(nonParts) do
-                    if inst.Parent then
-                        rebucketIfMoved(inst)
-                    end
-                end
-            end
-        end)
-    end
-    local function stopRebucketer()
-        rebucketerRunning = false
-    end
-    local out = {}
-    local seenSet = {}
-    local function GetNearbyDescendants(opts)
-        if typeof(opts) == "Instance" then opts = nil end
-        opts = opts or {}
-        if not next(cache) then
-            rebuildCache()
-            return WS:GetDescendants()
-        end
-        local radius = math.max(tonumber(opts.radius or config.gndRadius) or CFG.radius, CFG.minRadius)
-        local center = opts.center or getCenter()
+    local orphanSnap = {}
+    local function collect(dest, seen, c1, c2, radius, includeNonParts)
+        table.clear(dest)
+        table.clear(seen)
+        local S = Store
+        local dn, work = 0, 0
         local r2 = radius * radius
-        local includeNonParts = opts.includeNonParts ~= false
-        table.clear(out)
         local cells = math.ceil(radius / BUCKET)
         if cells > 8 then
-            if not config.varibz.gndSeen then config.varibz.gndSeen = {} end
-            local seenBig = config.varibz.gndSeen
-            table.clear(seenBig)
-            for i = 1, #array do
-                local inst = array[i]
-                if cache[inst] and inst.Parent and not seenBig[inst] then
-                    local pos = getAnchorPos(inst)
-                    if pos then
-                        if (pos - center).Magnitude <= radius then
-                            seenBig[inst] = true
-                            out[#out + 1] = inst
-                        end
-                    elseif includeNonParts and not inst:IsA("BasePart") then
-                        seenBig[inst] = true
-                        out[#out + 1] = inst
-                    end
-                end
-            end
-            return out
-        end
-        local cx = math.floor(center.X / BUCKET)
-        local cy = math.floor(center.Y / BUCKET)
-        local cz = math.floor(center.Z / BUCKET)
-        if not config.varibz.gndSeen then config.varibz.gndSeen = {} end
-        seenSet = config.varibz.gndSeen
-        table.clear(seenSet)
-        for dx = -cells, cells do
-            for dy = -cells, cells do
-                for dz = -cells, cells do
-                    local list = buckets[cx + dx .. ":" .. cy + dy .. ":" .. cz + dz]
-                    if list then
-                        for i = 1, #list do
-                            local inst = list[i]
-                            if inst.Parent and not seenSet[inst] then
-                                local ok, p = pcall(function() return inst.Position end)
-                                if ok and p and (p - center).Magnitude <= radius then
-                                    seenSet[inst] = true
-                                    out[#out + 1] = inst
-                                end
+            local parts, bucketOf = S.parts, S.bucketOf
+            local i = 1
+            while i <= S.n do
+                local inst = parts[i]
+                i = i + 1
+                if inst then
+                    local isPart = bucketOf[inst] ~= nil
+                    if isPart or includeNonParts then
+                        local p = getAnchorPos(inst)
+                        local near
+                        if p then
+                            local d = p - c1
+                            near = d:Dot(d) <= r2
+                            if not near and c2 then
+                                d = p - c2
+                                near = d:Dot(d) <= r2
                             end
+                        else
+                            near = not isPart
+                        end
+                        if near and inst.Parent then
+                            dn = dn + 1
+                            dest[dn] = inst
                         end
                     end
                 end
+                work = work + 1
+                if work >= 300 then work = 0; slice() end
             end
-        end
-        if includeNonParts then
-            for dx = -cells, cells do
-                for dy = -cells, cells do
-                    for dz = -cells, cells do
-                        local list = nonPartBuckets[cx + dx .. ":" .. cy + dy .. ":" .. cz + dz]
-                        if list then
-                            for i = 1, #list do
-                                local inst = list[i]
-                                if inst.Parent and not seenSet[inst] then
-                                    local anchorPos = getAnchorPos(inst)
-                                    if anchorPos and (anchorPos - center).Magnitude <= radius then
-                                        seenSet[inst] = true
-                                        out[#out + 1] = inst
-                                    elseif not anchorPos then
-                                        seenSet[inst] = true
-                                        out[#out + 1] = inst
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if includeNonParts then
-            for inst, hasAnchor in pairs(nonParts) do
-                if hasAnchor == false and inst.Parent and not seenSet[inst] then
-                    seenSet[inst] = true
-                    out[#out + 1] = inst
-                end
-            end
-        end
-        local rootCenter = (opts.center == nil) and getRootCenter() or nil
-        if rootCenter then
-            local rcx = math.floor(rootCenter.X / BUCKET)
-            local rcy = math.floor(rootCenter.Y / BUCKET)
-            local rcz = math.floor(rootCenter.Z / BUCKET)
-            for dx = -cells, cells do
-                for dy = -cells, cells do
-                    for dz = -cells, cells do
-                        local list = buckets[rcx + dx .. ":" .. rcy + dy .. ":" .. rcz + dz]
-                        if list then
-                            for i = 1, #list do
-                                local inst = list[i]
-                                if inst.Parent and not seenSet[inst] then
-                                    local ok, p = pcall(function() return inst.Position end)
-                                    if ok and p and (p - rootCenter).Magnitude <= radius then
-                                        seenSet[inst] = true
-                                        out[#out + 1] = inst
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            if includeNonParts then
-                for dx = -cells, cells do
-                    for dy = -cells, cells do
-                        for dz = -cells, cells do
-                            local list = nonPartBuckets[rcx + dx .. ":" .. rcy + dy .. ":" .. rcz + dz]
-                            if list then
-                                for i = 1, #list do
-                                    local inst = list[i]
-                                    if inst.Parent and not seenSet[inst] then
-                                        local anchorPos = getAnchorPos(inst)
-                                        if anchorPos and (anchorPos - rootCenter).Magnitude <= radius then
-                                            seenSet[inst] = true
-                                            out[#out + 1] = inst
-                                        elseif not anchorPos then
-                                            seenSet[inst] = true
-                                            out[#out + 1] = inst
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            return dn
         end
 
-        return out
+        local buckets, nbuckets = S.buckets, S.nbuckets
+        local function scanCenter(c)
+            local cx, cy, cz = floor(c.X / BUCKET), floor(c.Y / BUCKET), floor(c.Z / BUCKET)
+            for dx = -cells, cells do
+                for dy = -cells, cells do
+                    for dz = -cells, cells do
+                        local k = keyXYZ(cx + dx, cy + dy, cz + dz)
+                        local list = buckets[k]
+                        if list then
+                            local i = 1
+                            while i <= #list do
+                                local inst = list[i]
+                                i = i + 1
+                                if inst and not seen[inst] and inst.Parent then
+                                    local d = inst.Position - c
+                                    if d:Dot(d) <= r2 then
+                                        seen[inst] = true
+                                        dn = dn + 1
+                                        dest[dn] = inst
+                                    end
+                                end
+                                work = work + 1
+                                if work >= 400 then work = 0; slice() end
+                            end
+                        end
+                        if includeNonParts then
+                            local nl = nbuckets[k]
+                            if nl then
+                                local i = 1
+                                while i <= #nl do
+                                    local inst = nl[i]
+                                    i = i + 1
+                                    if inst and not seen[inst] and inst.Parent then
+                                        local p = getAnchorPos(inst)
+                                        if p then
+                                            local d = p - c
+                                            if d:Dot(d) <= r2 then
+                                                seen[inst] = true
+                                                dn = dn + 1
+                                                dest[dn] = inst
+                                            end
+                                        else
+                                            seen[inst] = true
+                                            dn = dn + 1
+                                            dest[dn] = inst
+                                        end
+                                    end
+                                    work = work + 2
+                                    if work >= 400 then work = 0; slice() end
+                                end
+                            end
+                        end
+                        work = work + 1
+                        if work >= 400 then work = 0; slice() end
+                    end
+                end
+            end
+        end
+        scanCenter(c1)
+        if c2 then scanCenter(c2) end
+        if includeNonParts then
+            table.clear(orphanSnap)
+            local sn = 0
+            for inst in pairs(S.orphans) do
+                sn = sn + 1
+                orphanSnap[sn] = inst
+            end
+            for i = 1, sn do
+                local inst = orphanSnap[i]
+                if not seen[inst] and inst.Parent then
+                    seen[inst] = true
+                    dn = dn + 1
+                    dest[dn] = inst
+                end
+                work = work + 1
+                if work >= 400 then work = 0; slice() end
+            end
+            table.clear(orphanSnap)
+        end
+        return dn
     end
+    local function getRadius(opts)
+        return math.max(tonumber(opts and opts.radius or config.gndRadius) or CFG.radius, CFG.minRadius)
+    end
+    local function buildBody()
+        local stack = WS:GetChildren()
+        local sp = #stack
+        local c = 0
+        while sp > 0 do
+            local inst = stack[sp]
+            stack[sp] = nil
+            sp = sp - 1
+            if inst.Parent then
+                track(inst)
+                local kids = inst:GetChildren()
+                for i = 1, #kids do
+                    sp = sp + 1
+                    stack[sp] = kids[i]
+                end
+            end
+            c = c + 1
+            if c >= 48 then c = 0; slice() end
+        end
+    end
+    local function rebucketBody()
+        local job = J.rebucket
+        while true do
+            local i, c = 1, 0
+            while i <= Store.n do
+                local inst = Store.parts[i]
+                if inst.Parent then
+                    rebucketOne(inst)
+                    i = i + 1
+                else
+                    untrack(inst)
+                end
+                c = c + 1
+                if c >= 64 then c = 0; slice() end
+            end
+            rest(job, getInterval())
+        end
+    end
+    local function refreshBody()
+        local R = Result
+        local fill = R.front % 3 + 1
+        local radius = getRadius(nil)
+        local c1 = getCenter()
+        local c2 = getRootCenter()
+        if c2 and (c2 - c1).Magnitude < 1 then c2 = nil end
+        collect(R.bufs[fill], R.seen, c1, c2, radius, true)
+        R.front = fill
+        R.stamp = clock()
+        R.radius = radius
+        R.center = c1
+        table.clear(R.seen)
+    end
+    local function startJob(job, body, onDone)
+        job.co = coroutine.create(body)
+        job.wake = 0
+        job.done = onDone
+    end
+    local function drainPending(untilT)
+        local S = Store
+        local q = S.pq
+        local h, t = S.ph, S.pt
+        local c = 0
+        while h <= t do
+            local inst = q[h]
+            q[h] = nil
+            h = h + 1
+            if inst.Parent and inst:IsDescendantOf(WS) then track(inst) end
+            c = c + 1
+            if c % 32 == 0 and clock() >= untilT then break end
+        end
+        if h > t then S.ph, S.pt = 1, 0 else S.ph = h end
+    end
+    local stop
+    local function pump(dt)
+        local t0 = clock()
+        if t0 - lastUse > CFG.idleClearAfter then
+            stop()
+            return
+        end
+        local budget = CFG.sliceBudget
+        if dt and dt > 0.05 then budget = budget * 0.5 end
+        drainPending(t0 + budget * 0.4)
+        local active = 0
+        for i = 1, 3 do
+            local j = jobOrder[i]
+            if j.co and t0 >= j.wake then active = active + 1 end
+        end
+        if active == 0 then return end
+        local share = budget * 0.6 / active
+        for i = 1, 3 do
+            local j = jobOrder[i]
+            if j.co and t0 >= j.wake then
+                deadline = clock() + share
+                local co = j.co
+                local ok, err = coroutine.resume(co)
+                if not ok then
+                    warn("[Gravel] GetNearbyDescendants job died: " .. tostring(err))
+                    j.co = nil
+                elseif coroutine.status(co) == "dead" then
+                    j.co = nil
+                    if j.done then j.done() end
+                end
+            end
+        end
+    end
+    local function startWatchers()
+        if conns.add then return end
+        conns.add = WS.DescendantAdded:Connect(function(inst)
+            local S = Store
+            local t = S.pt + 1
+            S.pt = t
+            S.pq[t] = inst
+        end)
+        conns.remove = WS.DescendantRemoving:Connect(untrack)
+    end
+    local function stopWatchers()
+        if conns.add then pcall(function() conns.add:Disconnect() end) conns.add = nil end
+        if conns.remove then pcall(function() conns.remove:Disconnect() end) conns.remove = nil end
+    end
+    local function start()
+        if Store.active then return end
+        Store = newStore()
+        Result = newResult()
+        Store.active = true
+        lastUse = clock()
+        startWatchers()
+        startJob(J.build, buildBody, function()
+            Store.ready = true
+            startJob(J.rebucket, rebucketBody)
+        end)
+        if not hbConn then hbConn = RS.Heartbeat:Connect(pump) end
+    end
+    stop = function()
+        stopWatchers()
+        if hbConn then hbConn:Disconnect() hbConn = nil end
+        for i = 1, 3 do
+            jobOrder[i].co = nil
+            jobOrder[i].done = nil
+        end
+        Store = newStore()
+        Result = newResult()
+    end
+    local function isStale(radius, now)
+        local R = Result
+        if now - R.stamp < CFG.minRefreshGap then return false end
+        if R.radius ~= radius then return true end
+        if now - R.stamp >= getInterval() then return true end
+        local mc = R.center
+        if mc and (getCenter() - mc).Magnitude > radius * 0.15 then return true end
+        return false
+    end
+    local function GetNearbyDescendants(opts)
+        if typeof(opts) == "Instance" then opts = nil end
+        local now = clock()
+        lastUse = now
+        if not Store.active then start() end
+        if not Store.ready then
+            return WS:GetDescendants()
+        end
+        local R = Result
+        if opts and (opts.center ~= nil or opts.radius ~= nil or opts.includeNonParts == false) then
+            local prev = deadline
+            deadline = huge
+            local c1 = opts.center or getCenter()
+            local c2 = (opts.center == nil) and getRootCenter() or nil
+            collect(R.scratch, R.scratchSeen, c1, c2, getRadius(opts), opts.includeNonParts ~= false)
+            table.clear(R.scratchSeen)
+            deadline = prev
+            return R.scratch
+        end
+        if R.stamp == 0 then
+            J.refresh.co = nil
+            local prev = deadline
+            deadline = huge
+            refreshBody()
+            deadline = prev
+        elseif not J.refresh.co and isStale(getRadius(nil), now) then
+            startJob(J.refresh, refreshBody)
+        end
+        return R.bufs[R.front]
+    end
+
     local function WorkspaceGetDescendantsNearby(opts)
         return GetNearbyDescendants(opts)
     end
-    startWatchers()
-    rebuildCache()
-    startRebucketer()
-    task.spawn(function()
-        while true do
-            task.wait(math.max(tonumber(config.gndInterval) or CFG.refreshEvery, 0.25))
-            if not next(cache) and not building then
-                rebuildCache()
-            end
-        end
-    end)
 
-    local function StopNearbyDescendants()
-        stopWatchers()
-        stopRebucketer()
-    end
+    start()
 
     config._getNearbyDescendants = GetNearbyDescendants
     config._GetNearbyDescendants = GetNearbyDescendants
     config._workspaceGetDescendantsNearby = WorkspaceGetDescendantsNearby
-    config._stopNearbyDescendants = StopNearbyDescendants
+    config._stopNearbyDescendants = stop
+    config._clearNearbyDescendants = stop
 end
 local function task_(key, fn)
     if config.varibz.threads[key] then
@@ -7256,6 +7367,8 @@ config.Priority = (function()
     local P = {}
     local Players = excusemesir.Players
     local UIS = excusemesir.UserInputService
+    local clock = os.clock
+    local huge = math.huge
     P.Modes = {
         "Closest", "Farthest", "Lowest Health", "Highest Health", "Lowest Health %",
         "Closest To Crosshair", "Closest To Cursor", "Aim At You", "Holding Tool",
@@ -7266,6 +7379,7 @@ config.Priority = (function()
     local stickybonus = 0.2
     local aimhalflife = 0.75
     local aimconecos = math.cos(math.rad(30))
+    local toolTTL = 0.2
     function P.toList(sel)
         local out = {}
         if type(sel) == "string" then
@@ -7303,21 +7417,20 @@ config.Priority = (function()
 
     local pools = {}
     local aimState = setmetatable({}, {__mode = "k"})
+    local toolCache = setmetatable({}, {__mode = "k"})
+    local lookSrcCache = setmetatable({}, {__mode = "k"})
     Players.PlayerRemoving:Connect(function(pl) aimState[pl] = nil end)
-
     local function getPool(key)
         local p = pools[key]
         if not p then
-            p = {n = 0, items = {}, raw = {}, mins = {}, maxs = {}, ms = {}, ctx = {}, last = nil}
+            p = {n = 0, items = {}, raw = {}, mins = {}, maxs = {}, invs = {}, ms = {}, fns = {}, ctx = {}, last = nil}
             pools[key] = p
         end
         return p
     end
-
     function P.begin(key)
         getPool(key).n = 0
     end
-
     function P.push(key, inst, char, hum, part, dist, ref)
         local p = getPool(key)
         local n = p.n + 1
@@ -7329,25 +7442,63 @@ config.Priority = (function()
         end
         e.inst, e.char, e.hum, e.part, e.dist, e.ref = inst, char, hum, part, dist, ref
         e.skip = false
+        e.cc, e.hc = nil, nil
     end
-
-    local function angleBetween(origin, dir, pos)
-        local v = pos - origin
+    local function charOf(e)
+        local c = e.cc
+        if c == nil then
+            c = e.char or getTargetCharacter(e.inst) or false
+            e.cc = c
+        end
+        return c
+    end
+    local function humOf(e)
+        local h = e.hum
+        if h then return h end
+        h = e.hc
+        if h == nil then
+            local c = charOf(e)
+            h = c and c:FindFirstChildOfClass("Humanoid") or false
+            e.hc = h
+        end
+        return h
+    end
+    local function holdingTool(char, now)
+        local c = toolCache[char]
+        if c and now - c.t < toolTTL then return c.v end
+        if not c then c = {}; toolCache[char] = c end
+        c.v = char:FindFirstChildOfClass("Tool") ~= nil
+        c.t = now
+        return c.v
+    end
+    local function lookSource(char)
+        local s = lookSrcCache[char]
+        if s and s.Parent then return s end
+        s = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+        lookSrcCache[char] = s
+        return s
+    end
+    local function angleMetric(origin, dir, part, blend)
+        if not part then return nil end
+        local v = part.Position - origin
         local mag = v.Magnitude
-        if mag < 0.001 then return 0 end
+        if mag < 0.001 then return blend and 0 or -1 end
         local d = dir:Dot(v) / mag
+        if not blend then return -d end
         if d > 1 then d = 1 elseif d < -1 then d = -1 end
         return math.acos(d)
     end
 
     local function aimAlignment(inst, char, ctx)
-        local src = char and (char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart"))
+        if not char then return 0 end
+        local src = lookSource(char)
         if not src then return 0 end
-        local to = ctx.myPos - src.Position
+        local cf = src.CFrame
+        local to = ctx.myPos - cf.Position
         local tx, tz = to.X, to.Z
         local tm = math.sqrt(tx * tx + tz * tz)
         if tm < 0.01 then return 1 end
-        local look = src.CFrame.LookVector
+        local look = cf.LookVector
         local lx, lz = look.X, look.Z
         local lm = math.sqrt(lx * lx + lz * lz)
         if lm < 0.01 then return 0 end
@@ -7372,38 +7523,61 @@ config.Priority = (function()
         end
         return st.v
     end
-
-    local function metric(m, e, ctx)
-        if m == "Closest" then
-            return e.dist
-        elseif m == "Farthest" then
-            return e.dist and -e.dist or nil
-        elseif m == "Lowest Health" or m == "Highest Health" or m == "Lowest Health %" then
-            local hum = e.hum
-            if not hum then
-                local char = e.char or getTargetCharacter(e.inst)
-                hum = char and char:FindFirstChildOfClass("Humanoid")
-            end
-            if not hum then return nil end
-            if m == "Lowest Health" then
-                return hum.Health
-            elseif m == "Highest Health" then
-                return -hum.Health
-            end
-            return hum.Health / math.max(hum.MaxHealth, 1)
-        elseif m == "Closest To Crosshair" then
-            return e.part and angleBetween(ctx.camPos, ctx.camLook, e.part.Position) or nil
-        elseif m == "Closest To Cursor" then
-            return e.part and angleBetween(ctx.curOrigin, ctx.curDir, e.part.Position) or nil
-        elseif m == "Aim At You" then
-            local char = e.char or getTargetCharacter(e.inst)
-            return -aimAlignment(e.inst, char, ctx)
-        elseif m == "Holding Tool" then
-            local char = e.char or getTargetCharacter(e.inst)
-            return (char and char:FindFirstChildOfClass("Tool")) and 0 or 1
-        end
-        return e.dist
+    local M = {}
+    M["Closest"] = function(e) return e.dist end
+    M["Farthest"] = function(e)
+        local d = e.dist
+        return d and -d or nil
     end
+    M["Lowest Health"] = function(e)
+        local h = humOf(e)
+        return h and h.Health or nil
+    end
+    M["Highest Health"] = function(e)
+        local h = humOf(e)
+        return h and -h.Health or nil
+    end
+    M["Lowest Health %"] = function(e)
+        local h = humOf(e)
+        return h and h.Health / math.max(h.MaxHealth, 1) or nil
+    end
+    M["Closest To Crosshair"] = function(e, ctx)
+        return angleMetric(ctx.camPos, ctx.camLook, e.part, ctx.blend)
+    end
+    M["Closest To Cursor"] = function(e, ctx)
+        return angleMetric(ctx.curOrigin, ctx.curDir, e.part, ctx.blend)
+    end
+    M["Aim At You"] = function(e, ctx)
+        return -aimAlignment(e.inst, charOf(e), ctx)
+    end
+    M["Holding Tool"] = function(e, ctx)
+        local c = charOf(e)
+        return (c and holdingTool(c, ctx.now)) and 0 or 1
+    end
+    local function parseInto(ms, sel)
+        local sticky = false
+        if type(sel) == "string" then
+            if sel == "Stick To Target" then
+                sticky = true
+            elseif valid[sel] and sel ~= "TargetSeen" then
+                ms[1] = sel
+            end
+        elseif type(sel) == "table" then
+            for _, v in ipairs(sel) do
+                if v == "Stick To Target" then
+                    sticky = true
+                elseif v ~= "TargetSeen" and valid[v] then
+                    local dup = false
+                    for k = 1, #ms do
+                        if ms[k] == v then dup = true break end
+                    end
+                    if not dup then ms[#ms + 1] = v end
+                end
+            end
+        end
+        return sticky
+    end
+
     function P.resolve(key, sel, default, exclude)
         local p = getPool(key)
         local n = p.n
@@ -7421,37 +7595,28 @@ config.Priority = (function()
             p.last = e.inst
             return e.inst, e.ref
         end
-        local ms = p.ms
+        local ms, fns = p.ms, p.fns
         table.clear(ms)
-        local sticky = false
-        if type(sel) == "string" then
-            if sel == "Stick To Target" then
-                sticky = true
-            elseif valid[sel] and sel ~= "TargetSeen" then
-                ms[1] = sel
-            end
-        elseif type(sel) == "table" then
-            for _, v in ipairs(sel) do
-                if v == "Stick To Target" then
-                    sticky = true
-                elseif v ~= "TargetSeen" and valid[v] and not table.find(ms, v) then
-                    ms[#ms + 1] = v
-                end
-            end
-        end
+        local sticky = parseInto(ms, sel)
         if #ms == 0 then ms[1] = default or "Closest" end
         local nm = #ms
+        local needCursor = false
+        for mi = 1, nm do
+            fns[mi] = M[ms[mi]] or M["Closest"]
+            if ms[mi] == "Closest To Cursor" then needCursor = true end
+        end
 
         local ctx = p.ctx
         local cam = workspace.CurrentCamera
         local cf = cam.CFrame
         ctx.camPos, ctx.camLook = cf.Position, cf.LookVector
         ctx.curOrigin, ctx.curDir = ctx.camPos, ctx.camLook
-        ctx.now = tick()
+        ctx.now = clock()
+        ctx.blend = nm > 1
         local myChar = plr.Character
         local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
         ctx.myPos = myRoot and myRoot.Position or ctx.camPos
-        if table.find(ms, "Closest To Cursor") then
+        if needCursor then
             local ml
             if config.fovEffectiveMode() == "Touch" then
                 ml = config.getFovCenter(cam.ViewportSize)
@@ -7463,11 +7628,31 @@ config.Priority = (function()
                 ctx.curOrigin, ctx.curDir = ray.Origin, ray.Direction.Unit
             end
         end
-
         local skip = (exclude ~= nil)
-        local raw, mins, maxs = p.raw, p.mins, p.maxs
+        if nm == 1 and not sticky then
+            local fn = fns[1]
+            local bestI, bestV, firstLive
+            for i = 1, n do
+                local e = items[i]
+                if skip and e.inst == exclude then
+                    e.skip = true
+                else
+                    e.skip = false
+                    if not firstLive then firstLive = i end
+                    local v = fn(e, ctx)
+                    if v ~= nil and v == v and v ~= huge and v ~= -huge then
+                        if bestV == nil or v < bestV then bestV, bestI = v, i end
+                    end
+                end
+            end
+            local pick = items[bestI or firstLive or 1]
+            p.last = pick.inst
+            return pick.inst, pick.ref
+        end
+
+        local raw, mins, maxs, invs = p.raw, p.mins, p.maxs, p.invs
         for mi = 1, nm do
-            mins[mi], maxs[mi] = math.huge, -math.huge
+            mins[mi], maxs[mi] = huge, -huge
             if not raw[mi] then raw[mi] = {} end
         end
 
@@ -7480,8 +7665,8 @@ config.Priority = (function()
                 e.skip = false
                 live = live + 1
                 for mi = 1, nm do
-                    local v = metric(ms[mi], e, ctx)
-                    if v == nil or v ~= v or v == math.huge or v == -math.huge then
+                    local v = fns[mi](e, ctx)
+                    if v == nil or v ~= v or v == huge or v == -huge then
                         v = false
                     else
                         if v < mins[mi] then mins[mi] = v end
@@ -7497,7 +7682,13 @@ config.Priority = (function()
             return items[1].inst, items[1].ref
         end
 
-        local bestI, bestScore = nil, math.huge
+        for mi = 1, nm do
+            local range = maxs[mi] - mins[mi]
+            invs[mi] = range > 1e-6 and (1 / range) or 0
+        end
+
+        local bestI, bestScore = nil, huge
+        local last = p.last
         for i = 1, n do
             local e = items[i]
             if not e.skip then
@@ -7507,14 +7698,11 @@ config.Priority = (function()
                     if v == false then
                         sc = sc + 1
                     else
-                        local range = maxs[mi] - mins[mi]
-                        if range > 1e-6 then
-                            sc = sc + (v - mins[mi]) / range
-                        end
+                        sc = sc + (v - mins[mi]) * invs[mi]
                     end
                 end
                 sc = sc / nm
-                if sticky and p.last ~= nil and e.inst == p.last then
+                if sticky and last ~= nil and e.inst == last then
                     sc = sc - stickybonus
                 end
                 if sc < bestScore then
