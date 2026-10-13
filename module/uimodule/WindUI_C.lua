@@ -11451,7 +11451,286 @@ ao.Main=at
 return ao.__type,ao
 end
 
-return al end function a._()
+return al end function a.RectCull()
+local RunService=game:GetService"RunService"
+
+local LEAF={
+Paragraph=true,Button=true,Toggle=true,Slider=true,ProgressBar=true,
+Keybind=true,Input=true,Dropdown=true,Code=true,Colorpicker=true,Image=true,
+}
+local WRAP={"Lock","Unlock","Highlight","SetImage","SetThumbnail"}
+local HOLD=0.4
+
+local C={}
+C.__index=C
+
+local function scaleOf(item)
+local w=item.WindUI
+local s=w and tonumber(w.UIScale)or 1
+if not s or s<=0 then s=1 end
+return s
+end
+
+local function freeze(item)
+local f=item.Frame
+if item.Culled or f.AutomaticSize~=Enum.AutomaticSize.Y then return false end
+local h=f.AbsoluteSize.Y
+if h<=0 or not f.Visible then return false end
+local p=f.Parent
+if not p or not p:FindFirstChildOfClass"UIListLayout"then return false end
+
+local size=f.Size
+item.OrigSize=size
+f.AutomaticSize=Enum.AutomaticSize.None
+f.Size=UDim2.new(size.X.Scale,size.X.Offset,0,h/scaleOf(item))
+
+local hidden=item.Hidden
+table.clear(hidden)
+for _,child in ipairs(f:GetChildren())do
+if child:IsA"GuiObject"and child.Visible then
+hidden[#hidden+1]=child
+child.Visible=false
+end
+end
+item.Culled=true
+return true
+end
+
+local function thaw(item)
+if not item.Culled then return end
+item.Culled=false
+local hidden=item.Hidden
+for i=1,#hidden do
+local c=hidden[i]
+if c.Parent then c.Visible=true end
+end
+table.clear(hidden)
+local f=item.Frame
+if f.Parent then
+f.AutomaticSize=Enum.AutomaticSize.Y
+f.Size=item.OrigSize
+end
+item.Hold=os.clock()+HOLD
+end
+
+function C.new(win)
+local self=setmetatable({
+Window=win,
+Items={},
+Pending={},
+Groups={},
+Enabled=win.RectCulling~=false,
+Dirty=true,
+Acc=0,
+},C)
+self.Conn=RunService.Heartbeat:Connect(function(dt)
+self:Step(dt)
+end)
+return self
+end
+
+function C:Register(el,cfg)
+local ignore=self.Window.RectCullIgnore
+if not LEAF[el.__type]or(ignore and ignore[el.__type])or typeof(el.ElementFrame)~="Instance"then
+return
+end
+local item={
+El=el,
+Frame=el.ElementFrame,
+WindUI=cfg and cfg.WindUI,
+Hidden={},
+Culled=false,
+Hold=0,
+}
+self.Items[el]=item
+self.Pending[#self.Pending+1]=item
+
+for _,name in ipairs(WRAP)do
+local orig=rawget(el,name)
+if type(orig)=="function"then
+el[name]=function(...)
+if item.Culled then thaw(item)end
+return orig(...)
+end
+end
+end
+self.Dirty=true
+end
+
+function C:Unregister(el)
+local item=self.Items[el]
+if not item then return end
+self.Items[el]=nil
+if item.Group then item.Group.Items[item]=nil end
+for i,p in ipairs(self.Pending)do
+if p==item then table.remove(self.Pending,i)break end
+end
+if item.Culled then thaw(item)end
+end
+
+function C:_group(scroll)
+local g=self.Groups[scroll]
+if g then return g end
+g={
+Scroll=scroll,
+Items={},
+Conns={},
+LastW=scroll.AbsoluteSize.X,
+LastS=1,
+Settle=0,
+}
+local function mark()self.Dirty=true end
+g.Conns[1]=scroll:GetPropertyChangedSignal"CanvasPosition":Connect(mark)
+g.Conns[2]=scroll:GetPropertyChangedSignal"AbsoluteSize":Connect(mark)
+g.Conns[3]=scroll:GetPropertyChangedSignal"AbsoluteCanvasSize":Connect(mark)
+local canvas=scroll.Parent
+if canvas and canvas:IsA"GuiObject"then
+g.Conns[4]=canvas:GetPropertyChangedSignal"Visible":Connect(function()
+if self.Enabled then
+if canvas.Visible then self:_evalGroup(g)end
+self.Dirty=true
+end
+end)
+end
+self.Groups[scroll]=g
+return g
+end
+
+function C:_evalGroup(g)
+local scroll=g.Scroll
+local canvas=scroll.Parent
+if not canvas then return end
+
+local now=os.clock()
+local active=(not canvas:IsA"GuiObject"or canvas.Visible)and scroll.AbsoluteSize.Y>0
+
+local w=scroll.AbsoluteSize.X
+local sc=1
+local any=next(g.Items)
+if any then sc=scaleOf(any)end
+if math.abs(w-g.LastW)>0.5 or g.LastS~=sc then
+g.LastW=w
+g.LastS=sc
+g.Settle=now+0.25
+for item in next,g.Items do thaw(item)end
+self.Dirty=true
+return
+end
+
+local pad=tonumber(self.Window.RectCullPadding)or 200
+local top=scroll.AbsolutePosition.Y
+local bottom=top+scroll.AbsoluteSize.Y
+local settled=now>=g.Settle
+
+for item in next,g.Items do
+local f=item.Frame
+if not f.Parent then
+g.Items[item]=nil
+self.Items[item.El]=nil
+else
+local outside
+if not active then
+outside=true
+else
+local y0=f.AbsolutePosition.Y
+local y1=y0+f.AbsoluteSize.Y
+if item.Culled then
+outside=not(y1>=top-pad*0.6 and y0<=bottom+pad*0.6)
+else
+outside=y1<top-pad or y0>bottom+pad
+end
+end
+
+if outside then
+if not item.Culled and settled and now>=item.Hold then
+freeze(item)
+end
+elseif item.Culled then
+thaw(item)
+end
+end
+end
+end
+
+function C:Step(dt)
+if not self.Enabled then return end
+local win=self.Window
+if win.Destroyed then return end
+
+self.Acc+=dt
+if self.Acc<(tonumber(win.RectCullInterval)or 0.06)then return end
+if win.Closed then self.Acc=0 return end
+if not self.Dirty and self.Acc<1.5 then return end
+self.Acc=0
+self.Dirty=false
+
+local pend=self.Pending
+for i=#pend,1,-1 do
+local item=pend[i]
+local f=item.Frame
+if not f.Parent then
+table.remove(pend,i)
+self.Items[item.El]=nil
+else
+local scroll=f:FindFirstAncestorWhichIsA"ScrollingFrame"
+if scroll then
+local g=self:_group(scroll)
+g.Items[item]=true
+item.Group=g
+table.remove(pend,i)
+end
+end
+end
+
+for scroll,g in next,self.Groups do
+if not scroll.Parent then
+for _,c in ipairs(g.Conns)do c:Disconnect()end
+self.Groups[scroll]=nil
+else
+self:_evalGroup(g)
+end
+end
+end
+
+function C:RestoreAll()
+for _,item in next,self.Items do thaw(item)end
+end
+
+function C:SetEnabled(v)
+v=v~=false
+if self.Enabled==v then return end
+self.Enabled=v
+if v then
+self.Dirty=true
+else
+self:RestoreAll()
+end
+end
+
+function C:Stats()
+local total,culled=0,0
+for _,item in next,self.Items do
+total+=1
+if item.Culled then culled+=1 end
+end
+return{Total=total,Culled=culled,Visible=total-culled}
+end
+
+function C:Destroy()
+self.Enabled=false
+if self.Conn then self.Conn:Disconnect()self.Conn=nil end
+for _,g in next,self.Groups do
+for _,c in ipairs(g.Conns)do c:Disconnect()end
+end
+self:RestoreAll()
+table.clear(self.Groups)
+table.clear(self.Items)
+table.clear(self.Pending)
+end
+
+return C
+end
+ function a._()
 
 return{
 Elements={
@@ -11551,6 +11830,9 @@ function av.Highlight(ax)
 aw:Highlight()
 end
 function av.Destroy(ax)
+if ak.RectCull then
+ak.RectCull:Unregister(av)
+end
 aw:Destroy()
 
 table.remove(ak.AllElements,at.GlobalIndex)
@@ -11564,6 +11846,10 @@ ak.AllElements[at.Index]=av
 aa.Elements[at.Index]=av
 if ap then
 ap.Elements[at.Index]=av
+end
+
+if ak.RectCull then
+ak.RectCull:Register(av,at)
 end
 
 if ak.NewElements then
@@ -13041,6 +13327,10 @@ ScrollBarEnabled=av.ScrollBarEnabled or false,
 SideBarWidth=av.SideBarWidth or 200,
 Acrylic=av.Acrylic or false,
 NewElements=av.NewElements or false,
+RectCulling=av.RectCulling~=false,
+RectCullPadding=av.RectCullPadding or 200,
+RectCullInterval=av.RectCullInterval or 0.06,
+RectCullIgnore=av.RectCullIgnore,
 IgnoreAlerts=av.IgnoreAlerts or false,
 HidePanelBackground=av.HidePanelBackground or false,
 AutoScale=av.AutoScale~=false,
@@ -13084,6 +13374,7 @@ IsToggleDragging=false,
 }
 
 aw.UICorner=aw.Radius
+aw.RectCull=a.load'RectCull'.new(aw)
 
 aw.TopBarButtonIconSize=aw.TopBarButtonIconSize or(aw.Topbar.ButtonsType=="Mac"and 11 or 16)
 
@@ -14494,6 +14785,9 @@ aw.AcrylicPaint.Model:Destroy()
 end
 
 aw.Destroyed=true
+if aw.RectCull then
+aw.RectCull:Destroy()
+end
 
 task.wait(0.4)
 
@@ -14513,6 +14807,19 @@ end
 function aw.Destroy(C)
 return aw:Close():Destroy()
 end
+function aw.SetRectCulling(C,F)
+aw.RectCulling=F~=false
+aw.RectCull:SetEnabled(aw.RectCulling)
+end
+function aw.SetRectCullPadding(C,F)
+aw.RectCullPadding=tonumber(F)or aw.RectCullPadding
+aw.RectCull:RestoreAll()
+aw.RectCull.Dirty=true
+end
+function aw.GetRectCullStats(C)
+return aw.RectCull:Stats()
+end
+
 function aw.Toggle(C)
 if aw.Closed then
 aw:Open()
