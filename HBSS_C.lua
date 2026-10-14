@@ -11263,12 +11263,8 @@ config.offArrow.destroyItem = function(target)
         config.offArrow.items[target] = nil
     end
 end
-config.offArrow.stop = function()
+config.offArrow.clear = function()
     local oa = config.offArrow
-    if oa.conn then
-        pcall(function() oa.conn:Disconnect() end)
-        oa.conn = nil
-    end
     for t in pairs(oa.items) do
         oa.destroyItem(t)
     end
@@ -11277,6 +11273,50 @@ config.offArrow.stop = function()
         pcall(function() oa.gui:Destroy() end)
         oa.gui = nil
     end
+end
+config.offArrow.stop = function()
+    local oa = config.offArrow
+    if oa.conn then
+        pcall(function() oa.conn:Disconnect() end)
+        oa.conn = nil
+    end
+    oa.clear()
+end
+config.offArrow.itemAlive = function(it, gui)
+    if not it then return false end
+    local a, d = it.arrow, it.dist
+    if not (a and d) then return false end
+    if a.Parent ~= gui or d.Parent ~= gui then return false end
+    return true
+end
+config.offArrow.ensureGui = function()
+    local oa = config.offArrow
+    local pg = localPlayer:FindFirstChildOfClass("PlayerGui")
+    if not pg then return false end
+    local g = oa.gui
+    local ok = false
+    if g then
+        local alive = pcall(function() return g.Parent end)
+        ok = alive and g.Parent == pg
+    end
+    if ok then
+        if g.Enabled == false then g.Enabled = true end
+        return true
+    end
+    for t in pairs(oa.items) do
+        oa.destroyItem(t)
+    end
+    oa.items = {}
+    if g then pcall(function() g:Destroy() end) end
+    local ng = Instance.new("ScreenGui")
+    ng.Name = "37276227227277_" .. tostring(math.random(100000, 999999)) .. "_" .. tostring(math.random(1000, 9999))
+    ng.ResetOnSpawn = false
+    ng.IgnoreGuiInset = true
+    ng.Enabled = true
+    ng.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ng.Parent = pg
+    oa.gui = ng
+    return true
 end
 config.offArrow.makeItem = function(target)
     local oa = config.offArrow
@@ -11310,8 +11350,12 @@ config.offArrow.makeItem = function(target)
 end
 config.offArrow.update = function(dt)
     local oa = config.offArrow
-    if not (config.espMasterEnabled and config.prefOffscreenArrows) then
+    if not config.prefOffscreenArrows then
         oa.stop()
+        return
+    end
+    if not config.espMasterEnabled then
+        if oa.gui or next(oa.items) then oa.clear() end
         return
     end
     oa.acc = oa.acc + dt
@@ -11320,18 +11364,7 @@ config.offArrow.update = function(dt)
 
     local cam = workspace.CurrentCamera
     if not cam then return end
-    if not (oa.gui and oa.gui.Parent) then
-        local pg = localPlayer:FindFirstChildOfClass("PlayerGui")
-        if not pg then return end
-        oa.items = {}
-        local g = Instance.new("ScreenGui")
-        g.Name = "37276227227277_" .. tostring(math.random(100000, 999999)) .. "_" .. tostring(math.random(1000, 9999))
-        g.ResetOnSpawn = false
-        g.IgnoreGuiInset = true
-        g.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        g.Parent = pg
-        oa.gui = g
-    end
+    if not oa.ensureGui() then return end
 
     local vp = cam.ViewportSize
     local center = vp / 2
@@ -11359,6 +11392,10 @@ config.offArrow.update = function(dt)
                 local v3, on = cam:WorldToViewportPoint(root.Position)
                 local inside = on and v3.Z > 0 and v3.X >= 0 and v3.X <= vp.X and v3.Y >= 0 and v3.Y <= vp.Y
                 local it = oa.items[target]
+                if it and not oa.itemAlive(it, oa.gui) then
+                    oa.destroyItem(target)
+                    it = nil
+                end
                 if inside then
                     if it then
                         it.arrow.Visible = false
@@ -11409,7 +11446,11 @@ config.offArrow.update = function(dt)
 end
 config.offArrow.start = function()
     local oa = config.offArrow
-    if oa.conn then return end
+    if oa.conn then
+        local okc, connected = pcall(function() return oa.conn.Connected end)
+        if okc and connected then return end
+        oa.conn = nil
+    end
     oa.acc = 0
     oa.conn = excusemesir.RunService.RenderStepped:Connect(function(dt)
         pcall(oa.update, dt)
@@ -11417,6 +11458,7 @@ config.offArrow.start = function()
 end
 config.offArrow.refresh = function()
     if config.espMasterEnabled and config.prefOffscreenArrows then
+        config.offArrow.acc = 1e9
         config.offArrow.start()
     else
         config.offArrow.stop()
@@ -23121,6 +23163,7 @@ local function sjuwhjwjeeuhdjxoah_iejwendkisj()
                 
                 config.varibz.respawnLock = false
                 config.varibz.wasESPEnabledBeforeDeath = false
+                if config.offArrow then config.offArrow.refresh() end
             end
         end
     end)
