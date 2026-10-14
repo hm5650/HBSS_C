@@ -7,6 +7,7 @@ local BMG = {
     CurrentTitle = "PeanutButter",
     Volume = 1,
     Pitch = 1,
+    MusicStrength = 1,
     IsPlaying = false,
     CustomMusicIds = {},
     PresetMusicIds = {
@@ -23,7 +24,8 @@ local BMG = {
     _config = nil,
     _sound = nil,
     _connections = {},
-    _dropdownRef = nil
+    _dropdownRef = nil,
+    _strengthRef = nil
 }
 
 function BMG:init(windUI, config)
@@ -42,6 +44,7 @@ function BMG:init(windUI, config)
         self.CurrentTitle = config.BMG.CurrentTitle or self.CurrentTitle
         self.Volume = config.BMG.Volume or self.Volume
         self.Pitch = config.BMG.Pitch or self.Pitch
+        self.MusicStrength = config.BMG.MusicStrength or self.MusicStrength
         self.IsPlaying = config.BMG.IsPlaying or self.IsPlaying
         self.CustomMusicIds = config.BMG.CustomMusicIds or {}
     end
@@ -52,6 +55,33 @@ end
 
 function BMG:setDropdownRef(dropdown)
     self._dropdownRef = dropdown
+end
+
+function BMG:setStrengthRef(slider)
+    self._strengthRef = slider
+end
+
+function BMG:setMusicStrength(value, fromUI)
+    value = math.clamp(tonumber(value) or 1, 0, 2)
+    self.MusicStrength = value
+    if self._config then
+        if self._config.BMG then
+            self._config.BMG.MusicStrength = value
+        end
+        local g = self._config.Gradow
+        if g and g.ascii then
+            g.ascii.musicStrength = value
+        end
+    end
+    if not fromUI and self._strengthRef then
+        pcall(function()
+            if self._strengthRef.Set then
+                self._strengthRef:Set(value)
+            elseif self._strengthRef.SetValue then
+                self._strengthRef:SetValue(value)
+            end
+        end)
+    end
 end
 
 function BMG:refreshDropdown()
@@ -338,6 +368,7 @@ function BMG:save()
         currentTitle = self.CurrentTitle,
         volume = self.Volume,
         pitch = self.Pitch,
+        musicStrength = self.MusicStrength,
         isPlaying = self.IsPlaying,
         savedAt = os.time()
     }
@@ -402,6 +433,9 @@ function BMG:load()
         if decoded.pitch ~= nil then
             self.Pitch = math.clamp(decoded.pitch, 0.5, 2)
         end
+        if decoded.musicStrength ~= nil then
+            self:setMusicStrength(decoded.musicStrength)
+        end
         if decoded.isPlaying ~= nil then
             self.IsPlaying = decoded.isPlaying
         end
@@ -464,6 +498,9 @@ function BMG:autoLoad()
         end
         if decoded.pitch ~= nil then
             self.Pitch = math.clamp(decoded.pitch, 0.5, 2)
+        end
+        if decoded.musicStrength ~= nil then
+            self:setMusicStrength(decoded.musicStrength)
         end
         if decoded.isPlaying ~= nil then
             self.IsPlaying = decoded.isPlaying
