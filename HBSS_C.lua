@@ -108,7 +108,9 @@ getgenv().HttpUrlz_ = {
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     --other stuff made by other people... and it's mostly just uis... totally not because i suck at making uis... especially when it comes to making it a library
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
-    ilikedisui = "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua",
+    ilikedisui = "https://raw.githubusercontent.com/hm5650/WindUI_-forked-/refs/heads/main/WindUI_forked" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+    -- gravel uses a forked ver of WindUI you can get org from here: https://github.com/Footagesus/WindUI/releases/latest/download/main.lua
+    
     --me cool script dat r not hbss related
     ewitsabadapple = "https://raw.githubusercontent.com/hm5650/Badappel/refs/heads/main/Appelbad",
     tpuabasically = "https://raw.githubusercontent.com/hm5650/BringParts/refs/heads/main/BringParts.lua",
@@ -194,7 +196,7 @@ local config = {
         },
         overrides = {__gm = true},
         customNames = {},
-        deep = {auto = true, interval = 0.25, budgetMs = 3, maxKeys = 120, minScore = 3, mode = "Focused"},
+        deep = {auto = true, interval = 5, budgetMs = 3, maxKeys = 120, minScore = 3, mode = "Focused"},
     },
     QTPositions = {},
     hbtrans = 1,
@@ -15604,6 +15606,8 @@ end
     Discord: https://discord.gg/ftgs-development-hub-1300692552005189632
     License: MIT
 ]]
+-- I literally just modified a ui to be more optimized lol
+
 -- ui neuron activation starter
 math.randomseed(os.time())
 do
@@ -15630,6 +15634,12 @@ Window = WindUI:CreateWindow({
     Theme = "Dark",
     Icon = "rbxassetid://96858797315175",
     NewElements = true,
+    
+    --stuff i added :v
+    RectCulling = true,
+    RectCullPadding = 40,
+    RectCullInterval = 0.06,
+    
 	 IconSize = 38,
     Size = size,
     HideSearchBar = false,
@@ -19218,6 +19228,8 @@ do
         lastBpScan = 0,
         strongCache = {},
         strongN = 0,
+        lastGc = -1e9,
+        listKey = "",
     }
     OWN[GM] = true
     OWN[GM.quick] = true
@@ -19853,10 +19865,15 @@ do
             S.status = "scanning held + backpack guns..."
             local foundF, supported = S.focusScan()
             local found, tables = foundF, 0
+            local gcGap = os.clock() - S.lastGc
             if mode == "Everything" then
-                local f2, t2 = S.gcScan(0)
-                found, tables = found + f2, t2
-            elseif not supported or foundF == 0 then
+                if manual or gcGap >= 30 then
+                    S.lastGc = os.clock()
+                    local f2, t2 = S.gcScan(0)
+                    found, tables = found + f2, t2
+                end
+            elseif (not supported or foundF == 0) and S.refTotal == 0 and (manual or gcGap >= 30) then
+                S.lastGc = os.clock()
                 local f2, t2 = S.gcScan(1)
                 found, tables = found + f2, t2
             end
@@ -20026,7 +20043,9 @@ do
             if GM.deep.auto and GM.enabled and not S.scanning and S.calm() then
                 local since = os.clock() - S.lastDeep
                 local quick = (GM.deep.mode == "Everything") and 8 or 2
-                if since >= GM.deep.interval or (S.deepPending and since >= quick) then
+                local minGap = (GM.deep.mode == "Everything") and 30 or 2
+                local gap = math.max(GM.deep.interval, minGap)
+                if since >= gap or (S.deepPending and since >= quick) then
                     S.deepPending = false
                     deepScan(false)
                 end
@@ -20406,7 +20425,7 @@ do
         S.ui.d_auto = GunModsTab:Toggle({
             Title = "Auto DeepScan",
             Desc = "re-scans every interval\nand right after u equip a gun :3\n\nusually used when gravel sucks at finding stuff :l",
-            Value = GM.deep.auto or true,
+            Value = GM.deep.auto ~= false,
             Callback = function(v)
                 GM.deep.auto = v
                 if v then 
@@ -20459,11 +20478,11 @@ do
 
         S.ui.d_interval = GunModsTab:Slider({
             Title = "Auto Scan Interval",
-            Desc = "seconds between auto deepscans",
+            Desc = "seconds between auto deepscans (min 2s, Everything mode min 30s)",
             IsTextbox = true,
-            Step = 0.01,
+            Step = 0.5,
             Suffix = "s",
-            Value = {Min = 0.01, Max = 300, Default = GM.deep.interval or 0.25},
+            Value = {Min = 2, Max = 300, Default = math.max(GM.deep.interval or 5, 2)},
             Callback = function(value)
                 GM.deep.interval = value
             end
@@ -20550,7 +20569,7 @@ do
                 local names = buildNames()
                 local list = {}
                 local selIn = false
-                for i = 1, math.min(#names, 250) do
+                for i = 1, math.min(#names, 150) do
                     list[i] = names[i]
                     if names[i] == S.selected then selIn = true end
                 end
@@ -20560,15 +20579,13 @@ do
                     end
                 end
                 if #list == 0 then list = {"(nothing detected yet)"} end
-                pcall(function() paramDropdown:Refresh(list) end)
-                if S.selected and selIn then
-                    pcall(function()
-                        if paramDropdown.Select then
-                            paramDropdown:Select(S.selected)
-                        elseif paramDropdown.SetValue then
-                            paramDropdown:SetValue(S.selected)
-                        end
-                    end)
+                local key = table.concat(list, "\1")
+                if key ~= S.listKey and not paramDropdown.Opened then
+                    S.listKey = key
+                    if S.selected and selIn then paramDropdown.Value = S.selected end
+                    pcall(function() paramDropdown:Refresh(list) end)
+                elseif key ~= S.listKey then
+                    S.nameKey = "\0"
                 end
                 changed = true
             end
@@ -22781,7 +22798,7 @@ InfoTab:Space()
     
     InfoTab:Paragraph({
         Title = "Gravel: UI",
-        Desc = "UI: WindUI (Footagesus)\nNotification: Alurt (Zwolf)\nand the other guy",
+        Desc = "UI: WindUI (Footagesus)\n(Gravel uses it's own forked ver of WindUI)\n\nNotification: Alurt (Zwolf)\nand the other guy",
         Color = config.Gradow.uicolor.darkGray
     })
     InfoTab:Paragraph({
@@ -23034,6 +23051,11 @@ InfoTab:Space()
     InfoTab:Paragraph({
         Title = "Gravel (13/10/2026)",
         Desc = "frames per sometimes\nFixed: sum lag\nFixed: Repeated Workspace:GetDescendants calls\nAdded: Lazy Loading to Tabs\nUpgraded: Cleanup\nAdded: GetDescendants Sliders in Maintab\nFixed: Removed some stale code\nFixed: Targeting optimizations\nBugs Fixed: 9",
+        Color = config.Gradow.uicolor.darkGray
+    })
+    InfoTab:Paragraph({
+        Title = "Gravel (14/10/2026)",
+        Desc = "sporks\nChanged: Changed WindUI to a forked version for opts\nAdded: RectCulling\nFixed: Lag Spikes\nFixed: Target Priority lag\nBugs Fixed: 4",
         Color = config.Gradow.uicolor.darkGray
     })
 end)
