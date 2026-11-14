@@ -235,13 +235,62 @@ end
 local legacyBtn, lLegacy1, lLegacy2 = makeOptionButton(
     "LEGACY VERSION",
     "Good old days, won't be updated\n(bad injectors work here)",
-    80
+    75
 )
 local newBtn, lNew1, lNew2 = makeOptionButton(
     "NEW VERSION",
     "New bs & updated regularly\n(bad injectors NOT recommended)",
-    170
+    145
 )
+local testBtn, lTest1, lTest2 = makeOptionButton(
+    "TESTING VERSION",
+    "Newest stuff, WARNING: buggy &\na little untested (use at ur own risk)",
+    215
+)
+lTest2.TextColor3 = Color3.fromRGB(255, 170, 60)
+
+local function readIndex(file)
+    local n = 0
+    pcall(function()
+        if isfile and isfile(file) then
+            n = tonumber((readfile(file):match("%d+"))) or 0
+        end
+    end)
+    return n
+end
+local newIndex = readIndex("Index.grvl")
+local testIndex = readIndex("Index.tstgrvl")
+print(("[HBSS] Index.grvl is %d | Index.tstgrvl is %d"):format(newIndex, testIndex))
+local newUpdated = newIndex > testIndex
+local testUpdated = testIndex > newIndex
+print(newUpdated and "[HBSS] New Version is the recently updated one" or testUpdated and "[HBSS] Testing Version is the recently updated one" or "[HBSS] no version is ahead of the other")
+
+local function makeBadge(btn, label)
+    local badge = Instance.new("ImageLabel")
+    badge.Name = "UPD"
+    badge.BackgroundTransparency = 1
+    badge.Image = "rbxassetid://101381008262353"
+    badge.Size = UDim2.fromOffset(22, 22)
+    badge.AnchorPoint = Vector2.new(0, 0.5)
+    local baseX = math.max(label.TextBounds.X, #label.Text * 7) + 10
+    local baseY = 7
+    badge.Position = UDim2.fromOffset(baseX, baseY)
+    badge.ImageTransparency = 1
+    badge.ZIndex = 6
+    badge.Parent = btn
+    task.spawn(function()
+        local steps = {0, -2, -4, -5, -4, -2, 0, 2, 3, 2}
+        local i = 0
+        while badge.Parent do
+            i = i % #steps + 1
+            badge.Position = UDim2.fromOffset(baseX, baseY + steps[i])
+            task.wait(0.12)
+        end
+    end)
+    return badge
+end
+local newBadge = newUpdated and makeBadge(newBtn, lNew1) or nil
+local testBadge = testUpdated and makeBadge(testBtn, lTest1) or nil
 local function onHover(l1, l2, hovered)
     TweenService:Create(l1, TweenInfo.new(0.15), {
         TextColor3 = hovered and Color3.fromRGB(120, 255, 120) or Color3.fromRGB(255, 255, 255)
@@ -266,6 +315,18 @@ newBtn.MouseEnter:Connect(function()
     task.delay(0.1, function() glitch(0) end)
 end)
 newBtn.MouseLeave:Connect(function() onHover(lNew1, lNew2, false) end)
+testBtn.MouseEnter:Connect(function()
+    onHover(lTest1, lTest2, true)
+    lTest2.TextColor3 = Color3.fromRGB(255, 210, 120)
+    playSound(soundhover, 0.15)
+    playHoverGlitch()
+    glitch(random(2, 6))
+    task.delay(0.1, function() glitch(0) end)
+end)
+testBtn.MouseLeave:Connect(function()
+    onHover(lTest1, lTest2, false)
+    TweenService:Create(lTest2, TweenInfo.new(0.15), {TextColor3 = Color3.fromRGB(255, 170, 60)}):Play()
+end)
 closeBtn.MouseEnter:Connect(function()
     playSound(soundhover, 0.15)
     playHoverGlitch()
@@ -328,6 +389,11 @@ local function idk()
     TweenService:Create(lLegacy2, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
     TweenService:Create(lNew1, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
     TweenService:Create(lNew2, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+    TweenService:Create(lTest1, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+    TweenService:Create(lTest2, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+    for _, b in ipairs({newBadge or false, testBadge or false}) do
+        if b then TweenService:Create(b, TweenInfo.new(0.4), {ImageTransparency = 0}):Play() end
+    end
 end
 local function get(url)
     local info = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
@@ -337,6 +403,9 @@ local function get(url)
     for _, v in ipairs(mainImg:GetDescendants()) do
         if v:IsA("TextLabel") or v:IsA("TextButton") then
             TweenService:Create(v, info, {TextTransparency = 1}):Play()
+        end
+        if v:IsA("ImageLabel") then
+            TweenService:Create(v, info, {ImageTransparency = 1}):Play()
         end
     end
     task.wait(0.5)
@@ -353,6 +422,9 @@ local function closeGui()
         if v:IsA("TextLabel") or v:IsA("TextButton") then
             TweenService:Create(v, info, {TextTransparency = 1}):Play()
         end
+        if v:IsA("ImageLabel") then
+            TweenService:Create(v, info, {ImageTransparency = 1}):Play()
+        end
     end
     task.wait(0.4)
     ScreenGui:Destroy()
@@ -363,6 +435,10 @@ legacyBtn.MouseButton1Click:Connect(function()
     get("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/HBSS_Old.lua")
 end)
 newBtn.MouseButton1Click:Connect(function()
+    playSound(soundclick, 0.3)
+    get("https://raw.githubusercontent.com/hm5650/HBSS/refs/heads/main/HBSS_New.lua")
+end)
+testBtn.MouseButton1Click:Connect(function()
     playSound(soundclick, 0.3)
     get("https://raw.githubusercontent.com/hm5650/HBSS_C/refs/heads/main/HBSS_C.lua")
 end)
