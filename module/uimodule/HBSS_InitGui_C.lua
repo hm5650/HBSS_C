@@ -27,7 +27,7 @@ function InitGui:create()
     gui.IgnoreGuiInset = true
     gui.ResetOnSpawn = false
     gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    gui.DisplayOrder = 2147483647
+    gui.DisplayOrder = 2147483000
     gui.Parent = game:GetService("CoreGui")
     self.gui = gui
     local blurEffect = Instance.new("BlurEffect")
