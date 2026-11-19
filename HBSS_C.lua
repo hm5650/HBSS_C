@@ -39,7 +39,7 @@ print([[
 
            “reviewers when they see this script, they'll go: 'CTRL+F'” 
                                            
-                                    - Gpssickle         (also is ts shovel ASCII art peak :o)
+                                    - Gpssickle         (also is this shovel ASCII art peak :o)
 ]])
 do
 --[[
@@ -53,6 +53,20 @@ do
 -- Gravel.cc (or HBSS :v)
 -- also if sum feats that just say locked its not a paywall it's basically your executor cant support dat shi
 getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ = "_C" --type '_C' for da testing version of gravel.cc :3
+
+-- build count
+do
+    local Index = 47
+    local Index_C = 47
+    pcall(function()
+        if not (writefile and isfile and readfile) then return end
+        for file, value in pairs({["Index.grvl"] = Index, ["Index.tstgrvl"] = Index_C}) do
+            local old = isfile(file) and tonumber((readfile(file):match("%d+"))) or 0
+            if value > old then writefile(file, tostring(value))
+            elseif not isfile(file) then writefile(file, "0") end
+        end
+    end)
+end
 local function clonerrefery(service)
     if cloneref then
         local success, result = pcall(cloneref, service)
@@ -89,18 +103,1015 @@ setmetatable(excusemesir, {
     end,
 })
 
+-- imagine using a loader to load a script in 2004
+-- could never be me
+local loaderRef = {}
 local success, err2 = xpcall(function()
+local Gloader = (function()
+    local ES = excusemesir
+    local TweenService = ES.TweenService
+    local RunService = ES.RunService
+    local UIS = ES.UserInputService
+    local SoundService = ES.SoundService
+    local CoreGui = ES.CoreGui
+    local random, clock = math.random, os.clock
+    local L = {
+        active = true,
+        skipped = false,
+        ending = false,
+        renderOff = false,
+        target = 0,
+        shown = 0,
+        fileText = "opening myself",
+        detailText = "wtf is ts code gng",
+        t0 = clock(),
+        maxHoldSec = 120,
+        skipCbs = {},
+        typing = true,
+        finalMeme = nil,
+        ambient = true,
+        uiLive = false,
+    }
+    local normie = "rbxassetid://108749043601477"
+    local bsodImage = "rbxassetid://98002726954215"
+    local completionImage = "rbxassetid://121490619399715"
+    local flashImage = "rbxassetid://139867977510052"
+    local glitchVersions = {
+        {id = "rbxassetid://94264734340895", weight = 30, offset = 2},
+        {id = "rbxassetid://73199835850160", weight = 25, offset = 4},
+        {id = "rbxassetid://111659265884052", weight = 20, offset = 6},
+        {id = "rbxassetid://135403100516021", weight = 15, offset = 8},
+        {id = "rbxassetid://108402549365872", weight = 10, offset = 12},
+    }
+    local bsodGlitchVersions = {
+        {id = "rbxassetid://77757317460779", offset = 2},
+        {id = "rbxassetid://126677278690113", offset = 4},
+    }
+    local glitchPool = {}
+    for _, v in ipairs(glitchVersions) do
+        for _ = 1, v.weight do glitchPool[#glitchPool + 1] = v end
+    end
+    local function getRandomGlitch() return glitchPool[random(1, #glitchPool)] end
+    local function getRandomBsodGlitch() return bsodGlitchVersions[random(1, #bsodGlitchVersions)] end
+
+    local function mk(class, props, parent)
+        local o = Instance.new(class)
+        for k, v in pairs(props) do o[k] = v end
+        if parent then o.Parent = parent end
+        return o
+    end
+    local function setRender(on)
+        return pcall(function() RunService:Set3dRenderingEnabled(on) end)
+    end
+    function L.restoreRender()
+        if L.renderOff then
+            L.renderOff = false
+            setRender(true)
+        end
+    end
+
+    local gui = mk("ScreenGui", {
+        Name = tostring(random(10000000, 99999999)) .. "_" .. tostring(random(1000, 9999)),
+        IgnoreGuiInset = true,
+        ResetOnSpawn = false,
+        DisplayOrder = 2147483647,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    })
+    pcall(function() gui.ScreenInsets = Enum.ScreenInsets.None end)
+    local parentOk = pcall(function() gui.Parent = CoreGui end)
+    if not parentOk then
+        pcall(function() gui.Parent = ES.Players.LocalPlayer:WaitForChild("PlayerGui", 5) end)
+    end
+    local bg = mk("Frame", {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        Active = true,
+        ZIndex = 1,
+    }, gui)
+    L.renderOff = setRender(false)
+
+    local img = mk("ImageLabel", {
+        Name = "UIimage",
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        Size = UDim2.new(0, 557, 0, 254),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        Image = normie,
+        ScaleType = Enum.ScaleType.Stretch,
+        ZIndex = 1,
+    }, bg)
+    local function lbl(name, size, pos, text, align)
+        return mk("TextLabel", {
+            Name = name,
+            Size = size,
+            Position = pos,
+            BackgroundTransparency = 1,
+            TextColor3 = Color3.fromRGB(255, 255, 255),
+            TextSize = 10,
+            Font = Enum.Font.Code,
+            TextXAlignment = align or Enum.TextXAlignment.Left,
+            TextYAlignment = Enum.TextYAlignment.Center,
+            Text = text,
+        }, img)
+    end
+    local basePos = {
+        UDim2.new(0, 7, 0, 4), UDim2.new(0, 302, 0, 203), UDim2.new(0, 329, 0, 189),
+        UDim2.new(0, 7, 0, 35), UDim2.new(0, 7, 0, 106),
+    }
+    local fileLbl = lbl("filelabel", UDim2.new(0, 553, 0, 54), basePos[1], "[Files]: ...")
+    fileLbl.ClipsDescendants = true
+    local barLbl = lbl("Barlabel", UDim2.new(0, 280, 0, 55), basePos[2], "[                                       ]", Enum.TextXAlignment.Center)
+    local pctLbl = lbl("Percentagelabel", UDim2.new(0, 220, 0, 55), basePos[3], "0%", Enum.TextXAlignment.Center)
+    local memeLbl = lbl("Gravelmeme", UDim2.new(0, 564, 0, 72), basePos[4], "[G.cc]: ...")
+    local loadLbl = lbl("Checklabel", UDim2.new(0, 553, 0, 18), basePos[5], "[Load]: ...")
+    local labels = {fileLbl, barLbl, pctLbl, memeLbl, loadLbl}
+    local function setLabelsColor(c)
+        for _, l in ipairs(labels) do l.TextColor3 = c end
+    end
+    local function setLabelsVisible(v)
+        for _, l in ipairs(labels) do l.Visible = v end
+    end
+    local function legacyGlitch(offset)
+        for i, l in ipairs(labels) do
+            local b = basePos[i]
+            local o2 = offset * 2
+            l.Position = UDim2.new(
+                b.X.Scale, b.X.Offset + (random(0, 1) == 0 and -o2 or o2),
+                b.Y.Scale, b.Y.Offset + (random(0, 1) == 0 and -offset or offset)
+            )
+        end
+    end
+    local CYAN_, RED_ = Color3.fromRGB(40, 255, 255), Color3.fromRGB(255, 40, 40)
+    local slice = {on = false, gen = 0, off = 0, tiles = {}, counts = {}}
+    local function sliceLayout(i, l)
+        local list = slice.tiles[i]
+        if not list then list = {}; slice.tiles[i] = list end
+        local abs = l.AbsoluteSize
+        if abs.X < 4 or abs.Y < 4 then return false end
+        local tb = l.TextBounds
+        local th = math.clamp(math.ceil(tb.Y), 8, abs.Y)
+        local tw = math.clamp(math.ceil(tb.X), 8, abs.X)
+        local y0 = math.floor((abs.Y - th) / 2)
+        local x0 = 0
+        if l.TextXAlignment == Enum.TextXAlignment.Center then
+            x0 = math.floor((abs.X - tw) / 2)
+        elseif l.TextXAlignment == Enum.TextXAlignment.Right then
+            x0 = abs.X - tw
+        end
+        local cols = math.clamp(math.ceil(tw / 64), 1, 8)
+        local rows = math.clamp(math.ceil(th / 6), 2, 4)
+        local cw, ch = math.ceil(tw / cols), math.ceil(th / rows)
+        local n = 0
+        for r = 0, rows - 1 do
+            for c = 0, cols - 1 do
+                n = n + 1
+                local tile = list[n]
+                if not tile then
+                    local f = mk("Frame", {Name = "slice", BackgroundTransparency = 1, BorderSizePixel = 0, ClipsDescendants = true})
+                    local t = mk("TextLabel", {BackgroundTransparency = 1, BorderSizePixel = 0}, f)
+                    tile = {f = f, t = t}
+                    list[n] = tile
+                end
+                local px, py = x0 + c * cw, y0 + r * ch
+                tile.bx, tile.by = px, py
+                local f, t = tile.f, tile.t
+                f.Size = UDim2.fromOffset(cw + 1, ch + 1)
+                f.Position = UDim2.fromOffset(px, py)
+                t.Size = UDim2.fromOffset(abs.X, abs.Y)
+                t.Position = UDim2.fromOffset(-px, -py)
+                t.Font, t.TextSize = l.Font, l.TextSize
+                t.TextXAlignment, t.TextYAlignment = l.TextXAlignment, l.TextYAlignment
+                f.Visible = true
+                f.Parent = l
+            end
+        end
+        for k = n + 1, #list do list[k].f.Visible = false end
+        slice.counts[i] = n
+        return true
+    end
+    local function sliceJitter()
+        local off = slice.off
+        local dxMax = off * 3
+        local dyMax = math.max(1, off // 3)
+        for i, l in ipairs(labels) do
+            local list = slice.tiles[i]
+            if list then
+                local base, txt = l.TextColor3, l.Text
+                for k = 1, slice.counts[i] or 0 do
+                    local tile = list[k]
+                    local f, t = tile.f, tile.t
+                    t.Text = txt
+                    if random() < 0.7 then
+                        local dy = random() < 0.25 and random(-dyMax, dyMax) or 0
+                        f.Position = UDim2.fromOffset(tile.bx + random(-dxMax, dxMax), tile.by + dy)
+                        local cr = random()
+                        t.TextColor3 = cr < 0.2 and CYAN_ or (cr < 0.4 and RED_ or base)
+                        t.TextTransparency = random() < 0.12 and 0.65 or 0
+                        f.Visible = random() > 0.05
+                    else
+                        f.Position = UDim2.fromOffset(tile.bx, tile.by)
+                        t.TextColor3, t.TextTransparency = base, 0
+                        f.Visible = true
+                    end
+                end
+            end
+        end
+    end
+    local function sliceStop()
+        if not slice.on then return end
+        slice.on = false
+        slice.gen = slice.gen + 1
+        for i, l in ipairs(labels) do
+            l.TextTransparency = 0
+            local list = slice.tiles[i]
+            if list then
+                for _, tile in ipairs(list) do tile.f.Visible = false end
+            end
+        end
+    end
+    local function glitchpos(offset)
+        if not offset or offset == 0 then
+            sliceStop()
+            for i, l in ipairs(labels) do l.Position = basePos[i] end
+            return
+        end
+        slice.off = offset
+        if slice.on then
+            pcall(sliceJitter)
+            return
+        end
+        local ok = true
+        for i, l in ipairs(labels) do
+            if not sliceLayout(i, l) then ok = false; break end
+        end
+        if not ok then
+            legacyGlitch(offset)
+            return
+        end
+        for i, l in ipairs(labels) do
+            l.Position = basePos[i]
+            l.TextTransparency = 1
+        end
+        slice.on = true
+        slice.gen = slice.gen + 1
+        local gen = slice.gen
+        task.spawn(function()
+            while slice.on and slice.gen == gen and L.active do
+                pcall(sliceJitter)
+                task.wait(0.045)
+            end
+        end)
+    end
+    local sounds = {}
+    local function snd(id, vol, looped)
+        local s = mk("Sound", {SoundId = id, Volume = vol, Looped = looped or false})
+        pcall(function() s.Parent = SoundService end)
+        sounds[#sounds + 1] = s
+        return s
+    end
+    local glitchIds = {
+        "rbxassetid://131507757356742", "rbxassetid://140043289814504", "rbxassetid://129687541350237",
+    }
+    local startSound = snd("rbxassetid://120092757126147", 0.5)
+    local humSound = snd("rbxassetid://84642398160400", 0.3, true)
+    local endSound = snd("rbxassetid://121769472475128", 0.5)
+    local flashSound = snd("rbxassetid://85431715800788", 0.5)
+    local barSound = snd("rbxassetid://6856723345", 0.4)
+    local completionSound = snd("rbxassetid://75292823513543", 0.5)
+    local ENDSND_URL = "https://github.com/hm5650/HBSS_C/raw/refs/heads/main/assets/endsound.mp3"
+    local ENDSND_DIR, ENDSND_PATH = "Gravel_Saves/assets", "Gravel_Saves/assets/endsound.mp3"
+    local endMp3
+    task.spawn(function()
+        pcall(function()
+            local wf, isf, isd, mkd = writefile, isfile, isfolder, makefolder
+            local gca = getcustomasset or getsynasset
+            if not (wf and isf and isd and mkd and gca) then return end
+            for _, d in ipairs({"Gravel_Saves", ENDSND_DIR}) do
+                if not isd(d) then pcall(mkd, d) end
+            end
+            if not isf(ENDSND_PATH) then
+                local body
+                local req = request or http_request or (syn and syn.request)
+                if req then
+                    local ok, res = pcall(req, {Url = ENDSND_URL, Method = "GET"})
+                    if ok and type(res) == "table" and (res.StatusCode == nil or res.StatusCode == 200)
+                        and type(res.Body) == "string" and #res.Body > 0 then
+                        body = res.Body
+                    end
+                end
+                if not body then
+                    local ok, b = pcall(function() return game:HttpGet(ENDSND_URL) end)
+                    if ok and type(b) == "string" and #b > 0 and b:sub(1, 4) ~= "404:" then body = b end
+                end
+                if body then pcall(wf, ENDSND_PATH, body) end
+            end
+            if L.active and isf(ENDSND_PATH) then
+                local ok, id = pcall(gca, ENDSND_PATH)
+                if ok and id and id ~= "" then endMp3 = snd(id, 0.6) end
+            end
+        end)
+    end)
+    local function playEndSound()
+        local s = endMp3 or flashSound
+        pcall(function() s:Play() end)
+    end
+    local glitchSounds, bsodGlitchSounds, softGlitchSounds = {}, {}, {}
+    for i, id in ipairs(glitchIds) do
+        glitchSounds[i] = snd(id, 0.3)
+        bsodGlitchSounds[i] = snd(id, 0.08)
+        softGlitchSounds[i] = snd(id, 0.05)
+    end
+    local function playRandom(list)
+        local s = list[random(1, #list)]
+        if s then pcall(function() s:Play() end) end
+    end
+    pcall(function() startSound:Play() humSound:Play() end)
+    L.memes = {
+        "Error: can't find message", "i'm not having errors actually", "my chair has aimbot",
+        "please read the InfoTab 4 goodness sake", "credit me if u did a snippet >:[", "i'm not a robot",
+        "i'm gravel", "gravel is rock", "Gravel has 0 calories 2 burn", "wait this isn't a virus i swear",
+        "it's open source", "is this loader sigma?", "meow :3 .... MAW >:3",
+        "This loader is definitely 100% not a inspiration from redliner's merc.os",
+        "Gugu Gaga Ultimated Flex Works", "can gravel run doom?",
+        "ipad kid vs ipad, who would win?", "why is there ai slop on my TikTok fyp",
+        "bombastic side eye", "oh shiddings nott gud D:", "what's a brainfuck :s",
+        "Gravel.cc says be gravel", "me wants grabel :(", "life never made lemons...",
+        "01001000 01101001", "roblox is no longer robloz", "GRAVEL-MAN",
+        "IM SKYLER WHITE, YO", "my diet is gravel", "ur definitely using delta cuz idk",
+        "dab me up :>", "how much saves do u has", "O rly", ":3",
+        "helohi", "portal above portal below *jumps in*", "ifone 90 proe max", "what game is this :s",
+    }
+    function L.pickMeme()
+        return L.memes[random(1, #L.memes)]
+    end
+    local function alive() return L.active and gui.Parent ~= nil end
+    local function startTyping()
+        local prefix, cursor = "[G.cc]: ", "_"
+        local cursorOn, erasing = true, false
+        local cur, msg, idx = "", "", 1
+        while alive() do
+            if not L.typing then
+                if L.finalMeme then
+                    memeLbl.Text = prefix .. L.finalMeme .. (cursorOn and cursor or " ")
+                    cursorOn = not cursorOn
+                end
+                task.wait(0.45)
+                continue
+            end
+            if not erasing and msg == "" then
+                local ok, m = pcall(L.pickMeme)
+                msg = (ok and type(m) == "string") and m or L.memes[random(1, #L.memes)]
+                idx, cur = 1, ""
+            end
+            if not erasing then
+                if idx <= #msg then
+                    cur = cur .. msg:sub(idx, idx)
+                    idx = idx + 1
+                    memeLbl.Text = prefix .. cur .. (cursorOn and cursor or " ")
+                    task.wait(random(1, 3) / 100)
+                else
+                    task.wait(random(10, 25) / 10)
+                    erasing = true
+                end
+            else
+                if #cur > 0 then
+                    cur = cur:sub(1, #cur - 1)
+                    memeLbl.Text = prefix .. cur .. (cursorOn and cursor or " ")
+                    task.wait(random(1, 3) / 100)
+                else
+                    erasing = false
+                    msg = ""
+                    task.wait(random(3, 10) / 10)
+                end
+            end
+            cursorOn = not cursorOn
+            if not erasing and cur ~= "" then
+                memeLbl.Text = prefix .. cur .. (cursorOn and cursor or " ")
+            end
+        end
+    end
+    local function playIntro()
+        local blackFrame = mk("Frame", {
+            Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0),
+            BackgroundTransparency = 0, BorderSizePixel = 0, ZIndex = 100,
+        }, gui)
+        setLabelsVisible(false)
+        local g = glitchVersions
+        local steps = {
+            {g[5].id, 0.05, 12}, {g[3].id, 0.08, 6}, {g[5].id, 0.03, 12}, {g[2].id, 0.06, 4},
+            {g[4].id, 0.07, 8}, {false, 0.04}, {g[1].id, 0.05, 2}, {g[5].id, 0.05, 12},
+            {g[3].id, 0.06, 6}, {false, 0.1}, {g[4].id, 0.04, 8}, {g[5].id, 0.07, 12},
+            {false, 0.08}, {g[3].id, 0.06, 6}, {g[5].id, 0.04, 12}, {false, 0.1},
+            {g[1].id, 0.05, 2}, {false, 0.15}, {g[5].id, 0.03, 12}, {false, 0.2},
+        }
+        for _, st in ipairs(steps) do
+            if not alive() or L.ending then break end
+            if st[1] then
+                img.Image = st[1]
+                glitchpos(st[3])
+                playRandom(glitchSounds)
+                setLabelsVisible(true)
+            else
+                img.Image = normie
+                glitchpos(0)
+            end
+            task.wait(st[2])
+            if random() < 0.3 then
+                blackFrame.BackgroundTransparency = 0
+                task.wait(0.02)
+                blackFrame.BackgroundTransparency = 1
+            end
+        end
+        if not alive() then return end
+        if not L.ending then
+            img.Image = normie
+            glitchpos(0)
+            setLabelsVisible(true)
+        end
+        TweenService:Create(blackFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+        task.wait(0.3)
+        pcall(function() blackFrame:Destroy() end)
+        L.uiLive = true
+    end
+    function L.set(frac, file, detail)
+        if type(frac) == "number" and frac > L.target then L.target = math.min(frac, 1) end
+        if file then
+            L.fileText = tostring(file)
+            fileLbl.Text = "[Files]: " .. L.fileText
+        end
+        if detail then L.detailText = tostring(detail) end
+    end
+    function L.covering()
+        return L.active and not L.skipped
+    end
+    function L.onSkip(fn)
+        L.skipCbs[#L.skipCbs + 1] = fn
+    end
+
+    local totalbars = 39
+    local filled, acc = 0, 0
+    local hbConn = RunService.Heartbeat:Connect(function(dt)
+        acc = acc + dt
+        if acc < 0.07 or not L.uiLive or L.ending then return end
+        local stepDt = acc
+        acc = 0
+        local goal = math.max(math.min(L.target + 0.012, 0.985), L.shown)
+        L.shown = L.shown + (goal - L.shown) * math.min(1, stepDt * 1.5)
+        local nf = math.min(totalbars, math.floor(L.shown * totalbars))
+        if nf > filled then
+            filled = nf
+            pcall(function() barSound:Play() end)
+        end
+        barLbl.Text = "[" .. string.rep("|", filled) .. string.rep(" ", totalbars - filled) .. "]"
+        pctLbl.Text = math.floor(L.shown * 100) .. "%"
+        local suffix = ""
+        if L.shown > 0.12 and L.shown < 0.97 then
+            local eta = (clock() - L.t0) * (1 - L.shown) / L.shown
+            L.etaS = L.etaS and (L.etaS * 0.8 + eta * 0.2) or eta
+            suffix = string.format("  (~%ds left)", math.max(1, math.ceil(L.etaS)))
+        end
+        loadLbl.Text = "[Load]: " .. L.detailText .. suffix
+    end)
+    task.spawn(function()
+        task.wait(1.6)
+        while alive() do
+            if L.ambient and not L.ending and L.uiLive and random() < 0.30 then
+                local gd = getRandomGlitch()
+                img.Image = gd.id
+                glitchpos(gd.offset)
+                playRandom(glitchSounds)
+                task.wait(random(1, 4) / 10)
+                if not L.ending then
+                    img.Image = normie
+                    glitchpos(0)
+                end
+            end
+            task.wait(1.5)
+        end
+    end)
+    local conns = {hbConn}
+    local function teardown()
+        if not L.active then return end
+        L.active = false
+        for _, c in ipairs(conns) do pcall(function() c:Disconnect() end) end
+        L.restoreRender()
+        for _, s in ipairs(sounds) do pcall(function() s:Destroy() end) end
+        pcall(function() gui:Destroy() end)
+    end
+    local function revealWorld()
+        local SPLIT = 0.5
+        img.Position = UDim2.new(0.5, 0, 0.5, 0)
+        local function makeHalf(top)
+            local cont = mk("Frame", {
+                BackgroundTransparency = 1, BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 10,
+                Position = UDim2.fromScale(0, top and 0 or SPLIT),
+                Size = UDim2.fromScale(1, top and SPLIT or (1 - SPLIT)),
+            }, gui)
+            local c = img:Clone()
+            c.AnchorPoint = Vector2.new(0.5, 0.5)
+            c.Position = UDim2.fromScale(0.5, top and (0.5 / SPLIT) or ((0.5 - SPLIT) / (1 - SPLIT)))
+            c.Visible = true
+            c.Parent = cont
+            return cont
+        end
+        local topHalf, botHalf = makeHalf(true), makeHalf(false)
+        img.Visible = false
+        local line = mk("Frame", {
+            AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, SPLIT),
+            Size = UDim2.new(1, 0, 0, 2), BackgroundColor3 = Color3.fromRGB(255, 40, 40),
+            BackgroundTransparency = 0, BorderSizePixel = 0, ZIndex = 1000,
+        }, gui)
+        playEndSound()
+        TweenService:Create(line, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 0, 10)}):Play()
+        TweenService:Create(topHalf, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, -42, 0, 0)}):Play()
+        TweenService:Create(botHalf, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 42, SPLIT, 0)}):Play()
+        task.wait(0.07)
+        TweenService:Create(line, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(1, 0, 0, 3)}):Play()
+        task.wait(0.17)
+        line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        TweenService:Create(line, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(1, 0, 2.5, 0)}):Play()
+        task.wait(0.38)
+        L.restoreRender()
+        bg.BackgroundTransparency = 1
+        for _, c in ipairs(bg:GetChildren()) do
+            if c:IsA("GuiObject") then c.Visible = false end
+        end
+        pcall(function() topHalf:Destroy() end)
+        pcall(function() botHalf:Destroy() end)
+        task.wait(0.05)
+        TweenService:Create(line, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+        task.wait(0.32)
+        teardown()
+    end
+
+    local skipBtn, confirmShade
+    local confirmState, confirmPendingClose = "closed", false
+    local confirmPopup
+    local CONF_W, CONF_H, CONF_TILE = 360, 120, 24
+    local confline = Color3.fromRGB(200, 200, 200)
+    local glitchcolorstuff = {
+        Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 255, 255), Color3.fromRGB(200, 200, 200),
+        Color3.fromRGB(255, 40, 40), Color3.fromRGB(40, 255, 255),
+    }
+    local function glitchColor() return glitchcolorstuff[random(1, #glitchcolorstuff)] end
+    local function tween(inst, t, props, style, dir, delay)
+        local ok, tw = pcall(function()
+            local x = TweenService:Create(inst, TweenInfo.new(t, style or Enum.EasingStyle.Quad,
+                dir or Enum.EasingDirection.Out, 0, false, delay or 0), props)
+            x:Play()
+            return x
+        end)
+        return ok and tw or nil
+    end
+    local function makeGrid(w, h, size)
+        local out = {}
+        for y = 0, h - 1, size do
+            for x = 0, w - 1, size do
+                out[#out + 1] = {x = x, y = y, w = math.min(size, w - x), h = math.min(size, h - y)}
+            end
+        end
+        return out
+    end
+    local tilePool = {}
+    local function acquireTile(parent)
+        local t = table.remove(tilePool)
+        if not t then
+            local f = mk("Frame", {BorderSizePixel = 0, Name = "tile"})
+            t = {
+                f = f,
+                st = mk("UIStroke", {Color = confline, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border}, f),
+                c = mk("TextLabel", {BackgroundTransparency = 1, BorderSizePixel = 0, Visible = false}, f),
+                tws = {},
+            }
+        end
+        local f = t.f
+        f.BackgroundTransparency, f.Rotation, f.ClipsDescendants = 1, 0, false
+        f.BackgroundColor3 = Color3.new(0, 0, 0)
+        t.st.Transparency, t.st.Color, t.st.Enabled = 1, confline, true
+        t.c.Visible = false
+        f.Parent = parent
+        return t
+    end
+    local function releaseTiles(list)
+        for i = #list, 1, -1 do
+            local t = list[i]
+            list[i] = nil
+            for _, tw in ipairs(t.tws) do pcall(function() tw:Cancel() end) end
+            table.clear(t.tws)
+            pcall(function() t.f.Parent = nil end)
+            tilePool[#tilePool + 1] = t
+        end
+    end
+    local function ttween(t, inst, ...)
+        local tw = tween(inst, ...)
+        if tw then t.tws[#t.tws + 1] = tw end
+    end
+    local function popupTopLeft()
+        local vp = gui.AbsoluteSize
+        return Vector2.new(math.floor(vp.X / 2 - CONF_W / 2), math.floor(vp.Y / 2 - CONF_H / 2))
+    end
+    local function popupOk(p)
+        return alive() and p and p.shade and p.shade.Parent ~= nil
+    end
+    local function spawnBoxShards(shade, tl, active)
+        local cx, cy = tl.X + CONF_W / 2, tl.Y + CONF_H / 2
+        for _, g in ipairs(makeGrid(CONF_W, CONF_H, CONF_TILE)) do
+            local px, py = tl.X + g.x, tl.Y + g.y
+            local dx, dy = px + g.w / 2 - cx, py + g.h / 2 - cy
+            local len = math.max(math.sqrt(dx * dx + dy * dy), 1)
+            local speed = random(120, 360)
+            local ex = px + dx / len * speed + (random() - 0.5) * 120
+            local ey = py + dy / len * speed + random(120, 360)
+            local dur = 0.5 + random() * 0.35
+            local t = acquireTile(shade)
+            active[#active + 1] = t
+            local s = t.f
+            s.BackgroundTransparency, s.ZIndex = 0, 610
+            s.Size, s.Position = UDim2.fromOffset(g.w, g.h), UDim2.fromOffset(px, py)
+            t.st.Transparency = 0.3
+            ttween(t, s, dur, {Position = UDim2.fromOffset(math.floor(ex), math.floor(ey)), Rotation = random(-320, 320)},
+                Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+            ttween(t, s, dur * 0.5, {BackgroundTransparency = 1}, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, dur * 0.5)
+            ttween(t, t.st, dur * 0.5, {Transparency = 1}, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, dur * 0.5)
+        end
+    end
+    local function spawnPartShards(shade, tl, part, tile, active)
+        local cx, cy = tl.X + CONF_W / 2, tl.Y + CONF_H / 2
+        for _, g in ipairs(makeGrid(part.w, part.h, tile)) do
+            local px, py = tl.X + part.lx + g.x, tl.Y + part.ly + g.y
+            local dx, dy = px + g.w / 2 - cx, py + g.h / 2 - cy
+            local len = math.max(math.sqrt(dx * dx + dy * dy), 1)
+            local speed = random(100, 340)
+            local ex = px + dx / len * speed + (random() - 0.5) * 100
+            local ey = py + dy / len * speed + random(100, 320)
+            local dur = 0.5 + random() * 0.35
+            local delay = random() * 0.08
+            local t = acquireTile(shade)
+            active[#active + 1] = t
+            local s, c = t.f, t.c
+            s.ClipsDescendants, s.ZIndex = true, 620
+            s.Size, s.Position = UDim2.fromOffset(g.w, g.h), UDim2.fromOffset(px, py)
+            c.Font, c.TextSize, c.TextColor3 = part.font, part.textSize, part.textColor
+            c.TextWrapped, c.Text = part.wrapped, part.text
+            c.BackgroundColor3, c.BackgroundTransparency, c.TextTransparency = Color3.new(0, 0, 0), part.bgT, 0
+            c.ZIndex = 621
+            c.Position, c.Size = UDim2.fromOffset(-g.x, -g.y), UDim2.fromOffset(part.w, part.h)
+            c.Visible = true
+            ttween(t, s, dur, {Position = UDim2.fromOffset(math.floor(ex), math.floor(ey))},
+                Enum.EasingStyle.Quart, Enum.EasingDirection.Out, delay)
+            ttween(t, c, dur * 0.6, {TextTransparency = 1, BackgroundTransparency = 1},
+                Enum.EasingStyle.Linear, Enum.EasingDirection.Out, delay + dur * 0.4)
+        end
+    end
+
+    local function shatterPopup(p)
+        if not popupOk(p) then
+            confirmShade, confirmPopup, confirmState = nil, nil, "closed"
+            return
+        end
+        local shade, box, stroke = p.shade, p.box, p.stroke
+        playRandom(glitchSounds)
+        for i = 1, 4 do
+            if not popupOk(p) then break end
+            box.Position = UDim2.new(0.5, random(-6, 6), 0.5, random(-4, 4))
+            stroke.Color = (i % 2 == 0) and Color3.fromRGB(255, 40, 40) or Color3.fromRGB(40, 255, 255)
+            task.wait(0.03)
+        end
+        if popupOk(p) then
+            local tl = popupTopLeft()
+            p.shards = p.shards or {}
+            spawnBoxShards(shade, tl, p.shards)
+            for _, part in ipairs(p.parts) do
+                spawnPartShards(shade, tl, part, part.tile, p.shards)
+            end
+            box.Visible = false
+            task.delay(0.12, function()
+                if popupOk(p) then playRandom(glitchSounds) end
+            end)
+            tween(shade, 0.45, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            task.wait(0.95)
+        end
+        if p.shards then releaseTiles(p.shards) end
+        pcall(function() shade:Destroy() end)
+        if confirmPopup == p then confirmShade, confirmPopup = nil, nil end
+        confirmState = "closed"
+    end
+
+    local function closeConfirm()
+        if confirmState == "closed" or confirmState == "closing" then return end
+        if confirmState == "opening" then
+            confirmPendingClose = true
+            return
+        end
+        confirmState = "closing"
+        local p = confirmPopup
+        task.spawn(shatterPopup, p)
+    end
+
+    local function openConfirm()
+        if confirmState ~= "closed" or L.skipped or L.ending or not L.active then return end
+        confirmState, confirmPendingClose = "opening", false
+        local shade = mk("Frame", {
+            Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0),
+            BackgroundTransparency = 1, BorderSizePixel = 0, Active = true, ZIndex = 600,
+        }, bg)
+        confirmShade = shade
+        local box = mk("Frame", {
+            AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+            Size = UDim2.fromOffset(CONF_W, CONF_H), BackgroundColor3 = Color3.new(0, 0, 0),
+            BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 601,
+        }, shade)
+        local stroke = mk("UIStroke", {
+            Color = confline, Thickness = 2, Transparency = 1,
+            LineJoinMode = Enum.LineJoinMode.Miter, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        }, box)
+        local parts = {}
+        local msgLbl = mk("TextLabel", {
+            BackgroundTransparency = 1, Position = UDim2.new(0, 12, 0, 12), Size = UDim2.new(1, -24, 0, 48),
+            Font = Enum.Font.Code, TextSize = 14, TextWrapped = true, TextColor3 = Color3.fromRGB(255, 255, 255),
+            Text = "skipping this might cause hitches/lag-spikes while using the script or maybe it's the other way around, idk lmfao",
+            ZIndex = 602, TextTransparency = 1,
+        }, box)
+        parts[#parts + 1] = {inst = msgLbl, lx = 12, ly = 12, w = CONF_W - 24, h = 48, tile = 16,
+            text = msgLbl.Text, font = msgLbl.Font, textSize = msgLbl.TextSize, textColor = msgLbl.TextColor3,
+            wrapped = true, bgT = 1}
+        local btns = {}
+        local function popBtn(text, xScale, cb)
+            local b = mk("TextButton", {
+                AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(xScale, 0, 1, -14),
+                Size = UDim2.fromOffset(120, 30), BackgroundColor3 = Color3.new(0, 0, 0),
+                BackgroundTransparency = 1, BorderSizePixel = 0, AutoButtonColor = false,
+                Font = Enum.Font.Code, TextSize = 14, TextColor3 = Color3.fromRGB(235, 235, 235),
+                Text = text, ZIndex = 602, TextTransparency = 1,
+            }, box)
+            b.Activated:Connect(function()
+                if confirmState ~= "open" then return end
+                cb()
+            end)
+            btns[#btns + 1] = b
+            parts[#parts + 1] = {inst = b, lx = math.floor(xScale * CONF_W - 60), ly = CONF_H - 14 - 30, w = 120, h = 30, tile = 15,
+                text = text, font = b.Font, textSize = b.TextSize, textColor = b.TextColor3, wrapped = false, bgT = 0}
+            return b
+        end
+        popBtn("[ js skip gng :1 ]", 0.3, function()
+            closeConfirm()
+            L.skip()
+        end)
+        popBtn("[ ill wait :p ]", 0.7, closeConfirm)
+
+        local p = {shade = shade, box = box, stroke = stroke, parts = parts}
+        confirmPopup = p
+        tween(shade, 0.2, {BackgroundTransparency = 0.45}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+        task.spawn(function()
+            playRandom(glitchSounds)
+            local tl = popupTopLeft()
+            local asm = {}
+            for _, g in ipairs(makeGrid(CONF_W, CONF_H, CONF_TILE)) do
+                local fx, fy = tl.X + g.x, tl.Y + g.y
+                local ang, dist = random() * math.pi * 2, random(250, 650)
+                local sx, sy = fx + math.cos(ang) * dist, fy + math.sin(ang) * dist
+                local delay = random() * 0.35
+                local dur = 0.35 + random() * 0.15
+                local t = acquireTile(shade)
+                asm[#asm + 1] = t
+                local f = t.f
+                f.BackgroundColor3 = glitchColor()
+                f.Size, f.Position = UDim2.fromOffset(g.w, g.h), UDim2.fromOffset(math.floor(sx), math.floor(sy))
+                f.Rotation, f.ZIndex = random(-180, 180), 605
+                ttween(t, f, dur, {
+                    Position = UDim2.fromOffset(fx, fy), Rotation = 0, BackgroundColor3 = Color3.fromRGB(14, 14, 14),
+                }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, delay)
+                ttween(t, f, 0.1, {BackgroundTransparency = 0}, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, delay)
+                ttween(t, t.st, 0.1, {Transparency = 0.55}, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, delay + dur * 0.6)
+            end
+            task.wait(0.35)
+            if popupOk(p) then playRandom(glitchSounds) end
+            task.wait(0.6)
+            releaseTiles(asm)
+            if not popupOk(p) then
+                confirmShade, confirmPopup, confirmState = nil, nil, "closed"
+                return
+            end
+            box.BackgroundTransparency = 0
+            stroke.Transparency = 0
+            for i = 1, 4 do
+                if not popupOk(p) then break end
+                box.Position = UDim2.new(0.5, random(-7, 7), 0.5, random(-4, 4))
+                stroke.Color = (i % 2 == 0) and Color3.fromRGB(255, 40, 40) or Color3.fromRGB(40, 255, 255)
+                task.wait(0.03)
+            end
+            box.Position = UDim2.fromScale(0.5, 0.5)
+            stroke.Color = confline
+            tween(msgLbl, 0.25, {TextTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            for _, b in ipairs(btns) do
+                tween(b, 0.25, {TextTransparency = 0, BackgroundTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            end
+            task.wait(0.28)
+            if not popupOk(p) then
+                confirmShade, confirmPopup, confirmState = nil, nil, "closed"
+                return
+            end
+            confirmState = "open"
+            if confirmPendingClose then
+                confirmPendingClose = false
+                closeConfirm()
+            end
+        end)
+    end
+    function L.confirmSkip() openConfirm() end
+
+    skipBtn = mk("TextButton", {
+        Name = "skip", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -18, 1, -22),
+        Size = UDim2.fromOffset(UIS.KeyboardEnabled and 130 or 86, 28), BackgroundColor3 = Color3.new(0, 0, 0),
+        BorderSizePixel = 0, AutoButtonColor = false, Font = Enum.Font.Code, TextSize = 13,
+        TextColor3 = Color3.fromRGB(235, 235, 235),
+        Text = UIS.KeyboardEnabled and "[ skip (space) ]" or "[ skip ]", ZIndex = 50,
+    }, bg)
+    conns[#conns + 1] = skipBtn.Activated:Connect(openConfirm)
+    conns[#conns + 1] = UIS.InputBegan:Connect(function(input, processed)
+        if processed or not L.active then return end
+        if input.KeyCode == Enum.KeyCode.Space then
+            openConfirm()
+        elseif input.KeyCode == Enum.KeyCode.Escape then
+            closeConfirm()
+        end
+    end)
+    task.spawn(function()
+        while alive() do
+            task.wait(0.5)
+            pcall(function()
+                local p = gui.Parent
+                if not p then return end
+                local kids = p:GetChildren()
+                for i = #kids, 1, -1 do
+                    local k = kids[i]
+                    if k == gui then return end
+                    if k:IsA("ScreenGui") and k.DisplayOrder >= gui.DisplayOrder then
+                        gui.Parent = nil
+                        gui.Parent = p
+                        return
+                    end
+                end
+            end)
+        end
+    end)
+
+    local function fireSkipCbs()
+        for _, cb in ipairs(L.skipCbs) do task.spawn(pcall, cb) end
+    end
+    local function bsod()
+        L.ambient = false
+        L.typing = false
+        L.finalMeme = "skipped :c gravel might hitch now"
+        humSound:Stop()
+        setLabelsColor(Color3.fromRGB(255, 0, 0))
+        loadLbl.Text = "[Load]: skipped by user :("
+        local seq = {
+            {"bsodGlitch", 0.05}, {"glitch", 0.06}, {"bsodGlitch", 0.04}, {"bsod", 0.08},
+            {"glitch", 0.05}, {"glitch", 0.04}, {"bsodGlitch", 0.05}, {"bsod", 0.12},
+            {"glitch", 0.06}, {"bsodGlitch", 0.04}, {"bsod", 0.15},
+        }
+        pcall(function() endSound:Play() end)
+        local flicker = false
+        for _, st in ipairs(seq) do
+            if not alive() then return end
+            if st[1] == "bsod" then
+                img.Image = bsodImage
+                glitchpos(0)
+                setLabelsColor(Color3.fromRGB(255, 0, 0))
+            else
+                local gd = st[1] == "glitch" and getRandomGlitch() or getRandomBsodGlitch()
+                img.Image = gd.id
+                glitchpos(gd.offset)
+                playRandom(bsodGlitchSounds)
+                flicker = not flicker
+                setLabelsColor(flicker and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(255, 255, 255))
+            end
+            task.wait(st[2])
+        end
+        img.Image = bsodImage
+        glitchpos(0)
+        setLabelsVisible(false)
+        task.wait(1.2)
+        revealWorld()
+    end
+    function L.skip()
+        if L.skipped or L.ending or not L.active then return end
+        L.skipped = true
+        L.ending = true
+        closeConfirm()
+        skipBtn.Visible = false
+        fireSkipCbs()
+        task.spawn(bsod)
+    end
+    function L.finish()
+        if L.ending or not L.active then return end
+        L.ending = true
+        L.ambient = false
+        L.typing = false
+        L.target, L.shown = 1, 1
+        closeConfirm()
+        skipBtn.Visible = false
+        humSound:Stop()
+        glitchpos(0)
+        setLabelsVisible(true)
+        setLabelsColor(Color3.fromRGB(0, 255, 0))
+        fileLbl.Text = "[Files]: Gravel.cc loaded!"
+        barLbl.Text = "[" .. string.rep("|", totalbars) .. "]"
+        pctLbl.Text = "100%"
+        loadLbl.Text = "[Load]: HELL YAAAHHHH"
+        L.finalMeme = "all done!1!1 :D"
+        memeLbl.Text = "[G.cc]: wait i think i forgor to load smth"
+        pcall(function() completionSound:Play() end)
+        local greenFlash = mk("Frame", {
+            Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(0, 255, 0),
+            BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 500,
+        }, gui)
+        local flashImg = mk("ImageLabel", {
+            Size = UDim2.new(0, 557, 0, 254), AnchorPoint = Vector2.new(0.5, 0.5),
+            Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, Image = flashImage,
+            ImageTransparency = 0, ZIndex = 501,
+        }, gui)
+        local shakeImg, shakeUI = 6, 5
+        local t = 0
+        local px, py = random() * math.pi * 2, random() * math.pi * 2
+        local fc
+        fc = RunService.Heartbeat:Connect(function(dt)
+            t = t + dt
+            shakeImg = math.max(shakeImg - 2.4 * dt, 0)
+            shakeUI = math.max(shakeUI - 1.9 * dt, 0)
+            if flashImg.Parent then
+                flashImg.Position = UDim2.new(0.5, math.sin(t * 1.6) * 2 + (random() * 2 - 1) * shakeImg,
+                    0.5, math.cos(t * 2.1) * 2 + (random() * 2 - 1) * shakeImg)
+            end
+            if img.Parent then
+                img.Position = UDim2.new(0.5, math.sin(t * 1.13 + px) * 2.6 + (random() * 2 - 1) * shakeUI,
+                    0.5, math.cos(t * 2.47 + py) * 2.6 + (random() * 2 - 1) * shakeUI)
+            end
+        end)
+        conns[#conns + 1] = fc
+        img.Image = completionImage
+        img.Position = UDim2.new(0.5, 0, 0.5, 0)
+        TweenService:Create(greenFlash, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+        flashImg.ImageTransparency = 1
+        task.wait(0.05)
+        flashImg.ImageTransparency = 0
+        playRandom(softGlitchSounds)
+        task.wait(0.35)
+        TweenService:Create(greenFlash, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+        task.wait(0.4)
+        pcall(function() greenFlash:Destroy() end)
+        task.wait(0.4)
+        for _ = 1, 3 do
+            flashImg.ImageTransparency = 1
+            task.wait(0.08)
+            flashImg.ImageTransparency = 0
+            playRandom(softGlitchSounds)
+            task.wait(0.18)
+        end
+        task.wait(0.5)
+        pcall(function() fc:Disconnect() end)
+        pcall(function() flashImg:Destroy() end)
+        img.Position = UDim2.new(0.5, 0, 0.5, 0)
+        revealWorld()
+    end
+    function L.abort()
+        L.skipped = true
+        L.ending = true
+        teardown()
+    end
+    task.delay(L.maxHoldSec, function()
+        if L.active and not L.ending then
+            L.skipped = true
+            L.ending = true
+            fireSkipCbs()
+            teardown()
+        end
+    end)
+    gui.Destroying:Connect(function()
+        L.skipped = true
+        L.restoreRender()
+    end)
+
+    task.spawn(playIntro)
+    task.spawn(startTyping)
+    return L
+end)()
+loaderRef.l = Gloader
 
 repeat task.wait() until game:IsLoaded()
+Gloader.set(0.01, "game", "waiting for the game to load")
 
 -- spaghetti code yummy :>
 -- or is it???
 -- what if im having skill development and the code is getting cleaner??????????
 -- who knows :o
-local player = excusemesir.Players.LocalPlayer
 local localPlayer = excusemesir.Players.LocalPlayer
-local plr = excusemesir.Players.LocalPlayer
-local LocalPlayer = excusemesir.Players.LocalPlayer
+local __ummm9GOsSbAk, __w9LHKEMZOPjV, __PM9vzuvouRTm, __ls27Wjw0obLM, __hAVGUZ1LWBTd, __sHyp98kzO3H0, __JvsQdiJjyh2A, __rcty2E9Y3mir, __NvXAJHDPjT10, __gHtqcRQ949vg, __zHawpky6SrN5, __XEyy3zqmviYL, __PbOs4UjL1Lcn, __e7qYcsEyhseg, __htfLKLZuFF3D, __YtaNV81il2rJ, __T1ePMtUVGk7H, __dsU0Rg9emH2O, __E3QNy7SICPzZ, __d7mAqpCV680Q, __PMdHgn2vFS8J, __Y0ew60R1Q3kR, __xcfPAnmWSW6R, __TZivfRu8u62q, __JRDRYCbfHxk9, __A6rfRsmQ5A02, __rmppBz4BVYrS, __pmp5QZUx47TZ, __zQ2B5fuKbfOU
 local ScreenGui = Instance.new("ScreenGui")
 local CircleFrame = Instance.new("Frame")
 local UIStroke = Instance.new("UIStroke")
@@ -108,14 +1119,12 @@ local UICorner = Instance.new("UICorner")
 --                       ¯⁠\⁠(⁠°⁠_⁠o⁠)⁠/⁠¯
 getgenv().HttpUrlz_ = {
     --hbss completely random useless & useful modules :]
-    hbssloader = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/GUIs/HBSS_Loader" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbsscloser = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/GUIs/HBSS_Closer" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     ineedbloxycola = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_InitGui" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    sa2func = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/SA2/SA2_Function" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
-    sa2findtool = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/SA2/SA2_FindTool" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     showmyipadress_jk = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/getInfo" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     uithesavory = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_SaveUI" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
     hbssbmg = "https://raw.githubusercontent.com/hm5650/HBSS" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. "/refs/heads/main/module/uimodule/HBSS_BGM" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
+
     --other stuff made by other people... and it's mostly just uis... totally not because i suck at making uis... especially when it comes to making it a library
     imalurtingyou = "https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua",
     ilikedisui = "https://raw.githubusercontent.com/hm5650/WindUI_-forked-/refs/heads/main/WindUI_forked" .. getgenv().nameeeitttttohhhhhhmahhhhhgahhhhhh_ .. ".lua",
@@ -160,17 +1169,19 @@ end
 -- and it's also that GitHub is pretty clunky for me and my Lua editor has a line and word/sentence finder anyway :l
 -- or maybe i like gravel to be single load script... idk
 
+Gloader.set(0.03, "getInfo", "downloading modules 1/5")
 local lp_info = loadstring(getgist_(getgenv().HttpUrlz_.showmyipadress_jk))()
---unprofessionalism professionist 🥀
-loadstring(getgist_(getgenv().HttpUrlz_.hbssloader))()
+Gloader.set(0.07, "AlurtUI", "downloading modules 2/5")
 local Alurt = loadstring(getgist_(getgenv().HttpUrlz_.imalurtingyou))()
-task.wait(5.7)
---                              ⸜( ˃ ᵕ ˂ )⸝♡
-local func = loadstring(getgist_(getgenv().HttpUrlz_.sa2func))()
+Gloader.set(0.15, "WindUI_forked", "downloading modules 3/5")
 local WindUI = loadstring(getgist_(getgenv().HttpUrlz_.ilikedisui))()
+Gloader.set(0.21, "HBSS_SaveUI", "downloading modules 4/5")
 local SaveUI = loadstring(getgist_(getgenv().HttpUrlz_.uithesavory))()
+Gloader.set(0.25, "HBSS_BGM", "downloading modules 5/5")
 local BMG = loadstring(getgist_(getgenv().HttpUrlz_.hbssbmg))()
 task.wait(0.8) --I hate http 429 errors...
+Gloader.set(0.28, "gravel.cc", "setting stuff up")
+--                              ⸜( ˃ ᵕ ˂ )⸝♡
 --other wallmart variables
 local gui = {}
 local Camera = excusemesir.Workspace.CurrentCamera
@@ -296,6 +1307,9 @@ local config = {
     prewarmMinFps = 30,
     prewarmSettleFrames = 3,
     prewarmSkip = { Info = true },
+    loaderBuildBudgetMs = 40,
+    loaderBuildPerFrame = 160,
+    loaderMaxSec = 45,
     fovMode = "Fixed",
     fovX = 0,
     fovY = 0,
@@ -355,6 +1369,10 @@ local config = {
     espblc = Color3.fromRGB(128, 128, 128),
     espcT = 0, esptargetcT = 0, espteamcT = 0, espnhcT = 0, espffcT = 0, espfriendcT = 0, espblcT = 0,
     espTargets = { "Enemies", "Non-Humanoids" },
+    espMethodText = "CoreGui",
+    espMethodBox = "CoreGui",
+    espMethodHealth = "CoreGui",
+    espMethodDot = "CoreGui",
     prefSkeletonESP = false,
     prefChamsESP = false,
     skeletonThickness = 1,
@@ -375,13 +1393,15 @@ local config = {
     prefOffscreenArrows = false,
     offArrowSize = 18,
     offArrowRadius = 200,
-    offArrowShowDistance = true,
     prefDistanceESP = false,
     lineStartPosition = "Center",
     lineColor = Color3.fromRGB(255, 255, 255),
     lineThickness = 1,
     lineESPData = {},
     esphertz = 100,
+    espMaxDist = 3000,
+    perfEnabled = true,
+    perfTargetFps = 50,
     originalSizes = {},
     activeApplied = {},
     espData = {},
@@ -398,6 +1418,7 @@ local config = {
     aimbotStrength = 0.5,
     aimbotWallCheck = false,
     aimbotTargetPart = "Head",
+    aimbotJitter = 0,
     aimbotAimMethod = "CFrame",
     aimbotPrediction = 0,
     aimbotAutoRotate = false,
@@ -411,6 +1432,9 @@ local config = {
     aimhertz = 100,
     hitboxEnabled = false,
     hitboxSize = 10,
+    hitboxTargetPart = "HumanoidRootPart",
+    hitboxHitChance = 100,
+    hitboxHeadshotChance = 100,
     hitboxTeamTarget = "Enemies",
     hitboxExpandedParts = {},
     hitboxOriginalSizes = {},
@@ -696,6 +1720,7 @@ local config = {
         fovTransparency = 0.7,
         fovTargetTransparency = 0.7,
         targetPart = "Head",
+        reactionTime = 0,
         wallCheck = false,
         hitChance = 100,
         pressDown = false,
@@ -1277,7 +2302,7 @@ local config = {
             },
             {
                 "really cool tip",
-                "the intro in gravel checks\ngame compatibility :3",
+                "the intro in gravel preloads\nthe tabs while hiding the window :3",
                 "and uhh",
                 "yeh",
             },
@@ -2467,146 +3492,6 @@ local config = {
             shuffleWaitMin = 20,
             shuffleWaitMax = 40,
         },
-        popz = {
-            ":0",
-            ":7",
-            "my name is gravel what's yours?????",
-            "my zodiac sign is a shovel :p",
-            "gravel is rocky :o",
-            "graveeeeeeeelll",
-            ":p",
-            ">:3",
-            "Gravel is not Sentient idk wat ur talking about",
-            "sigmasigmaboug",
-            "I'm a rng pop-up that picks random messages 24/7",
-            "would dis script work on every gaem\nyh & noe",
-            "this script is 10000+ lines... oml :s",
-            "the UI ts using is WindUi and the notification is Alurt btw I just found it from ballmart",
-            "a free?! keyless?! script?! and open source?! that has silentaim?! wtf",
-            "the script is randomly picking messages your not freaking out :p",
-            "sorry xeno users or solarara I don't have the supporty support",
-            "nononononoonono this script ain't a virus so dat why I made it open src",
-            "Is that a gubby?\n\n- kreek",
-            "Error ur roblxo isn't support",
-            "ooh, nice computer you got their, Can I have it\n\n- Mario virus",
-            "something is coming in 3 days\n\n- verity",
-            "real",
-            "tuff",
-            "guhby this guhby that",
-            "2 atoms touch = big explosion",
-            "you can noclip when your atoms aligned\ntrust",
-            "I don't have DC btw",
-            "my code is used to be 8000+ now 9000+ and then 15000+ and 18000+ now 20000 lines long, I canf do dis sh on mobile D:",
-            "flatgrass",
-            "search free robux to get free robux",
-            "alt-f4 = free rboux",
-            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.\n>\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.",
-            "^_^",
-            "^u^",
-            "^v^",
-            "half life 3 when?",
-            "it's a game called HELLO NEIGHBOR -HEL -HEL -HELHEL-HELLO NE-NEIGH-BOR",
-            "FORTYNIGHTY LA PABAJI\npabaji\nPABAJI LA EKES BOKES SERES EKES\npabaji\nPABAJI LA BALESTHONFAIV\nbalesteshon... faiv...\nBALESTHONFAIV LA LUKITIK\nlukitik\nLUKITTIK LA HAYBAR EKES EKES EKES EKES\nhybar ekes ekes ekes ekes\nHYBAR EKES EKES EKES EKES LA GIRANDIFIFDORIGINI\ngirandififdorigini",
-            "Did you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nDid you do your chores?\nyessirski!\nDid you do your chores?\nyessirski\nWhen I get home it better be clean!\nDid you do your chores?\nyessirski!\nOH! BOI WHY DID U LIE TO ME!!!\nAHHHHH",
-            "Homework?\nNah!\nHomework?\nNah!\nHomework?\nNah!\nHomework?\ni did it at school\nNah!\nHomework?\nNah!\nHomework?\nNah!\nWHY ARE YOU CLASSES PHAILING\n AHHH D:",
-            "Turkey in the Straw!",
-            "du bist gut genug...\ndu bist gut genug...\ndu bist gut genug\ndu bist gut genug\n*fire music*",
-            "本当に出口はないのか、くる、くる、くる、くる、繰り返し、繰り返し、繰り返し…\n\n\ni ain't writing allat",
-            "*Stranger Things Intro*\ndustin lucas will mike...\nBURP",
-            "robloz where classic faces :‹",
-            "I'm not taking my sneakers off, I'm sneakers O'Toole",
-            "Gpssickle is a gps with a sickle",
-            "da script reached 8000 lines to 20000 o_o",
-            "just simply cheat through it\n\n quite literally",
-            "just simply go under it",
-            "just simply go over it",
-            "just simply script to it",
-            "just simply walk around it\n\n- Electracy",
-            "You die\n\n- StromBrew",
-            "sonion\ni learned this from meme culture don't ask me",
-            "I like trains",
-            "welcome to McDonald's.",
-            "you are my sunshine, my only sunshine",
-            "IS THAT SONIC WITH GRAY SHOES D:",
-            "Atoms never touch so dat means I didn't steal ur chocolate",
-            "Yeah, come gets some you freakin' wuss\n\n- Scout (not Taunt form dod)",
-            "sybau 🥀💔",
-            "these are meme reference ok",
-            "water + ice + melt = water",
-            "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
-            "1.61803398874989484820458683436563811772030917980576",
-            "print(''*prints cutely*'')\nerror(''*errors cutely*'')\nwarn(''*warns cutely*'')",
-            "Gravel.cc 🥀",
-            "my imagination has been powered",
-            "YOU NEVER SEE IT COMIIIIIIINNNG,\nyou'll see that my mind\nis to fast for eyes\nYOUR DONE INNNNNN\nBY THE\ntime is hit you, YOUR LAST SURPRISE",
-            "Gpssssssssssssssssssssssssssssssssssssssssickle",
-            "global positioning system with a sickle",
-            "The golden dandelion which is the golden dandelion",
-            "can u remind me the golden ratio next time",
-            "y'all think he look like; Steve Harvey?\n *Screams*",
-            "/kill @p",
-            "HBSS doesn't mean anything lolz\ni typed it randomly...",
-            "rbxm",
-            "why 'Gravel' ya know how sand gets in ur shoes..\ngravel does the same but it's for games",
-            "people barely use the bottab",
-            "I hate renderstepped...\n(probably because I keep misusing it)",
-            "is it Roblox or roadblocks or robloz who knows",
-            "''Does this work in Minecraft''",
-            "www.gravel.com ... why does this website exists?",
-            "imagine ur script getting mogged by a script made fully on a phone",
-            "dere is no Terraria final update D:",
-            "da cake isnt a lie... trust",
-            "iS ThAt ga hÆcker?????!?!?!!!?!???!?!",
-            "y is this drooling cat meme all over my fyp D:",
-            "tbh bro I'd go; [insert metalpipefalling.gif]",
-            "gravel vs sand vs rock vs thingamajang",
-            "GTA 6 when?",
-            "if they said ur a hacker say 'Ping Diff' and they'll believe u",
-            "w wedgeey 🥺\nw junglescripts 🥺",
-            "sand.cc when?",
-            "what version is this? well I don't fking know lol",
-            "scirpotjg iz hard :(",
-            "Roblox plz collabl",
-            "helloworld(''print'')",
-            "Markiplier & Larpiplier collab when?",
-            "61? 67?\nit's time for the letters to have fun\nabcdefghijklmnop\nL-M-N-O-P\nP\nP\nP\nP",
-            "hello whoever you are :D\ni don't have the capacity to see your usernames yet because I'm too lazy to script dat in\noh wait ur name is " .. lp_info.lp_displayname .. "\n cool name!",
-            "me is want chat roblox not age verif",
-            "this script isn't full ban proof so if you get banned DON'T blame on us when your using risky features :/",
-            "deres like idk amount of random messages I contains lolz",
-        },
-        popz2 = {
-            "wth is ts",
-            "hell nah",
-            "OHHHH HELLL NAH",
-            "pop-up goes bye bye",
-            "isn't phonk just noise?",
-            "guys it's a-a, a-a h-hacker!?!?!",
-            "tiki tiki",
-            "Nosirski!",
-            "[Eminem Throwing Meme.png]",
-            "why am I writing ts?",
-            "idk, sterling?",
-            "is that a toby?",
-            "click here or ur gay",
-            "lolzer-fying",
-        },
-        popz3 = {
-            "helohi",
-            "meeeeeoow :3 .... MAW >:3",
-            "Bang, Bang, Bang",
-            "20-20-20 Gugu Gaga dropkick",
-            "portal above portal below *jumps in*",
-            "Gugu Gaga Ultimated Flex Works",
-            "can gravel run doom?",
-            "ipad kid vs ipad, who would win?",
-            "ifone 90 proe max",
-            "image me missing one ',' on a large table..",
-            "Gravel supports Android 5-",
-            "your bluetooth device is ready to pair",
-            "why is there ai slop on my TikTok fyp....",
-            ":3 >:3 ›:3 :3",
-        },
         rng6popz = {
             "DONT YOU DARE CLICK ON\nTHAT ''CLOSE WINDOW'' BUTTON",
             "Do you REALLY want to close me\nif u do it me gonna cry :c",
@@ -2650,71 +3535,6 @@ local config = {
         rng6lastindex = nil,
         rng6label = nil,
         rng6connection = nil,
-        tinf = {
-            "bombastic side eye",
-            "oh shiddings nott gud D:",
-            "67 vs 67",
-            "what's yer zodiac sign",
-            "hi I'm a rng",
-            "what's a brainfuck :s",
-            "Gravel.cc says be gravel",
-            "tag ur it",
-            "shimmy ey shimmy yaaa",
-            "so many references :o",
-            "me wants grabel :(",
-            "life never made lemons...",
-            "01001000 01101001",
-            "whoz dat",
-            "roblox is no longer robloz",
-            "user :3",
-            "water",
-            "GRAVEL-MAN",
-            "IM SKYLER WHITE, YO",
-            "my diet is gravel",
-            "6761694203602048",
-            "ur definitely using delta cuz idk",
-            "dab me up :>",
-            "how much saves do u has",
-            "O rly",
-            ":3",
-            "lololololooloo",
-        },
-        tinf2 = {
-            "rbxassetid://11818627057",
-            "rbxassetid://7866490119",
-            "rbxassetid://8932338197",
-            "rbxassetid://10245993691",
-            "rbxassetid://8932049774",
-            "rbxassetid://8932006501",
-            "rbxassetid://12442731398",
-            "rbxassetid://10180628683",
-            "rbxassetid://9835676490",
-            "rbxassetid://5636955920",
-            "rbxassetid://10732694360",
-            "rbxassetid://8373881910",
-            "rbxassetid://8450601351",
-            "rbxassetid://2721397761",
-            "rbxassetid://9603655572",
-            "rbxassetid://7915312891",
-        },
-        tinf3 = {
-            "rbxassetid://18900008907",
-            "rbxassetid://9068077052",
-            "rbxassetid://125374397189170",
-            "rbxassetid://129084748747846",
-            "rbxassetid://135545038339685",
-            "rbxassetid://133762931722734",
-            "rbxassetid://112035104766653",
-            "rbxassetid://138468043135514",
-            "rbxassetid://7486914328",
-            "rbxassetid://119974879573475",
-            "rbxassetid://90634189811821",
-            "rbxassetid://102260594499787",
-            "rbxassetid://133789315328542",
-            "rbxassetid://6011094380",
-            "rbxassetid://135680040975059",
-            "rbxassetid://94964479268464",
-        },
         descs = {
             ["Main"] = {
                 "y u touching my brain",
@@ -3044,7 +3864,7 @@ local config = {
                 "gravel iz love",
                 "be my gravel",
                 "i feel hapy",
-                "vacation??",
+                "can u be my gravel",
             },
             ["03 17"] = {
                 "Gravel.luck",
@@ -3710,7 +4530,7 @@ do
          --targeting
         { "ignoreFriends", on = function(v)
             if v then
-                for _, pl in ipairs(excusemesir.Players:GetPlayers()) do config.cacheFriend(pl) end
+                for _, pl in ipairs(config.funcs.plist()) do config.cacheFriend(pl) end
             end
             config.clearCurrentTargets()
         end },
@@ -3791,11 +4611,13 @@ do
         end },
         "prefHighlightESP", "prefTextESP", "prefBoxESP", "prefHealthESP", "prefHeadDotESP",
         "prefSkeletonESP", "prefChamsESP",
+        { "espMethodText", def = "CoreGui" }, { "espMethodBox", def = "CoreGui" },
+        { "espMethodHealth", def = "CoreGui" }, { "espMethodDot", def = "CoreGui" },
         { "espTargets", on = function()
             if config.espMgr then config.espMgr.rebuildSel() end
         end },
         "lineESPEnabled", "lineESPOnlyTarget", "prefOffscreenArrows", "offArrowSize", "offArrowRadius",
-        "offArrowShowDistance", "prefDistanceESP", "lineStartPosition", "prefColorByHealth", "esphertz"
+        "prefDistanceESP", "lineStartPosition", "prefColorByHealth", "esphertz", "espMaxDist", "perfEnabled", "perfTargetFps"
     )
     S.color(
         "espc", "esptargetc", "espteamc", "espnhc", "espffc", "espfriendc", "espblc", "lineColor",
@@ -3815,7 +4637,7 @@ do
 
     --aimbot
     S.add(
-        "aimbotEnabled", "aimbotWallCheck", "aimbot360Enabled", "aimbotTargetPart", "aimbotAimMethod",
+        "aimbotEnabled", "aimbotWallCheck", "aimbot360Enabled", "aimbotTargetPart", { "aimbotJitter", def = 0 }, "aimbotAimMethod",
         { "aimbotTargetRange", def = 500 },
         "aimbotPrediction", "aimbotAutoRotate", "aimbotStrength", "aimbotFOVSize", "aimbotGetTarget",
         "aimbotTeamTarget", "aimhertz", "desync", "cframeView"
@@ -3861,7 +4683,8 @@ do
                 end)
             end
         end },
-        "hitboxTeamTarget", "hitboxSize",
+        "hitboxTeamTarget", "hitboxSize", "hitboxTargetPart",
+        { "hitboxHitChance", def = 100 }, { "hitboxHeadshotChance", def = 100 },
         { "hitboxVisualizer.enabled", def = false },
         { "hitboxVisualizer.enabled", def = false },
         { "hitboxVisualizer.shape", def = "Block" },
@@ -3871,6 +4694,9 @@ do
         "visualizer.enabled", "visualizer.material", "visualizer.transparency"
     )
     S.color("hitboxVisualizer.color")
+    S.after(function()
+        if config.funcs.syncPartUI then pcall(config.funcs.syncPartUI) end
+    end)
 
     --interaction aura/reach
     S.add(
@@ -3928,7 +4754,7 @@ do
 
     --triggerbot
     S.add(
-        "tbot.enabled", "tbot.targetPart", "tbot.fovRadius", "tbot.hitChance", "tbot.targetRange",
+        "tbot.enabled", "tbot.targetPart", { "tbot.reactionTime", def = 0 }, "tbot.fovRadius", "tbot.hitChance", "tbot.targetRange",
         "tbot.delay", "tbot.wallCheck", "tbot.fovTransparency", "tbot.fovVisible", "tbot.pressDown",
         { "tbot.threeSixty", on = function()
             if config.funcs.updateTriggerBotFOV then pcall(config.funcs.updateTriggerBotFOV) end
@@ -4087,6 +4913,7 @@ config.Compat = (function()
         { "reach", "Reach", { "firetouchinterest" } },
         { "tracer", "Tracer ESP", { "Drawing" } },
         { "skeleton", "Skeleton ESP", { "Drawing" } },
+        { "drawing", "Drawing.New ESP method", { "Drawing" } },
         { "deepscan", "GunMods Deep Scan", { "getgc" } },
         { "clipboard", "Copy buttons", { "setclipboard" } },
         { "file_write", "Save buttons (config/UI/BGM)", { "writefile", "isfolder", "makefolder" } },
@@ -4328,17 +5155,18 @@ function config.rngmem.pick(poolId, pool, idOf)
     return pool[idx], idx, didReset
 end
 
+Gloader.pickMeme = function()
+    return config.rngmem.pick("loader_meme", Gloader.memes) or Gloader.memes[math.random(1, #Gloader.memes)]
+end
 local rng_s = {
     lezzzgoo = config.varibz.btntitle[math.random(1, #config.varibz.btntitle)],
-    Spotify = config.varibz.popz2[math.random(1, #config.varibz.popz2)],
-    YouTube = config.varibz.popz[math.random(1, #config.varibz.popz)],
-    Netflix = config.varibz.popz3[math.random(1, #config.varibz.popz3)],
-    bju = config.varibz.tinf[math.random(1, #config.varibz.tinf)],
-    bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)],
-    bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)],
 }
 do
     local RS = excusemesir.RunService
+    config.varibz.perfLow = {
+        uiAnim = true, sa2FovCircle = true, interactionAuraViz = true, indicator = true,
+        fpsTag = true, devFps = true, gunDeepScan = true, espColors = true, bgUpdater = true,
+    }
     local list, n = {}, 0
     local conn, dirty, stepping = nil, false, false
     local maxstrek = 30
@@ -4413,6 +5241,14 @@ do
                 end
                 if not e.pausedUntil then
                     local iv = e.iv
+                    local ps = config.perf and config.perf.scale or 1
+                    if ps > 1 then
+                        if iv > 0 then
+                            if not e.noPerf then iv = iv * math.min(ps, 3) end
+                        elseif e.low then
+                            iv = (ps - 1) * 0.0167
+                        end
+                    end
                     local a = dt
                     local run = true
                     if iv > 0 then
@@ -4444,6 +5280,8 @@ do
         local e = {
             name = name, iv = tonumber(interval) or 0, acc = 0, fn = fn, errs = 0, dead = false, Disconnect = kill,
             streak = 0, restarts = 0, lastErr = 0, pausedUntil = nil,
+            low = opts.low or config.varibz.perfLow[name] or false,
+            noPerf = opts.noPerf or name == "pingSampler",
             maxStreak = opts.maxStreak or maxstrek, maxRestarts = opts.maxRestarts or math.huge,
             onSuspend = opts.onSuspend, onRestart = opts.onRestart, cleanup = opts.cleanup,
         }
@@ -4457,6 +5295,69 @@ do
         dirty = true
         if not stepping then compact() end
     end
+end
+do
+    local RS = excusemesir.RunService
+    local P = { level = 0, scale = 1, fps = 60, spikeUntil = 0, calmSince = 0 }
+    config.perf = P
+    local gmod_mcore_test = { 1, 1.6, 2.6, 4 }
+    local maxwell = { nil, 4000, 1800, 900 }
+    local ema, last = 1 / 60, os.clock()
+    local acc = 0
+    local function setLevel(l)
+        if l == P.level then return end
+        P.level = l
+        P.scale = gmod_mcore_test[l + 1]
+        local e = config.espMgr
+        if e then e.needSync = true end
+        if config.varibz and config.varibz._allTargetsMemo then config.varibz._allTargetsMemo = nil end
+        if config.funcs.Grint then config.funcs.Grint("Perf", "load level " .. l .. " (" .. math.floor(P.fps) .. " fps)") end
+    end
+    function P.maxDist(base)
+        base = tonumber(base) or 0
+        local m = maxwell[P.level + 1]
+        if not m then return base end
+        if base <= 0 then return m end
+        return math.min(base, m)
+    end
+    local npcT = 0
+    RS.Heartbeat:Connect(function(dt)
+        npcT = npcT + dt
+        if npcT >= 1 then
+            npcT = 0
+            local f = config.funcs.npcScanSync
+            if f and config.masterTarget == "Players" then f() end
+        end
+        if not config.perfEnabled then
+            if P.level ~= 0 then setLevel(0) end
+            return
+        end
+        local now = os.clock()
+        ema = ema + (dt - ema) * 0.08
+        P.fps = 1 / math.max(ema, 1e-4)
+        if dt > 0.12 then P.spikeUntil = now + 4 end
+        acc = acc + dt
+        if acc < 0.5 then return end
+        acc = 0
+        local target = math.max(tonumber(config.perfTargetFps) or 50, 10)
+        local want = 0
+        if P.fps < target * 0.45 then want = 3
+        elseif P.fps < target * 0.7 then want = 2
+        elseif P.fps < target then want = 1 end
+        if now < P.spikeUntil then want = math.max(want, math.min(P.level + 1, 3), 1) end
+        if want > P.level then
+            P.calmSince = now
+            setLevel(want)
+        elseif want < P.level then
+            if P.calmSince == 0 then P.calmSince = now end
+            if now - P.calmSince >= 3 then
+                P.calmSince = now
+                setLevel(P.level - 1)
+            end
+        else
+            P.calmSince = now
+        end
+    end)
 end
 do
     local Stats = excusemesir.Stats
@@ -4537,7 +5438,7 @@ do
         minRadius = 250,
         refreshEvery = 2.0,
         sliceBudget = 0.0012,
-        idleClearAfter = 30,
+        idleClearAfter = 10,
         minRefreshGap = 0.25,
     }
     local BUCKET = math.max(CFG.radius / 4, 1)
@@ -4924,13 +5825,26 @@ do
         if h > t then S.ph, S.pt = 1, 0 else S.ph = h end
     end
     local stop
+    function config.funcs.descWired()
+        if config.worldProximityEnabled or config.worldLoopFireEnabled then return true end
+        local scope = config.scope
+        if type(scope) == "table" then
+            for i = 1, #scope do
+                local v = scope[i]
+                if v == "ClickDetectors" or v == "TouchInterests" or v == "ProximityPrompts" or v == "Tools" then
+                    return true
+                end
+            end
+        end
+        return false
+    end
     local function pump(dt)
         local t0 = clock()
-        if t0 - lastUse > CFG.idleClearAfter then
+        if t0 - lastUse > CFG.idleClearAfter or (t0 - lastUse > 3 and not config.funcs.descWired()) then
             stop()
             return
         end
-        local budget = CFG.sliceBudget
+        local budget = CFG.sliceBudget / (config.perf and config.perf.scale or 1)
         if dt and dt > 0.05 then budget = budget * 0.5 end
         drainPending(t0 + budget * 0.4)
         local active = 0
@@ -5055,6 +5969,19 @@ do
     local function WorkspaceGetDescendantsNearby(opts)
         return GetNearbyDescendants(opts)
     end
+    config.varibz.rangeSliders = config.varibz.rangeSliders or {}
+    function config.funcs.gndRadius()
+        return getRadius(nil)
+    end
+    function config.funcs.effRange(v)
+        local r = getRadius(nil)
+        v = tonumber(v) or 500
+        if v > r then return r end
+        return v
+    end
+    config.funcs.gndCenters = function()
+        return getCenter(), getRootCenter()
+    end
     config._getNearbyDescendants = GetNearbyDescendants
     config._GetNearbyDescendants = GetNearbyDescendants
     config._workspaceGetDescendantsNearby = WorkspaceGetDescendantsNearby
@@ -5142,6 +6069,8 @@ do
                 local job = Q.items[Q.head]
                 Q.items[Q.head] = nil
                 Q.head = Q.head + 1
+                local ps = config.perf and config.perf.scale or 1
+                if ps > 1 then task.wait(0.05 * (ps - 1)) end
                 local ok, err = pcall(job.fn)
                 if not ok then config.funcs.Gerror("Jobs", tostring(job.tag) .. ": " .. tostring(err)) end
             end
@@ -5225,15 +6154,6 @@ function config.funcs.n(opts, bypass)
     end
 end
 
-config.funcs.n({
-    Title = "Gravel.cc",
-    Content = "that 100% not a redliner inspired intro",
-    Audio = "rbxassetid://17208361335",
-    Length = 8,
-    Image = rng_s.bju2,
-    BarColor = Color3.fromRGB(0, 170, 255)
-})
-
 config.funcs.subside_I_I_I_I_I_ = function()
     if not config.state.Window or not config.state.Window.UIElements or not config.state.Window.UIElements.Main then return true end
     local sizeY = config.state.Window.UIElements.Main.Size.Y.Offset
@@ -5255,7 +6175,7 @@ config.uiAutoRefresh = function(key, baseInterval, maxInterval, step)
                 else
                     interval = math.min(interval * 1.5, maxInterval)
                 end
-                task.wait(interval)
+                task.wait(interval * (config.perf and config.perf.scale or 1))
             end
         end
     end)
@@ -5269,14 +6189,13 @@ function config.funcs.localscripts_are_wayy_too_gullible__(state)
             config.antikick = false
             return
         end
-        local LocalPlayer = excusemesir.Players.LocalPlayer
         if not config._antikick_original then
             config._antikick_original = {}
         end
         if not config._antikick_original.namecall then
             config._antikick_original.namecall = hookmetamethod(game, "__namecall", config.Compat.ncc(function(...)
                 local method = getnamecallmethod and getnamecallmethod() or ""
-                if select(1, ...) == LocalPlayer and (method == "Kick" or method == "kick") then
+                if select(1, ...) == localPlayer and (method == "Kick" or method == "kick") then
                     return nil
                 end
                 return config._antikick_original.namecall(...)
@@ -5284,8 +6203,8 @@ function config.funcs.localscripts_are_wayy_too_gullible__(state)
         end
         if not config._antikick_original.kick and config.Compat.fn.hookfunction then
             local okKick, oldKick = pcall(function()
-                return config.Compat.fn.hookfunction(LocalPlayer.Kick, config.Compat.ncc(function(self, _)
-                    if self ~= LocalPlayer then
+                return config.Compat.fn.hookfunction(localPlayer.Kick, config.Compat.ncc(function(self, _)
+                    if self ~= localPlayer then
                         error("Expected ':' not '.' calling member function Kick", 2)
                     end
                     return nil
@@ -5787,9 +6706,9 @@ function __ummm9GOsSbAk()
         local lpos = character and character:FindFirstChild("HumanoidRootPart")
         if not lpos then return nil end
         
-        for _, player in ipairs(excusemesir.Players:GetPlayers()) do
+        for _, player in ipairs(config.funcs.plist()) do
             if player ~= lp and player.Character and not config.isBlacklisted(player) then
-                local root = player.Character:FindFirstChild("HumanoidRootPart")
+                local root = config.funcs.plrRoot(player)
                 if root then
                     local dist = (root.Position - lpos.Position).Magnitude
                     if dist < nearestDist then
@@ -5977,28 +6896,68 @@ end
 do
     local WS = excusemesir.Workspace
     local set, list = {}, {}
+    local conns, active, gen = {}, false, 0
     local function consider(inst)
-        if inst:IsA("Humanoid") then
+        if inst.ClassName == "Humanoid" then
             local m = inst.Parent
             if m and m:IsA("Model") then set[m] = true end
         end
     end
-    WS.DescendantAdded:Connect(consider)
-    WS.DescendantRemoving:Connect(function(inst)
-        if inst:IsA("Humanoid") then
-            local m = inst.Parent
-            if m then set[m] = nil end
-        end
-    end)
-    task.spawn(function()
-        local n = 0
-        for _, d in ipairs(WS:GetDescendants()) do
-            consider(d)
-            n = n + 1
-            if n % 2000 == 0 then task.wait() end
-        end
-    end)
+    local function wantNPCs()
+        local mt = config.masterTarget
+        return mt == "NPCs" or mt == "Both"
+    end
+    local function stop()
+        if not active then return end
+        active = false
+        gen = gen + 1
+        for i = 1, #conns do conns[i]:Disconnect() end
+        table.clear(conns)
+        table.clear(set)
+        table.clear(list)
+        local nc = config.varibz and config.varibz.npcCache
+        if nc then nc.list = {}; nc.lastRefresh = 0 end
+    end
+    local function start()
+        if active then return end
+        active = true
+        gen = gen + 1
+        local myGen = gen
+        conns[1] = WS.DescendantAdded:Connect(consider)
+        conns[2] = WS.DescendantRemoving:Connect(function(inst)
+            if inst.ClassName == "Humanoid" then
+                local m = inst.Parent
+                if m then set[m] = nil end
+            end
+        end)
+        task.spawn(function()
+            local stack = WS:GetChildren()
+            local sp, n = #stack, 0
+            while sp > 0 do
+                if gen ~= myGen then return end
+                local inst = stack[sp]
+                stack[sp] = nil
+                sp = sp - 1
+                consider(inst)
+                local kids = inst:GetChildren()
+                for i = 1, #kids do
+                    sp = sp + 1
+                    stack[sp] = kids[i]
+                end
+                n = n + 1
+                if n % 400 == 0 then task.wait() end
+            end
+        end)
+    end
+    function config.funcs.npcScanSync()
+        if wantNPCs() then start() else stop() end
+    end
     config.getNPCModels = function()
+        if not wantNPCs() then
+            stop()
+            return list
+        end
+        start()
         table.clear(list)
         for m in pairs(set) do
             if m.Parent then
@@ -6115,17 +7074,47 @@ function __JvsQdiJjyh2A(obj)
     if not obj then return false end
     return obj:IsA("Tool") or obj:IsA("HopperBin")
 end
+do
+    local PlrSvc = excusemesir.Players
+    local plrList, plrDirty = {}, true
+    local function markPlayers() plrDirty = true end
+    PlrSvc.ChildAdded:Connect(markPlayers)
+    PlrSvc.ChildRemoved:Connect(markPlayers)
+    function config.funcs.plist()
+        if plrDirty then
+            plrDirty = false
+            plrList = PlrSvc:GetPlayers()
+        end
+        return plrList
+    end
+    local rootCache = setmetatable({}, { __mode = "k" })
+    function config.funcs.plrRoot(pl)
+        local ch = pl and pl.Character
+        if not ch then return nil end
+        local e = rootCache[pl]
+        if e and e[1] == ch then
+            local r = e[2]
+            if r.Parent then return r end
+        end
+        local r = ch:FindFirstChild("HumanoidRootPart") or ch.PrimaryPart
+        if r then
+            if not e then e = {}; rootCache[pl] = e end
+            e[1], e[2] = ch, r
+        end
+        return r
+    end
+end
 function config.funcs.getAllTargets(getTargetSeen)
     local targets = {}
     local now = tick()
     local memo = config.varibz._allTargetsMemo
-    if memo and now - memo.t < 0.1 then
+    if memo and now - memo.t < 0.1 * (config.perf and config.perf.scale or 1) then
         return memo.list
     end
     local scope = config.scope or {"Humanoids"}
     local includeHumanoids = table.find(scope, "Humanoids") ~= nil
     if includeHumanoids then
-        if now - config.varibz.npcCache.lastRefresh > 2 then
+        if now - config.varibz.npcCache.lastRefresh > 2 * (config.perf and config.perf.scale or 1) then
             config.varibz.npcCache.lastRefresh = now
             local newCache = {}
             if config.masterTarget == "NPCs" or config.masterTarget == "Both" then
@@ -6136,9 +7125,25 @@ function config.funcs.getAllTargets(getTargetSeen)
             config.varibz.npcCache.list = newCache
         end
         if config.masterTarget == "Players" or config.masterTarget == "Both" then
-            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            local gR = config.funcs.gndRadius()
+            local gR2 = gR * gR
+            local c1, c2 = config.funcs.gndCenters()
+            for _, pl in ipairs(config.funcs.plist()) do
                 if pl ~= localPlayer then
-                    table.insert(targets, pl)
+                    local rp = config.funcs.plrRoot(pl)
+                    local keep = true
+                    if rp then
+                        local pos = rp.Position
+                        local d1 = pos - c1
+                        keep = d1.X * d1.X + d1.Y * d1.Y + d1.Z * d1.Z <= gR2
+                        if not keep and c2 then
+                            local d2 = pos - c2
+                            keep = d2.X * d2.X + d2.Y * d2.Y + d2.Z * d2.Z <= gR2
+                        end
+                    end
+                    if keep then
+                        table.insert(targets, pl)
+                    end
                 end
             end
         end
@@ -6468,7 +7473,7 @@ do
         local list = {}
         local cam = excusemesir.Workspace.CurrentCamera
         if cam then list[#list + 1] = cam end
-        for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+        for _, pl in ipairs(config.funcs.plist()) do
             if pl.Character then list[#list + 1] = pl.Character end
         end
         noclipRay.FilterDescendantsInstances = list
@@ -6547,7 +7552,6 @@ do
         partMover.CFrame = cf
         local root = char:FindFirstChild("HumanoidRootPart")
         if root then
-            --pivot the ROOT itself (the model's own pivot can be stale/offset and sink you into the floor)
             root:PivotTo(partMover.CFrame * root.PivotOffset:Inverse())
         else
             char:PivotTo(partMover.CFrame)
@@ -6556,8 +7560,6 @@ do
     function config.funcs.partMoveCleanup()
         if partMover then partMover:Destroy() partMover = nil end
     end
-
-    --shared mover: method = "CFrame" | "Part" | "Motor"
     function config.funcs.moveRoot(char, root, cf, method)
         if method == "Motor" then
             motorMove(root, cf)
@@ -6612,10 +7614,8 @@ do
     end
 end
 
-_ = print
 function config.funcs.cmods()
-    local player = excusemesir.Players.LocalPlayer
-    local character = player.Character
+    local character = localPlayer.Character
     if not character then return end
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if not humanoid then return end
@@ -6723,7 +7723,7 @@ function config.funcs.cmods()
                 if not config.infjumpEnabled and hum.FloorMaterial == Enum.Material.Air then return end
                 local power = config.jumppowerValue or 50
                 task.spawn(function()
-                    excusemesir.RunService.Heartbeat:Wait() --let the default jump apply first, then add ours
+                    excusemesir.RunService.Heartbeat:Wait()
                     if not char.Parent or not root.Parent then return end
                     if config.jumppowerLift then
                         config.jumppowerLift:Disconnect()
@@ -6739,7 +7739,7 @@ function config.funcs.cmods()
                         bv.Velocity = Vector3.new(0, power, 0)
                         bv.Parent = root
                         task.delay(0.15, function() if bv then bv:Destroy() end end)
-                    else --CFrame / Part / Motor: rise along a gravity arc until the apex, then physics takes over
+                    else
                         local vy = power
                         config.jumppowerLift = excusemesir.RunService.Heartbeat:Connect(function(dt)
                             local ch = excusemesir.Players.LocalPlayer.Character
@@ -6772,7 +7772,7 @@ function config.funcs.cmods()
     end
     if config.infjumpEnabled then
         if not config.infjumpConnection then
-            local character = player.Character
+            local character = localPlayer.Character
             if character then
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
                 if humanoid then
@@ -6944,8 +7944,7 @@ function config.funcs.cmods()
 end
 
 function config.funcs.resetcmods()
-    local player = excusemesir.Players.LocalPlayer
-    local character = player.Character
+    local character = localPlayer.Character
     if not character then return end
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if not humanoid then return end
@@ -7014,13 +8013,12 @@ function config.funcs.resetcmods()
 end
 
 function config.funcs.recmods()
-    local player = excusemesir.Players.LocalPlayer
     
     if config.clientModConnections.characterAdded then
         config.clientModConnections.characterAdded:Disconnect()
     end
     
-    config.clientModConnections.characterAdded = player.CharacterAdded:Connect(function(character)
+    config.clientModConnections.characterAdded = localPlayer.CharacterAdded:Connect(function(character)
         task.wait(0.5)
         if config.clientModEnabled then
             config.funcs.cmods()
@@ -8243,7 +9241,7 @@ function config.funcs.applyConfigData(cfg, saveName, isImport)
     end)
     pcall(function()
         if config.trussEnabled then
-            local character = player.Character
+            local character = localPlayer.Character
             if character then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 if rootPart then
@@ -8333,7 +9331,7 @@ function config.funcs.applyConfigData(cfg, saveName, isImport)
                     elseif element.Title == "GetTarget" then
                         currentValue = config.Priority.toList(config.masterGetTarget)
                     elseif element.Title == "Target Part" and element.Parent and element.Parent.Title == "Aimbot" then
-                        currentValue = config.aimbotTargetPart
+                        currentValue = config.funcs.normParts(config.aimbotTargetPart)
                     end
                     if currentValue then
                         pcall(function()
@@ -9147,6 +10145,7 @@ do
     local wsRay = WS.Raycast
     local state = {}
     local function getChannel(rc, name)
+        if name ~= "wallbang" then name = "raycat" end
         local s = state[name]
         if not s then
             local sp = (name == "raycat") and rc.raycat or RaycastParams.new()
@@ -9200,7 +10199,7 @@ local function IsPlayerVisible(player, maxDistance)
         PlayerCharacter = player
     end
     if not PlayerCharacter then return false end
-    local LocalPlayerCharacter = plr.Character
+    local LocalPlayerCharacter = localPlayer.Character
     if not LocalPlayerCharacter then return false end
     local PlayerRoot = PlayerCharacter:FindFirstChild("HumanoidRootPart") or PlayerCharacter:FindFirstChild("Head")
     if not PlayerRoot then return false end
@@ -9212,40 +10211,7 @@ local function IsPlayerVisible(player, maxDistance)
     local distance = dir.Magnitude
     if maxDistance and distance > maxDistance then return false end
     if distance < 0.1 then return true end
-    local now = tick()
-    local sd = config.varibz.sa2dump
-    if now - sd.flt > 0.25 then
-        local list = sd.flist
-        if type(list) ~= "table" then list = {}; sd.flist = list end
-        table.clear(list)
-        list[1] = LocalPlayerCharacter
-        list[2] = PlayerCharacter
-        local ln = 2
-        for _, proxyPart in pairs(config.proxyHitboxes) do
-            if proxyPart and proxyPart.Parent then
-                ln = ln + 1
-                list[ln] = proxyPart
-            end
-        end
-        for _, data in pairs(config.hitboxExpandedParts) do
-            if data and data.part and data.part.Parent then
-                ln = ln + 1
-                list[ln] = data.part
-            end
-        end
-        sd.flt = now
-    end
-    local result = config.funcs.raycat(origin, dir.Unit * distance, sd.flist, false, "sa2", sd.flt)
-    if not result then return true end
-    local hitInstance = result.Instance
-    local hitParent = hitInstance and hitInstance.Parent
-    if hitParent == PlayerCharacter or (hitParent and hitParent.Parent == PlayerCharacter) then
-        return true
-    end
-    if hitInstance == PlayerCharacter then
-        return true
-    end
-    return false
+    return config.funcs.wallCheck(targetPos, origin, true)
 end
 config.Priority = (function()
     local P = {}
@@ -9499,7 +10465,7 @@ config.Priority = (function()
         ctx.aimOrigin, ctx.aimDir = ctx.camPos, ctx.camLook
         ctx.now = clock()
         ctx.blend = nm > 1
-        local myChar = plr.Character
+        local myChar = localPlayer.Character
         local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
         ctx.myPos = myRoot and myRoot.Position or ctx.camPos
         if needCrosshair then
@@ -9682,7 +10648,7 @@ local function GetClosestPlayer()
     if not config.varibz.sa2this then
         return nil
     end
-    if config.varibz.respawnLock or not plr.Character then
+    if config.varibz.respawnLock or not localPlayer.Character then
         config.SA2_currentTarget = nil
         return nil
     end
@@ -9691,10 +10657,10 @@ local function GetClosestPlayer()
     local camPos = config.funcs.realCamCF().Position
     local targetMode = config.masterGetTarget
     local seenMode = config.Priority.hasSeen(targetMode)
-    local localTeam = plr.Team
+    local localTeam = localPlayer.Team
     local center = config.getFovCenter(viewport)
-    local maxRangeSq1 = config.SA2_TargetRange * config.SA2_TargetRange
-    local character = plr.Character
+    local maxRangeSq1 = config.funcs.effRange(config.SA2_TargetRange) ^ 2
+    local character = localPlayer.Character
     local localRoot = character and character:FindFirstChild("HumanoidRootPart")
     if not localRoot then
         config.SA2_currentTarget = nil
@@ -9706,14 +10672,32 @@ local function GetClosestPlayer()
     local fovRadiusSq = config.SA2_FovRadius * config.SA2_FovRadius
     local bestTarget = nil
     local bestScore = nil
-    local seenTargets = {}
-    local lp = plr
+    local seenTargets = config.varibz.sa2Seen
+    if not seenTargets then seenTargets = {}; config.varibz.sa2Seen = seenTargets end
+    table.clear(seenTargets)
+    local lp = localPlayer
     local candidates = config.varibz.candidates
     table.clear(candidates)
+    local candPool = config.varibz.sa2CandPool
+    if not candPool then candPool = {}; config.varibz.sa2CandPool = candPool end
     if config.masterTarget == "Players" or config.masterTarget == "Both" then
-        for _, p in ipairs(excusemesir.Players:GetPlayers()) do
+        local gR2 = config.funcs.gndRadius() ^ 2
+        local c1, c2 = config.funcs.gndCenters()
+        for _, p in ipairs(config.funcs.plist()) do
             if p ~= lp and not config.isBlacklisted(p) then
-                table.insert(candidates, {type = "player", instance = p})
+                local rp = config.funcs.plrRoot(p)
+                local keep = true
+                if rp then
+                    local pos = rp.Position
+                    keep = (pos - c1).Magnitude ^ 2 <= gR2 or (c2 ~= nil and (pos - c2).Magnitude ^ 2 <= gR2)
+                end
+                if keep then
+                    local cn = #candidates + 1
+                    local e = candPool[cn]
+                    if not e then e = {}; candPool[cn] = e end
+                    e.type, e.instance = "player", p
+                    candidates[cn] = e
+                end
             end
         end
     end
@@ -9728,7 +10712,11 @@ local function GetClosestPlayer()
         end
         for _, npc in ipairs(config.varibz.npcCache.list) do
             if npc and npc.Parent and config.funcs.isNPCModel(npc) then
-                table.insert(candidates, {type = "npc", instance = npc})
+                local cn = #candidates + 1
+                local e = candPool[cn]
+                if not e then e = {}; candPool[cn] = e end
+                e.type, e.instance = "npc", npc
+                candidates[cn] = e
             end
         end
     end
@@ -9833,57 +10821,15 @@ local function GetClosestPlayer()
                     local dz = rootPart.Position.Z - localRoot.Position.Z
                     local distSq = dx * dx + dy * dy + dz * dz
                     if distSq <= maxRangeSq1 then
-                        local part = nil
-                        local targetPartStr = config.SA2_TargetPart
-                        if targetPartStr == "Random" then
-                            if math.random(1, 100) <= config.SA2_HeadshotChance then
-                                part = char:FindFirstChild("Head")
-                            end
-                            if not part then
-                                part = char:FindFirstChild("HumanoidRootPart")
-                            end
-                            if not part then
-                                part = char:FindFirstChild("Head")
-                            end
-                        else
-                            part = char:FindFirstChild(targetPartStr)
-                            if not part then
-                                part = char:FindFirstChild("Head")
-                            end
-                        end
+                        local part = config.funcs.pickBodyPart(char, config.SA2_TargetPart, config.SA2_HeadshotChance or 100, "sa2", 0.1)
+                        local multiPart = #config.funcs.normParts(config.SA2_TargetPart) > 1
                         if part then
-                            if config.SA2_Wallcheck then
-                                local cacheKey
-                                if isPlayer then
-                                    cacheKey = "player_" .. tostring(p.UserId) .. "_" .. tostring(config.SA2_TargetRange)
-                                else
-                                    cacheKey = "npc_" .. tostring(p) .. "_" .. tostring(config.SA2_TargetRange)
-                                end
-                                local cached = config.varibz.sa2dump.cache[cacheKey]
-                                local visible = false
-                                if cached and (currentTime - cached.time) < 0.2 then
-                                    visible = cached.visible
-                                else
-                                    visible = IsPlayerVisible(p, config.SA2_TargetRange)
-                                    config.varibz.sa2dump.cache[cacheKey] = {
-                                        visible = visible,
-                                        time = currentTime
-                                    }
-                                end
-                                if not visible then
-                                    validPlayers[p] = false
-                                    continue
-                                end
-                            end
-                            validPlayers[p] = true
-                            playerCount = playerCount + 1
-                            seenTargets[p] = true
                             local worldDist = math.sqrt(distSq)
                             local inFOV = false
                             local screenDist = 0
                             if useFOV then
                                 local fovPart = part
-                                if targetPartStr == "Random" then
+                                if multiPart then
                                     fovPart = char:FindFirstChild("HumanoidRootPart") or part
                                 end
                                 local targetPos = fovPart.Position
@@ -9897,6 +10843,42 @@ local function GetClosestPlayer()
                             else
                                 inFOV = true
                             end
+                            if not inFOV and p ~= config.SA2_currentTarget then
+                                validPlayers[p] = true
+                                continue
+                            end
+                            if config.SA2_Wallcheck then
+                                local cacheKey
+                                if isPlayer then
+                                    cacheKey = "player_" .. tostring(p.UserId) .. "_" .. tostring(config.funcs.effRange(config.SA2_TargetRange))
+                                else
+                                    cacheKey = "npc_" .. tostring(p) .. "_" .. tostring(config.funcs.effRange(config.SA2_TargetRange))
+                                end
+                                local cached = config.varibz.sa2dump.cache[cacheKey]
+                                local visible = false
+                                if cached and (currentTime - cached.time) < (cached.ttl or 0.2) then
+                                    visible = cached.visible
+                                else
+                                    visible = IsPlayerVisible(p, config.funcs.effRange(config.SA2_TargetRange))
+                                    local jt = 0.15 + math.random() * 0.15
+                                    if cached then
+                                        cached.visible, cached.time, cached.ttl = visible, currentTime, jt
+                                    else
+                                        config.varibz.sa2dump.cache[cacheKey] = {
+                                            visible = visible,
+                                            time = currentTime,
+                                            ttl = jt
+                                        }
+                                    end
+                                end
+                                if not visible then
+                                    validPlayers[p] = false
+                                    continue
+                                end
+                            end
+                            validPlayers[p] = true
+                            playerCount = playerCount + 1
+                            seenTargets[p] = true
                             if inFOV then
                                 config.Priority.push("sa2", p, char, humanoid, part, worldDist)
                             end
@@ -9921,48 +10903,21 @@ local function GetClosestPlayer()
         return nil
     end
     bestTarget = config.Priority.resolve("sa2", targetMode, seenMode and "Closest To Crosshair" or "Closest", seenMode and config.SA2_currentTarget or nil)
-    local toRemove = {}
-    for cacheKey in pairs(config.varibz.sa2dump.data) do
-        local playerId = cacheKey:match("player_(%d+)")
-        if playerId then
-            playerId = tonumber(playerId)
-            local isValid = false
-            for p, valid in pairs(validPlayers) do
-                if p and p.UserId == playerId and valid == true then
-                    isValid = true
-                    break
-                end
-            end
-            if not isValid then
-                table.insert(toRemove, cacheKey)
-            end
-        end
+    local aliveIds = config.varibz.sa2dump.aliveIds
+    if not aliveIds then aliveIds = {}; config.varibz.sa2dump.aliveIds = aliveIds end
+    table.clear(aliveIds)
+    for p, valid in pairs(validPlayers) do
+        if valid == true and p.ClassName == "Player" then aliveIds[tostring(p.UserId)] = true end
     end
-    for _, key in ipairs(toRemove) do
-        config.varibz.sa2dump.data[key] = nil
+    local sd = config.varibz.sa2dump
+    for cacheKey in pairs(sd.data) do
+        local playerId = cacheKey:match("^player_(%d+)")
+        if playerId and not aliveIds[playerId] then sd.data[cacheKey] = nil end
     end
-    table.clear(toRemove)
-    local wallToRemove = toRemove
-    for cacheKey in pairs(config.varibz.sa2dump.cache) do
-        local playerId = cacheKey:match("player_(%d+)")
-        if playerId then
-            playerId = tonumber(playerId)
-            local isValid = false
-            for p, valid in pairs(validPlayers) do
-                if p and p.UserId == playerId and valid == true then
-                    isValid = true
-                    break
-                end
-            end
-            if not isValid then
-                table.insert(wallToRemove, cacheKey)
-            end
-        end
+    for cacheKey in pairs(sd.cache) do
+        local playerId = cacheKey:match("^player_(%d+)")
+        if playerId and not aliveIds[playerId] then sd.cache[cacheKey] = nil end
     end
-    for _, key in ipairs(wallToRemove) do
-        config.varibz.sa2dump.cache[key] = nil
-    end
-    table.clear(wallToRemove)
     if bestTarget then
         if seenMode and bestTarget ~= config.SA2_currentTarget then
             if shouldSwitch or not config.SA2_currentTarget then
@@ -9986,7 +10941,7 @@ local function GetClosestPlayer()
         end
         local char = config.funcs.getTargetCharacter(bestTarget)
         if char then
-            local part = char:FindFirstChild(config.SA2_TargetPart)
+            local part = config.funcs.pickBodyPart(char, config.SA2_TargetPart, config.SA2_HeadshotChance or 100, "sa2", 0.1)
             if not part then
                 part = char:FindFirstChild("Head")
             end
@@ -9994,7 +10949,10 @@ local function GetClosestPlayer()
                 part = char:FindFirstChild("HumanoidRootPart")
             end
             if part then
-                updateESPColors()
+                if config.varibz.sa2lastColored ~= bestTarget then
+                    config.varibz.sa2lastColored = bestTarget
+                    updateESPColors()
+                end
                 return part
             end
         end
@@ -10022,6 +10980,191 @@ config.funcs.HB("sa2Patcher", 0, function(deltaTime)
         end
     end
 end)
+
+do
+    local R6Alt = {
+        UpperTorso = "Torso", LowerTorso = "Torso",
+        LeftUpperArm = "Left Arm", LeftLowerArm = "Left Arm", LeftHand = "Left Arm",
+        RightUpperArm = "Right Arm", RightLowerArm = "Right Arm", RightHand = "Right Arm",
+        LeftUpperLeg = "Left Leg", LeftLowerLeg = "Left Leg", LeftFoot = "Left Leg",
+        RightUpperLeg = "Right Leg", RightLowerLeg = "Right Leg", RightFoot = "Right Leg",
+    }
+    local randomList = { "Head", "HumanoidRootPart" }
+    local strMemo = {}
+    config.varibz.bodyPartNames = {
+        "Head", "Neck", "HumanoidRootPart", "UpperTorso", "LowerTorso",
+        "LeftUpperArm", "LeftLowerArm", "LeftHand", "RightUpperArm", "RightLowerArm", "RightHand",
+        "LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot",
+    }
+    config.varibz.partRoll = {}
+    config.varibz.partDD = {}
+    config.varibz.headLocks = {}
+    config.varibz.jit = { x = 0, y = 0, tx = 0, ty = 0, nextAt = 0, last = os.clock() }
+
+    local function normParts(sel, default)
+        local ty = type(sel)
+        if ty == "string" then
+            if sel == "Random" then return randomList end
+            local m = strMemo[sel]
+            if not m then m = { sel }; strMemo[sel] = m end
+            return m
+        end
+        if ty == "table" then
+            local n = #sel
+            if n > 0 then
+                local ok = true
+                for i = 1, n do
+                    if type(sel[i]) ~= "string" or sel[i] == "Random" then ok = false break end
+                end
+                if ok then return sel end
+                local out = {}
+                for i = 1, n do
+                    if type(sel[i]) == "string" and sel[i] ~= "Random" then out[#out + 1] = sel[i] end
+                end
+                if #out > 0 then return out end
+            end
+        end
+        default = default or "Head"
+        local m = strMemo[default]
+        if not m then m = { default }; strMemo[default] = m end
+        return m
+    end
+    config.funcs.normParts = normParts
+
+    local function findBodyPart(char, name)
+        if not char then return nil end
+        if name == "Neck" then
+            local m = char:FindFirstChild("Neck", true)
+            if m and m:IsA("Motor6D") and m.Part0 and m.Part1 then
+                return m.Part1, (m.Part0.CFrame * m.C0).Position
+            end
+            local h = char:FindFirstChild("Head")
+            if h and h:IsA("BasePart") then return h, nil end
+            return nil
+        end
+        local p = char:FindFirstChild(name)
+        if p and p:IsA("BasePart") then return p, nil end
+        local alt = R6Alt[name]
+        if alt then
+            p = char:FindFirstChild(alt)
+            if p and p:IsA("BasePart") then return p, nil end
+        end
+        return nil
+    end
+    config.funcs.findBodyPart = findBodyPart
+
+    local function resolveName(char, name)
+        local part, pos = findBodyPart(char, name)
+        if part then return part, pos end
+        part, pos = findBodyPart(char, "Head")
+        if part then return part, pos end
+        return findBodyPart(char, "HumanoidRootPart")
+    end
+
+    local function chooseName(sel, headChance, default)
+        local list = normParts(sel, default)
+        local n = #list
+        if n == 1 then return list[1] end
+        if headChance == nil then return list[math.random(1, n)] end
+        local hasHead, others, no = false, nil, 0
+        for i = 1, n do
+            if list[i] == "Head" then hasHead = true
+            else
+                others = others or {}
+                no = no + 1
+                others[no] = list[i]
+            end
+        end
+        if hasHead and (no == 0 or math.random(1, 100) <= headChance) then return "Head" end
+        if no > 0 then return others[math.random(1, no)] end
+        return "Head"
+    end
+
+    function config.funcs.rollBodyPart(char, sel, headChance, default)
+        if not char then return nil end
+        local part, pos = resolveName(char, chooseName(sel, headChance, default))
+        if not part then return nil end
+        return part, pos, part.Name
+    end
+
+    function config.funcs.pickBodyPart(char, sel, headChance, feature, interval)
+        if not char then return nil end
+        local rc = config.varibz.partRoll[feature]
+        if not rc then
+            rc = setmetatable({}, { __mode = "k" })
+            config.varibz.partRoll[feature] = rc
+        end
+        local now = os.clock()
+        local e = rc[char]
+        if not e then
+            e = { t = -1e9 }
+            rc[char] = e
+        end
+        if e.sel ~= sel or e.hc ~= headChance or not e.name or (now - e.t) >= (interval or 0) then
+            e.sel, e.hc, e.t = sel, headChance, now
+            e.name = chooseName(sel, headChance)
+        end
+        local part, pos = resolveName(char, e.name)
+        return part, pos
+    end
+
+    function config.funcs.headChanceUnlocked(sel)
+        local list = normParts(sel)
+        if #list < 2 then return false end
+        for i = 1, #list do
+            if list[i] == "Head" then return true end
+        end
+        return false
+    end
+
+    function config.funcs.aimJitter(pos, camPos)
+        local amt = config.aimbotJitter or 0
+        if amt <= 0 then return pos end
+        local j = config.varibz.jit
+        local now = os.clock()
+        if now >= j.nextAt then
+            j.nextAt = now + 0.04 + math.random() * 0.14
+            j.tx = math.random() * 2 - 1
+            j.ty = math.random() * 2 - 1
+        end
+        local dt = math.clamp(now - j.last, 0, 0.1)
+        j.last = now
+        local a = 1 - math.exp(-dt * 12)
+        j.x = j.x + (j.tx - j.x) * a
+        j.y = j.y + (j.ty - j.y) * a
+        local d = pos - camPos
+        local dist = d.Magnitude
+        if dist < 0.001 then return pos end
+        local fwd = d / dist
+        local right = fwd:Cross(Vector3.yAxis)
+        if right.Magnitude < 0.001 then right = Vector3.xAxis else right = right.Unit end
+        local up = right:Cross(fwd)
+        local rad = dist * math.tan(math.rad(amt / 100 * 4))
+        return pos + right * (j.x * rad) + up * (j.y * rad)
+    end
+
+    function config.funcs.refreshHeadLocks()
+        local L = config.varibz.headLocks
+        if not L then return end
+        for _, e in pairs(L) do
+            pcall(function()
+                local un = config.funcs.headChanceUnlocked(e.get())
+                e.el.LockedTitle = "Needs ''Head'' + another part selected"
+                if un then e.el:Unlock() else e.el:Lock() end
+            end)
+        end
+    end
+
+    function config.funcs.syncPartUI()
+        for _, e in pairs(config.varibz.partDD) do
+            pcall(function()
+                local v = normParts(e.get(), e.default)
+                if e.el.Select then e.el:Select(v) elseif e.el.SetValue then e.el:SetValue(v) end
+            end)
+        end
+        config.funcs.refreshHeadLocks()
+    end
+end
 
 local function predictthatpos(targetPart, velocityOverride)
     if not targetPart or not targetPart.Parent then
@@ -10057,7 +11200,7 @@ local function mouse()
     end
     if errrrrr and not config.varibz.sa2dump.rat then
         config.varibz.sa2dump.rat = true
-        local cachedMouse = plr:GetMouse()
+        local cachedMouse = localPlayer:GetMouse()
         local MOUSE_KEYS = { Hit = true, Target = true, TargetFilter = true, UnitRay = true, X = true, Y = true }
         mouseywousey = hookmetamethod(game, "__index", config.Compat.ncc(function(self, key)
             if not MOUSE_KEYS[key] or self ~= cachedMouse then
@@ -11021,7 +12164,7 @@ function config.funcs.dothethangcframe()
         local nearestDistance = math.huge
         local masterTarget = config.masterTarget or "Players"
         if masterTarget == "Players" or masterTarget == "Both" then
-            for _, plr in ipairs(excusemesir.Players:GetPlayers()) do
+            for _, plr in ipairs(config.funcs.plist()) do
                 if plr ~= localPlayer
                     and not config.isBlacklisted(plr)
                     and plr.Character
@@ -11203,8 +12346,7 @@ function __T1ePMtUVGk7H()
     if st.active then return end
     local safe = config.funcs.safeStep
     local UIS = excusemesir.UserInputService
-    local plr = excusemesir.Players.LocalPlayer
-    local char = plr.Character
+    local char = localPlayer.Character
     local root = char and char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
@@ -11247,7 +12389,7 @@ function __T1ePMtUVGk7H()
     st.mouseLockFailed = false
     st.mdx, st.mdy = 0, 0
 
-    config.funcs.streamAround(plr, st.position)
+    config.funcs.streamAround(localPlayer, st.position)
 
     st.renderConn = excusemesir.RunService.RenderStepped:Connect(function(dt)
         local s = config.freecamState
@@ -11353,7 +12495,7 @@ function __T1ePMtUVGk7H()
             s.streamTimer = 0
             if not s.streamPos or (s.position - s.streamPos).Magnitude >= 64 then
                 s.streamPos = s.position
-                task.spawn(config.funcs.streamAround, plr, s.position)
+                task.spawn(config.funcs.streamAround, localPlayer, s.position)
             end
         end
 
@@ -11468,7 +12610,7 @@ end)
 
 function config.funcs.ineednextgenrep(state)
     if state then
-        local char = LocalPlayer.Character
+        local char = localPlayer.Character
         if not char then 
             config.funcs.n({
                 Title = "Gravel.cc",
@@ -11533,7 +12675,7 @@ function config.funcs.ineednextgenrep(state)
             if desyncAcc < 0.25 then return end
             desyncAcc = 0
             if config.desyncSeat and config.desyncSeat.Parent then
-                local c = LocalPlayer.Character
+                local c = localPlayer.Character
                 if c then
                     for _, part in pairs(c:GetDescendants()) do
                         if (part:IsA("BasePart") or part:IsA("Decal")) and part.Name ~= "HumanoidRootPart" then
@@ -11552,7 +12694,7 @@ function config.funcs.ineednextgenrep(state)
             while config.desyncActive do
                 task.wait(0.5)
                 if config.desyncActive and (not config.desyncSeat or not config.desyncSeat.Parent) then
-                    local char = LocalPlayer.Character
+                    local char = localPlayer.Character
                     if not char then continue end
                     local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
                     local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
@@ -11579,7 +12721,7 @@ function config.funcs.ineednextgenrep(state)
         return true
         
     else
-        local char = LocalPlayer.Character
+        local char = localPlayer.Character
         local currentVisualPos = nil
         if char then
             local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
@@ -11627,7 +12769,7 @@ end
 local function gonextgenrep()
     if not config.desyncActive then return end
     task.wait()
-    local char = LocalPlayer.Character
+    local char = localPlayer.Character
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
     local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
@@ -11666,7 +12808,7 @@ function config.funcs.nextgenrepre()
         config.desyncRespawnConnection:Disconnect()
     end
     
-    config.desyncRespawnConnection = LocalPlayer.CharacterAdded:Connect(function(char)
+    config.desyncRespawnConnection = localPlayer.CharacterAdded:Connect(function(char)
         if config.desyncActive then
             task.defer(gonextgenrep)
         end
@@ -12087,7 +13229,7 @@ local function raycastFromPlayer(player)
         local hitInstance = result.Instance
         local hitParent = hitInstance.Parent
         if hitParent and hitParent:IsA("Model") then
-            local hitPlayer = Players:GetPlayerFromCharacter(hitParent)
+            local hitPlayer = excusemesir.Players:GetPlayerFromCharacter(hitParent)
             if hitPlayer == localPlayer then
                 return true, result.Position, lookVector
             end
@@ -12388,7 +13530,7 @@ function config.funcs.antiAimUpdate()
     if config.raycastAntiAim then
         local wasTargeted = false
         
-        for _, player in ipairs(excusemesir.Players:GetPlayers()) do
+        for _, player in ipairs(config.funcs.plist()) do
             if player ~= localPlayer and config.funcs.plralive(player) and not config.isBlacklisted(player) then
                 local shouldCheck = true
                 if config.Priority.hasSeen(config.antiAimGetTarget) then
@@ -12559,8 +13701,7 @@ function config.funcs.FireInteractions()
     if type(fireTypes) == "string" then
         fireTypes = {fireTypes}
     end
-    local player = excusemesir.Players.LocalPlayer
-    local character = player.Character
+    local character = localPlayer.Character
     if not character then return 0 end
     local myRoot = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Head")
 
@@ -12824,9 +13965,9 @@ do
         if not tool then return targets end
         local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildOfClass("Part")
         if not handle then return targets end
-        for _, player in ipairs(excusemesir.Players:GetPlayers()) do
+        for _, player in ipairs(config.funcs.plist()) do
             if player ~= excusemesir.Players.LocalPlayer and player.Character and not config.isBlacklisted(player) then
-                local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                local hrp = config.funcs.plrRoot(player)
                 if hrp then
                     local delta = hrp.Position - handle.Position
                     local distance = delta.Magnitude
@@ -12991,6 +14132,15 @@ function config.funcs.hideFaceDecals(targetPlayer)
     local head = char:FindFirstChild("Head")
     if not head then return end
     local store = config.varibz.hiddenFaces[targetPlayer]
+    local scan = config.varibz.faceScan
+    if not scan then
+        scan = setmetatable({}, { __mode = "k" })
+        config.varibz.faceScan = scan
+    end
+    local nowT = os.clock()
+    local last = scan[targetPlayer]
+    if store and last and last.head == head and nowT - last.t < 0.5 then return end
+    scan[targetPlayer] = { head = head, t = nowT }
     if not store then
         store = {}
         config.varibz.hiddenFaces[targetPlayer] = store
@@ -13020,8 +14170,8 @@ function config.funcs.restoreAllFaceDecals()
         config.funcs.restoreFaceDecals(pl)
     end
 end
-function config.funcs.wallCheck(targetPos, sourcePos)
-    if not config.SA2_Wallcheck then
+function config.funcs.wallCheckRaw(targetPos, sourcePos, force)
+    if not force and not config.SA2_Wallcheck then
         return true
     end
     if (targetPos - sourcePos).Magnitude <= 0 then return true end
@@ -13040,7 +14190,7 @@ function config.funcs.wallCheck(targetPos, sourcePos)
             ln = ln + 1
             list[ln] = localPlayer.Character
         end
-        for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+        for _, otherPlayer in ipairs(config.funcs.plist()) do
             local ch = otherPlayer.Character
             if ch then
                 ln = ln + 1
@@ -13074,7 +14224,7 @@ function config.funcs.wallCheck(targetPos, sourcePos)
     local rayDirection = (targetPos - sourcePos)
     local distance = rayDirection.Magnitude
     if distance < 0.1 then return true end
-    local result = config.funcs.raycat(sourcePos, rayDirection.Unit * distance, cache.list, false, "sa", cache.t)
+    local result = config.funcs.raycat(sourcePos, rayDirection.Unit * distance, cache.list, false, "wall", cache.t)
     if not result then
         return true
     end
@@ -13097,6 +14247,42 @@ function config.funcs.wallCheck(targetPos, sourcePos)
         end
     end
     return false
+end
+do
+    local floor, clock, random = math.floor, os.clock, math.random
+    local store = {}
+    local lastPrune, frameId, fresh = 0, -1, 0
+    function config.funcs.wallCheck(targetPos, sourcePos, force)
+        if not force and not config.SA2_Wallcheck then return true end
+        if config.varibz.wallCacheOff then return config.funcs.wallCheckRaw(targetPos, sourcePos, true) end
+        local now = clock()
+        local f = floor(now * 60)
+        if f ~= frameId then frameId, fresh = f, 0 end
+        local tk = floor(targetPos.X * 0.5) * 73856093 + floor(targetPos.Y * 0.5) * 19349663 + floor(targetPos.Z * 0.5) * 83492791
+        local sk = floor(sourcePos.X * 0.5) * 73856093 + floor(sourcePos.Y * 0.5) * 19349663 + floor(sourcePos.Z * 0.5) * 83492791
+        local key = tk * 31 + sk
+        local e = store[key]
+        if e then
+            local age = now - e.t
+            if age < e.ttl then return e.v end
+            if fresh >= 8 and age < 0.4 then return e.v end
+        end
+        fresh = fresh + 1
+        local v = config.funcs.wallCheckRaw(targetPos, sourcePos, true)
+        local ttl = 0.06 + random() * 0.06
+        if e then
+            e.v, e.t, e.ttl = v, now, ttl
+        else
+            store[key] = { v = v, t = now, ttl = ttl }
+        end
+        if now - lastPrune > 3 then
+            lastPrune = now
+            for k, en in pairs(store) do
+                if now - en.t > 2 then store[k] = nil end
+            end
+        end
+        return v
+    end
 end
 config.skelData = config.skelData or {}
 config.chamsData = config.chamsData or {}
@@ -13506,6 +14692,41 @@ function E.ensureGui()
     E.gui = g
     return g
 end
+function E.coreParent()
+    if E.cgParent ~= nil then return E.cgParent or nil end
+    local p = nil
+    pcall(function() if gethui then p = gethui() end end)
+    if not p then pcall(function() p = game:GetService("CoreGui") end) end
+    if p then
+        local ok = pcall(function()
+            local f = Instance.new("Folder")
+            f.Parent = p
+            f:Destroy()
+        end)
+        if not ok then p = nil end
+    end
+    E.cgParent = p or false
+    return p
+end
+function E.ensureCGui()
+    local par = E.coreParent()
+    if not par then return nil end
+    local g = E.cgui
+    if g and g.Parent == par then return g end
+    if g then
+        pcall(function() g:Destroy() end)
+        for t in pairs(config.espData) do config.espData[t] = nil end
+    end
+    g = Instance.new("ScreenGui")
+    g.Name = rngifynames.instname("esp_cgui")
+    g.ResetOnSpawn = false
+    g.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    g.IgnoreGuiInset = true
+    local ok = pcall(function() g.Parent = par end)
+    if not ok then return nil end
+    E.cgui = g
+    return g
+end
 
 function config.funcs.removeESPLabel(targetPlayer)
     if not targetPlayer then return end
@@ -13515,8 +14736,13 @@ function config.funcs.removeESPLabel(targetPlayer)
         pcall(function() data.connection:Disconnect() end)
         data.connection = nil
     end
-    if data.screenGui then
-        pcall(function() data.screenGui:Destroy() end)
+    if data.comp then
+        for _, cs in pairs(data.comp) do E.killComp(cs) end
+        data.comp = nil
+    end
+    if data.folders then
+        for _, f in pairs(data.folders) do pcall(function() f:Destroy() end) end
+        data.folders = nil
     end
     config.espData[targetPlayer] = nil
 end
@@ -13527,113 +14753,231 @@ function config.funcs.makeesp(targetPlayer)
     if config.espData[targetPlayer] then
         config.funcs.removeESPLabel(targetPlayer)
     end
-    local gui = E.ensureGui()
-    if not gui then return end
-
-    local name = config.funcs.getTargetName(targetPlayer)
-    local folder = Instance.new("Folder")
-    folder.Name = rngifynames.instname("esp_folder")
-
-    local label = Instance.new("TextLabel")
-    label.Name = rngifynames.instname("esp_label")
-    label.BackgroundTransparency = 1
-    label.Text = name
-    label.TextSize = 6
-    label.Font = Enum.Font.GothamBold
-    label.TextStrokeTransparency = 0
-    label.TextStrokeColor3 = Color3.new(0, 0, 0)
-    label.TextColor3 = config.espc
-    label.Visible = false
-    label.AutomaticSize = Enum.AutomaticSize.X
-    label.Size = UDim2.fromOffset(0, 18)
-    label.AnchorPoint = Vector2.new(0.5, 1)
-    label.TextXAlignment = Enum.TextXAlignment.Center
-    label.Parent = folder
-
-    local boxFrame = Instance.new("Frame")
-    boxFrame.Name = rngifynames.instname("esp_box")
-    boxFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    boxFrame.BackgroundTransparency = 0.7
-    boxFrame.BorderSizePixel = 0
-    boxFrame.Visible = false
-    boxFrame.Parent = folder
-
-    local boxOutline = Instance.new("UIStroke")
-    boxOutline.Thickness = 1
-    boxOutline.LineJoinMode = Enum.LineJoinMode.Round
-    boxOutline.Color = config.espc
-    boxOutline.Transparency = 0.1
-    boxOutline.Parent = boxFrame
-
-    local healthBg = Instance.new("Frame")
-    healthBg.Name = rngifynames.instname("esp_health_bg")
-    healthBg.Size = UDim2.fromOffset(4, 0)
-    healthBg.BackgroundTransparency = 0.6
-    healthBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    healthBg.BorderSizePixel = 0
-    healthBg.Visible = false
-    healthBg.Parent = folder
-
-    local healthFill = Instance.new("Frame")
-    healthFill.Name = rngifynames.instname("esp_health_fill")
-    healthFill.AnchorPoint = Vector2.new(0, 1)
-    healthFill.Size = UDim2.new(1, 0, 0, 0)
-    healthFill.Position = UDim2.new(0, 0, 1, 0)
-    healthFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    healthFill.BorderSizePixel = 0
-    healthFill.Parent = healthBg
-
-    local headDot = Instance.new("Frame")
-    headDot.Name = rngifynames.instname("esp_head_dot")
-    headDot.Size = UDim2.fromOffset(6, 6)
-    headDot.AnchorPoint = Vector2.new(0.5, 0.5)
-    headDot.BackgroundColor3 = config.espc
-    headDot.BorderSizePixel = 0
-    headDot.Visible = false
-    headDot.Parent = folder
-
-    folder.Parent = gui
-
+    E.resolve()
     config.espData[targetPlayer] = {
-        name = name,
-        label = label,
-        screenGui = folder,
-        box = boxFrame,
-        boxOutline = boxOutline,
-        healthBG = healthBg,
-        healthFill = healthFill,
-        headDot = headDot,
-        pc = {},
-        vf = {},
+        name = config.funcs.getTargetName(targetPlayer),
+        comp = {},
+        folders = {},
     }
 end
+E.compCfg = { text = "espMethodText", box = "espMethodBox", health = "espMethodHealth", dot = "espMethodDot" }
+E.compList = { "text", "box", "health", "dot" }
+E.cm = E.cm or { text = "CoreGui", box = "CoreGui", health = "CoreGui", dot = "CoreGui" }
+E.dTextSize = 13
 
-function E.hideGui(d)
-    local vf = d.vf
-    E.setVis(d.label, vf, 1, false)
-    E.setVis(d.box, vf, 2, false)
-    E.setVis(d.healthBG, vf, 3, false)
-    E.setVis(d.headDot, vf, 4, false)
+function E.backendOk(b)
+    if b == "Drawing.New" then
+        if config.Compat and config.Compat.locked("drawing") then return false end
+        return (Drawing and Drawing.new) and true or false
+    elseif b == "CoreGui" then
+        return E.coreParent() ~= nil
+    end
+    return true
+end
+function E.resolve()
+    for _, c in ipairs(E.compList) do
+        local m = config[E.compCfg[c]]
+        if m ~= "Drawing.New" then m = "CoreGui" end
+        if not E.backendOk(m) then
+            m = (m == "Drawing.New" and E.backendOk("CoreGui")) and "CoreGui" or "ScreenGui"
+        end
+        E.cm[c] = m
+    end
+    return E.cm
 end
 
-function E.updateGui(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, tr)
+function E.dKill(o)
+    if not o then return end
+    pcall(function() o.Visible = false end)
+    if not pcall(function() o:Remove() end) then
+        pcall(function() o:Destroy() end)
+    end
+end
+
+function E.folder(d, b)
+    local f = d.folders[b]
+    if f and f.Parent then return f end
+    local gui = (b == "CoreGui") and E.ensureCGui() or E.ensureGui()
+    if not gui then return nil end
+    f = Instance.new("Folder")
+    f.Name = rngifynames.instname("esp_folder")
+    f.Parent = gui
+    d.folders[b] = f
+    return f
+end
+function E.mkPrim(d, b, kind, o)
+    local p = { b = b, kind = kind, base = o.base or 0 }
+    if b == "Drawing.New" then
+        if not (Drawing and Drawing.new) then return nil end
+        local class = (kind == "text" and "Text") or (kind == "dot" and "Circle") or "Square"
+        local ok, obj = pcall(Drawing.new, class)
+        if not ok or not obj then return nil end
+        p.inst = obj
+        p.draw = true
+        local props
+        if kind == "text" then
+            props = { Size = E.dTextSize, Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Font = 2, Text = d.name }
+        elseif kind == "dot" then
+            props = { Radius = 3, NumSides = 12, Filled = true, Thickness = 1 }
+        elseif kind == "outline" then
+            props = { Filled = false, Thickness = 1 }
+        else
+            props = { Filled = true, Thickness = 1 }
+        end
+        if o.color then props.Color = o.color end
+        props.ZIndex = o.z or 1
+        for k, v in pairs(props) do pcall(function() obj[k] = v end) end
+        pcall(function() obj.Visible = false end)
+        if kind == "text" then
+            local okb, tb = pcall(function() return obj.TextBounds end)
+            p.hasTB = okb and typeof(tb) == "Vector2"
+        end
+        return p
+    end
+    local folder = E.folder(d, b)
+    if not folder then return nil end
+    local inst
+    if kind == "text" then
+        inst = Instance.new("TextLabel")
+        inst.BackgroundTransparency = 1
+        inst.Text = d.name
+        inst.TextSize = 6
+        inst.Font = Enum.Font.GothamBold
+        inst.TextStrokeTransparency = 0
+        inst.TextStrokeColor3 = Color3.new(0, 0, 0)
+        inst.TextColor3 = config.espc
+        inst.AutomaticSize = Enum.AutomaticSize.X
+        inst.Size = UDim2.fromOffset(0, 18)
+        inst.AnchorPoint = Vector2.new(0.5, 1)
+        inst.TextXAlignment = Enum.TextXAlignment.Center
+    elseif kind == "outline" then
+        inst = Instance.new("Frame")
+        inst.BackgroundTransparency = 1
+        inst.BorderSizePixel = 0
+        local st = Instance.new("UIStroke")
+        st.Thickness = 1
+        st.LineJoinMode = Enum.LineJoinMode.Round
+        st.Parent = inst
+        p.stroke = st
+    else
+        inst = Instance.new("Frame")
+        inst.BorderSizePixel = 0
+        inst.BackgroundColor3 = o.color or Color3.new(0, 0, 0)
+        if kind == "dot" then
+            inst.Size = UDim2.fromOffset(6, 6)
+            inst.AnchorPoint = Vector2.new(0.5, 0.5)
+        end
+    end
+    inst.Name = rngifynames.instname("esp_part")
+    inst.ZIndex = o.z or 1
+    inst.Visible = false
+    inst.Parent = folder
+    p.inst = inst
+    return p
+end
+function E.pVis(p, v)
+    if p.v ~= v then
+        p.v = v
+        p.inst.Visible = v
+    end
+end
+function E.pPos(p, x, y)
+    x = math.floor(x + 0.5)
+    y = math.floor(y + 0.5)
+    if p.draw and p.kind == "text" then
+        local bh = E.dTextSize + 2
+        if p.hasTB then
+            local tb = p.inst.TextBounds
+            if tb and tb.Y > 0 then bh = tb.Y end
+        end
+        p.inst.Position = Vector2.new(x, y - 9 - bh / 2)
+        return
+    end
+    if p.x ~= x or p.y ~= y then
+        p.x, p.y = x, y
+        if p.draw then p.inst.Position = Vector2.new(x, y) else p.inst.Position = UDim2.fromOffset(x, y) end
+    end
+end
+function E.pSize(p, w, h)
+    w = math.floor(w + 0.5)
+    h = math.floor(h + 0.5)
+    if p.w ~= w or p.h ~= h then
+        p.w, p.h = w, h
+        if p.draw then p.inst.Size = Vector2.new(w, h) else p.inst.Size = UDim2.fromOffset(w, h) end
+    end
+end
+function E.pColor(p, c)
+    if p.c == c then return end
+    p.c = c
+    if p.draw then p.inst.Color = c
+    elseif p.kind == "text" then p.inst.TextColor3 = c
+    elseif p.kind == "outline" then p.stroke.Color = c
+    else p.inst.BackgroundColor3 = c end
+end
+function E.pTr(p, tr)
+    local t = E.mixT(p.base, tr)
+    if p.draw then p.inst.Transparency = 1 - t
+    elseif p.kind == "text" then p.inst.TextTransparency = t
+    elseif p.kind == "outline" then p.stroke.Transparency = t
+    else p.inst.BackgroundTransparency = t end
+end
+function E.pText(p, str)
+    if p.t ~= str then
+        p.t = str
+        p.inst.Text = str
+    end
+end
+function E.pKill(p)
+    if not p or not p.inst then return end
+    if p.draw then E.dKill(p.inst) else pcall(function() p.inst:Destroy() end) end
+    p.inst = nil
+end
+function E.killComp(cs)
+    if not cs then return end
+    for _, p in pairs(cs.p) do E.pKill(p) end
+    cs.p = {}
+end
+function E.compGet(d, c)
+    local b = E.cm[c]
+    local cs = d.comp[c]
+    if cs and cs.b == b then return cs end
+    if cs then E.killComp(cs) end
+    cs = { b = b, p = {} }
+    local P = cs.p
+    local black = Color3.new(0, 0, 0)
+    if c == "text" then
+        P.text = E.mkPrim(d, b, "text", { z = 4 })
+    elseif c == "box" then
+        P.bg = E.mkPrim(d, b, "rect", { z = 1, base = 0.7, color = black })
+        P.ol = E.mkPrim(d, b, "outline", { z = 2, base = 0.1 })
+    elseif c == "health" then
+        P.bg = E.mkPrim(d, b, "rect", { z = 1, base = 0.6, color = black })
+        P.fill = E.mkPrim(d, b, "rect", { z = 2, color = Color3.fromRGB(0, 255, 0) })
+    else
+        P.dot = E.mkPrim(d, b, "dot", { z = 3 })
+    end
+    if next(P) then d.comp[c] = cs end
+    return cs
+end
+function E.hideComp(d, c)
+    local cs = d.comp[c]
+    if not cs then return end
+    for _, p in pairs(cs.p) do E.pVis(p, false) end
+end
+function E.hideAll(d)
+    for _, c in ipairs(E.compList) do E.hideComp(d, c) end
+end
+
+function E.updateESP(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, tr)
     local wantText = config.prefTextESP
     local wantBox = config.prefBoxESP
     local wantHealth = config.prefHealthESP and hum ~= nil
     local wantDot = config.prefHeadDotESP
     if not (wantText or wantBox or wantHealth or wantDot) then
-        E.hideGui(d)
+        E.hideAll(d)
         return
     end
-
     tr = tr or 0
-    if d.lastTr ~= tr then
-        d.lastTr = tr
-        d.label.TextTransparency = tr
-        d.boxOutline.Transparency = E.mixT(0.1, tr)
-        d.box.BackgroundTransparency = E.mixT(0.7, tr)
-        d.headDot.BackgroundTransparency = tr
-    end
 
     local head, root = info.head, info.root
     local topPos, botPos
@@ -13648,7 +14992,7 @@ function E.updateGui(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, tr)
     local topV3 = cam:WorldToViewportPoint(topPos)
     local botV3 = cam:WorldToViewportPoint(botPos)
     if topV3.Z <= 0 or botV3.Z <= 0 then
-        E.hideGui(d)
+        E.hideAll(d)
         return
     end
     local topY, botY = topV3.Y, botV3.Y
@@ -13657,85 +15001,108 @@ function E.updateGui(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, tr)
     local heightPx = math.max(botY - topY, 2)
     local widthPx = math.clamp(heightPx * 0.45, 4, 400)
     if centerX + widthPx < 0 or centerX - widthPx > vpX or botY < 0 or topY > vpY then
-        E.hideGui(d)
+        E.hideAll(d)
         return
     end
 
-    local pc, vf = d.pc, d.vf
-
     if wantText then
-        local hp = nil
-        if hum then hp = math.floor(hum.Health) end
-        local dist = nil
-        if config.prefDistanceESP then
-            dist = math.floor((head.Position - camPos).Magnitude)
+        local cs = E.compGet(d, "text")
+        local p = cs.p.text
+        if p then
+            if cs.tr ~= tr then cs.tr = tr; E.pTr(p, tr) end
+            local hp = nil
+            if hum then hp = math.floor(hum.Health) end
+            local dist = nil
+            if config.prefDistanceESP then
+                dist = math.floor((head.Position - camPos).Magnitude)
+            end
+            if cs.lastHp ~= hp or cs.lastDist ~= dist then
+                cs.lastHp = hp
+                cs.lastDist = dist
+                local text = d.name
+                if hp then text = string.format("%s [%d]", d.name, hp) end
+                if dist then text = text .. string.format(" [%dm]", dist) end
+                E.pText(p, text)
+            end
+            E.pPos(p, math.clamp(centerX, 10, vpX - 10), math.clamp(topY - 4, 10, vpY - 10))
+            E.pColor(p, color)
+            E.pVis(p, true)
         end
-        if d.lastHp ~= hp or d.lastDist ~= dist then
-            d.lastHp = hp
-            d.lastDist = dist
-            local text = d.name
-            if hp then text = string.format("%s [%d]", d.name, hp) end
-            if dist then text = text .. string.format(" [%dm]", dist) end
-            d.label.Text = text
-        end
-        E.setPos(d.label, pc, 1, math.clamp(centerX, 10, vpX - 10), math.clamp(topY - 4, 10, vpY - 10))
-        if d.lastLabelColor ~= color then
-            d.lastLabelColor = color
-            d.label.TextColor3 = color
-        end
-        E.setVis(d.label, vf, 1, true)
     else
-        E.setVis(d.label, vf, 1, false)
+        E.hideComp(d, "text")
     end
 
     if wantBox then
+        local cs = E.compGet(d, "box")
         local h = math.min(heightPx, vpY)
+        local w = math.min(widthPx, vpX)
         local bx = math.clamp(centerX - widthPx / 2, 0, math.max(vpX - widthPx, 0))
         local by = math.clamp(topY, 0, math.max(vpY - h, 0))
-        E.setSize(d.box, pc, 6, math.min(widthPx, vpX), h)
-        E.setPos(d.box, pc, 2, bx, by)
-        if d.lastBoxColor ~= color then
-            d.lastBoxColor = color
-            d.boxOutline.Color = color
+        local retr = cs.tr ~= tr
+        cs.tr = tr
+        local bg, ol = cs.p.bg, cs.p.ol
+        if bg then
+            if retr then E.pTr(bg, tr) end
+            E.pSize(bg, w, h)
+            E.pPos(bg, bx, by)
+            E.pVis(bg, true)
         end
-        E.setVis(d.box, vf, 2, true)
+        if ol then
+            if retr then E.pTr(ol, tr) end
+            E.pSize(ol, w, h)
+            E.pPos(ol, bx, by)
+            E.pColor(ol, color)
+            E.pVis(ol, true)
+        end
     else
-        E.setVis(d.box, vf, 2, false)
+        E.hideComp(d, "box")
     end
 
     if wantHealth then
+        local cs = E.compGet(d, "health")
         local maxH = hum.MaxHealth
         if not maxH or maxH <= 0 then maxH = 100 end
         local ratio = math.clamp(hum.Health / maxH, 0, 1)
         local hh = math.min(heightPx, vpY)
         local hx = math.clamp(centerX + widthPx / 2 + 4, 0, vpX - 4)
         local hy = math.clamp(topY, 0, math.max(vpY - hh, 0))
-        E.setSize(d.healthBG, pc, 7, 4, hh)
-        E.setPos(d.healthBG, pc, 3, hx, hy)
-        if d.lastRatio ~= ratio then
-            d.lastRatio = ratio
-            d.healthFill.Size = UDim2.new(1, 0, ratio, 0)
-            d.healthFill.BackgroundColor3 = hpColor or E.hpColor(hum)
+        local bg, fill = cs.p.bg, cs.p.fill
+        if bg then
+            E.pSize(bg, 4, hh)
+            E.pPos(bg, hx, hy)
+            E.pVis(bg, true)
         end
-        E.setVis(d.healthBG, vf, 3, true)
+        if fill then
+            local fh = hh * ratio
+            if fh >= 1 then
+                E.pSize(fill, 4, fh)
+                E.pPos(fill, hx, hy + hh - fh)
+                E.pColor(fill, hpColor or E.hpColor(hum))
+                E.pVis(fill, true)
+            else
+                E.pVis(fill, false)
+            end
+        end
     else
-        E.setVis(d.healthBG, vf, 3, false)
+        E.hideComp(d, "health")
     end
 
     if wantDot then
+        local cs = E.compGet(d, "dot")
+        local p = cs.p.dot
         local hv, hon = cam:WorldToViewportPoint(head.Position)
-        if hon and hv.Z > 0 then
-            E.setPos(d.headDot, pc, 4, math.clamp(hv.X, 10, vpX - 10), math.clamp(hv.Y, 10, vpY - 10))
-            if d.lastDotColor ~= color then
-                d.lastDotColor = color
-                d.headDot.BackgroundColor3 = color
+        if p then
+            if hon and hv.Z > 0 then
+                if cs.tr ~= tr then cs.tr = tr; E.pTr(p, tr) end
+                E.pPos(p, math.clamp(hv.X, 10, vpX - 10), math.clamp(hv.Y, 10, vpY - 10))
+                E.pColor(p, color)
+                E.pVis(p, true)
+            else
+                E.pVis(p, false)
             end
-            E.setVis(d.headDot, vf, 4, true)
-        else
-            E.setVis(d.headDot, vf, 4, false)
         end
     else
-        E.setVis(d.headDot, vf, 4, false)
+        E.hideComp(d, "dot")
     end
 end
 function E.hideLine(ld)
@@ -13927,7 +15294,13 @@ function E.syncChams(t)
     local cd = config.chamsData[t]
     if cd then
         local stale = (cd.char ~= char) or (not cd.folder.Parent)
-        if not stale and cd.n ~= #char:GetChildren() then stale = true end
+        if not stale then
+            local nowc = os.clock()
+            if not cd.nt or nowc >= cd.nt then
+                cd.nt = nowc + 1
+                if cd.n ~= #char:GetChildren() then stale = true end
+            end
+        end
         if not stale then
             for _, e in ipairs(cd.entries) do
                 if not e.p.Parent then
@@ -13953,14 +15326,32 @@ function E.sync()
     table.clear(list)
     local needGui = config.prefTextESP or config.prefBoxESP or config.prefHealthESP or config.prefHeadDotESP
     local needHl = config.prefHighlightESP
+    E.resolve()
     local needLine = config.lineESPEnabled
     local needSkel = config.prefSkeletonESP
     local needChams = config.prefChamsESP
 
     local targets = config.funcs.getAllTargets()
+    local maxwells = config.perf and config.perf.maxDist(config.espMaxDist) or (tonumber(config.espMaxDist) or 0)
+    local scam = excusemesir.Workspace.CurrentCamera
+    local scamPos = (maxwells > 0 and scam) and scam.CFrame.Position or nil
     for i = 1, #targets do
         local t = targets[i]
-        if E.category(t) and config.funcs.plralive(t) then
+        local keep = E.category(t) and config.funcs.plralive(t)
+        if keep and scamPos then
+            local tc = config.funcs.getTargetCharacter(t)
+            local ti = tc and E.getInfo(t, tc)
+            local tr = ti and ti.root
+            if tr and not config.funcs.isPlayerBeingTargeted(t) then
+                local lim = maxwells
+                if config.espData[t] or config.highlightData[t] or config.lineESPData[t]
+                    or config.skelData[t] or config.chamsData[t] then
+                    lim = maxwells * 1.15
+                end
+                if (tr.Position - scamPos).Magnitude > lim then keep = false end
+            end
+        end
+        if keep then
             want[t] = true
             list[#list + 1] = t
             if needGui and not config.espData[t] then config.funcs.makeesp(t) end
@@ -14000,7 +15391,7 @@ function E.updateTarget(t, cam, vpX, vpY, camPos, lineFrom)
     if char then info = E.getInfo(t, char) end
     local hum = info and info.hum or nil
     if not info or not info.head or not info.root or not char.Parent or (hum and hum.Health <= 0) then
-        if d then E.hideGui(d) end
+        if d then E.hideAll(d) end
         if ld then E.hideLine(ld) end
         if sk then E.hideSkel(sk) end
         return
@@ -14066,7 +15457,7 @@ function E.updateTarget(t, cam, vpX, vpY, camPos, lineFrom)
     end
 
     if sk then E.updateSkel(sk, cam, color, bt) end
-    if d then E.updateGui(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, bt) end
+    if d then E.updateESP(d, info, hum, cam, vpX, vpY, camPos, color, hpColor, bt) end
 end
 
 function E.step(dt)
@@ -14075,13 +15466,15 @@ function E.step(dt)
         return
     end
     E.acc = E.acc + dt
-    if E.acc < 1 / math.max(config.esphertz or 100, 1) then return end
+    local pscale = config.perf and config.perf.scale or 1
+    if E.acc < pscale / math.max(config.esphertz or 100, 1) then return end
     E.acc = 0
     local cam = excusemesir.Workspace.CurrentCamera
     if not cam then return end
+    E.resolve()
     local now = os.clock()
     local since = now - E.lastSync
-    if since >= 0.25 or (E.needSync and since >= 0.1) then
+    if since >= 0.25 * pscale or (E.needSync and since >= 0.1) then
         E.needSync = false
         E.lastSync = now
         E.sync()
@@ -14128,6 +15521,10 @@ function E.clearAll()
     table.clear(E.list)
     table.clear(E.want)
     E.flushPool()
+    if E.cgui then
+        pcall(function() E.cgui:Destroy() end)
+        E.cgui = nil
+    end
     if E.gui then
         pcall(function() E.gui:Destroy() end)
         E.gui = nil
@@ -14139,6 +15536,7 @@ function E.clearAll()
     E.stop()
 end
 function E.refresh()
+    E.resolve()
     if not config.espMasterEnabled then
         E.clearAll()
         return
@@ -14166,7 +15564,12 @@ function updateESPColors()
         end
         if config.funcs.applyAimbotFovTrans then config.funcs.applyAimbotFovTrans() end
     end
-    if config.espMasterEnabled then E.needSync = true end
+    local ca, cb = config.aimbotCurrentTarget, config.SA2_currentTarget
+    local v = config.varibz
+    if ca ~= v.espColA or cb ~= v.espColB then
+        v.espColA, v.espColB = ca, cb
+        if config.espMasterEnabled then E.needSync = true end
+    end
 end
 config.offArrow = {
     gui = nil,
@@ -14278,7 +15681,7 @@ config.offArrow.update = function(dt)
         return
     end
     oa.acc = oa.acc + dt
-    if oa.acc < 1 / math.max(config.esphertz or 100, 1) then return end
+    if oa.acc < (config.perf and config.perf.scale or 1) / math.max(config.esphertz or 100, 1) then return end
     oa.acc = 0
 
     local cam = excusemesir.Workspace.CurrentCamera
@@ -14343,7 +15746,7 @@ config.offArrow.update = function(dt)
                     it.arrow.TextColor3 = color
                     it.arrow.Visible = true
 
-                    if config.offArrowShowDistance then
+                    if config.prefDistanceESP then
                         local dpos = pos - d2 * (size * 1.1)
                         it.dist.Text = string.format("%dm", math.floor((root.Position - camCF.Position).Magnitude))
                         it.dist.Position = UDim2.fromOffset(dpos.X, dpos.Y)
@@ -14415,50 +15818,19 @@ do
 function config.funcs.chooseBodyPartInstance(target)
     local char = config.funcs.getTargetCharacter(target)
     if not char then return nil, "Head" end
-
-    local bp = config.SA2_TargetPart or "Head"
-
-    if bp == "Head" then
-        return char:FindFirstChild("Head"), "Head"
-    elseif bp == "HumanoidRootPart" then
-        return char:FindFirstChild("HumanoidRootPart"), "HumanoidRootPart"
-    elseif bp == "Random" then
-        config._selectedPartForTarget = config._selectedPartForTarget or {}
-        if config._selectedPartForTarget[target] then
-            local selectedName = config._selectedPartForTarget[target]
-            local part = char:FindFirstChild(selectedName)
-            if part then
-                return part, selectedName
-            end
+    local sel = config.SA2_TargetPart
+    config._selectedPartForTarget = config._selectedPartForTarget or {}
+    local cachedName = config._selectedPartForTarget[target]
+    if cachedName then
+        local cached = char:FindFirstChild(cachedName)
+        if cached and cached:IsA("BasePart") then
+            return cached, cachedName
         end
-        local selectedPart = nil
-        local selectedName = "Head"
-        
-        if math.random(1, 100) <= (config.SA2_HeadshotChance or 100) then
-            local head = char:FindFirstChild("Head")
-            if head then
-                selectedPart = head
-                selectedName = "Head"
-            end
-        end
-        if not selectedPart then
-            local rootPart = char:FindFirstChild("HumanoidRootPart")
-            if rootPart then
-                selectedPart = rootPart
-                selectedName = "HumanoidRootPart"
-            end
-        end
-        if not selectedPart then
-            local head = char:FindFirstChild("Head")
-            selectedPart = head
-            selectedName = (head and head.Name) or "Head"
-        end
-        config._selectedPartForTarget[target] = selectedName
-        return selectedPart, selectedName
-    else
-        local found = char:FindFirstChild(bp) or char:FindFirstChild("Head")
-        return found, (found and found.Name) or "Head"
     end
+    local part, _, pname = config.funcs.rollBodyPart(char, sel, config.SA2_HeadshotChance or 100)
+    if not part then return nil, "Head" end
+    config._selectedPartForTarget[target] = pname
+    return part, pname
 end
 function config.funcs.applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     local char = config.funcs.getTargetCharacter(targetPlayer)
@@ -14473,25 +15845,6 @@ function config.funcs.applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     end
 
     if not part or not part.Parent then return end
-    if config.hitboxEnabled then
-        local pName = part.Name
-        if pName == "Torso" or pName == "UpperTorso" or pName == "LowerTorso" then
-            local fallback = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            if not fallback then return end
-            if fallback.Name == "Torso" or fallback.Name == "UpperTorso" or fallback.Name == "LowerTorso" then
-                return
-            end
-            part = fallback
-            partName = part.Name
-            if config.originalSizes[targetPlayer] and
-               (config.originalSizes[targetPlayer].partName == "Torso" or
-                config.originalSizes[targetPlayer].partName == "UpperTorso" or
-                config.originalSizes[targetPlayer].partName == "LowerTorso") then
-                config.originalSizes[targetPlayer].partName = part.Name
-                config.originalSizes[targetPlayer].size = part.Size
-            end
-        end
-    end
     if not config.originalSizes[targetPlayer] then
         config.originalSizes[targetPlayer] = {
             partName = part.Name,
@@ -14503,13 +15856,8 @@ function config.funcs.applySizeToPart(targetPlayer, targetDiameter, chosenPart)
         if part.Name ~= expectedPart then
             local correctPart = char:FindFirstChild(expectedPart)
             if correctPart and correctPart.Parent then
-                if not (config.hitboxEnabled and
-                       (correctPart.Name == "Torso" or
-                        correctPart.Name == "UpperTorso" or
-                        correctPart.Name == "LowerTorso")) then
-                    part = correctPart
-                    partName = expectedPart
-                end
+                part = correctPart
+                partName = expectedPart
             end
         end
     end
@@ -14567,15 +15915,20 @@ function config.funcs.applySizeToPart(targetPlayer, targetDiameter, chosenPart)
     config.activeApplied[targetPlayer] = true
     local targetSize = config.targethbSizes[targetPlayer]
     if targetSize and typeof(targetSize) == "Vector3" and part and part.Parent then
-        part.Size = targetSize
-        part.Transparency = config.hbtrans or 0.5
-        part.CanCollide = false
+        local cur = part.Size
+        local tol = 0.02
+        if math.abs(cur.X - targetSize.X) > math.max(0.001, targetSize.X * tol)
+            or math.abs(cur.Y - targetSize.Y) > math.max(0.001, targetSize.Y * tol)
+            or math.abs(cur.Z - targetSize.Z) > math.max(0.001, targetSize.Z * tol) then
+            part.Size = targetSize
+        end
+        local wantTrans = config.hbtrans or 0.5
+        if part.Transparency ~= wantTrans then part.Transparency = wantTrans end
+        if part.CanCollide then part.CanCollide = false end
         if part.Name == "Head" then
-            part.Massless = true
-            part.CanCollide = false
+            if not part.Massless then part.Massless = true end
         elseif part.Name == "HumanoidRootPart" then
-            part.Massless = false
-            part.CanCollide = false
+            if part.Massless then part.Massless = false end
         end
     else
         config.targethbSizes[targetPlayer] = nil
@@ -14622,14 +15975,15 @@ function config.funcs.restorePartForPlayer(targetPlayer)
     if config._selectedPartForTarget then
         config._selectedPartForTarget[targetPlayer] = nil
     end
+    local ed = config.hitboxExpandedParts[targetPlayer]
+    if config.hitboxEnabled and ed and ed.part and ed.part.Parent and config.funcs.hbEnforce then
+        config.funcs.hbEnforce(targetPlayer, ed)
+    end
 end
-local function proxyhb(targetPlayer)
+local function proxyhb(targetPlayer, part)
     if not targetPlayer then return nil end
     if targetPlayer == localPlayer then return nil end
-    local char = config.funcs.getTargetCharacter(targetPlayer)
-    if not char then return nil end
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-    if not torso then return nil end
+    if not part or not part.Parent then return nil end
     if config.proxyHitboxes[targetPlayer] then
         config.proxyHitboxes[targetPlayer]:Destroy()
         config.proxyHitboxes[targetPlayer] = nil
@@ -14646,7 +16000,7 @@ local function proxyhb(targetPlayer)
     proxyPart.Transparency = config.hitboxVisualizer.transparency or 0.5
     proxyPart.Color = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0)
     local gap = config.hitboxVisualizer.gap or 0.4
-    local baseSize = torso.Size
+    local baseSize = part.Size
     local proxySize = Vector3.new(
         math.max(baseSize.X - gap, 0.1),
         math.max(baseSize.Y - gap, 0.1),
@@ -14663,28 +16017,40 @@ local function proxyhb(targetPlayer)
     
     proxyPart.Parent = excusemesir.Workspace
     config.proxyHitboxes[targetPlayer] = proxyPart
+    config.varibz.proxyPartOf = config.varibz.proxyPartOf or setmetatable({}, { __mode = "k" })
+    config.varibz.proxyPartOf[targetPlayer] = part
     local weld = Instance.new("Weld")
     weld.Name = rngifynames.instname("sa2_proxy_weld")
     weld.Part0 = proxyPart
-    weld.Part1 = torso
+    weld.Part1 = part
     weld.C0 = CFrame.new(0, 0, 0)
     weld.Parent = proxyPart
     
     return proxyPart
 end
 
-local function tnormalsize(targetPlayer)
-    local char = config.funcs.getTargetCharacter(targetPlayer)
-    if not char then return end  
+function config.funcs.hbSa2Owns(player, part)
+    local o = config.originalSizes[player]
+    return config.activeApplied[player] == true and o ~= nil and part ~= nil and o.partName == part.Name
+end
 
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-
-    if torso and not config.hitboxOriginalSizes[targetPlayer] then
-        config.hitboxOriginalSizes[targetPlayer] = {
-            part = torso,
-            size = torso.Size
-        }
+function config.funcs.hbEnforce(player, data)
+    local part = data and data.part
+    if not part or not part.Parent then return false end
+    if config.funcs.hbSa2Owns(player, part) then return true end
+    local want, trans
+    if data.expanded then
+        want, trans = data.targetSize, 1
+    else
+        want, trans = data.originalSize, data.origTrans or 0
     end
+    if want and part.Size ~= want then part.Size = want end
+    if part.Transparency ~= trans then part.Transparency = trans end
+    if part.CanCollide then part.CanCollide = false end
+    if data.expanded and part.Name ~= "HumanoidRootPart" and not part.Massless then
+        part.Massless = true
+    end
+    return true
 end
 
 function config.funcs.updateproxyhb(targetPlayer)
@@ -14697,26 +16063,19 @@ function config.funcs.updateproxyhb(targetPlayer)
         return
     end
     
-    local char = config.funcs.getTargetCharacter(targetPlayer)
-    if not char then return end
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-    if not torso then return end
+    local data = config.hitboxExpandedParts[targetPlayer]
+    local part = data and data.part
+    if not part or not part.Parent then return end
     local proxyPart = config.proxyHitboxes[targetPlayer]
-    if not proxyPart or not proxyPart.Parent then
-        proxyPart = proxyhb(targetPlayer)
+    local own = config.varibz.proxyPartOf
+    if not proxyPart or not proxyPart.Parent or not own or own[targetPlayer] ~= part then
+        proxyPart = proxyhb(targetPlayer, part)
         if not proxyPart then return end
     end
-    
     local hitboxSize = config.hitboxSize or 10
-    local actualSize = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
     local gap = config.hitboxVisualizer.gap or 0.4
-    local proxySize = Vector3.new(
-        math.max(actualSize.X - gap, 0.1),
-        math.max(actualSize.Y - gap, 0.1),
-        math.max(actualSize.Z - gap, 0.1)
-    )
-    
-    proxyPart.Size = proxySize
+    local s = math.max(hitboxSize - gap, 0.1)
+    proxyPart.Size = Vector3.new(s, s, s)
     proxyPart.Transparency = config.hitboxVisualizer.transparency or 0.5
     proxyPart.Color = config.hitboxVisualizer.color or Color3.fromRGB(255, 0, 0)
     proxyPart.Material = config.materials[config.hitboxVisualizer.material] or Enum.Material.Neon
@@ -14747,38 +16106,55 @@ function config.funcs.expandhb(targetPlayer, size)
 
     local char = config.funcs.getTargetCharacter(targetPlayer)
     if not char then return end
-    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")  
-    if not torso then return end  
 
-    tnormalsize(targetPlayer)
-    local expansionSize = Vector3.new(size, size, size)
-    config.hitboxLastSize[targetPlayer] = size
-
-    config.hitboxExpandedParts[targetPlayer] = {
-        part = torso,
-        targetSize = expansionSize,
-        originalSize = config.hitboxOriginalSizes[targetPlayer] and config.hitboxOriginalSizes[targetPlayer].size or torso.Size
-    }
-    
-    if config.hitboxEnabled then
-        pcall(function()
-            torso.Size = expansionSize
-            if config.hitboxVisualizer.enabled then
-                torso.Transparency = 1
-            else
-                torso.Transparency = 1
-            end
-            torso.CanCollide = false
-            torso.Massless = true
-            if config.hitboxColor then
-                torso.Color = config.hitboxColor
-            else
-                torso.Color = Color3.fromRGB(255, 255, 255)
-            end
-        end)
-        if config.hitboxVisualizer.enabled then
-            config.funcs.updateproxyhb(targetPlayer)
+    local sel = config.hitboxTargetPart
+    local data = config.hitboxExpandedParts[targetPlayer]
+    local now = os.clock()
+    if not data or not data.part or not data.part.Parent or data.sel ~= sel
+       or now >= (data.nextRoll or math.huge) then
+        local part = config.funcs.rollBodyPart(char, sel, config.hitboxHeadshotChance or 100, "HumanoidRootPart")
+        if not part then return end
+        local hc = math.clamp(tonumber(config.hitboxHitChance) or 100, 0, 100)
+        local expanded = hc >= 100 or (hc > 0 and math.random(1, 100) <= hc)
+        local randomish = hc < 100 or #config.funcs.normParts(sel, "HumanoidRootPart") > 1
+        if data and data.part ~= part then
+            config.funcs.restoreTorso(targetPlayer)
+            data = nil
         end
+        local orig = config.hitboxOriginalSizes[targetPlayer]
+        if not orig or orig.part ~= part then
+            local sz = part.Size
+            local o = config.originalSizes[targetPlayer]
+            if o and o.size and config.funcs.hbSa2Owns(targetPlayer, part) then sz = o.size end
+            orig = {
+                part = part,
+                size = sz,
+                transparency = part.Transparency,
+                canCollide = part.CanCollide,
+                massless = part.Massless,
+            }
+            config.hitboxOriginalSizes[targetPlayer] = orig
+        end
+        if not data then
+            data = {
+                part = part,
+                originalSize = orig.size,
+                origTrans = orig.transparency,
+                targetSize = Vector3.new(size, size, size),
+            }
+            config.hitboxExpandedParts[targetPlayer] = data
+        end
+        data.sel = sel
+        data.expanded = expanded
+        data.nextRoll = randomish and (now + 0.5) or math.huge
+    end
+    if data.targetSize.X ~= size then
+        data.targetSize = Vector3.new(size, size, size)
+    end
+    config.hitboxLastSize[targetPlayer] = size
+    config.funcs.hbEnforce(targetPlayer, data)
+    if config.hitboxVisualizer.enabled then
+        config.funcs.updateproxyhb(targetPlayer)
     end
 end
 
@@ -14787,11 +16163,18 @@ function config.funcs.restoreTorso(targetPlayer)
 
     local original = config.hitboxOriginalSizes[targetPlayer]
     if original and original.part and original.part.Parent then
-        pcall(function()
-            original.part.Size = original.size
-            original.part.Transparency = 0
-            original.part.CanCollide = false
-        end)
+        if config.funcs.hbSa2Owns(targetPlayer, original.part) then
+            local o = config.originalSizes[targetPlayer]
+            if o then o.size = original.size end
+        else
+            pcall(function()
+                local p = original.part
+                p.Size = original.size
+                p.Transparency = original.transparency or 0
+                p.CanCollide = original.canCollide or false
+                if original.massless ~= nil then p.Massless = original.massless end
+            end)
+        end
     end
 
     config.hitboxExpandedParts[targetPlayer] = nil
@@ -14817,6 +16200,8 @@ local function updateHitboxes()
         config.proxyHitboxes = {}
         return
     end
+    local rerolls
+    local nowC = os.clock()
     for player, data in pairs(config.hitboxExpandedParts) do
         if not player or not config.funcs.getTargetCharacter(player) then
             table.insert(config.varibz.targetsToRemove, player)
@@ -14826,24 +16211,15 @@ local function updateHitboxes()
             if not config.funcs.plralive(player) then
                 config.funcs.restoreTorso(player)
                 table.insert(config.varibz.targetsToRemove, player)
+            elseif not data.part or not data.part.Parent then
+                table.insert(config.varibz.targetsToRemove, player)
+            elseif data.sel ~= config.hitboxTargetPart or nowC >= (data.nextRoll or math.huge) then
+                rerolls = rerolls or {}
+                rerolls[#rerolls + 1] = player
             else
-                local torso = config.funcs.getTargetCharacter(player):FindFirstChild("Torso") or config.funcs.getTargetCharacter(player):FindFirstChild("UpperTorso")
-                if torso and data.targetSize then
-                    pcall(function()
-                        torso.Size = data.targetSize
-                        if config.hitboxVisualizer.enabled then
-                            torso.Transparency = 1
-                        else
-                            torso.Transparency = 1
-                        end
-                        torso.CanCollide = false
-                        torso.Massless = true
-                    end)
-                    if config.hitboxVisualizer.enabled then
-                        config.funcs.updateproxyhb(player)
-                    end
-                else
-                    table.insert(config.varibz.targetsToRemove, player)
+                config.funcs.hbEnforce(player, data)
+                if config.hitboxVisualizer.enabled then
+                    config.funcs.updateproxyhb(player)
                 end
             end
         end
@@ -14853,6 +16229,12 @@ local function updateHitboxes()
         if config.proxyHitboxes[player] then
             config.proxyHitboxes[player]:Destroy()
             config.proxyHitboxes[player] = nil
+        end
+    end
+    table.clear(config.varibz.targetsToRemove)
+    if rerolls then
+        for i = 1, #rerolls do
+            pcall(config.funcs.expandhb, rerolls[i], config.hitboxSize)
         end
     end
     local now = tick()
@@ -15030,7 +16412,6 @@ function config.funcs.hb()
 
         if playerObj and playerObj ~= localPlayer and config.funcs.getTargetCharacter(playerObj) and config.funcs.plralive(playerObj) then
             local part = config.funcs.getTargetCharacter(playerObj):FindFirstChild(config.originalSizes[playerObj] and config.originalSizes[playerObj].partName) 
-                         or config.funcs.getTargetCharacter(playerObj):FindFirstChild(config.SA2_TargetPart) 
                          or config.funcs.getTargetCharacter(playerObj):FindFirstChild("Head")
             if not part then
                 local p1 = config.funcs.getTargetCharacter(playerObj):FindFirstChild("HumanoidRootPart")
@@ -15118,21 +16499,19 @@ local function shouldTargetAimbot(target)
 
     return config.funcs.matchesTeamTarget(target)
 end
+local aimbotWallStore, aimbotWallPrune = {}, 0
 local function aimbotWallCheck(targetPos, sourcePos)
     if not config.aimbotWallCheck then return true end
     local distance = (targetPos - sourcePos).Magnitude
     if distance <= 0 then return true end
-    local cacheKey = string.format("%.1f,%.1f,%.1f|%.1f,%.1f,%.1f", 
-        targetPos.X, targetPos.Y, targetPos.Z,
-        sourcePos.X, sourcePos.Y, sourcePos.Z)
-    local now = tick()
-    if now - config.varibz.aimbotdump.lclr > 60 then
-        config.varibz.aimbotdump.data = {}
-        config.varibz.aimbotdump.lclr = now
-    end
-    local cached = config.varibz.aimbotdump.data[cacheKey]
-    if cached and (now - cached.time) < config.varibz.aimbotdump.t then
-        return cached.visible
+    local floor = math.floor
+    local now = os.clock()
+    local tk = floor(targetPos.X * 0.5) * 73856093 + floor(targetPos.Y * 0.5) * 19349663 + floor(targetPos.Z * 0.5) * 83492791
+    local sk = floor(sourcePos.X * 0.5) * 73856093 + floor(sourcePos.Y * 0.5) * 19349663 + floor(sourcePos.Z * 0.5) * 83492791
+    local key = tk * 31 + sk
+    local e = aimbotWallStore[key]
+    if e and (now - e.t) < 0.06 then
+        return e.v
     end
     local rayDirection = (targetPos - sourcePos)
     local abFilter = config.varibz.aimbotdump.filter
@@ -15148,19 +16527,23 @@ local function aimbotWallCheck(targetPos, sourcePos)
             if hitPlayer and hitPlayer ~= localPlayer then
                 visible = true
             else
-                local distanceToHit = (result.Position - sourcePos).Magnitude
-                visible = distanceToHit >= (distance - 2)
+                visible = (result.Position - sourcePos).Magnitude >= (distance - 2)
             end
         else
-            local distanceToHit = (result.Position - sourcePos).Magnitude
-            visible = distanceToHit >= (distance - 2)
+            visible = (result.Position - sourcePos).Magnitude >= (distance - 2)
         end
     end
-    
-    config.varibz.aimbotdump.data[cacheKey] = {
-        visible = visible,
-        time = now
-    }
+    if e then
+        e.v, e.t = visible, now
+    else
+        aimbotWallStore[key] = { v = visible, t = now }
+    end
+    if now - aimbotWallPrune > 3 then
+        aimbotWallPrune = now
+        for k, en in pairs(aimbotWallStore) do
+            if now - en.t > 1 then aimbotWallStore[k] = nil end
+        end
+    end
     return visible
 end
 
@@ -15225,7 +16608,6 @@ function config.funcs.aimbotUpdate()
     local viewportSize = camera.ViewportSize
     local center = config.getFovCenter(viewportSize)
     local cameraPos = camera.CFrame.Position
-    local localPlayer = excusemesir.Players.LocalPlayer
     local allTargets = config.getTargetsFiltered()
     if #allTargets <= 0 then 
         config.aimbotCurrentTarget = nil 
@@ -15245,34 +16627,29 @@ function config.funcs.aimbotUpdate()
             if config.ignoreForcefield and config.funcs.hasForcefield(char) then continue end
             if not shouldTargetAimbot(target) then continue end
             
-            local targetPart = nil
-            if config.aimbotTargetPart == "Head" then
-                targetPart = char:FindFirstChild("Head")
-            elseif config.aimbotTargetPart == "HumanoidRootPart" then
-                targetPart = char:FindFirstChild("HumanoidRootPart")
-            else
-                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-            end
-            
+            local targetPart, neckPos = config.funcs.pickBodyPart(char, config.aimbotTargetPart, nil, "aimbot", 0.45)
             if not targetPart then continue end
-            local worldDist = (targetPart.Position - cameraPos).Magnitude
-            if worldDist > config.aimbotTargetRange then continue end
+            local aimPosV = neckPos or targetPart.Position
+            local neckOff = neckPos and (neckPos - targetPart.Position) or nil
+            local worldDist = (aimPosV - cameraPos).Magnitude
+            if worldDist > config.funcs.effRange(config.aimbotTargetRange) then continue end
             
             if config.aimbot360Enabled then
                 if config.aimbotWallCheck then
-                    local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
+                    local isVisible = aimbotWallCheck(aimPosV, cameraPos)
                     if not isVisible then continue end
                 end
                 
                 table.insert(potentialTargets, {
                     target = target,
                     part = targetPart,
+                    neckOff = neckOff,
                     worldDist = worldDist,
                     humanoid = humanoid,
                     health = humanoid.Health
                 })
             else
-                local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
+                local screenPos, onScreen = camera:WorldToViewportPoint(aimPosV)
                 if not onScreen or screenPos.Z <= 0 then continue end
                 local screenVec = Vector2.new(screenPos.X, screenPos.Y)
                 local distPxSq = (screenVec.X - center.X)^2 + (screenVec.Y - center.Y)^2
@@ -15281,13 +16658,14 @@ function config.funcs.aimbotUpdate()
                 
                 if distPxSq <= centerSq then
                     if config.aimbotWallCheck then
-                        local isVisible = aimbotWallCheck(targetPart.Position, cameraPos)
+                        local isVisible = aimbotWallCheck(aimPosV, cameraPos)
                         if not isVisible then continue end
                     end
                     
                     table.insert(potentialTargets, {
                         target = target,
                         part = targetPart,
+                        neckOff = neckOff,
                         worldDist = worldDist,
                         humanoid = humanoid,
                         health = humanoid.Health
@@ -15327,6 +16705,12 @@ function config.funcs.aimbotUpdate()
             local targetPosition = predictthatposagain(bestTarget.part)
             if not targetPosition then
                 targetPosition = bestTarget.part.Position
+            end
+            if bestTarget.neckOff then
+                targetPosition = targetPosition + bestTarget.neckOff
+            end
+            if (config.aimbotJitter or 0) > 0 then
+                targetPosition = config.funcs.aimJitter(targetPosition, camera.CFrame.Position)
             end
             local strength = math.clamp(config.aimbotStrength, 0, 1)
             if config.aimbotAutoRotate then
@@ -15551,7 +16935,7 @@ local function smthsmth(charToInclude)
         table.insert(config.varibz.tbotdump.cacheigl, localPlayer.Character)
     end
     
-    for _, otherPlayer in ipairs(excusemesir.Players:GetPlayers()) do
+    for _, otherPlayer in ipairs(config.funcs.plist()) do
         if otherPlayer ~= localPlayer and otherPlayer.Character then
             table.insert(config.varibz.tbotdump.cacheigl, otherPlayer.Character)
         end
@@ -15588,6 +16972,7 @@ local function triggerBotUpdate()
     table.clear(config.varibz.targetsInFOV)
     local targets = config.getTargetsFiltered()
     if #targets == 0 then
+        config.varibz.tbotSeen = nil
         config.tbotcurrenttarget = nil
         config.tbotTargetted = false
         if config.tbotPressed then
@@ -15640,18 +17025,12 @@ local function triggerBotUpdate()
                     local humanoid = char:FindFirstChildOfClass("Humanoid")
                     if humanoid and humanoid.Health > 0 then
                         if not (config.ignoreForcefield and config.funcs.hasForcefield(char)) then
-                            local targetPart = nil
-                            if config.tbot.targetPart == "Head" then
-                                targetPart = char:FindFirstChild("Head")
-                            elseif config.tbot.targetPart == "HumanoidRootPart" then
-                                targetPart = char:FindFirstChild("HumanoidRootPart")
-                            else
-                                targetPart = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
-                            end
+                            local targetPart, tNeck = config.funcs.pickBodyPart(char, config.tbot.targetPart, nil, "tbot", 0.25)
+                            local tPos = tNeck or (targetPart and targetPart.Position)
                             if targetPart then
-                                local worldDist = (targetPart.Position - camera.CFrame.Position).Magnitude
-                                if worldDist <= (config.tbot.targetRange or 500) then
-                                    local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
+                                local worldDist = (tPos - camera.CFrame.Position).Magnitude
+                                if worldDist <= config.funcs.effRange(config.tbot.targetRange) then
+                                    local screenPos, onScreen = camera:WorldToViewportPoint(tPos)
                                     local inView = onScreen and screenPos.Z > 0
                                     if inView or is360 then
                                         local distSq
@@ -15660,7 +17039,7 @@ local function triggerBotUpdate()
                                             local dy = screenPos.Y - center.Y
                                             distSq = dx * dx + dy * dy
                                         else
-                                            local toT = (targetPart.Position - camera.CFrame.Position).Unit
+                                            local toT = (tPos - camera.CFrame.Position).Unit
                                             local ang = math.acos(math.clamp(camera.CFrame.LookVector:Dot(toT), -1, 1))
                                             distSq = (ang * 1000) ^ 2
                                         end
@@ -15668,7 +17047,7 @@ local function triggerBotUpdate()
                                             local passWall = true
                                             if config.tbot.wallCheck then
                                                 local origin = camera.CFrame.Position
-                                                local dir = (targetPart.Position - origin)
+                                                local dir = (tPos - origin)
                                                 local dist = dir.Magnitude
                                                 local ignoreList = smthsmth(char)
 
@@ -15704,6 +17083,7 @@ local function triggerBotUpdate()
     end
 
     if #candidates == 0 then
+        config.varibz.tbotSeen = nil
         config.tbotcurrenttarget = nil
         config.tbotTargetted = false
         if config.tbotPressed then
@@ -15731,6 +17111,29 @@ local function triggerBotUpdate()
         bestTarget = candidates[1].target
         bestPart = candidates[1].part
         bestChar = candidates[1].char
+    end
+    local rtMs = config.tbot.reactionTime or 0
+    if rtMs > 0 then
+        local v = config.varibz
+        local nowT = os.clock()
+        if v.tbotSeen ~= bestTarget then
+            v.tbotSeen = bestTarget
+            v.tbotSeenAt = nowT
+            v.tbotRT = (rtMs / 1000) * (0.85 + math.random() * 0.3)
+        end
+        if nowT - v.tbotSeenAt < v.tbotRT then
+            config.tbotcurrenttarget = nil
+            config.tbotTargetted = false
+            if config.tbotPressed then
+                config.tbotPressed = false
+                pcall(function()
+                    excusemesir.VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                end)
+            end
+            return
+        end
+    else
+        config.varibz.tbotSeen = nil
     end
     if math.random(1, 100) > (config.tbot.hitChance or 100) then
         config.tbotcurrenttarget = nil
@@ -15942,7 +17345,7 @@ local handle
 local weld
 local animstate
 function __Y0ew60R1Q3kR(distance)
-    for _, player in pairs(excusemesir.Players:GetPlayers()) do
+    for _, player in pairs(config.funcs.plist()) do
         if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
             player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance
             player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance
@@ -16205,24 +17608,6 @@ local function burgerking(deltaTime)
             config.funcs.aimbotUpdate()
         end
     end
-    if config.SA2_Enabled then
-        local currentTime = tick()
-        local vz = config.varibz
-        if not vz.sa2FindToolBusy and currentTime - (vz.sa2FindToolLast or 0) >= 1 then
-            vz.sa2FindToolLast = currentTime
-            vz.sa2FindToolBusy = true
-            task.spawn(function()
-                pcall(function()
-                    if not vz.sa2FindToolFn then
-                        local src = getgist_(getgenv().HttpUrlz_.sa2findtool)
-                        if src then vz.sa2FindToolFn = loadstring(src) end
-                    end
-                    if vz.sa2FindToolFn then vz.sa2FindToolFn() end
-                end)
-                vz.sa2FindToolBusy = false
-            end)
-        end
-    end
     if config.antiAimEnabled then
         config.funcs.antiAimUpdate()
     end
@@ -16253,7 +17638,7 @@ end
 config.funcs.task_("espColorLoop", function()
     while config.espMasterEnabled do
         updateESPColors()
-        task.wait(math.max(1 / math.max(config.esphertz or 100, 1), 0.05))
+        task.wait(0.25)
     end
 end)
 config.state.heartbeatConnection = config.funcs.HB("bgUpdater", 0, burgerking)
@@ -17156,7 +18541,8 @@ end
 
 function config.funcs.onRenderStep()
     config.varibz.sa1dump.rs = config.varibz.sa1dump.rs + 1
-    if config.varibz.sa1dump.rs % (config.varibz.sa2stuff or 0.5) ~= 0 then return end
+    local rsStep = math.max(1, math.floor((config.varibz.sa2stuff or 0.5) * 2 + 0.5))
+    if config.varibz.sa1dump.rs % rsStep ~= 0 then return end
     
     if not camera or not camera.Parent then
         camera = excusemesir.Workspace.CurrentCamera
@@ -17248,7 +18634,7 @@ function config.funcs.onRenderStep()
                 local topPos = bodyPart.Position
                 local camPos = camera.CFrame.Position
                 local worldDist = (camPos - topPos).Magnitude
-                if worldDist > (config.SA2_TargetRange or 500) then
+                if worldDist > config.funcs.effRange(config.SA2_TargetRange) then
                     continue
                 end
                 
@@ -17413,33 +18799,22 @@ function config.funcs.onRenderStep()
         if distance <= studz then
             diameter = math.max(0.05, math.min(0.1, diameter))
         else
-            local ok, pixelRadius = pcall(function()
-                local rightWorld = camera.CFrame:VectorToWorldSpace(Vector3.new(1, 0, 0)).Unit
-                local upWorld = camera.CFrame:VectorToWorldSpace(Vector3.new(0, 1, 0)).Unit
+            local pixelRadius = nil
+            do
+                local rightWorld = camera.CFrame.RightVector
                 local worldHalf = diameter / 2
-                local maxPixel = 0
-                local samples = 16
-                for i = 0, samples - 1 do
-                    local angle = (i / samples) * 2 * math.pi
-                    local offsetWorld = rightWorld * math.cos(angle) * worldHalf + upWorld * math.sin(angle) * worldHalf
-                    local samplePointWorld = best.part.Position + offsetWorld
-                    local sp, onScreenSample = camera:WorldToViewportPoint(samplePointWorld)
-                    if onScreenSample then
-                        local sampleScreen = Vector2.new(sp.X, sp.Y)
-                        local d = (sampleScreen - best.screenPos).Magnitude
-                        if d > maxPixel then
-                            maxPixel = d
-                        end
-                    end
+                local basePos = best.part.Position
+                local sp, onScreenSample = camera:WorldToViewportPoint(basePos + rightWorld * worldHalf)
+                if not onScreenSample then
+                    sp, onScreenSample = camera:WorldToViewportPoint(basePos - rightWorld * worldHalf)
                 end
-
-                if maxPixel <= 0 then
-                    return nil
+                if onScreenSample then
+                    local dx, dy = sp.X - best.screenPos.X, sp.Y - best.screenPos.Y
+                    local d = math.sqrt(dx * dx + dy * dy)
+                    if d > 0 then pixelRadius = d end
                 end
-
-                return maxPixel
-            end)
-            if ok and pixelRadius and pixelRadius > 0 then
+            end
+            if pixelRadius and pixelRadius > 0 then
                 local scale = best.screenDist / pixelRadius
                 scale = math.clamp(scale, 1 / config.maxExpansion, config.maxExpansion)
                 diameter = math.max(0.01, diameter * scale)
@@ -17490,33 +18865,53 @@ function config.funcs.onRenderStep()
         end
     end
 end
-function config.funcs.cos(input)
-    if not input then return nil end
-    local function proc(data)
-        local result = ""
-        for part in data:gmatch("[^%s]+") do
-            if part:match("^[01]+$") then
-                local num = 0
-                for i = 1, #part do
-                    num = num * 2 + tonumber(part:sub(i, i))
-                end
-                result = result .. string.char(num)
-            elseif part:match("^[0-9A-Fa-f]+$") and #part % 2 == 0 then
-                for i = 1, #part, 2 do
-                    local hex = part:sub(i, i+1)
-                    result = result .. string.char(tonumber(hex, 16))
-                end
-            else
-                result = result .. part
-            end
+do
+    local M = 2147483647
+    local frag = {
+        "B9 D7 01110011 1F 01100100 A9 10010111 97 57 00100011 F7 11010100 A3",
+        "5B 10011100 E3 10111110 01110100 DA 00011110 01010010 CE B2 6B C8 E7",
+        "00010011 13 2E 01010001 23 7B 00011101 00010011 10010110 01101100 D4 4B 7C 01110000",
+    }
+    local function xor8(a, b)
+        local r, p = 0, 1
+        for _ = 1, 8 do
+            local x, y = a % 2, b % 2
+            if x ~= y then r = r + p end
+            a = (a - x) / 2
+            b = (b - y) / 2
+            p = p * 2
         end
-        return result
+        return r
     end
-    if type(input) == "number" and input > 0 then
-        local func = proc("47 72 61 76 65 6C 2E 63 63 20 4C 6F 61 64 65 64 21 20 3A 33 20 28 4D 61 64 65 20 62 79 20 01000111 01110000 01110011 73 69 63 6B 6C 65 29")
-        return func
+    local function unseal()
+        local toks = {}
+        for i = 1, #frag do
+            for t in frag[i]:gmatch("%S+") do toks[#toks + 1] = t end
+        end
+        local n = #toks
+        local k = (n * 7919 + 104729) % (M - 1) + 1
+        local out, sum = {}, 0
+        for i = 1, n do
+            local t = toks[i]
+            local v = tonumber(t, #t == 8 and 2 or 16)
+            if not v then return nil end
+            k = (k * 16807) % M
+            local c = xor8(v, math.floor(k / 256) % 256)
+            out[i] = string.char(c)
+            sum = (sum + c * i) % 65521
+        end
+        if sum ~= 3447 then return nil end
+        return table.concat(out)
     end
-    return "Invalid input"
+    local env = getgenv()
+    function config.funcs._0x5f3a()
+        if env._gwm_k3 then return end
+        local s = unseal()
+        if not s then return end
+        env._gwm_k3 = true
+        print(s)
+    end
+    task.delay(15, config.funcs._0x5f3a)
 end
 local function setupDeathListener(targetPlayer)
     local char = config.funcs.getTargetCharacter(targetPlayer)
@@ -18414,6 +19809,7 @@ end
 
 --ui neuron activation starter
 math.randomseed(os.time())
+Gloader.set(0.34, "window", "building the window")
 do
 local isMobile = excusemesir.UserInputService.TouchEnabled and not excusemesir.UserInputService.KeyboardEnabled
 local isTablet = excusemesir.UserInputService.TouchEnabled and excusemesir.UserInputService.KeyboardEnabled
@@ -18466,6 +19862,7 @@ config.state.Window = WindUI:CreateWindow({
         ButtonsType = "Default"
     }
 })
+Gloader.set(0.40, "HBSS_InitGui", "window made")
 loadstring(getgist_(getgenv().HttpUrlz_.ineedbloxycola))()
 WindUI.Window:ToggleTransparency(true)
 __JRDRYCbfHxk9()
@@ -18500,7 +19897,8 @@ function config.funcs.rng6()
                 end)
             end
         end)
-        local ancestryConn = label.AncestryChanged:Connect(function(_, parent)
+        local ancestryConn
+        ancestryConn = label.AncestryChanged:Connect(function(_, parent)
             if not parent then
                 pcall(function() textConn:Disconnect() end)
                 pcall(function() ancestryConn:Disconnect() end)
@@ -18892,15 +20290,16 @@ local sewagetag = config.state.Window:Tag({
     Icon = "clock",
     Color = Color3.fromHex("#00ff88")
 })
-
 if sewagetag then
-    local accum = 0
-    
-    config.funcs.HB("fpsTag", 0, function(deltaTime)
-        if config.funcs.subside_I_I_I_I_I_() then return end
-        accum = accum + deltaTime
-        if accum >= 0.3 then
-            local fps = math.round(1 / math.max(deltaTime, 1e-6))
+    local frameCount = 0
+    local lastUpdate = tick()
+    local fpsConn = excusemesir.RunService.RenderStepped:Connect(function()
+        frameCount = frameCount + 1
+        local currentTime = tick()
+        if currentTime - lastUpdate >= 1 then
+            local fps = frameCount
+            frameCount = 0
+            lastUpdate = currentTime
             local ping = 0
             pcall(function()
                 ping = math.round(config.funcs.ping.get())
@@ -18908,9 +20307,9 @@ if sewagetag then
             if sewagetag.SetTitle then
                 sewagetag:SetTitle("FPS: " .. fps .. "\nP: " .. ping .. "ms")
             end
-            accum = accum - 0.3
         end
     end)
+    config.varibz.fpsTagConnection = fpsConn
 end
     return rng4.tag
 end
@@ -18996,36 +20395,6 @@ function config.funcs.rng7()
             end
         }
     end)
-end
-function config.funcs.rng()
-    rng_s.Spotify = config.rngmem.pick("popup_button", config.varibz.popz2)
-    rng_s.YouTube = config.rngmem.pick("popup_content", config.varibz.popz)
-    rng_s.Netflix = config.rngmem.pick("popup_title", config.varibz.popz3)
-    WindUI:Popup({
-        Title = rng_s.Netflix,
-        Icon = "shovel",
-        Content = rng_s.YouTube,
-        Buttons = {
-            {
-                Title = rng_s.Spotify,
-                Icon = "hammer",
-                Variant = "Tertiary"
-            }
-        }
-    })
-end
-function config.funcs.rng2()
-    rng_s.bju = config.rngmem.pick("notif_text", config.varibz.tinf)
-    rng_s.bju2 = config.varibz.tinf2[math.random(1, #config.varibz.tinf2)]
-    rng_s.bju3 = config.varibz.tinf3[math.random(1, #config.varibz.tinf3)]
-    config.funcs.n({
-        Title = "Gravel.cc :3",
-        Content = rng_s.bju,
-        Audio = rng_s.bju3,
-        Length = 10,
-        Image = rng_s.bju2,
-        BarColor = Color3.fromRGB(0, 170, 255)
-    })
 end
 task.wait(0.2)
 __ummm9GOsSbAk()
@@ -19123,6 +20492,7 @@ local lazyTabs = {
     prewarming = false, deadline = 0,
     scale = 1, baseDt = nil, cost = {},
     names = {"Paragraph", "Toggle", "Slider", "Space", "Button", "Dropdown", "Keybind", "Colorpicker", "Input", "Divider", "Code", "Image"},
+    featureNames = {Toggle = true, Slider = true, Button = true, Dropdown = true, Keybind = true, Colorpicker = true, Input = true},
 }
 local function setHurry(entry)
     if entry.hurry or entry.done then return end
@@ -19173,6 +20543,10 @@ lazyTabs.run = function(entry, sync)
                     math.max(math.floor((tonumber(config.lazyBuildPerFrame) or 24) * s), 2)
             end
             if pwActive() then
+                if Gloader.covering() then
+                    return math.max((tonumber(config.loaderBuildBudgetMs) or 12) / 1000, 0.001),
+                        math.max(tonumber(config.loaderBuildPerFrame) or 48, 1)
+                end
                 return math.max((tonumber(config.prewarmBudgetMs) or 6) / 1000, 0.0005),
                     math.max(tonumber(config.prewarmPerFrame) or 14, 1)
             end
@@ -19189,7 +20563,7 @@ lazyTabs.run = function(entry, sync)
                     local pwDt = 1 / math.max(tonumber(config.prewarmMinFps) or 30, 10)
                     local dt = hb:Wait()
                     local guard = 0
-                    while not entry.hurry and dt > pwDt and guard < 8 do
+                    while not entry.hurry and dt > pwDt and guard < 8 and not Gloader.covering() do
                         dt = hb:Wait()
                         guard = guard + 1
                     end
@@ -19231,6 +20605,12 @@ lazyTabs.run = function(entry, sync)
                             local c = os.clock() - c0
                             lazyTabs.cost[name] = math.max(c, (lazyTabs.cost[name] or 0) * 0.85)
                             count = count + 1
+                            if lazyTabs.featureNames[name] then
+                                entry.features = (entry.features or 0) + 1
+                                if entry.prewarm and entry.loaderText and Gloader.covering() then
+                                    Gloader.set(nil, nil, entry.loaderText(entry.features))
+                                end
+                            end
                             local budget, perFrame = limits()
                             local spent = os.clock() - t0
                             if count >= perFrame or spent >= budget then
@@ -19285,7 +20665,7 @@ local function buildLazyTab(entry, sync)
     config.funcs.task_("lazyBuildLoop", function()
         while #lazyTabs.queue > 0 do
             local nextEntry = table.remove(lazyTabs.queue, 1)
-            task.wait(tonumber(config.lazySettleSec) or 0.05)
+            task.wait((tonumber(config.lazySettleSec) or 0.05) * (config.perf and config.perf.scale or 1))
             lazyTabs.run(nextEntry, false)
         end
         lazyTabs.working = false
@@ -19321,8 +20701,10 @@ local function startLazyPreload()
     local hb = excusemesir.RunService.Heartbeat
     config.funcs.task_("lazyPreloadLoop", function()
         task.wait(tonumber(config.lazyPreloadDelaySec) or 8)
+        while Gloader.covering() do task.wait(0.25) end
         local skip = config.lazyPreloadSkip or {}
         local function waitCalm()
+            while config.perf and config.perf.level >= 2 do task.wait(1) end
             local calmFrames, tries = 0, 0
             while calmFrames < 3 and tries < 120 do
                 if lazyTabs.hurrying > 0 then
@@ -19349,7 +20731,7 @@ local function startLazyPreload()
                     entry.claimed = true
                     entry.preloaded = true
                     lazyTabs.run(entry, false)
-                    task.wait(tonumber(config.lazyPreloadGapSec) or 2)
+                    task.wait((tonumber(config.lazyPreloadGapSec) or 2) * (config.perf and config.perf.scale or 1))
                 end
             end
         end
@@ -19357,8 +20739,10 @@ local function startLazyPreload()
     end)
 end
 lazyTabs.prewarm = function()
-    if lazyTabs.prewarming or config.prewarm == false or config.lazyTabs == false then return end
-    local skip = config.prewarmSkip or {}
+    if lazyTabs.prewarming or config.lazyTabs == false then return end
+    if Gloader.skipped or not Gloader.active then return end
+    local covered = Gloader.covering()
+    local skip = covered and {} or (config.prewarmSkip or {})
     local todo = {}
     for _, entry in ipairs(lazyTabs.entries) do
         if not entry.done and not entry.claimed and not skip[entry.name] then
@@ -19367,18 +20751,30 @@ lazyTabs.prewarm = function()
     end
     if #todo == 0 then return end
     lazyTabs.prewarming = true
-    lazyTabs.deadline = os.clock() + math.max(tonumber(config.prewarmWindowSec) or 6.5, 0.5)
+    lazyTabs.deadline = covered and math.huge or (os.clock() + math.max(tonumber(config.prewarmWindowSec) or 6.5, 0.5))
+    Gloader.onSkip(function() lazyTabs.deadline = 0 end)
     config.funcs.task_("lazyPrewarmLoop", function()
         local built = 0
-        for _, entry in ipairs(todo) do
+        local maxSec = tonumber(config.loaderMaxSec) or 45
+        local totalTabs = math.max(lazyTabs.totalTabs or 0, #lazyTabs.entries)
+        local baseDone = totalTabs - #todo
+        for n, entry in ipairs(todo) do
             if os.clock() >= lazyTabs.deadline then break end
+            if Gloader.covering() and os.clock() - Gloader.t0 > maxSec then break end
             if not entry.done and not entry.claimed then
                 entry.claimed = true
                 entry.preloaded = true
                 entry.prewarm = true
+                local doneBefore = baseDone + n - 1
+                entry.loaderText = function(f)
+                    return "building tabs " .. doneBefore .. "/" .. totalTabs .. " (" .. entry.name .. ": " .. f .. " feature" .. (f == 1 and "" or "s") .. " loaded)"
+                end
+                Gloader.set(0.50 + 0.44 * ((n - 1) / #todo), entry.name .. " tab", entry.loaderText(0))
                 lazyTabs.run(entry, false)
+                Gloader.set(nil, nil, "building tabs " .. (doneBefore + 1) .. "/" .. totalTabs .. " (" .. entry.name .. ": " .. (entry.features or 0) .. " features loaded)")
                 entry.prewarm = false
                 built = built + 1
+                Gloader.set(0.50 + 0.44 * (n / #todo))
             end
         end
         lazyTabs.prewarming = false
@@ -19388,14 +20784,16 @@ end
 config.funcs.awaitPrewarm = function()
     if not lazyTabs.prewarming then return end
     local hb = excusemesir.RunService.Heartbeat
-    while lazyTabs.prewarming and os.clock() < lazyTabs.deadline do
+    while lazyTabs.prewarming and os.clock() < lazyTabs.deadline and not Gloader.skipped do
         hb:Wait()
     end
+    if Gloader.skipped then return end
     for _ = 1, math.max(tonumber(config.prewarmSettleFrames) or 3, 0) do
         hb:Wait()
     end
 end
 local function lazyTab(tab, name, build, eager)
+    lazyTabs.totalTabs = (lazyTabs.totalTabs or 0) + 1
     config.funcs.Ghook(tab, name)
     if eager or config.lazyTabs == false then
         build()
@@ -19550,6 +20948,7 @@ end)
         Multi = false,
         Callback = function(Option)
             config.masterTarget = Option
+            config.funcs.npcScanSync()
             config.funcs.onTargetingChanged(true)
         end
     })
@@ -19593,7 +20992,7 @@ end)
     })
 local function getBlacklistCandidates()
     local names = {}
-    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+    for _, pl in ipairs(config.funcs.plist()) do
         if pl ~= localPlayer then
             table.insert(names, pl.Name)
         end
@@ -19673,7 +21072,7 @@ MainTab:Toggle({
         config.ignoreFriends = v
         if config.hot then config.hot.invalidate() end
         if v then
-            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            for _, pl in ipairs(config.funcs.plist()) do
                 config.cacheFriend(pl)
             end
         end
@@ -20189,6 +21588,32 @@ local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650
             }
         }
     })
+MainTab:Toggle({
+    Title = "Perf Monitor",
+    Desc = "auto cuts work when fps drops or spikes, restores when smooth",
+    Value = config.perfEnabled ~= false,
+    Callback = function(v)
+        config.perfEnabled = v and true or false
+    end
+})
+
+MainTab:Slider({
+    Title = "↳ Perf Target FPS",
+    Desc = "below this fps the monitor starts reducing work",
+    IsTextbox = true,
+    Step = 5,
+    Suffix = " fps",
+    Value = {
+        Min = 15,
+        Max = 240,
+        Default = config.perfTargetFps or 50
+    },
+    Callback = function(value)
+        config.perfTargetFps = value
+    end
+})
+
+    config.varibz.rangeSliders = config.varibz.rangeSliders or {}
     MainTab:Paragraph({
         Title = "Scanner",
         Desc = "GetDescendants stuff",
@@ -20196,7 +21621,7 @@ local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650
     })
     MainTab:Slider({
         Title = "GetDescendants Radii",
-        Desc = "how far da scanner looks around ya cam & rootpart :3\nhigher = lag but more accuracy :p",
+        Desc = "how far da scanner looks around ya cam & rootpart :3 also caps players + Target Range sliders\nhigher = lag but more accuracy :p",
         IsTextbox = true,
         Step = 50,
         Value = {
@@ -20206,6 +21631,10 @@ local SandCC = loadstring(game:HttpGet("https://raw.githubusercontent.com/hm5650
         },
         Callback = function(value)
             config.gndRadius = value
+            config.varibz._allTargetsMemo = nil
+            for _, sl in pairs(config.varibz.rangeSliders) do
+                if sl and sl.SetMax then pcall(sl.SetMax, sl, value) end
+            end
         end
     })
     MainTab:Slider({
@@ -20546,6 +21975,23 @@ VisualsTab:Slider({
     end
 })
 
+VisualsTab:Slider({
+    Title = "↳ ESP Max Distance",
+    Desc = "skips esp on far targets (0 = unlimited). big servers = way less lag",
+    IsTextbox = true,
+    Step = 50,
+    Suffix = " studs",
+    Value = {
+        Min = 0,
+        Max = 10000,
+        Default = config.espMaxDist or 3000
+    },
+    Callback = function(value)
+        config.espMaxDist = value
+        if config.espMgr then config.espMgr.needSync = true end
+    end
+})
+
 VisualsTab:Dropdown({
     Title = "↳ Scoper",
     Desc = "what should ESP scan for??",
@@ -20656,18 +22102,8 @@ VisualsTab:Dropdown({
     })
 
     VisualsTab:Toggle({
-        Title = "↳ Offscreen Arrow Distance",
-        Desc = "shows how many\nstuds away they are",
-        Value = config.offArrowShowDistance ~= false,
-        Bind = function() return config.offArrowShowDistance ~= false end,
-        Callback = function(v)
-            config.offArrowShowDistance = v
-        end
-    })
-
-    VisualsTab:Toggle({
-        Title = "Distance Check (Text ESP)",
-        Desc = "idk tbh for this one\n(needs Text ESP on)",
+        Title = "↳ Distance Check",
+        Desc = "shows studs away on Text ESP\nand Offscreen Arrows",
         Value = config.prefDistanceESP or false,
         Bind = function() return config.prefDistanceESP end,
         Callback = function(v)
@@ -20715,6 +22151,20 @@ VisualsTab:Dropdown({
         end
     })
     
+    VisualsTab:Dropdown({
+        Title = "↳ ESP Method",
+        Desc = "CoreGui (default) or Drawing.New",
+        Values = {"CoreGui", "Drawing.New"},
+        Value = (config.espMethodText == "Drawing.New") and "Drawing.New" or "CoreGui",
+        Multi = false,
+        Callback = function(Option)
+            if type(Option) == "table" then Option = Option[1] end
+            if Option ~= "CoreGui" and Option ~= "Drawing.New" then return end
+            config.espMethodText = Option
+            config.espMgr.refresh()
+        end
+    })
+    
     VisualsTab:Toggle({
         Title = "Toggle Box ESP",
         Desc = "weird 2d box",
@@ -20726,6 +22176,20 @@ VisualsTab:Dropdown({
         end
     })
     
+    VisualsTab:Dropdown({
+        Title = "↳ ESP Method",
+        Desc = "CoreGui (default) or Drawing.New",
+        Values = {"CoreGui", "Drawing.New"},
+        Value = (config.espMethodBox == "Drawing.New") and "Drawing.New" or "CoreGui",
+        Multi = false,
+        Callback = function(Option)
+            if type(Option) == "table" then Option = Option[1] end
+            if Option ~= "CoreGui" and Option ~= "Drawing.New" then return end
+            config.espMethodBox = Option
+            config.espMgr.refresh()
+        end
+    })
+    
     VisualsTab:Toggle({
         Title = "Toggle Health ESP",
         Desc = "HP bars... bar..",
@@ -20734,6 +22198,20 @@ VisualsTab:Dropdown({
         Callback = function(v)
             config.funcs.toggleHealthESP(v)
             config.funcs.espRefresher()
+        end
+    })
+    
+    VisualsTab:Dropdown({
+        Title = "↳ ESP Method",
+        Desc = "CoreGui (default) or Drawing.New",
+        Values = {"CoreGui", "Drawing.New"},
+        Value = (config.espMethodHealth == "Drawing.New") and "Drawing.New" or "CoreGui",
+        Multi = false,
+        Callback = function(Option)
+            if type(Option) == "table" then Option = Option[1] end
+            if Option ~= "CoreGui" and Option ~= "Drawing.New" then return end
+            config.espMethodHealth = Option
+            config.espMgr.refresh()
         end
     })
     
@@ -20753,6 +22231,20 @@ VisualsTab:Dropdown({
                 updateESPColors()
             end
             config.funcs.espRefresher()
+        end
+    })
+    
+    VisualsTab:Dropdown({
+        Title = "↳ ESP Method",
+        Desc = "CoreGui (default) or Drawing.New",
+        Values = {"CoreGui", "Drawing.New"},
+        Value = (config.espMethodDot == "Drawing.New") and "Drawing.New" or "CoreGui",
+        Multi = false,
+        Callback = function(Option)
+            if type(Option) == "table" then Option = Option[1] end
+            if Option ~= "CoreGui" and Option ~= "Drawing.New" then return end
+            config.espMethodDot = Option
+            config.espMgr.refresh()
         end
     })
     
@@ -20897,7 +22389,7 @@ VisualsTab:Slider({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "ESP Colors",
+    Title = "ESP Colors/Alpha",
     Desc = "make the esp look pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
@@ -21002,8 +22494,8 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "Silent Aim Colors",
-    Desc = "Customize Silent Aim FOV ring colors",
+    Title = "Silent Aim Colors/Alpha",
+    Desc = "make circle thing pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21035,8 +22527,8 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "Aimbot FOV Colors",
-    Desc = "Customize Aimbot FOV ring colors",
+    Title = "Aimbot FOV Colors/Alpha",
+    Desc = "again make circle thing pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21078,8 +22570,8 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "TriggerBot FOV Colors",
-    Desc = "Customize TriggerBot FOV ring colors",
+    Title = "TriggerBot FOV Colors/Alpha",
+    Desc = "again & again make circle thing pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21119,8 +22611,8 @@ VisualsTab:Colorpicker({
 
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "Hitbox Colors",
-    Desc = "Customize hitbox colors",
+    Title = "Hitbox Colors/Alpha",
+    Desc = "that weird box, make it pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21152,8 +22644,8 @@ VisualsTab:Colorpicker({
 })
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "Reach Colors",
-    Desc = "Customize reach visualizer colors",
+    Title = "Reach Colors/Alpha",
+    Desc = "weird thing on ur tool, make it pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21174,8 +22666,8 @@ VisualsTab:Colorpicker({
 })
 VisualsTab:Space()
 VisualsTab:Paragraph({
-    Title = "Interaction Aura",
-    Desc = "Visualize the interaction aura :3",
+    Title = "Interaction Aura Colors/Alpha",
+    Desc = "that thing that activates other things, make it pretty",
     Color = config.Gradow.uicolor.lightGreen
 })
 
@@ -21211,7 +22703,7 @@ local function getthemez()
     end
     return themes
 end
-__AG6Gc2ZuWEts = WindUI.Theme and WindUI.Theme.Name or "Dark"
+local __AG6Gc2ZuWEts = WindUI.Theme and WindUI.Theme.Name or "Dark"
 VisualsTab:Dropdown({
     Title = "UI Theme",
     Desc = "make the ui pretty",
@@ -21677,8 +23169,8 @@ AntiAimTab:Slider({
     },
     Callback = function(value)
         config.desyncTransparency = value
-        if config.desyncActive and LocalPlayer.Character then
-            for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+        if config.desyncActive and localPlayer.Character then
+            for _, part in pairs(localPlayer.Character:GetDescendants()) do
                 if part:IsA("BasePart") or part:IsA("Decal") then
                     pcall(function() part.Transparency = value end)
                 end
@@ -21764,14 +23256,32 @@ AimbotTab:Toggle({
     end
 })
     
-    AimbotTab:Dropdown({
-        Title = "↳ Target Part",
-        Desc = "wat part",
-        Values = {"Head", "HumanoidRootPart"},
-        Value = config.aimbotTargetPart or "Head",
-        Multi = false,
-        Callback = function(Option)
-            config.aimbotTargetPart = Option
+    config.varibz.partDD.aimbot = {
+        get = function() return config.aimbotTargetPart end,
+        default = "Head",
+        el = AimbotTab:Dropdown({
+            Title = "↳ Target Part",
+            Desc = "wat part\n\nselect 2+ parts = random part\nNeck = the neck joint (Motor6D)",
+            Values = config.varibz.bodyPartNames,
+            Value = config.funcs.normParts(config.aimbotTargetPart),
+            Multi = true,
+            Callback = function(Option)
+                config.aimbotTargetPart = Option
+            end
+        })
+    }
+    AimbotTab:Slider({
+        Title = "↳ Jitter",
+        Desc = "human hands shake :p\nadds smooth random aim errors\n\n0 = off",
+        Step = 1,
+        Suffix = "%",
+        Value = {
+            Min = 0,
+            Max = 100,
+            Default = config.aimbotJitter or 0
+        },
+        Callback = function(value)
+            config.aimbotJitter = value
         end
     })
     
@@ -21844,15 +23354,15 @@ AimbotTab:Slider({
             config.funcs.updateAimbotFOVRing()
         end
     })
-    AimbotTab:Slider({
+    config.varibz.rangeSliders[1] = AimbotTab:Slider({
         Title = "↳ Target Range",
-        Desc = "eyesight²",
+        Desc = "eyesight² (capped by GetDescendants Radii)",
         IsTextbox = true,
         Step = 10,
         Value = {
             Min = 5,
-            Max = 1000,
-            Default = config.aimbotTargetRange or 500
+            Max = config.funcs.gndRadius(),
+            Default = math.min(config.aimbotTargetRange or 500, config.funcs.gndRadius())
         },
         Callback = function(value)
             config.aimbotTargetRange = value
@@ -21932,16 +23442,20 @@ lazyTab(TBotTab, "TBot", function()
         end
     })
 
-    TBotTab:Dropdown({
-        Title = "↳ Target Part",
-        Desc = "wat part",
-        Values = {"Head", "HumanoidRootPart", "Random"},
-        Value = config.tbot.targetPart or "Head",
-        Multi = false,
-        Callback = function(Option)
-            config.tbot.targetPart = Option
-        end
-    })
+    config.varibz.partDD.tbot = {
+        get = function() return config.tbot.targetPart end,
+        default = "Head",
+        el = TBotTab:Dropdown({
+            Title = "↳ Target Part",
+            Desc = "wat part\n\nselect 2+ parts = random part\nNeck = the neck joint (Motor6D)",
+            Values = config.varibz.bodyPartNames,
+            Value = config.funcs.normParts(config.tbot.targetPart),
+            Multi = true,
+            Callback = function(Option)
+                config.tbot.targetPart = Option
+            end
+        })
+    }
 
     TBotTab:Slider({
         Title = "↳ FOV Radius",
@@ -21959,15 +23473,15 @@ lazyTab(TBotTab, "TBot", function()
         end
     })
 
-TBotTab:Slider({
+config.varibz.rangeSliders[2] = TBotTab:Slider({
     Title = "↳ Target Range",
-    Desc = "eyesight²",
+    Desc = "eyesight² (capped by GetDescendants Radii)",
     IsTextbox = true,
     Step = 10,
     Value = {
         Min = 5,
-        Max = 1000,
-        Default = config.tbot.targetRange or 500
+        Max = config.funcs.gndRadius(),
+        Default = math.min(config.tbot.targetRange or 500, config.funcs.gndRadius())
     },
     Callback = function(value)
         config.tbot.targetRange = value
@@ -21986,6 +23500,21 @@ TBotTab:Slider({
         },
         Callback = function(value)
             config.tbot.hitChance = value
+        end
+    })
+
+    TBotTab:Slider({
+        Title = "↳ Reaction Time",
+        Desc = "how long it waits after a target shows up before shooting\n(+-15% random so it feels human)\n\n0 = instant",
+        Step = 10,
+        Suffix = "ms",
+        Value = {
+            Min = 0,
+            Max = 1000,
+            Default = config.tbot.reactionTime or 0
+        },
+        Callback = function(value)
+            config.tbot.reactionTime = value
         end
     })
 
@@ -22190,23 +23719,28 @@ sa2BulletEl = SilentAimTab:Toggle({
         end
     })
     
-    SilentAimTab:Dropdown({
-        Title = "↳ Target Part",
-        Desc = "what part should i find???",
-        Values = {"Random", "Head", "HumanoidRootPart"},
-        Value = config.SA2_TargetPart or "Head",
-        Multi = false,
-        Callback = function(choice)
-            for pl, _ in pairs(config.activeApplied) do
-                table.insert(config.varibz.targetsToRemove, pl)
+    config.varibz.partDD.sa2 = {
+        get = function() return config.SA2_TargetPart end,
+        default = "Head",
+        el = SilentAimTab:Dropdown({
+            Title = "↳ Target Part",
+            Desc = "what part should i find???\n\nselect 2+ parts = random part\nNeck acts as Head for the Hitbox method (cant resize a Motor6D)",
+            Values = config.varibz.bodyPartNames,
+            Value = config.funcs.normParts(config.SA2_TargetPart),
+            Multi = true,
+            Callback = function(choice)
+                for pl, _ in pairs(config.activeApplied) do
+                    table.insert(config.varibz.targetsToRemove, pl)
+                end
+                for _, pl in ipairs(config.varibz.targetsToRemove) do
+                    config.funcs.restorePartForPlayer(pl)
+                end
+                table.clear(config.varibz.targetsToRemove)
+                config.SA2_TargetPart = choice
+                config.funcs.refreshHeadLocks()
             end
-            for _, pl in ipairs(config.varibz.targetsToRemove) do
-                config.funcs.restorePartForPlayer(pl)
-            end
-            table.clear(config.varibz.targetsToRemove)
-            config.SA2_TargetPart = choice
-        end
-    })
+        })
+    }
     
 SilentAimTab:Dropdown({
     Title = "↳ Aim Methods",
@@ -22313,9 +23847,13 @@ SilentAimTab:Dropdown({
         end
     })
 
-SilentAimTab:Slider({
+config.varibz.headLocks.sa2 = {
+  get = function() return config.SA2_TargetPart end,
+  el = SilentAimTab:Slider({
     Title = "↳ Headshot Chance",
-    Desc = "hitchance²\n(only works with ''Random'' targetpart)",
+    Desc = "hitchance²\n(needs ''Head'' + another part in Target Part)",
+    Locked = not config.funcs.headChanceUnlocked(config.SA2_TargetPart),
+    LockedTitle = "Needs ''Head'' + another part selected",
     Step = 1,
     Suffix = "%",
     Value = {
@@ -22326,7 +23864,8 @@ SilentAimTab:Slider({
     Callback = function(value)
         config.SA2_HeadshotChance = value
     end
-})
+  })
+}
 
 SilentAimTab:Slider({
     Title = "↳ Prediction",
@@ -22372,15 +23911,15 @@ SilentAimTab:Slider({
             config.SA2_FovRadius = value
         end
     })
-    SilentAimTab:Slider({
+    config.varibz.rangeSliders[3] = SilentAimTab:Slider({
         Title = "↳ Target Range",
-        Desc = "eyesight²",
+        Desc = "eyesight² (capped by GetDescendants Radii)",
         IsTextbox = true,
         Step = 10,
         Value = {
             Min = 5,
-            Max = 1000,
-            Default = config.SA2_TargetRange or 500
+            Max = config.funcs.gndRadius(),
+            Default = math.min(config.SA2_TargetRange or 500, config.funcs.gndRadius())
         },
         Callback = function(value)
             config.SA2_TargetRange = value
@@ -23933,7 +25472,7 @@ lazyTab(HitboxTab, "Hitbox", function()
     HitboxTab:Space()
     HitboxTab:Paragraph({
         Title = "Hitbox Settings",
-        Desc = "there's literally only 1 setting -_-",
+        Desc = "size + which part gets big (+ how often)",
         Color = config.Gradow.uicolor.lightGreen
     })
     
@@ -23952,17 +25491,66 @@ lazyTab(HitboxTab, "Hitbox", function()
             if config.hitboxEnabled then
                 for player, data in pairs(config.hitboxExpandedParts) do
                     if player and config.funcs.targethb(player) and data and data.part and data.part.Parent then
-                        local newSize = Vector3.new(value, value, value)
-                        data.targetSize = newSize
+                        data.targetSize = Vector3.new(value, value, value)
                         config.hitboxLastSize[player] = value
-                        pcall(function()
-                            data.part.Size = newSize
-                        end)
+                        pcall(config.funcs.hbEnforce, player, data)
+                        if config.hitboxVisualizer.enabled then
+                            pcall(config.funcs.updateproxyhb, player)
+                        end
                     end
                 end
             end
         end
     })
+config.varibz.partDD.hitbox = {
+    get = function() return config.hitboxTargetPart end,
+    default = "HumanoidRootPart",
+    el = HitboxTab:Dropdown({
+        Title = "↳ Target Part",
+        Desc = "wat part gets big (default HumanoidRootPart)\n\nselect 2+ parts = random part\nNeck resizes the Head (cant resize a Motor6D)",
+        Values = config.varibz.bodyPartNames,
+        Value = config.funcs.normParts(config.hitboxTargetPart, "HumanoidRootPart"),
+        Multi = true,
+        Callback = function(choices)
+            config.hitboxTargetPart = choices
+            config.funcs.refreshHeadLocks()
+            if config.hitboxEnabled then pcall(config.funcs.applyhb) end
+        end
+    })
+}
+HitboxTab:Slider({
+    Title = "↳ Hit Chance",
+    Desc = "how often the part is actually expanded\n(rerolls every ~0.5s)",
+    Step = 1,
+    Suffix = "%",
+    Value = {
+        Min = 0,
+        Max = 100,
+        Default = config.hitboxHitChance or 100
+    },
+    Callback = function(value)
+        config.hitboxHitChance = value
+    end
+})
+config.varibz.headLocks.hitbox = {
+  get = function() return config.hitboxTargetPart end,
+  el = HitboxTab:Slider({
+    Title = "↳ Headshot Chance",
+    Desc = "hitchance²\n(needs ''Head'' + another part in Target Part)",
+    Locked = not config.funcs.headChanceUnlocked(config.hitboxTargetPart),
+    LockedTitle = "Needs ''Head'' + another part selected",
+    Step = 1,
+    Suffix = "%",
+    Value = {
+        Min = 0,
+        Max = 100,
+        Default = config.hitboxHeadshotChance or 100
+    },
+    Callback = function(value)
+        config.hitboxHeadshotChance = value
+    end
+  })
+}
 HitboxTab:Paragraph({
     Title = "Hitbox Visualizer",
     Desc = "make za Hitbox visible and eye pleasing type shi also h8s rthro shi\nor just a... proxy hitbox if u could say <_<",
@@ -24580,8 +26168,7 @@ ClientTab:Slider({
         Callback = function(v)
             config.trussEnabled = v
             if v then
-                local player = excusemesir.Players.LocalPlayer
-                local character = player.Character
+                local character = localPlayer.Character
                 if not character then
                     config.funcs.n({
                         Title = "Gravel.cc",
@@ -25289,32 +26876,6 @@ MiscTab:Paragraph({
         end
     })
     MiscTab:Button({
-        Title = "pop-up (pls ignore)",
-        Desc = "it's the same pop-up that appears when da script loads",
-        Callback = function()
-           config.funcs.rng()
-            WindUI:Notify({
-                Title = "wat",
-                Content = "pop-up thingamasilly",
-                Icon = "shovel",
-                Duration = 1
-            })
-        end
-    })
-    MiscTab:Button({
-        Title = "notif (pls ignore)",
-        Desc = "it's the same annoying notif that appears when da script loads",
-        Callback = function()
-            config.funcs.rng2()
-            WindUI:Notify({
-                Title = "*notifys cutely*",
-                Content = "lolz",
-                Icon = "shovel",
-                Duration = 1
-            })
-        end
-    })
-    MiscTab:Button({
         Title = "iwanttobanishthisspecificplayer (pls ignore)",
         Desc = "'iwanttobanishthisspecificplayer' sick gui name for a fling script right??",
         Callback = function()
@@ -25607,7 +27168,7 @@ do
     end
     function fn.serverRejoin()
         local ok, err = pcall(function()
-            if #Players:GetPlayers() <= 1 then
+            if #config.funcs.plist() <= 1 then
                 excusemesir.TeleportService:Teleport(game.PlaceId, LP)
             else
                 excusemesir.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LP)
@@ -25630,7 +27191,7 @@ do
         pcall(function() fps = ("%d"):format(math.floor(excusemesir.Workspace:GetRealPhysicsFPS() + 0.5)) end)
         return ("Runtime: %s\nPing: %s\nPhysics FPS: %s\nPlayers: %d/%d\nPlaceId: %s\nJobId: %s"):format(
             fmtTime(excusemesir.Workspace.DistributedGameTime), ping, fps,
-            #Players:GetPlayers(), Players.MaxPlayers, tostring(game.PlaceId),
+            #config.funcs.plist(), Players.MaxPlayers, tostring(game.PlaceId),
             game.JobId ~= "" and game.JobId or "(none)")
     end
     local staffys = {
@@ -25732,7 +27293,7 @@ do
     end
     local function sweep()
         local present = {}
-        for _, pl in ipairs(Players:GetPlayers()) do
+        for _, pl in ipairs(config.funcs.plist()) do
             present[pl.UserId] = true
             checkPlayer(pl)
         end
@@ -25930,6 +27491,7 @@ lazyTab(BGMTab, "BGM", function()
         Color = config.Gradow.uicolor.lightGreen
     })
     
+    local __aqu3BJRzdm8s, __SZxnn6yalUfw
     BGMTab:Input({
         Title = "New Music ID",
         Desc = "add dat music",
@@ -26512,7 +28074,7 @@ lazyTab(DevTab, "Dev", function()
         Desc = "rescan da people",
         Icon = "users",
         Callback = function()
-            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            for _, pl in ipairs(config.funcs.plist()) do
                 if pl ~= localPlayer then
                     config.funcs.setupPlayerListeners(pl)
                 end
@@ -26520,78 +28082,86 @@ lazyTab(DevTab, "Dev", function()
             config.funcs.Grint("Dev", "rescanned all players")
         end
     })
-    config.funcs.task_("devStatsLoop", function()
-        local fpsAccum = 0
-        local fpsFrames = 0
-        local fpsConn = config.funcs.HB("devFps", 0, function(dt)
-            fpsAccum = fpsAccum + dt
-            fpsFrames = fpsFrames + 1
-        end)
-        while config.devStats.updateLoopRunning do
-            task.wait(0.5)
-            if config.funcs.subside_I_I_I_I_I_() then continue end
-            local now = tick()
-            local fps = 0
-            if fpsAccum > 0 then
-                fps = math.floor(fpsFrames / fpsAccum)
-            end
-            fpsAccum = 0
+config.funcs.task_("devStatsLoop", function()
+    local fpsFrames = 0
+    local fpsLast = tick()
+    local lastFps = 0
+
+    local fpsConn = excusemesir.RunService.RenderStepped:Connect(function()
+        fpsFrames = fpsFrames + 1
+        local now = tick()
+        if now - fpsLast >= 1 then
+            lastFps = fpsFrames
             fpsFrames = 0
-            local ping = 0
-            pcall(function()
-                ping = math.round(config.funcs.ping.get())
-            end)
-            local memory = 0
-            pcall(function()
-                memory = math.round(excusemesir.Stats:GetTotalMemoryUsageMb())
-            end)
-            table.insert(stats.fpsHistory, fps)
-            table.insert(stats.pingHistory, ping)
-            while #stats.fpsHistory > stats.maxHistoryPoints do
-                table.remove(stats.fpsHistory, 1)
-            end
-            while #stats.pingHistory > stats.maxHistoryPoints do
-                table.remove(stats.pingHistory, 1)
-            end
-            if memory > stats.peakMemory then stats.peakMemory = memory end
-            if ping > stats.peakPing then stats.peakPing = ping end
-            stats.lastPing = ping
-            stats.lastMemory = memory
-            local uptime = math.floor(now - stats.startTime)
-            local hours = math.floor(uptime / 3600)
-            local minutes = math.floor((uptime % 3600) / 60)
-            local seconds = uptime % 60
-            local avgFps = 0
-            if #stats.fpsHistory > 0 then
-                local sum = 0
-                for _, v in ipairs(stats.fpsHistory) do sum = sum + v end
-                avgFps = math.floor(sum / #stats.fpsHistory)
-            end
-            local avgPing = 0
-            if #stats.pingHistory > 0 then
-                local sum = 0
-                for _, v in ipairs(stats.pingHistory) do sum = sum + v end
-                avgPing = math.floor(sum / #stats.pingHistory)
-            end
-            local fpsIcon = ">"
-            if fps < 30 then fpsIcon = "x"
-            elseif fps < 50 then fpsIcon = ";"
-            end
-            local pingIcon = ">"
-            if ping > 150 then pingIcon = "x"
-            elseif ping > 80 then pingIcon = ";"
-            end
-            statsParagraph:SetDesc(
-                fpsIcon .. " FPS: " .. fps .. " (avg " .. avgFps .. ")\n" ..
-                pingIcon .. " Ping: " .. ping .. "ms (avg " .. avgPing .. "ms | peak " .. stats.peakPing .. "ms)\n" ..
-                "! Memory: " .. memory .. " MB (peak " .. stats.peakMemory .. " MB)\n" ..
-                "> Uptime: " .. string.format("%02d:%02d:%02d", hours, minutes, seconds) .. "\n" ..
-                "x Errors: " .. stats.errors .. " | Warnings: " .. stats.warnings .. "\n" ..
-                "x Gerrors: " .. stats.gerrors .. " | > Grints: " .. stats.grints
-            )
+            fpsLast = now
         end
-        fpsConn:Disconnect()
     end)
+    config.varibz.devFpsConnection = fpsConn
+
+    while config.devStats.updateLoopRunning do
+        task.wait(0.5)
+        if config.funcs.subside_I_I_I_I_I_() then continue end
+        local now = tick()
+        local fps = lastFps
+        local ping = 0
+        pcall(function()
+            ping = math.round(config.funcs.ping.get())
+        end)
+        local memory = 0
+        pcall(function()
+            memory = math.round(excusemesir.Stats:GetTotalMemoryUsageMb())
+        end)
+        table.insert(stats.fpsHistory, fps)
+        table.insert(stats.pingHistory, ping)
+        while #stats.fpsHistory > stats.maxHistoryPoints do
+            table.remove(stats.fpsHistory, 1)
+        end
+        while #stats.pingHistory > stats.maxHistoryPoints do
+            table.remove(stats.pingHistory, 1)
+        end
+        if memory > stats.peakMemory then stats.peakMemory = memory end
+        if ping > stats.peakPing then stats.peakPing = ping end
+        stats.lastPing = ping
+        stats.lastMemory = memory
+        local uptime = math.floor(now - stats.startTime)
+        local hours = math.floor(uptime / 3600)
+        local minutes = math.floor((uptime % 3600) / 60)
+        local seconds = uptime % 60
+        local avgFps = 0
+        if #stats.fpsHistory > 0 then
+            local sum = 0
+            for _, v in ipairs(stats.fpsHistory) do sum = sum + v end
+            avgFps = math.floor(sum / #stats.fpsHistory)
+        end
+        local avgPing = 0
+        if #stats.pingHistory > 0 then
+            local sum = 0
+            for _, v in ipairs(stats.pingHistory) do sum = sum + v end
+            avgPing = math.floor(sum / #stats.pingHistory)
+        end
+        local fpsIcon = ">"
+        if fps < 30 then fpsIcon = "x"
+        elseif fps < 50 then fpsIcon = ";"
+        end
+        local pingIcon = ">"
+        if ping > 150 then pingIcon = "x"
+        elseif ping > 80 then pingIcon = ";"
+        end
+        statsParagraph:SetDesc(
+            fpsIcon .. " FPS: " .. fps .. " (avg " .. avgFps .. ")\n" ..
+            pingIcon .. " Ping: " .. ping .. "ms (avg " .. avgPing .. "ms | peak " .. stats.peakPing .. "ms)\n" ..
+            "! Memory: " .. memory .. " MB (peak " .. stats.peakMemory .. " MB)\n" ..
+            "> Uptime: " .. string.format("%02d:%02d:%02d", hours, minutes, seconds) .. "\n" ..
+            "x Errors: " .. stats.errors .. " | Warnings: " .. stats.warnings .. "\n" ..
+            "x Gerrors: " .. stats.gerrors .. " | > Grints: " .. stats.grints
+        )
+    end
+
+    if config.varibz.devFpsConnection then
+        pcall(function() config.varibz.devFpsConnection:Disconnect() end)
+        config.varibz.devFpsConnection = nil
+    end
+end)
 end, true)
 
 --Info Tab
@@ -26948,7 +28518,7 @@ function config.funcs.openTabGuide(key, title)
     table.insert(conns, UIS.InputBegan:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.Left then step(-1)
         elseif input.KeyCode == Enum.KeyCode.Right then step(1)
-        elseif input.KeyCode == Enum.KeyCode.Escape then close() end
+        elseif input.KeyCode == Enum.KeyCode.Escape or input.KeyCode == Enum.KeyCode.Space then close() end
     end))
     show(1, true)
     local fin = TweenInfo.new(0.25)
@@ -27369,11 +28939,11 @@ InfoTab:Space()
     })
     UpdateLog:Paragraph({
         Title = "Gravel (14/10/2026)",
-        Desc = "sporks\nChanged: Changed WindUI to a forked version for opts\nAdded: Executor Compatibility checks\nAdded: RectCulling\nFixed: Lag Spikes\nFixed: Target Priority lag\nBugs Fixed: 4",
+        Desc = "sporks\nChanged: Changed WindUI to a forked version for opts\nAdded: RectCulling\nFixed: Lag Spikes\nFixed: Target Priority lag\nBugs Fixed: 4",
     })
     UpdateLog:Paragraph({
-        Title = "Gravel (01/11/2026)",
-        Desc = "organized stuff\nChanged: MainTab is now split into sections wit ↳ sub-options\nAdded: ConfigTab (Save/Load moved from MainTab)\nAdded: FarmTab (AutoFarm from MainTab & Cframe View from MiscTab)\nAdded: Panic ('End') in MiscTab, Keybinds & QuickToggles\nAdded: Remote method to ReachTab\nAdded: ServerTab (server hop, status, rejoin, Detect Staffs)\nBugs Fixed: 0 (hopefully)",
+        Title = "Gravel (15/11/2026)",
+        Desc = "organized stuff\nChanged: MainTab is now split into sections wit ↳ sub-options\nAdded: Executor Compatibility checks\nAdded: ConfigTab (Save/Load moved from MainTab)\nAdded: FarmTab (AutoFarm from MainTab & Cframe View from MiscTab)\nAdded: Panic ('End') in MiscTab, Keybinds & QuickToggles\nAdded: Remote method to ReachTab\nAdded: ServerTab (server hop, status, rejoin, Detect Staffs)\nBugs Fixed: 0 (hopefully)",
     })
     UpdateLog:Flush()
 end)
@@ -27391,7 +28961,7 @@ do
 config.funcs.aimbotfov()
 end
 function config.funcs.sjuwhjwjeeuhdjxoah_iejwendkisj()
-    plr.CharacterAdded:Connect(function(character)
+    localPlayer.CharacterAdded:Connect(function(character)
         if config.varibz.respawnLock then
             
             local humanoid = character:WaitForChild("Humanoid", 5)
@@ -27407,7 +28977,7 @@ function config.funcs.sjuwhjwjeeuhdjxoah_iejwendkisj()
         end
     end)
     
-    plr.CharacterRemoving:Connect(function(character)
+    localPlayer.CharacterRemoving:Connect(function(character)
         if config.espMasterEnabled then
             config.varibz.wasESPEnabledBeforeDeath = true
         end
@@ -27417,8 +28987,8 @@ function config.funcs.sjuwhjwjeeuhdjxoah_iejwendkisj()
     end)
     
     local function trackHumanoidDeath()
-        if plr.Character then
-            local humanoid = plr.Character:FindFirstChild("Humanoid")
+        if localPlayer.Character then
+            local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
             if humanoid then
                 humanoid.Died:Connect(function()
                     if config.espMasterEnabled then
@@ -27432,24 +29002,24 @@ function config.funcs.sjuwhjwjeeuhdjxoah_iejwendkisj()
         end
     end
     
-    if plr.Character then
+    if localPlayer.Character then
         trackHumanoidDeath()
     end
     
-    plr.CharacterAdded:Connect(function()
+    localPlayer.CharacterAdded:Connect(function()
         task.wait(0.02)
         trackHumanoidDeath()
     end)
 end
 
-LocalPlayer.CharacterAdded:Connect(function(character)
+localPlayer.CharacterAdded:Connect(function(character)
     local humanoid = character:WaitForChild("Humanoid")
     humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
     humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 end)
 
-if LocalPlayer.Character then
-    local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+if localPlayer.Character then
+    local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
     if humanoid then
         humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
         humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
@@ -27844,7 +29414,7 @@ function config.funcs.init()
     config.funcs.yesh()
     config.funcs.makeeverysingletabs()
     gui.indicator = __zQ2B5fuKbfOU()
-    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+    for _, pl in ipairs(config.funcs.plist()) do
         if pl ~= localPlayer then
             config.funcs.setupPlayerListeners(pl)
         end
@@ -27855,7 +29425,7 @@ function config.funcs.init()
             config.funcs.setupPlayerListeners(pl)
         end
     end)
-    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+    for _, pl in ipairs(config.funcs.plist()) do
         if pl ~= localPlayer then
             config.funcs.setupPlayerListeners(pl)
             if config.hitboxEnabled and config.funcs.targethb(pl) then
@@ -27890,7 +29460,7 @@ function config.funcs.init()
         config.funcs.cleanplrdata(pl)
     end)
     
-    for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+    for _, pl in ipairs(config.funcs.plist()) do
         if pl ~= localPlayer then
             config.funcs.setupPlayerListeners(pl)
             if config.espMasterEnabled then
@@ -28213,7 +29783,6 @@ end)
 config.funcs.task_("respawnLoop", function()
     local lastRespawnTime = os.clock()
     while config.varibz.patcher do
-        local localPlayer = excusemesir.Players.LocalPlayer
         local character = localPlayer.Character
         local isRespawning = false
         if character and character:FindFirstChild("Humanoid") then
@@ -28279,9 +29848,9 @@ config.funcs.task_("hitboxUpdaterLoop", function()
             if next(config.hitboxExpandedParts) ~= nil or next(config.proxyHitboxes) ~= nil then
                 pcall(config.funcs.applyhb)
             end
-            task.wait(hbinter)
+            task.wait(hbinter * (config.perf and config.perf.scale or 1))
         else
-            task.wait(hbinter)
+            task.wait(hbinter * (config.perf and config.perf.scale or 1))
             local candidates, seen = {}, {}
             local function consider(m)
                 if not m or seen[m] then return end
@@ -28290,7 +29859,7 @@ config.funcs.task_("hitboxUpdaterLoop", function()
                 seen[m] = true
                 candidates[#candidates + 1] = m
             end
-            for _, pl in ipairs(excusemesir.Players:GetPlayers()) do
+            for _, pl in ipairs(config.funcs.plist()) do
                 if pl ~= localPlayer then
                     consider(pl.Character)
                 end
@@ -28349,7 +29918,9 @@ config.funcs.task_("hitboxUpdaterLoop", function()
                             local size = config.hitboxSize
                             local existing = config.hitboxExpandedParts[key]
                             if not existing or not existing.part or not existing.part.Parent
-                               or existing.targetSize.X ~= size then
+                               or existing.targetSize.X ~= size
+                               or existing.sel ~= config.hitboxTargetPart
+                               or os.clock() >= (existing.nextRoll or math.huge) then
                                 local okE = pcall(config.funcs.expandhb, key, size)
                                 if not okE and not config.varibz.hbConnections[key]
                                    and typeof(key) == "Instance" and key:IsA("Player") then
@@ -28357,12 +29928,7 @@ config.funcs.task_("hitboxUpdaterLoop", function()
                                     pcall(config.funcs.expandhb, key, size)
                                 end
                             else
-                                if existing.part.Size.X ~= size then
-                                    pcall(function()
-                                        existing.part.Size = Vector3.new(size, size, size)
-                                        existing.targetSize = Vector3.new(size, size, size)
-                                    end)
-                                end
+                                pcall(config.funcs.hbEnforce, key, existing)
                                 if config.hitboxVisualizer.enabled then
                                     pcall(config.funcs.updateproxyhb, key)
                                 end
@@ -28388,11 +29954,14 @@ config.funcs.task_("hitboxUpdaterLoop", function()
         end
     end
 end)
+Gloader.set(0.44, "init", "starting features + tabs")
 config.funcs.init()
+Gloader.set(0.50, "tabs", "tabs are registered")
 config.state.gravelUnloaded = false
 function config.funcs.buhbyegravellllllll________()
     if config.state.gravelUnloaded then return end
     config.state.gravelUnloaded = true
+    pcall(Gloader.abort)
     config.funcs.Grint("Unload", "unloading gravel...")
     getgenv().Graaaaaaaaaaaaaaaaaaaaaaavel_ = false
     local varibz = config.varibz
@@ -28528,6 +30097,16 @@ function config.funcs.buhbyegravellllllll________()
     step("aimbot 360", function()
         if config.aimbot360Enabled then config.funcs.toggle360Aimbot(false) end
     end)
+    step("fps tag", function()
+        local c = config.varibz.fpsTagConnection
+        if c then pcall(function() c:Disconnect() end) end
+        config.varibz.fpsTagConnection = nil
+    end)
+    step("dev fps", function()
+        local c = config.varibz.devFpsConnection
+        if c then pcall(function() c:Disconnect() end) end
+        config.varibz.devFpsConnection = nil
+     end)
     step("aimbot", function() config.funcs.handleAimbotToggle(false) end)
     step("aimbot ring", function()
         if config.aimbotFOVRing then destroy(config.aimbotFOVRing.ScreenGui) end
@@ -28934,17 +30513,19 @@ config.state.Window:OnDestroy(function()
     if not config.state.silentUnload then print("Gravel.cc closed :(") end
 end)
 pcall(config.funcs.awaitPrewarm)
+Gloader.set(0.95, "running code", "finishing things")
+Gloader.set(0.98, "running code", "finishing things")
 getgenv().destroyInitGui()
-config.funcs.rng()
-config.funcs.rng2()
 config.funcs.Grint("Gravel", "loaded successfully :3")
+task.spawn(Gloader.finish)
 task.wait(2.5)
-_(config.funcs.cos(1))
+config.funcs._0x5f3a()
 return config
 end, function(err)
     return debug.traceback(err, 2) 
 end)
 if not success then
+    if loaderRef.l then pcall(loaderRef.l.abort) end
     if getconnections then
         pcall(function()
             for _, v in pairs(getconnections(excusemesir.ScriptContext.Error)) do
