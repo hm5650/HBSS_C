@@ -3,8 +3,8 @@ local BMG = {
     Folder = "Gravel_Saves/assets",
     FileName = "SavedBMG.json",
     CustomIdsFile = "StoredAssetIDs.json",
-    CurrentMusicId = "128586477335903",
-    CurrentTitle = "PeanutButter",
+    CurrentMusicId = "132061315707843",
+    CurrentTitle = "KazioKnight",
     Volume = 1,
     Pitch = 1,
     MusicStrength = 1,
@@ -12,8 +12,8 @@ local BMG = {
     CustomMusicIds = {},
     PresetMusicIds = {
 --        { id = "", title = "" },
-        { id = "128586477335903", title = "PeanutButter" },
-        { id = "93162865190777", title = "KwikFlip" },
+        { id = "132061315707843", title = "KazioKnight" },
+        { id = "73585961437875", title = "BirdBrain" },
         { id = "136438088630687", title = "MEGALOVANIA" },
         { id = "1848354536", title = "Nostalgic" },
         { id = "120187702909985", title = "Still Alive" },
@@ -455,7 +455,6 @@ function BMG:load()
     
     return true
 end
-
 function BMG:autoLoad()
     if not self._initialized then
         return false
