@@ -12,10 +12,9 @@ local BMG = {
     CustomMusicIds = {},
     PresetMusicIds = {
 --        { id = "", title = "" },
-        { id = "132061315707843", title = "KazioKnight" },
-        { id = "73585961437875", title = "BirdBrain" },
-        { id = "136438088630687", title = "MEGALOVANIA" },
-        { id = "1848354536", title = "Nostalgic" },
+        { id = "132061315707843", title = "Kazio Knight" },
+        { id = "9048375035", title = "All Droppiing" },
+        { id = "12068438829287", title = "LTR" }
         { id = "120187702909985", title = "Still Alive" },
         { id = "108483365019009", title = "Unslept" },
     },
