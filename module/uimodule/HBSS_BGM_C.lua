@@ -26,6 +26,8 @@ local BMG = {
     HitVolume = 1,
     DeathRange = 150,
     HitRange = 150,
+    DeathPos = true,
+    HitPos = true,
     DeathLocal = false,
     HitLocal = false,
     DeathSelected = { "longoof" },
@@ -40,12 +42,11 @@ local BMG = {
         { id = "111291271210974", title = "Maifioso Scream" },
     },
     PresetHitSounds = {
-        { id = "1222058", title = "OUCH" },
+        { id = "12222152", title = "Splat.wav" },
         { id = "7233165872", title = "Tony Hawk Trick" },
         { id = "3020841054", title = "Money" },
         { id = "9068554227", title = "Quack" },
     },
-
     _initialized = false,
     _windUI = nil,
     _config = nil,
@@ -63,8 +64,8 @@ local BMG = {
 }
 
 local BANKS = {
-    death = { presets = "PresetDeathSounds", custom = "CustomDeathSounds", selected = "DeathSelected", enabled = "DeathEnabled", volume = "DeathVolume", range = "DeathRange", localKey = "DeathLocal" },
-    hit = { presets = "PresetHitSounds", custom = "CustomHitSounds", selected = "HitSelected", enabled = "HitEnabled", volume = "HitVolume", range = "HitRange", localKey = "HitLocal" },
+    death = { presets = "PresetDeathSounds", custom = "CustomDeathSounds", selected = "DeathSelected", enabled = "DeathEnabled", volume = "DeathVolume", range = "DeathRange", localKey = "DeathLocal", posKey = "DeathPos" },
+    hit = { presets = "PresetHitSounds", custom = "CustomHitSounds", selected = "HitSelected", enabled = "HitEnabled", volume = "HitVolume", range = "HitRange", localKey = "HitLocal", posKey = "HitPos" },
 }
 
 local function parseValue(str)
@@ -554,6 +555,10 @@ function BMG:setBankRange(kind, v)
     self[BANKS[kind].range] = math.max(0, tonumber(v) or 0)
 end
 
+function BMG:setBankPos(kind, state)
+    self[BANKS[kind].posKey] = state and true or false
+end
+
 function BMG:setBankLocal(kind, state)
     self[BANKS[kind].localKey] = state and true or false
 end
@@ -654,7 +659,16 @@ function BMG:_prefetchBank(kind)
     end
 end
 
-function BMG:playBank(kind)
+function BMG:_targetPart(hum)
+    local part = hum.RootPart
+    local model = hum.Parent
+    if not part and model then
+        part = model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")
+    end
+    return part
+end
+
+function BMG:playBank(kind, part)
     local b = BANKS[kind]
     local sel = self[b.selected]
     if #sel == 0 then return end
@@ -675,10 +689,36 @@ function BMG:playBank(kind)
         local s = Instance.new("Sound")
         s.SoundId = soundId
         s.Volume = vol
-        s.Parent = svc("SoundService")
-        s.Ended:Once(function() s:Destroy() end)
+        local holder = svc("SoundService")
+        local emitter
+        if part and self[b.posKey] and part.Parent then
+            local range = self[b.range]
+            s.RollOffMode = Enum.RollOffMode.Linear
+            s.RollOffMinDistance = 8
+            s.RollOffMaxDistance = (range and range > 0) and math.max(range, 9) or 500
+            if kind == "death" then
+                emitter = Instance.new("Part")
+                emitter.Anchored = true
+                emitter.CanCollide = false
+                emitter.CanQuery = false
+                emitter.CanTouch = false
+                emitter.Transparency = 1
+                emitter.Size = Vector3.new(0.2, 0.2, 0.2)
+                emitter.CFrame = part.CFrame
+                emitter.Parent = workspace
+                holder = emitter
+            else
+                holder = part
+            end
+        end
+        s.Parent = holder
+        local function cleanup()
+            if s.Parent then s:Destroy() end
+            if emitter then emitter:Destroy() end
+        end
+        s.Ended:Once(cleanup)
         s:Play()
-        task.delay(20, function() if s.Parent then s:Destroy() end end)
+        task.delay(20, cleanup)
     end)
 end
 
@@ -725,7 +765,7 @@ function BMG:_hookHumanoid(hum, isPlayer, isLocal)
         if hp <= 0 then
             if not rec.dead then
                 rec.dead = true
-                if allowed("death") then self:playBank("death") end
+                if allowed("death") then self:playBank("death", (not rec.isLocal) and self:_targetPart(hum) or nil) end
             end
         else
             rec.dead = false
@@ -733,7 +773,7 @@ function BMG:_hookHumanoid(hum, isPlayer, isLocal)
                 local now = os.clock()
                 if now - self._lastHit >= 0.08 then
                     self._lastHit = now
-                    self:playBank("hit")
+                    self:playBank("hit", (not rec.isLocal) and self:_targetPart(hum) or nil)
                 end
             end
         end
@@ -893,6 +933,8 @@ function BMG:save()
         deathRange = self.DeathRange,
         hitRange = self.HitRange,
         deathLocal = self.DeathLocal,
+        deathPos = self.DeathPos,
+        hitPos = self.HitPos,
         hitLocal = self.HitLocal,
         deathSelected = self.DeathSelected,
         hitSelected = self.HitSelected,
@@ -973,6 +1015,8 @@ function BMG:load()
         if decoded.hitVolume ~= nil then self.HitVolume = math.clamp(decoded.hitVolume, 0, 5) end
         if decoded.deathRange ~= nil then self.DeathRange = math.max(0, tonumber(decoded.deathRange) or 0) end
         if decoded.hitRange ~= nil then self.HitRange = math.max(0, tonumber(decoded.hitRange) or 0) end
+        if decoded.deathPos ~= nil then self.DeathPos = decoded.deathPos and true or false end
+        if decoded.hitPos ~= nil then self.HitPos = decoded.hitPos and true or false end
         if decoded.deathLocal ~= nil then self.DeathLocal = decoded.deathLocal and true or false end
         if decoded.hitLocal ~= nil then self.HitLocal = decoded.hitLocal and true or false end
         if decoded.deathEnabled ~= nil then self.DeathEnabled = decoded.deathEnabled and true or false end
@@ -992,6 +1036,8 @@ function BMG:load()
         setUI(self._refs.hitVolume, self.HitVolume)
         setUI(self._refs.deathRange, self.DeathRange)
         setUI(self._refs.hitRange, self.HitRange)
+        setUI(self._refs.deathPos, self.DeathPos)
+        setUI(self._refs.hitPos, self.HitPos)
         setUI(self._refs.deathLocal, self.DeathLocal)
         setUI(self._refs.hitLocal, self.HitLocal)
         self:_prefetchBank("death")
