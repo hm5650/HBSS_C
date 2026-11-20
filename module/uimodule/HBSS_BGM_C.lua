@@ -24,6 +24,10 @@ local BMG = {
     HitEnabled = false,
     DeathVolume = 1,
     HitVolume = 1,
+    DeathRange = 150,
+    HitRange = 150,
+    DeathLocal = false,
+    HitLocal = false,
     DeathSelected = { "longoof" },
     HitSelected = { "1222058" },
     CustomDeathSounds = {},
@@ -59,8 +63,8 @@ local BMG = {
 }
 
 local BANKS = {
-    death = { presets = "PresetDeathSounds", custom = "CustomDeathSounds", selected = "DeathSelected", enabled = "DeathEnabled", volume = "DeathVolume" },
-    hit = { presets = "PresetHitSounds", custom = "CustomHitSounds", selected = "HitSelected", enabled = "HitEnabled", volume = "HitVolume" },
+    death = { presets = "PresetDeathSounds", custom = "CustomDeathSounds", selected = "DeathSelected", enabled = "DeathEnabled", volume = "DeathVolume", range = "DeathRange", localKey = "DeathLocal" },
+    hit = { presets = "PresetHitSounds", custom = "CustomHitSounds", selected = "HitSelected", enabled = "HitEnabled", volume = "HitVolume", range = "HitRange", localKey = "HitLocal" },
 }
 
 local function parseValue(str)
@@ -546,6 +550,14 @@ function BMG:setBankVolume(kind, v)
     self[BANKS[kind].volume] = math.clamp(tonumber(v) or 1, 0, 5)
 end
 
+function BMG:setBankRange(kind, v)
+    self[BANKS[kind].range] = math.max(0, tonumber(v) or 0)
+end
+
+function BMG:setBankLocal(kind, state)
+    self[BANKS[kind].localKey] = state and true or false
+end
+
 function BMG:addBankSound(kind, id, title)
     id = tostring(id or ""):gsub("%s+", "")
     if id == "" or not id:match("^%d+$") then return false, "Invalid sound ID" end
@@ -676,21 +688,48 @@ local function typeAllowed(cfg, isPlayer)
     return mt == "NPCs" or mt == "Both"
 end
 
-function BMG:_hookHumanoid(hum, isPlayer)
-    if self._hooks[hum] then return end
-    local rec = { last = hum.Health, dead = hum.Health <= 0, isPlayer = isPlayer }
+function BMG:_inRange(hum, range)
+    if not range or range <= 0 then return true end
+    local part = hum.RootPart
+    local model = hum.Parent
+    if not part and model then
+        part = model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head")
+    end
+    if not part then return false end
+    local origin
+    local lp = svc("Players").LocalPlayer
+    local c = lp and lp.Character
+    local root = c and (c:FindFirstChild("HumanoidRootPart") or c:FindFirstChild("Head"))
+    if root then
+        origin = root.Position
+    else
+        local cam = workspace.CurrentCamera
+        origin = cam and cam.CFrame.Position
+    end
+    if not origin then return true end
+    return (part.Position - origin).Magnitude <= range
+end
+
+function BMG:_hookHumanoid(hum, isPlayer, isLocal)
+    local old = self._hooks[hum]
+    if old then return end
+    local rec = { last = hum.Health, dead = hum.Health <= 0, isPlayer = isPlayer, isLocal = isLocal }
+    local function allowed(kind)
+        local b = BANKS[kind]
+        if not self[b.enabled] then return false end
+        if rec.isLocal then return self[b.localKey] end
+        if not typeAllowed(self._config, rec.isPlayer) then return false end
+        return self:_inRange(hum, self[b.range])
+    end
     rec.conn = hum.HealthChanged:Connect(function(hp)
-        local cfg = self._config
         if hp <= 0 then
             if not rec.dead then
                 rec.dead = true
-                if self.DeathEnabled and typeAllowed(cfg, rec.isPlayer) then
-                    self:playBank("death")
-                end
+                if allowed("death") then self:playBank("death") end
             end
         else
             rec.dead = false
-            if hp < rec.last and self.HitEnabled and typeAllowed(cfg, rec.isPlayer) then
+            if hp < rec.last and allowed("hit") then
                 local now = os.clock()
                 if now - self._lastHit >= 0.08 then
                     self._lastHit = now
@@ -735,6 +774,10 @@ function BMG:_startTracking()
                         end
                     end
                 end
+            end
+            if (self.DeathLocal or self.HitLocal) and lp.Character then
+                local lh = lp.Character:FindFirstChildOfClass("Humanoid")
+                if lh then self:_hookHumanoid(lh, true, true) end
             end
             for hum, rec in pairs(self._hooks) do
                 if hum.Parent == nil then
@@ -847,6 +890,10 @@ function BMG:save()
         hitEnabled = self.HitEnabled,
         deathVolume = self.DeathVolume,
         hitVolume = self.HitVolume,
+        deathRange = self.DeathRange,
+        hitRange = self.HitRange,
+        deathLocal = self.DeathLocal,
+        hitLocal = self.HitLocal,
         deathSelected = self.DeathSelected,
         hitSelected = self.HitSelected,
         savedAt = os.time()
@@ -924,6 +971,10 @@ function BMG:load()
         if type(decoded.hitSelected) == "table" then self.HitSelected = decoded.hitSelected end
         if decoded.deathVolume ~= nil then self.DeathVolume = math.clamp(decoded.deathVolume, 0, 5) end
         if decoded.hitVolume ~= nil then self.HitVolume = math.clamp(decoded.hitVolume, 0, 5) end
+        if decoded.deathRange ~= nil then self.DeathRange = math.max(0, tonumber(decoded.deathRange) or 0) end
+        if decoded.hitRange ~= nil then self.HitRange = math.max(0, tonumber(decoded.hitRange) or 0) end
+        if decoded.deathLocal ~= nil then self.DeathLocal = decoded.deathLocal and true or false end
+        if decoded.hitLocal ~= nil then self.HitLocal = decoded.hitLocal and true or false end
         if decoded.deathEnabled ~= nil then self.DeathEnabled = decoded.deathEnabled and true or false end
         if decoded.hitEnabled ~= nil then self.HitEnabled = decoded.hitEnabled and true or false end
 
@@ -939,6 +990,10 @@ function BMG:load()
         setUI(self._refs.hitToggle, self.HitEnabled)
         setUI(self._refs.deathVolume, self.DeathVolume)
         setUI(self._refs.hitVolume, self.HitVolume)
+        setUI(self._refs.deathRange, self.DeathRange)
+        setUI(self._refs.hitRange, self.HitRange)
+        setUI(self._refs.deathLocal, self.DeathLocal)
+        setUI(self._refs.hitLocal, self.HitLocal)
         self:_prefetchBank("death")
         self:_prefetchBank("hit")
         self:_updateTracking()
